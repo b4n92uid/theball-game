@@ -1,0 +1,7 @@
+build/*.*
+demo/*.*
+dist/*.*
+doc/html/*.*
+nbproject/*.*
+sourcesold/*.*
+version/*.*
