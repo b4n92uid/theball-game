@@ -1,0 +1,39 @@
+F1 : Mode entités
+=================
+SHIFT           : Déplacer la séléction Horiznetalement avec la souri
+SHIFT + ALT     : Déplacer la séléction Veticalement avec la souri
+SHIFT + [AZ]    : Rotation X
+SHIFT + [QS]    : Rotation Y
+SHIFT + [WX]    : Rotation Z
+SHIFT + F       : Mettre le miliux de la séléction au sol
+SHIFT + F + ALT : Mettre le bas de la séléction au sol
+SHIFT + G       : Mettre dans la grille
+
+C               : Cloner la séléction
+S               : Créer une entité statique depuis un fichier .obj
+D + J           : Créer un Jumper
+D + T           : Créer un Téléporteur
+T + L           : Créer un Item de santé
+T + A           : Créer un Item de munition
+T + S           : Créer un Item Super-Life
+T + F           : Créer un Item Fatal-Shot
+T + I           : Créer un Item de Finder
+T + H           : Créer un Item de Shotgun
+T + H           : Créer un Item de Shotgun
+
+F2 : Mode lumiers
+=================
+SHIFT           : Déplacer la lumiere Horiznetalement avec la souri
+SHIFT + ALT     : Déplacer la lumiere Veticalement avec la souri
+
+P               : Crére une lumiere pointctuelle
+D               : Crére une lumiere dirictionelle
+
+F5 : Mode skybox
+================
+
+F6 : Mode brouillard
+====================
+
+F7 : Mode musique
+=================

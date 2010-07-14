@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<world>
+    <set name="GRAVITY" value="2" />
+    
+    <set name="PLAYER_MOVESPEED" value="64" />
+    <set name="PLAYER_BOOSTSPEED" value="64" />
+    <set name="PLAYER_JUMPFORCE" value="8" />
+    <set name="PLAYER_SIZE" value="0.25" />
+    <set name="PLAYER_MASS" value="4" />
+    <set name="PLAYER_LDAMPING" value="2" />
+    
+    <set name="STATIC_FRICTION" value="512" />
+    <set name="KENITIC_FRICTION" value="256" />
+    
+    <set name="WEAPON_SIZE" value="0.01" />
+    <set name="WEAPON_MASS" value="0.1" />
+</world>
