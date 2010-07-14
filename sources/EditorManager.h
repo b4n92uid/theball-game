@@ -37,24 +37,24 @@ public:
     void Render();
 
 protected:
-    void AllocEntityEvent(tbe::EventManager* event);
-    void DeleteEntityEvent(tbe::EventManager* event);
-    void SettingEntityEvent(tbe::EventManager* event);
-    void SelectEntityEvent(tbe::EventManager* event);
+    bool AllocEntityEvent(tbe::EventManager* event);
+    bool DeleteEntityEvent(tbe::EventManager* event);
+    bool SettingEntityEvent(tbe::EventManager* event);
+    bool SelectEntityEvent(tbe::EventManager* event);
 
     void NewEntity(Object* ent);
 
-    void AllocLightEvent(tbe::EventManager* event);
-    void DeleteLightEvent(tbe::EventManager* event);
-    void SettingLightEvent(tbe::EventManager* event);
+    bool AllocLightEvent(tbe::EventManager* event);
+    bool DeleteLightEvent(tbe::EventManager* event);
+    bool SettingLightEvent(tbe::EventManager* event);
 
     void NewLight(tbe::scene::Light* light);
     void SelectLight(unsigned index);
     void DeleteLight(unsigned index);
 
-    void SettingSkyEvent(tbe::EventManager* event);
-    void SettingFogEvent(tbe::EventManager* event);
-    void SettingMusicEvent(tbe::EventManager* event);
+    bool SettingSkyEvent(tbe::EventManager* event);
+    bool SettingFogEvent(tbe::EventManager* event);
+    bool SettingMusicEvent(tbe::EventManager* event);
 
     void ViewEventPorcess(tbe::EventManager* event);
     void EditEventPorcess(tbe::EventManager* event);
