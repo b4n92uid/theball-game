@@ -100,6 +100,12 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     // PLAYERS -----------------------------------------------------------------
 
+    Settings::PlayerInfo pi(m_playSetting.playerModel);
+    m_userPlayer = new Player(this, m_playSetting.playerName, pi.model);
+    m_userPlayer->AttachController(new UserControl(this));
+
+    RegisterPlayer(m_userPlayer);
+
     for(unsigned i = 0; i < m_playSetting.playerCount; i++)
     {
         unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
@@ -112,12 +118,6 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
         Player* player = new Player(this, name.str(), pi.model);
         RegisterPlayer(player);
     }
-
-    Settings::PlayerInfo pi(m_playSetting.playerModel);
-    m_userPlayer = new Player(this, m_playSetting.playerName, pi.model);
-    m_userPlayer->AttachController(new UserControl(this));
-
-    RegisterPlayer(m_userPlayer);
 
     ModSetupAi();
 
@@ -311,35 +311,43 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
-        if(event->keyState[EventManager::KEY_F1])
+        if(event->keyState[EventManager::KEY_F11])
             m_userPlayer->Kill();
+
+        if(event->keyState[EventManager::KEY_F10])
+        {
+            for(unsigned i = 0; i < players.size(); i++)
+                if(players[i] != m_userPlayer)
+                {
+                    UnRegisterPlayer(players[i], true);
+                    delete players[i];
+                }
+
+            Player::Array::iterator newEnd = remove_if(players.begin(), players.end(),
+                                                       bind1st(not_equal_to<Player*>(), m_userPlayer));
+            players.erase(newEnd, players.end());
+        }
 
         if(event->keyState[EventManager::KEY_F5])
         {
-            if(players.back() == m_userPlayer)
-            {
-                unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
+            unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
 
-                Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
+            Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
 
-                Player* player = new Player(this, "TEST_BOT", pi.model);
-                RegisterPlayer(player);
-            }
-
-            else
-            {
-                delete players.back();
-                UnRegisterPlayer(players.back());
-            }
+            Player* player = new Player(this, "TEST_BOT", pi.model);
+            RegisterPlayer(player);
         }
 
         if(event->keyState[EventManager::KEY_F6])
         {
-            if(players.back() != m_userPlayer)
-                if(players.back()->GetAttachedCotroller())
-                    players.back()->AttachController(NULL);
-                else
-                    players.back()->AttachController(new FragModeAi(this));
+            unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
+
+            Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
+
+            Player* player = new Player(this, "TEST_BOT_AI", pi.model);
+            player->AttachController(new FragModeAi(this));
+
+            RegisterPlayer(player);
         }
     }
 }
@@ -700,12 +708,14 @@ void PlayManager::RegisterPlayer(Player* player)
     players.push_back(player);
 }
 
-void PlayManager::UnRegisterPlayer(Player* player)
+void PlayManager::UnRegisterPlayer(Player* player, bool keep)
 {
     parallelscene.meshs->ReleaseMesh(player->GetName());
     parallelscene.newton->ReleaseNode(player->GetName());
 
-    Player::Array::iterator it = find(players.begin(), players.end(), player);
-
-    players.erase(it);
+    if(!keep)
+    {
+        Player::Array::iterator it = find(players.begin(), players.end(), player);
+        players.erase(it);
+    }
 }

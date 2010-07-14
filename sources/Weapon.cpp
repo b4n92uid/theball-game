@@ -448,8 +448,8 @@ WeaponFinder::WeaponFinder(PlayManager* playManager) : Weapon(playManager)
     SetMaxAmmoCount(200);
     SetAmmoCount(180);
     SetMaxAmmoDammage(50);
-    SetShootCadency(256);
-    SetShootSpeed(16);
+    SetShootCadency(64);
+    SetShootSpeed(64);
     SetFireSound(SOUND_FINDER);
 
     SetTexture(WEAPON_FINDER);
@@ -481,7 +481,17 @@ void WeaponFinder::Process()
             Player::Array& players = m_playManager->players;
             for(unsigned j = 0; j < players.size(); j++)
                 if(players[j] != m_parent)
-                    minDist = min(players[j]->NewtonNode::GetPos() - m_ammosPack[i]->NewtonNode::GetPos(), minDist);
+                {
+                    Vector3f ammodiri;
+                    NewtonBodyGetVelocity(m_ammosPack[i]->GetBody(), ammodiri);
+                    ammodiri.Normalize();
+
+                    Vector3f playerdiri = players[j]->NewtonNode::GetPos() - m_ammosPack[i]->NewtonNode::GetPos();
+                    playerdiri.Normalize();
+
+                    if(Vector3f::Dot(playerdiri, ammodiri) > 0.0)
+                        minDist = min(players[j]->NewtonNode::GetPos() - m_ammosPack[i]->NewtonNode::GetPos(), minDist);
+                }
 
             m_ammosPack[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed);
         }
@@ -495,7 +505,6 @@ void WeaponFinder::Process()
 void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
     Vector3f shootdiri = (targetpos - startpos).Normalize();
-    shootdiri.y = 0.8f;
 
     // Creation du tire
     Ammo * fire = new Ammo(this);

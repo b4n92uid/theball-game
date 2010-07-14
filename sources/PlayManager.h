@@ -59,7 +59,7 @@ public:
     bool IsGameOver() const;
 
     void RegisterPlayer(Player* player);
-    void UnRegisterPlayer(Player* player);
+    void UnRegisterPlayer(Player* player, bool keep = false);
 
     tbe::Vector3f GetShootTarget() const;
 

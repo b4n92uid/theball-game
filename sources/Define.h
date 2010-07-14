@@ -17,10 +17,10 @@
 #define BACKGROUND_PAUSE        "data/gfxart/background/pause.png"
 
 // GUI -------------------------------------------------------------------------
-#define GUI_TEXTBOX_V     "data/gfxart/gui/textboxv.png"
-#define GUI_TEXTBOX_H     "data/gfxart/gui/textboxh.png"
-#define GUI_LISTBOX_V     "data/gfxart/gui/listboxv.png"
-#define GUI_LISTBOX_H     "data/gfxart/gui/listboxh.png"
+#define GUI_TEXTBOX_V   "data/gfxart/gui/textboxv.png"
+#define GUI_TEXTBOX_H   "data/gfxart/gui/textboxh.png"
+#define GUI_LISTBOX_V   "data/gfxart/gui/listboxv.png"
+#define GUI_LISTBOX_H   "data/gfxart/gui/listboxh.png"
 #define GUI_PREVIEW     "data/gfxart/gui/previewframe.png"
 #define GUI_BUTTON      "data/gfxart/gui/button.png"
 #define GUI_GAUGE       "data/gfxart/gui/gauge.png"
