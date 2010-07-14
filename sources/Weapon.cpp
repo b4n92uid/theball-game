@@ -264,7 +264,7 @@ Ammo::Ammo(Weapon* weapon)
     m_weapon = weapon;
     m_playManager = m_weapon->GetShooter()->GetPlayManager();
     m_life = 300;
-    m_dammage = tools::rand(1, m_weapon->GetMaxAmmoDammage());
+    m_dammage = 0;
 }
 
 void Ammo::SetShootSpeed(float shootSpeed)
@@ -364,6 +364,7 @@ void WeaponBlaster::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
     // Creation du tire
     Ammo * fire = new Ammo(this);
+    fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
     m_playManager->manager.material->AddWeapon(fire);
@@ -400,6 +401,7 @@ void WeaponShotgun::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
         // Creation du tire
         Ammo * fire = new Ammo(this);
+        fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
         fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
         m_playManager->manager.material->AddWeapon(fire);
@@ -434,6 +436,7 @@ void WeaponBomb::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
     // Creation du tire
     Ammo * fire = new Ammo(this);
+    fire->SetDammage(100);
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
     m_playManager->manager.material->AddWeapon(fire);
@@ -508,6 +511,7 @@ void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
     // Creation du tire
     Ammo * fire = new Ammo(this);
+    fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
     NewtonBodySetForceAndTorqueCallback(fire->GetBody(), NewtonParallelScene::ApplyForceAndTorque);
