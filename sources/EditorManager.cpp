@@ -329,7 +329,7 @@ void EditorManager::SetupGui()
     }
 }
 
-void EditorManager::SettingMusicEvent(tbe::EventManager* event)
+bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 {
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
@@ -372,9 +372,11 @@ void EditorManager::SettingMusicEvent(tbe::EventManager* event)
 
         hud.music.list->SetActivate(false);
     }
+
+    return false;
 }
 
-void EditorManager::SettingSkyEvent(tbe::EventManager* event)
+bool EditorManager::SettingSkyEvent(tbe::EventManager* event)
 {
     if(hud.sky.enable->IsActivate())
         m_sky->SetEnable(hud.sky.enable->GetCurrent());
@@ -398,9 +400,11 @@ void EditorManager::SettingSkyEvent(tbe::EventManager* event)
     {
         hud.sky.list->CancelSelection();
     }
+
+    return false;
 }
 
-void EditorManager::SettingFogEvent(tbe::EventManager* event)
+bool EditorManager::SettingFogEvent(tbe::EventManager* event)
 {
     if(hud.fog.enable->IsActivate())
         m_fog->SetEnable(hud.fog.enable->GetCurrent());
@@ -425,6 +429,8 @@ void EditorManager::SettingFogEvent(tbe::EventManager* event)
 
         hud.fog.start->SetRange(range);
     }
+
+    return false;
 }
 
 void EditorManager::EditEventPorcess(tbe::EventManager* event)
@@ -481,15 +487,15 @@ void EditorManager::EditEventPorcess(tbe::EventManager* event)
     switch(m_navigation)
     {
         case ENTITY:
-            AllocEntityEvent(event);
-            SelectEntityEvent(event);
-            SettingEntityEvent(event);
-            DeleteEntityEvent(event);
+            if(!SettingEntityEvent(event))
+                if(!SelectEntityEvent(event))
+                    if(!DeleteEntityEvent(event))
+                        AllocEntityEvent(event);
             break;
         case LIGHT:
-            AllocLightEvent(event);
-            SettingLightEvent(event);
-            DeleteLightEvent(event);
+            if(!SettingLightEvent(event))
+                if(!DeleteLightEvent(event))
+                    AllocLightEvent(event);
             break;
 
         case SKYBOX:

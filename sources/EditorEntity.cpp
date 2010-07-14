@@ -7,13 +7,13 @@
 using namespace std;
 using namespace tbe;
 
-void EditorManager::DeleteEntityEvent(tbe::EventManager* event)
+bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
 {
     if(!m_selectedNode)
-        return;
+        return false;
 
     if(event->notify != EventManager::EVENT_KEY_DOWN)
-        return;
+        return false;
 
     if(event->lastActiveKey.first == EventManager::KEY_DELETE)
     {
@@ -39,7 +39,11 @@ void EditorManager::DeleteEntityEvent(tbe::EventManager* event)
         m_allEntity.erase(it);
 
         delete m_selectedNode, m_selectedNode = NULL;
+
+        return true;
     }
+
+    return false;
 }
 
 void EditorManager::NewEntity(Object* ent)
@@ -52,7 +56,7 @@ void EditorManager::NewEntity(Object* ent)
     m_OCamera->SetCenter(pos);
 }
 
-void EditorManager::AllocEntityEvent(EventManager* event)
+bool EditorManager::AllocEntityEvent(EventManager* event)
 {
     Object* newObj = NULL;
 
@@ -64,6 +68,8 @@ void EditorManager::AllocEntityEvent(EventManager* event)
         NewEntity(clone);
 
         m_selectedNode = clone;
+
+        return true;
     }
 
     // Dynamics
@@ -153,6 +159,7 @@ void EditorManager::AllocEntityEvent(EventManager* event)
 
                     hud.entity.list->CancelSelection();
                 }
+
                 hud.entity.list->SetEnable(false);
             }
         }
@@ -162,7 +169,11 @@ void EditorManager::AllocEntityEvent(EventManager* event)
     {
         NewEntity(newObj);
         m_selectedNode = newObj;
+
+        return true;
     }
+
+    return false;
 }
 
 struct SelectionSort
@@ -179,10 +190,10 @@ struct SelectionSort
     }
 };
 
-void EditorManager::SelectEntityEvent(tbe::EventManager * event)
+bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
 {
     if(event->notify != EventManager::EVENT_MOUSE_DOWN)
-        return;
+        return false;
 
     if(event->mouseState[EventManager::MOUSE_BUTTON_RIGHT])
     {
@@ -210,70 +221,23 @@ void EditorManager::SelectEntityEvent(tbe::EventManager * event)
         {
             m_axes->SetPos(m_selectedNode->NewtonNode::GetPos());
             m_OCamera->SetCenter(m_selectedNode->NewtonNode::GetPos());
+
+            return true;
         }
     }
+
+    return false;
 }
 
-void EditorManager::SettingEntityEvent(EventManager * event)
+bool EditorManager::SettingEntityEvent(EventManager* event)
 {
+    if(!m_selectedNode)
+        return false;
+
     Vector3f grid(1);
 
     float moveSpeed = 0.05;
     float rotateSpeed = 45 * M_PI / 180;
-
-    if(!m_selectedNode)
-        return;
-
-    if(event->keyState[EventManager::KEY_SPACE])
-        if(event->notify == EventManager::EVENT_KEY_DOWN)
-        {
-            Matrix4f rotate = m_selectedNode->NewtonNode::GetMatrix();
-
-            if(event->keyState['a'])
-                rotate.SetRotateX(-rotateSpeed);
-            if(event->keyState['e'])
-                rotate.SetRotateX(rotateSpeed);
-            if(event->keyState['q'])
-                rotate.SetRotateY(-rotateSpeed);
-            if(event->keyState['d'])
-                rotate.SetRotateY(rotateSpeed);
-            if(event->keyState['w'])
-                rotate.SetRotateZ(-rotateSpeed);
-            if(event->keyState['c'])
-                rotate.SetRotateZ(rotateSpeed);
-
-            rotate.SetPos(m_selectedNode->NewtonNode::GetPos());
-
-            m_selectedNode->NewtonNode::SetMatrix(rotate);
-
-            event->notify = EventManager::EVENT_NO_EVENT;
-        }
-
-    if(event->notify == EventManager::EVENT_KEY_DOWN)
-    {
-        Vector3f transform = m_selectedNode->NewtonNode::GetPos();
-
-        if(event->keyState['f'])
-        {
-            if(event->keyState[EventManager::KEY_LALT])
-                transform.y = -m_selectedNode->GetAabb().min.y;
-            else
-                transform.y = 0;
-
-            transform = parallelscene.newton->FindFloor(transform);
-
-            m_selectedNode->NewtonNode::SetPos(transform);
-            m_axes->SetPos(transform);
-        }
-
-        if(event->keyState['g'])
-        {
-            tools::round(transform, grid);
-
-            m_selectedNode->NewtonNode::SetPos(transform);
-            m_axes->SetPos(transform);
-        }
-    }
 
     if(event->keyState[EventManager::KEY_LSHIFT])
     {
@@ -303,6 +267,65 @@ void EditorManager::SettingEntityEvent(EventManager * event)
             m_selectedNode->NewtonNode::SetPos(transform);
             m_axes->SetPos(transform);
         }
+
+        else if(event->notify == EventManager::EVENT_MOUSE_DOWN)
+        {
+            Vector3f transform;
+
+            if(event->lastActiveMouse.first == EventManager::MOUSE_BUTTON_WHEEL_UP)
+                transform.y++;
+            else if(event->lastActiveMouse.first == EventManager::MOUSE_BUTTON_WHEEL_DOWN)
+                transform.y--;
+
+            transform += m_selectedNode->NewtonNode::GetPos();
+
+
+            m_selectedNode->NewtonNode::SetPos(transform);
+            m_axes->SetPos(transform);
+        }
+
+        else if(event->notify == EventManager::EVENT_KEY_DOWN)
+        {
+            Vector3f pos = m_selectedNode->NewtonNode::GetPos();
+            Matrix4f matrix = m_selectedNode->NewtonNode::GetMatrix();
+
+            // Rotation
+            if(event->keyState['A'])
+                matrix.SetRotateX(-rotateSpeed);
+            if(event->keyState['Z'])
+                matrix.SetRotateX(rotateSpeed);
+            if(event->keyState['Q'])
+                matrix.SetRotateY(-rotateSpeed);
+            if(event->keyState['S'])
+                matrix.SetRotateY(rotateSpeed);
+            if(event->keyState['W'])
+                matrix.SetRotateZ(-rotateSpeed);
+            if(event->keyState['X'])
+                matrix.SetRotateZ(rotateSpeed);
+
+            // In the floor
+            if(event->keyState['F'])
+            {
+                if(event->keyState[EventManager::KEY_LALT])
+                    pos.y = -m_selectedNode->GetAabb().min.y;
+                else
+                    pos.y = 0;
+
+                pos = parallelscene.newton->FindFloor(pos);
+            }
+
+            // In the gride
+            if(event->keyState['G'])
+                tools::round(pos, grid);
+
+            // Apply
+            matrix.SetPos(pos);
+
+            m_selectedNode->NewtonNode::SetMatrix(matrix);
+            m_axes->SetPos(pos);
+        }
+
+        return true;
     }
 
     else
@@ -310,4 +333,6 @@ void EditorManager::SettingEntityEvent(EventManager * event)
         manager.gameEngine->SetMouseVisible(true);
         manager.gameEngine->SetGrabInput(false);
     }
+
+    return false;
 }

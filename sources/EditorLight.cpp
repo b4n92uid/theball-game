@@ -55,23 +55,26 @@ void EditorManager::SelectLight(unsigned index)
     m_axes->SetPos(m_selectedLight->GetPos());
 }
 
-void EditorManager::DeleteLightEvent(tbe::EventManager* event)
+bool EditorManager::DeleteLightEvent(tbe::EventManager* event)
 {
     if(!m_selectedLight || event->notify != EventManager::EVENT_KEY_DOWN)
-        return;
+        return false;
 
     if(event->lastActiveKey.first == EventManager::KEY_DELETE)
     {
         DeleteLight(hud.light.slector->GetData().GetValue<unsigned>());
+        return true;
     }
+
+    return false;
 }
 
-void EditorManager::AllocLightEvent(tbe::EventManager* event)
+bool EditorManager::AllocLightEvent(tbe::EventManager* event)
 {
     using namespace scene;
 
     if(event->notify != EventManager::EVENT_KEY_DOWN)
-        return;
+        return false;
 
     int c = event->lastActiveKey.first;
 
@@ -91,13 +94,16 @@ void EditorManager::AllocLightEvent(tbe::EventManager* event)
     if(newLight)
     {
         NewLight(newLight);
+        return true;
     }
+
+    return false;
 }
 
-void EditorManager::SettingLightEvent(tbe::EventManager* event)
+bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 {
     if(!m_selectedLight)
-        return;
+        return false;
 
     // Séléction
 
@@ -137,6 +143,8 @@ void EditorManager::SettingLightEvent(tbe::EventManager* event)
                 m_selectedLight->SetPos(setPos);
             }
         }
+
+        return true;
     }
     else if(m_selectedLight->GetType() == scene::Light::POINT)
     {
@@ -178,6 +186,8 @@ void EditorManager::SettingLightEvent(tbe::EventManager* event)
             manager.gameEngine->SetMouseVisible(true);
             manager.gameEngine->SetGrabInput(false);
         }
+
+        return true;
     }
 
     // Attributes
@@ -196,8 +206,8 @@ void EditorManager::SettingLightEvent(tbe::EventManager* event)
     else if(hud.light.specular->IsActivate())
         m_selectedLight->SetSpecular(vec34(hud.light.specular->GetValue()));
 
-    else
-
-        if(hud.light.radius->IsActivate())
+    else if(hud.light.radius->IsActivate())
         m_selectedLight->SetRadius(hud.light.radius->GetValue());
+
+    return false;
 }
