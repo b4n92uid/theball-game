@@ -1,0 +1,10 @@
+build/*
+doc/html/*
+sourcesold/*
+versions/*
+
+syntax: regexp
+.*(\.exe)$
+.*(\.lnk)$
+.*(\.bat)$
+.*(\.tdl)$

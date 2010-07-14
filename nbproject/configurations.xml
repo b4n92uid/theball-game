@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="69">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles" displayName="AppManager" projectFiles="true">
+      <itemPath>D:/Projets/C++/theball/sources/AppManager.cpp</itemPath>
+      <itemPath>D:/Projets/C++/theball/sources/AppManager.h</itemPath>
+      <itemPath>sources/Settings.cpp</itemPath>
+      <itemPath>sources/Settings.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f1" displayName="Game" projectFiles="true">
+      <logicalFolder name="f3" displayName="EditMode" projectFiles="true">
+        <itemPath>sources/EditorEntity.cpp</itemPath>
+        <itemPath>sources/EditorLight.cpp</itemPath>
+        <itemPath>D:/projets/c++/theball/sources/EditorManager.cpp</itemPath>
+        <itemPath>D:/projets/c++/theball/sources/EditorManager.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="Entity" projectFiles="true">
+        <itemPath>sources/DynamicObject.cpp</itemPath>
+        <itemPath>sources/DynamicObject.h</itemPath>
+        <itemPath>D:/Projets/C++/theball/sources/Item.cpp</itemPath>
+        <itemPath>D:/Projets/C++/theball/sources/Item.h</itemPath>
+        <itemPath>sources/Object.cpp</itemPath>
+        <itemPath>sources/Object.h</itemPath>
+        <itemPath>sources/StaticObject.cpp</itemPath>
+        <itemPath>sources/StaticObject.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="PlayMode" projectFiles="true">
+        <logicalFolder name="f1" displayName="Entity" projectFiles="true">
+          <itemPath>D:/projets/c++/theBall/sources/AIControl.cpp</itemPath>
+          <itemPath>D:/projets/c++/theBall/sources/AIControl.h</itemPath>
+          <itemPath>sources/Controller.cpp</itemPath>
+          <itemPath>sources/Controller.h</itemPath>
+          <itemPath>D:/Projets/C++/theball/sources/Player.cpp</itemPath>
+          <itemPath>D:/Projets/C++/theball/sources/Player.h</itemPath>
+          <itemPath>D:/projets/c++/theBall/sources/UserControl.cpp</itemPath>
+          <itemPath>D:/projets/c++/theBall/sources/UserControl.h</itemPath>
+          <itemPath>sources/Weapon.cpp</itemPath>
+          <itemPath>sources/Weapon.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f2" displayName="Mods" projectFiles="true">
+          <logicalFolder name="f1" displayName="AI" projectFiles="true">
+            <itemPath>sources/AloneModeAi.cpp</itemPath>
+            <itemPath>sources/AloneModeAi.h</itemPath>
+            <itemPath>sources/FragModeAi.cpp</itemPath>
+            <itemPath>sources/FragModeAi.h</itemPath>
+            <itemPath>sources/TeamModeAi.cpp</itemPath>
+            <itemPath>sources/TeamModeAi.h</itemPath>
+          </logicalFolder>
+          <itemPath>sources/PlayAloneManager.cpp</itemPath>
+          <itemPath>sources/PlayAloneManager.h</itemPath>
+          <itemPath>sources/PlayFragManager.cpp</itemPath>
+          <itemPath>sources/PlayFragManager.h</itemPath>
+          <itemPath>sources/PlayTeamManager.cpp</itemPath>
+          <itemPath>sources/PlayTeamManager.h</itemPath>
+        </logicalFolder>
+        <itemPath>D:/projets/c++/theball/sources/PlayManager.cpp</itemPath>
+        <itemPath>D:/projets/c++/theball/sources/PlayManager.h</itemPath>
+      </logicalFolder>
+      <itemPath>D:/projets/c++/theBall/sources/BldParser.cpp</itemPath>
+      <itemPath>D:/projets/c++/theBall/sources/BldParser.h</itemPath>
+      <itemPath>sources/GameManager.cpp</itemPath>
+      <itemPath>D:/Projets/C++/theball/sources/GameManager.h</itemPath>
+      <itemPath>sources/MaterialManager.cpp</itemPath>
+      <itemPath>sources/MaterialManager.h</itemPath>
+      <itemPath>sources/SoundManager.cpp</itemPath>
+      <itemPath>sources/SoundManager.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="Newton" displayName="Newton" projectFiles="true">
+      <itemPath>../tbe/plugins/Newton/Newton.h</itemPath>
+      <itemPath>../tbe/plugins/Newton/NewtonNode.cpp</itemPath>
+      <itemPath>../tbe/plugins/Newton/NewtonNode.h</itemPath>
+      <itemPath>../tbe/plugins/Newton/NewtonParallelScene.cpp</itemPath>
+      <itemPath>../tbe/plugins/Newton/NewtonParallelScene.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+      <itemPath>D:/Projets/C++/theball/sources/ressource.rc</itemPath>
+    </logicalFolder>
+    <logicalFolder name="SDLDevice" displayName="SDLDevice" projectFiles="true">
+      <itemPath>../tbe/plugins/SDLDevice/SDLDevice.cpp</itemPath>
+      <itemPath>../tbe/plugins/SDLDevice/SDLDevice.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+    <itemPath>D:/Projets/C++/theball/sources/Define.h</itemPath>
+    <itemPath>sources/Platform.h</itemPath>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>D:\projets\c++\tbe\plugins\SDLDevice</Elem>
+    <Elem>D:\projets\c++\tbe\plugins\Newton</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW|MinGW</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>D:/librairies/c++/sdl/SDL/SDL-1.2.14/include/SDL</pElem>
+            <pElem>D:/Librairies/C++/Newton/NewtonWin-2.22/sdk</pElem>
+            <pElem>D:/Librairies/C++/Fmod/fmodapi375win/api/inc</pElem>
+            <pElem>D:/Librairies/C++/Tinyxml/tinyxml</pElem>
+            <pElem>D:/projets/c++/tbe/sources</pElem>
+            <pElem>D:/projets/c++/tbe/plugins</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>TIXML_USE_STL</Elem>
+            <Elem>THEBALL_COMPILE_DEBUG</Elem>
+          </preprocessorList>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <additionalDep>build/ressource.o</additionalDep>
+          <linkerLibItems>
+            <linkerLibLibItem>mingw32</linkerLibLibItem>
+            <linkerLibFileItem>D:/projets/c++/tbe/dist/Debug/MinGW-Windows/libtbe.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/librairies/c++/devil/DevIL-SDK-x86-1.7.8/lib/DevIL.lib</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Freetype/freetype-2.3.9/objs/.libs/libfreetype.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Sdl/SDL/SDL-1.2.14/lib/libSDLmain.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Sdl/SDL/SDL-1.2.14/lib/libSDL.dll.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Newton/NewtonWin-2.22/sdk/x32/dll_vs7/newton.lib</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Fmod/fmodapi375win/api/lib/libfmod.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Tinyxml/tinyxml/libtinyxml.a</linkerLibFileItem>
+            <linkerLibLibItem>opengl32</linkerLibLibItem>
+            <linkerLibLibItem>glu32</linkerLibLibItem>
+            <linkerOptionItem>build/ressource.o</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+        <requiredProjects>
+          <makeArtifact PL="D:/projets/c++/tbe"
+                        CT="3"
+                        CN="Debug"
+                        AC="true"
+                        BL="true"
+                        WD="D:/projets/c++/tbe"
+                        BC="${MAKE}  -f Makefile CONF=Debug"
+                        CC="${MAKE}  -f Makefile CONF=Debug clean"
+                        OP="dist/Debug/MinGW-Windows/libtbe.a">
+          </makeArtifact>
+        </requiredProjects>
+      </compileType>
+      <item path="D:/Projets/C++/theball/sources/ressource.rc" ex="false" tool="3">
+        <customTool>
+          <customToolCommandline>windres sources/ressource.rc build/ressource.o</customToolCommandline>
+          <customToolDescription>Compiling ressources...</customToolDescription>
+          <customToolOutputs>build/ressource.o</customToolOutputs>
+        </customTool>
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>MinGW|MinGW</compilerSet>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <incDir>
+            <pElem>D:/librairies/c++/sdl/SDL/SDL-1.2.14/include/SDL</pElem>
+            <pElem>D:/Librairies/C++/Newton/NewtonWin-2.22/sdk</pElem>
+            <pElem>D:/Librairies/C++/Fmod/fmodapi375win/api/inc</pElem>
+            <pElem>D:/Librairies/C++/Tinyxml/tinyxml</pElem>
+            <pElem>D:/projets/c++/tbe/sources</pElem>
+            <pElem>D:/projets/c++/tbe/plugins</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>TIXML_USE_STL</Elem>
+          </preprocessorList>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <linkerTool>
+          <stripSymbols>true</stripSymbols>
+          <additionalDep>build/ressource.o</additionalDep>
+          <linkerLibItems>
+            <linkerLibLibItem>mingw32</linkerLibLibItem>
+            <linkerLibFileItem>D:/projets/c++/tbe/dist/Debug/MinGW-Windows/libtbe.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Devil/DevIL-SDK-x86-1.7.8/lib/DevIL.lib</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Freetype/freetype-2.3.9/objs/.libs/libfreetype.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Sdl/SDL/SDL-1.2.14/lib/libSDLmain.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Sdl/SDL/SDL-1.2.14/lib/libSDL.dll.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Newton/NewtonWin-2.22/sdk/x32/dll_vs7/newton.lib</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Fmod/fmodapi375win/api/lib/libfmod.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/Librairies/C++/Tinyxml/tinyxml/libtinyxml.a</linkerLibFileItem>
+            <linkerLibLibItem>opengl32</linkerLibLibItem>
+            <linkerLibLibItem>glu32</linkerLibLibItem>
+            <linkerOptionItem>build/ressource.o</linkerOptionItem>
+          </linkerLibItems>
+          <commandLine>-mwindows</commandLine>
+        </linkerTool>
+        <requiredProjects>
+          <makeArtifact PL="D:/projets/c++/tbe"
+                        CT="3"
+                        CN="Release"
+                        AC="false"
+                        BL="true"
+                        WD="D:/projets/c++/tbe"
+                        BC="${MAKE}  -f Makefile CONF=Release"
+                        CC="${MAKE}  -f Makefile CONF=Release clean"
+                        OP="dist/Release/MinGW-Windows/libtbe.a">
+          </makeArtifact>
+        </requiredProjects>
+      </compileType>
+    </conf>
+  </confs>
+</configurationDescriptor>

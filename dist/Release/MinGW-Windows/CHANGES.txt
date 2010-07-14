@@ -1,0 +1,55 @@
+theBall 1.0
+===========
+* Amélioration de l'interface graphique
+* Changement sur le menu principale
+* Choix du nombre de joueurs
+* Choix du temps de la partie
+* Réduction de la tesselation des modèles 3D
+* Ré-apparition des items en fonction temps
+* Notification dans le HUD pour les items actifs
+* Ajout des modes Team,Frag et Alone
+* Amélioration de l'IA
+* Éditeur de carte intégré
+* Amélioration de la compatibilité Hardware
+* Correction sur de nombreux bugs !
+
+theBall 09.02.2010
+==================
+* Corrections sur les particules
+* Mise à jour des bibliothèques tierces
+* Vérification du hardware avant le lancement du jeu
+* Les erreurs s'affichent en Message Box sur Windows
+* Amélioration de l'interface graphique
+* Les scores des joueurs sont triés
+* Ajout du menu configuration des touches
+* Ajout du menu score
+* Ajout des effets après traitement
+* Changement de la scène de fond du menu
+* Amélioration de la maniabilité de la balle
+* Portabilité du jeu amélioré (Linux, Windows)
+* Restructuration interne
+
+theBall 28.11.2009
+==================
+* Amélioration des graphismes
+* Prise en charge de l'anticrélénage
+* Ajout du menu option pour la configuration vidéo
+* Flexibilité dans la définition de la carte de jeu (Support de plusieurs objets, lumière...)
+* Ajout des objets dynamiques (Jumper, Teleporter...)
+* Changement des joueurs de simples sphères au modèle OBJ
+* Changement des packs de simples cubes au modèle OBJ
+* Adapter l'entrée au clavier AZERTY
+
+theBall 22.12.2009
+==================
+* Quelques Optimisations sur les particules
+* Les explosions des balles sont plus arrondies
+* Quelques améliorations de l'ETH
+* Ajout d'un effet "Camera Track"
+* La GUI s'adapte à la taille de l'écran
+* Ajoute des messages de notification à l'écran
+* Ajoute des items : Super-Santé et Tire-Fatal
+* Ajoute des objets : DeadWall et Freezer
+* Ajoute des armes : Bomb et Finder
+* Amélioration interne au moteur
+* Correction diverse...
