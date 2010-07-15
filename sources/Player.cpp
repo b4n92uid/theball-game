@@ -308,8 +308,8 @@ void Player::Kill()
     {
         m_playManager->DeactivateBullttime();
 
-        if(m_playManager->manager.app->globalSettings.video.usePpe);
-        m_playManager->ppe.boost->SetEnable(false);
+        if(m_playManager->manager.app->globalSettings.video.usePpe)
+            m_playManager->ppe.boost->SetEnable(false);
     }
 }
 
