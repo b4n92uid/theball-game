@@ -656,7 +656,7 @@ void EditorManager::HudProcess()
     switch(m_navigation)
     {
         case ENTITY:
-            info << "Entitys" << endl;
+            info << "Entités" << endl;
 
             if(m_selectedNode)
                 info << "Selection : " << m_selectedNode->GetName() << " ; " << m_selectedNode->NewtonNode::GetPos();
@@ -667,33 +667,31 @@ void EditorManager::HudProcess()
             {
                 info << endl;
                 info << "Statiques :" << endl
-                        << "(S) Séléction" << endl
+                        << "S   : Séléction" << endl
 
                         << "Dynamiques :" << endl
-                        << "(D+J) Jumper" << endl
-                        << "(D+T) Teleporter" << endl
+                        << "D+J : Jumper" << endl
+                        << "D+T : Teleporter" << endl
 
                         << "Items :" << endl
-                        << "(T+L) Santé" << endl
-                        << "(T+A) Munnition" << endl
-                        << "(T+S) Super-life" << endl
-                        << "(T+F) Fata-shot" << endl
-                        << "(T+I) Arme Finder" << endl
-                        << "(T+H) Arme Shotgun" << endl
-                        << "(T+B) Arme Bomb" << endl;
+                        << "T+L     : Santé" << endl
+                        << "T+A     : Munnition" << endl
+                        << "T+S     : Super-life" << endl
+                        << "T+F     : Fata-shot" << endl
+                        << "T+I     : Arme Finder" << endl
+                        << "T+H     : Arme Shotgun" << endl
+                        << "T+B     : Arme Bomb" << endl
+                        << "C       : Cloner" << endl
+                        << "Suppr   : Supprimer" << endl;
 
                 info << "Mouvements :" << endl
-                        << "(C)     : Cloner" << endl
-                        << "(F)     : Au sol" << endl
-                        << "(G)     : Aligner. Grille" << endl
-                        << "(SHIFT) : Déplacement X, Z" << endl
-                        << "(ALT)   : Déplacement Y" << endl
-                        << "(Suppr) : Supprimer" << endl;
-
-                info << "Espace+" << endl
-                        << "(A;E): Rotation X" << endl
-                        << "(Q;D): Rotation Y" << endl
-                        << "(W;C): Rotation Z";
+                        << "SHIFT       : Déplacement X, Z" << endl
+                        << "SHIFT+ALT   : Déplacement Y" << endl
+                        << "SHIFT+F     : Au sol" << endl
+                        << "SHIFT+G     : Aligner. Grille" << endl
+                        << "SHIFT+[AE]  : Rotation X" << endl
+                        << "SHIFT+[QD]  : Rotation Y" << endl
+                        << "SHIFT+[WC]  : Rotation Z" << endl;
 
             }
 
@@ -701,19 +699,19 @@ void EditorManager::HudProcess()
             break;
 
         case LIGHT:
-            info << "Lumiere";
+            info << "Lumieres";
 
             if(m_completeHelp)
             {
                 info << endl;
                 info << "Création lumiers" << endl
-                        << "(P) Ponctuelle" << endl
-                        << "(D) Dirictionelle" << endl;
+                        << "P   : Ponctuelle" << endl
+                        << "D   : Dirictionelle" << endl;
 
                 info << "Config. lumiers" << endl
-                        << "(SHIFT) : Déplacement X, Z" << endl
-                        << "(ALT)   : Déplacement Y" << endl
-                        << "(Suppr) : Supprimer";
+                        << "SHIFT       : Déplacement X, Z" << endl
+                        << "ALT+SHIFT   : Déplacement Y" << endl
+                        << "Suppr       : Supprimer";
             }
 
             hud.light.info->Write(info.str());
@@ -739,15 +737,15 @@ void EditorManager::HudProcess()
             break;
 
         case FOG:
-            info << "Fog";
+            info << "Brouiallrd (Fog)";
 
             hud.fog.info->Write(info.str());
             break;
 
         case MUSIC:
             info << "Musique" << endl
-                    << "(Espace) : Lancer/Arreter la musique" << endl
-                    << "(Suppr) : Désactiver la musique";
+                    << "Espace  : Lancer/Arreter la musique" << endl
+                    << "Suppr   : Désactiver la musique pour la carte";
 
             if(map.musicStream)
                 info << endl << ">> " << map.musicPath;
