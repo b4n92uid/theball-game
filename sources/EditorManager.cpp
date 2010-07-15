@@ -142,13 +142,9 @@ void EditorManager::SetupGui()
     // Light
     manager.gui->SetSession(EDITOR_EDIT_LIGHT);
 
-    manager.gui->AddLayout(Layout::Vertical, 5, 10);
-    hud.light.specular = manager.gui->AddVectorBox("light.specular", 0);
-    hud.light.diffuse = manager.gui->AddVectorBox("light.diffuse", 0);
-    hud.light.amibent = manager.gui->AddVectorBox("light.ambiante", 0);
-    hud.light.radius = manager.gui->AddSwitchNumeric<float>("light.radius");
-    hud.light.type = manager.gui->AddSwitchString("light.type");
-    hud.light.slector = manager.gui->AddSwitchString("light.selector");
+    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+
+    manager.gui->AddLayout(Layout::Vertical);
     manager.gui->AddLayoutStretchSpace();
     hud.light.info = manager.gui->AddTextBox("");
     hud.light.info->SetBackground(GUI_TEXTBOX_H);
@@ -156,10 +152,41 @@ void EditorManager::SetupGui()
     hud.light.info->SetEnableBackground(true);
     manager.gui->EndLayout();
 
+    manager.gui->AddLayoutStretchSpace();
+
+    manager.gui->AddLayout(Layout::Vertical, 5);
+    hud.light.specular = manager.gui->AddVectorBox("light.specular", 0);
+    manager.gui->AddTextBox("")->Write("Spéculaire");
+    hud.light.diffuse = manager.gui->AddVectorBox("light.diffuse", 0);
+    manager.gui->AddTextBox("")->Write("Diffuse");
+    hud.light.amibent = manager.gui->AddVectorBox("light.ambiante", 0);
+    manager.gui->AddTextBox("")->Write("Ambiante de la scene");
+    hud.light.radius = manager.gui->AddSwitchNumeric<float>("light.radius");
+    manager.gui->AddTextBox("")->Write("Rayon");
+    hud.light.type = manager.gui->AddSwitchString("light.type");
+    manager.gui->AddTextBox("")->Write("Type");
+    hud.light.slector = manager.gui->AddSwitchString("light.selector");
+    manager.gui->AddTextBox("")->Write("Séléction");
+    manager.gui->EndLayout();
+
+    manager.gui->EndLayout();
+
     // Skybox
     manager.gui->SetSession(EDITOR_EDIT_SKYBOX);
 
-    manager.gui->AddLayout(Layout::Vertical, 5, 10);
+    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+
+    manager.gui->AddLayout(Layout::Vertical, 5);
+    manager.gui->AddLayoutStretchSpace();
+    hud.sky.info = manager.gui->AddTextBox("");
+    hud.sky.info->SetBackground(GUI_TEXTBOX_H);
+    hud.sky.info->SetBackgroundPadding(16);
+    hud.sky.info->SetEnableBackground(true);
+    manager.gui->EndLayout();
+
+    manager.gui->AddLayoutStretchSpace();
+
+    manager.gui->AddLayout(Layout::Vertical, 5);
     hud.sky.list = manager.gui->AddListBox("sky.list");
     hud.sky.list->SetBackground(GUI_LISTBOX_V);
     hud.sky.list->SetBackgroundPadding(8);
@@ -168,21 +195,14 @@ void EditorManager::SetupGui()
     hud.sky.face = manager.gui->AddSwitchString("sky.face");
     hud.sky.apply = manager.gui->AddButton("sky.apply", "Appliquer");
     hud.sky.enable = manager.gui->AddSwitchString("sky.enable");
-    manager.gui->AddLayoutStretchSpace();
-    hud.sky.info = manager.gui->AddTextBox("");
-    hud.sky.info->SetBackground(GUI_TEXTBOX_H);
-    hud.sky.info->SetBackgroundPadding(16);
-    hud.sky.info->SetEnableBackground(true);
     manager.gui->EndLayout();
 
     // Fog
     manager.gui->SetSession(EDITOR_EDIT_FOG);
 
-    manager.gui->AddLayout(Layout::Vertical, 5, 10);
-    hud.fog.end = manager.gui->AddSwitchNumeric<float>("fog.end");
-    hud.fog.start = manager.gui->AddSwitchNumeric<float>("fog.start");
-    hud.fog.color = manager.gui->AddVectorBox("fog.color", 0);
-    hud.fog.enable = manager.gui->AddSwitchString("fog.enable");
+    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+
+    manager.gui->AddLayout(Layout::Vertical, 5);
     manager.gui->AddLayoutStretchSpace();
     hud.fog.info = manager.gui->AddTextBox("");
     hud.fog.info->SetBackground(GUI_TEXTBOX_H);
@@ -190,20 +210,43 @@ void EditorManager::SetupGui()
     hud.fog.info->SetEnableBackground(true);
     manager.gui->EndLayout();
 
+    manager.gui->AddLayoutStretchSpace();
+
+    manager.gui->AddLayout(Layout::Vertical, 5);
+    hud.fog.end = manager.gui->AddSwitchNumeric<float>("fog.end");
+    manager.gui->AddTextBox("")->Write("Fin");
+    hud.fog.start = manager.gui->AddSwitchNumeric<float>("fog.start");
+    manager.gui->AddTextBox("")->Write("Début");
+    hud.fog.color = manager.gui->AddVectorBox("fog.color", 0);
+    manager.gui->AddTextBox("")->Write("Couleur");
+    hud.fog.enable = manager.gui->AddSwitchString("fog.enable");
+    manager.gui->EndLayout();
+
+    manager.gui->EndLayout();
+
     // Music
     manager.gui->SetSession(EDITOR_EDIT_MUSIC);
 
-    manager.gui->AddLayout(Layout::Vertical, 0, 10);
+    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+
+    manager.gui->AddLayout(Layout::Vertical, 5);
+    manager.gui->AddLayoutStretchSpace();
+    hud.music.info = manager.gui->AddTextBox("");
+    hud.music.info->SetBackground(GUI_TEXTBOX_H);
+    hud.music.info->SetBackgroundPadding(16);
+    hud.music.info->SetEnableBackground(true);
+    manager.gui->EndLayout();
+
+    manager.gui->AddLayoutStretchSpace();
+
+    manager.gui->AddLayout(Layout::Vertical, 5);
     hud.music.list = manager.gui->AddListBox("music.list");
     hud.music.list->SetBackground(GUI_LISTBOX_V);
     hud.music.list->SetBackgroundPadding(8);
     hud.music.list->SetDefinedSize(true);
     hud.music.list->SetSize(Vector2f(192, 192) * sizeFactor);
-    manager.gui->AddLayoutStretchSpace();
-    hud.music.info = manager.gui->AddTextBox("");
-    hud.music.info->SetBackground(GUI_TEXTBOX_V);
-    hud.music.info->SetBackgroundPadding(16);
-    hud.music.info->SetEnableBackground(true);
+    manager.gui->EndLayout();
+
     manager.gui->EndLayout();
 
     manager.gui->SetSession(EDITOR_VIEW);
