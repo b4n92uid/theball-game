@@ -14,3 +14,4 @@ syntax: regexp
 .*(\.xml)$
 .*nbproject.*
 .*(\.log)$
+.*(\.mp4)$
