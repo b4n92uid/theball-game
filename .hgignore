@@ -1,17 +1,13 @@
 build/*
 doc/html/*
-sourcesold/*
+nbproject/*
 versions/*
 
 syntax: regexp
-.*(\.lib)$
-.*(\.a)$
 .*(\.exe)$
 .*(\.dll)$
 .*(\.lnk)$
 .*(\.bat)$
 .*(\.tdl)$
 .*(\.xml)$
-.*nbproject.*
 .*(\.log)$
-.*(\.mp4)$
