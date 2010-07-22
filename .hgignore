@@ -1,4 +1,6 @@
 build/*
+dist/Debug/*
+install/*
 doc/html/*
 nbproject/*
 versions/*
