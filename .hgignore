@@ -13,3 +13,4 @@ syntax: regexp
 .*(\.tdl)$
 .*(\.xml)$
 .*(\.log)$
+.*(\.pdf)$
