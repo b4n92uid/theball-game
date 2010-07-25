@@ -114,6 +114,25 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
         SelectLight(index);
     }
 
+    // Attributes
+
+    if(hud.light.type->IsActivate())
+    {
+        m_selectedLight->SetType((scene::Light::Type)hud.light.type->GetCurrent());
+    }
+
+    else if(hud.light.amibent->IsActivate())
+        manager.scene->SetAmbientLight(vec34(hud.light.amibent->GetValue()));
+
+    else if(hud.light.diffuse->IsActivate())
+        m_selectedLight->SetDiffuse(vec34(hud.light.diffuse->GetValue()));
+
+    else if(hud.light.specular->IsActivate())
+        m_selectedLight->SetSpecular(vec34(hud.light.specular->GetValue()));
+
+    else if(hud.light.radius->IsActivate())
+        m_selectedLight->SetRadius(hud.light.radius->GetValue());
+
     // Mouvement
 
     if(m_selectedLight->GetType() == scene::Light::DIRI)
@@ -189,25 +208,6 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 
         return true;
     }
-
-    // Attributes
-
-    if(hud.light.type->IsActivate())
-    {
-        m_selectedLight->SetType((scene::Light::Type)hud.light.type->GetCurrent());
-    }
-
-    else if(hud.light.amibent->IsActivate())
-        manager.scene->SetAmbientLight(vec34(hud.light.amibent->GetValue()));
-
-    else if(hud.light.diffuse->IsActivate())
-        m_selectedLight->SetDiffuse(vec34(hud.light.diffuse->GetValue()));
-
-    else if(hud.light.specular->IsActivate())
-        m_selectedLight->SetSpecular(vec34(hud.light.specular->GetValue()));
-
-    else if(hud.light.radius->IsActivate())
-        m_selectedLight->SetRadius(hud.light.radius->GetValue());
 
     return false;
 }
