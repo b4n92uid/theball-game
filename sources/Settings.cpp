@@ -44,8 +44,6 @@ void Settings::ReadVideo()
         if(name == "fullscreen") video.fullScreen = value;
         if(name == "useppe") video.usePpe = value;
     }
-
-    video.guiSizeFactor = (video.screenSize.x / 800.0f);
 }
 
 void Settings::ReadControl()

@@ -194,6 +194,7 @@ void EditorManager::SetupGui()
     hud.sky.list->SetSize(Vector2f(192, 192) * sizeFactor);
     hud.sky.face = manager.gui->AddSwitchString("sky.face");
     hud.sky.apply = manager.gui->AddButton("sky.apply", "Appliquer");
+    hud.sky.clear = manager.gui->AddButton("sky.clear", "Effacer");
     hud.sky.enable = manager.gui->AddSwitchString("sky.enable");
     manager.gui->EndLayout();
 
@@ -424,12 +425,22 @@ bool EditorManager::SettingSkyEvent(tbe::EventManager* event)
     if(hud.sky.enable->IsActivate())
         m_sky->SetEnable(hud.sky.enable->GetCurrent());
 
+    else if(hud.sky.clear->IsActivate())
+    {
+        m_sky->Clear();
+    }
+
     else if(hud.sky.apply->IsActivate())
     {
         Texture skyTex[6];
 
         for(unsigned i = 0; i < 6; i++)
-            skyTex[i] = hud.sky.face->GetData(i).GetValue<string > ();
+        {
+            string path = hud.sky.face->GetData(i).GetValue<string > ();
+
+            if(!path.empty())
+                skyTex[i] = path;
+        }
 
         m_sky->SetTextures(skyTex);
     }

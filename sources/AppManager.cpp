@@ -18,9 +18,7 @@ AppManager::AppManager()
     globalSettings.ReadSetting();
 
     SetupVideoMode();
-    SetupMenuGui();
     SetupSound();
-    SetupBackgroundScene();
 }
 
 AppManager::~AppManager()
@@ -66,6 +64,12 @@ void AppManager::SetupVideoMode()
     }
 
     m_fpsMng->SetRunFps(60);
+
+    Texture::ResetCache();
+
+    SetupMenuGui();
+
+    SetupBackgroundScene();
 }
 
 void AppManager::SetupSound()
@@ -95,7 +99,9 @@ void AppManager::SetupMenuGui()
 {
     using namespace tbe::gui;
 
-    const float& sizeFactor = globalSettings.video.guiSizeFactor;
+    m_guiManager->ClearAll();
+
+    const float& sizeFactor = globalSettings.video.guiSizeFactor = (globalSettings.video.screenSize.x / 800.0f);
     const Vector2i& screenSize = globalSettings.video.screenSize;
 
     GuiSkin* guiskin = new GuiSkin;
