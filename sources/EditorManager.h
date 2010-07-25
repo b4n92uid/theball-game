@@ -140,6 +140,7 @@ protected:
             tbe::gui::ListBox* list;
             tbe::gui::SwitchString* face;
             tbe::gui::Button* apply;
+            tbe::gui::Button* clear;
             tbe::gui::SwitchString* enable;
             tbe::gui::TextBox* info;
 
