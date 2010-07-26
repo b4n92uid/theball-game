@@ -33,7 +33,7 @@ void EditorManager::DeleteLight(unsigned index)
     delete m_selectedLight, m_selectedLight = NULL;
 
     if(!map.lights.empty())
-        SelectLight(map.lights.size() - 1);
+        SelectLight(index - 1);
 }
 
 void EditorManager::SelectLight(unsigned index)
@@ -44,13 +44,13 @@ void EditorManager::SelectLight(unsigned index)
         return;
     }
 
+    m_selectedLight = map.lights[index];
+
     hud.light.slector->SetCurrent(index);
     hud.light.type->SetCurrent(m_selectedLight->GetType());
     hud.light.diffuse->SetValue(vec43(m_selectedLight->GetDiffuse()));
     hud.light.specular->SetValue(vec43(m_selectedLight->GetSpecular()));
     hud.light.radius->SetValue(m_selectedLight->GetRadius());
-
-    m_selectedLight = map.lights[index];
 
     m_axes->SetPos(m_selectedLight->GetPos());
 }
@@ -117,9 +117,7 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
     // Attributes
 
     if(hud.light.type->IsActivate())
-    {
         m_selectedLight->SetType((scene::Light::Type)hud.light.type->GetCurrent());
-    }
 
     else if(hud.light.amibent->IsActivate())
         manager.scene->SetAmbientLight(vec34(hud.light.amibent->GetValue()));
@@ -161,9 +159,9 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 
                 m_selectedLight->SetPos(setPos);
             }
-        }
 
-        return true;
+            return true;
+        }
     }
     else if(m_selectedLight->GetType() == scene::Light::POINT)
     {
@@ -199,14 +197,14 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 
                 m_axes->SetPos(setPos);
             }
+
+            return true;
         }
         else
         {
             manager.gameEngine->SetMouseVisible(true);
             manager.gameEngine->SetGrabInput(false);
         }
-
-        return true;
     }
 
     return false;
