@@ -67,6 +67,8 @@ public:
     tbe::gui::GuiManager* GetGuiMng() const;
     tbe::SDLDevice* GetGameEngine() const;
 
+    void UpdateGuiContent();
+    
 protected:
     /// Configure les options vidéo
     void SetupVideoMode();

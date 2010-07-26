@@ -640,6 +640,7 @@ void EditorManager::GuiEventPorcess(tbe::EventManager* event)
             hud.pause.save->SetActivate(false);
 
             manager.app->globalSettings.ReadMapInfo();
+            manager.app->UpdateGuiContent();
         }
 
     }
