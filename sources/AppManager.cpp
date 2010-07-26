@@ -557,13 +557,24 @@ void AppManager::SetupMenuGui()
 
     m_controls.playmenu.modSelect->SetCurrent(0);
 
+    UpdateGuiContent();
+}
+
+void AppManager::UpdateGuiContent()
+{
     // Ball a jouer
+
+    m_controls.playmenu.playerSelect->DeleteAll();
+
     for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
         m_controls.playmenu.playerSelect->Push(globalSettings.availablePlayer[i].name, i);
 
     m_controls.playmenu.playerSelect->SetCurrent(tools::rand(0, globalSettings.availablePlayer.size()));
 
     // Carte a jouer
+
+    m_controls.playmenu.mapSelect->DeleteAll();
+
     for(unsigned i = 0; i < globalSettings.availableMap.size(); i++)
     {
         m_controls.playmenu.mapSelect->Push(globalSettings.availableMap[i].name, i);
