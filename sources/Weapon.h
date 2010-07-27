@@ -67,9 +67,6 @@ public:
 
     void Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 
-    void SetBullttimeMotion(bool state);
-
-    void RestoreShootCadency();
     void SetShootCadency(unsigned shootCadency);
     unsigned GetShootCadency() const;
 
@@ -113,7 +110,6 @@ protected:
     float m_shootSpeed;
 
     unsigned m_shootCadency;
-    unsigned m_saveShootCadency;
 
     tbe::ticks::Clock m_shootCadencyClock;
 

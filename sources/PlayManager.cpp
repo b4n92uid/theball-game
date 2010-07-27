@@ -35,6 +35,11 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
     manager.scene->AddCamera("MainCam", m_camera);
 }
 
+BulletTime* PlayManager::GetBullettime() const
+{
+    return m_bullettime;
+}
+
 PlayManager::~PlayManager()
 {
     if(m_gameOver)
@@ -70,6 +75,8 @@ PlayManager::~PlayManager()
     manager.gui->DestroySession(SCREEN_PAUSEMENU);
     manager.gui->DestroySession(SCREEN_HUD);
     manager.gui->DestroySession(SCREEN_PLAYERSLIST);
+
+    delete m_bullettime;
 }
 
 void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
@@ -105,6 +112,8 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
     m_userPlayer->AttachController(new UserControl(this));
 
     RegisterPlayer(m_userPlayer);
+
+    m_bullettime = new BulletTime(this);
 
     for(unsigned i = 0; i < m_playSetting.playerCount; i++)
     {
@@ -253,6 +262,7 @@ void PlayManager::SetupGui()
     hud.ammo = manager.gui->AddGauge("hud.ammo", "Munition");
     hud.ammo->SetSmooth(true, 1);
     hud.bullettime = manager.gui->AddGauge("hud.bullettime", "Bulettime");
+    hud.bullettime->SetSmooth(true, 1);
     hud.boost = manager.gui->AddStateShow("hud.boost", GUI_BOOST, 2);
 
     manager.gui->AddLayoutStretchSpace();
@@ -398,7 +408,7 @@ void PlayManager::EventProcess()
             manager.gameEngine->SetMouseVisible(true);
 
             for(unsigned i = 0; i < players.size(); i++)
-                players[i]->SetBullettimeMotion(false);
+                m_bullettime->SetActive(false);
 
             m_timeTo = TIME_TO_PAUSE;
         }
@@ -545,14 +555,16 @@ void PlayManager::HudProcess()
         // Mise a jour des bar de progression (Vie, Muinition, Bullettime, Boost)
 
         #define ammoIn100Range m_userPlayer->GetCurWeapon()->GetAmmoCount() * 100 / m_userPlayer->GetCurWeapon()->GetMaxAmmoCount()
+        #define btimeIn100Range static_cast<int>(m_bullettime->GetValue() * 100)
 
         hud.ammo->SetLabel(m_userPlayer->GetCurWeapon()->GetWeaponName());
         hud.ammo->SetValue(ammoIn100Range);
         hud.life->SetValue(m_userPlayer->GetLife());
-        hud.bullettime->SetValue(m_userPlayer->GetBullettime());
+        hud.bullettime->SetValue(btimeIn100Range);
         hud.boost->SetCurState(m_userPlayer->IsBoostAvalaible());
 
         #undef ammoIn100Range
+        #undef btimeIn100Range
 
         ModUpdateStateText();
 
@@ -616,14 +628,9 @@ void PlayManager::Render()
 
     // Physique ----------------------------------------------------------------
 
-    float newtonWorldTimeStep;
+    parallelscene.newton->SetWorldTimestep(1.0f / m_newtonClock.GetEsplanedTime());
 
-    if(m_userPlayer->IsBullettimeMotion())
-        newtonWorldTimeStep = m_newtonClock.GetEsplanedTime() / 512;
-    else
-        newtonWorldTimeStep = m_newtonClock.GetEsplanedTime();
-
-    parallelscene.newton->SetWorldTimestep(newtonWorldTimeStep);
+    m_bullettime->Process();
 
     // Son 3D ------------------------------------------------------------------
 
@@ -659,31 +666,6 @@ void PlayManager::Render()
     manager.gui->Render();
 
     manager.gameEngine->EndScene();
-}
-
-void PlayManager::ActivateBullttime()
-{
-    for(unsigned i = 0; i < players.size(); i++)
-        players[i]->SetBullettimeMotion(true);
-
-    manager.sound->Play("bullettime", m_userPlayer);
-
-    hud.background.bullettime->SetEnable(true);
-    hud.background.bullettime->SetOpacity(0.5);
-
-    if(manager.app->globalSettings.video.usePpe)
-        ppe.bullettime->SetEnable(true);
-}
-
-void PlayManager::DeactivateBullttime()
-{
-    for(unsigned i = 0; i < players.size(); i++)
-        players[i]->SetBullettimeMotion(false);
-
-    hud.background.bullettime->SetEnable(false);
-
-    if(manager.app->globalSettings.video.usePpe)
-        ppe.bullettime->SetEnable(false);
 }
 
 tbe::Vector3f PlayManager::GetShootTarget() const

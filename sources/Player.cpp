@@ -6,12 +6,11 @@
 #include "SoundManager.h"
 
 #include "Define.h"
+#include "BulletTime.h"
 
 using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
-
-#define BULLETTIME_MAX_VALUE 512
 
 // PlayerEngine ----------------------------------------------------------------
 
@@ -22,8 +21,6 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_playManager = playManager;
     m_curWeapon = m_weaponsPack.end();
     m_killed = false;
-    m_bullettimeActive = false;
-    m_bullettime = BULLETTIME_MAX_VALUE;
     m_boostAvalaible = true;
     m_score = 0;
     m_life = 100;
@@ -54,6 +51,8 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
     AddWeapon("blaster", blaster);
+
+    
 }
 
 Player::~Player()
@@ -80,9 +79,6 @@ void Player::ReBorn()
 {
     m_life = 100;
     m_killed = false;
-
-    m_bullettime = BULLETTIME_MAX_VALUE;
-    m_bullettimeActive = false;
 
     m_boostAvalaible = true;
 
@@ -144,22 +140,6 @@ void Player::Process()
 {
     if(m_playManager->IsGameOver())
         return;
-
-    if(m_bullettimeActive)
-    {
-        if(m_bullettime > 0)
-            m_bullettime -= 2;
-
-        else
-            SetBullettimeMotion(false);
-
-    }
-
-    else
-    {
-        if(m_bullettime < BULLETTIME_MAX_VALUE)
-            m_bullettime++;
-    }
 
     if(!m_boostAvalaible)
     {
@@ -246,26 +226,18 @@ void Player::AddWeapon(std::string name, Weapon* weapon)
 
 void Player::SwitchUpWeapon()
 {
-    m_curWeapon->second->RestoreShootCadency();
-
     m_curWeapon++;
 
     if(m_curWeapon == m_weaponsPack.end())
         m_curWeapon = m_weaponsPack.begin();
-
-    m_curWeapon->second->SetBullttimeMotion(m_bullettimeActive);
 }
 
 void Player::SwitchDownWeapon()
 {
-    m_curWeapon->second->RestoreShootCadency();
-
     if(m_curWeapon == m_weaponsPack.begin())
         m_curWeapon = m_weaponsPack.end();
 
     m_curWeapon--;
-
-    m_curWeapon->second->SetBullttimeMotion(m_bullettimeActive);
 }
 
 void Player::SetCurWeapon(std::string weaponName)
@@ -306,7 +278,7 @@ void Player::Kill()
 
     if(m_playManager->GetUserPlayer() == this)
     {
-        m_playManager->DeactivateBullttime();
+        m_playManager->GetBullettime()->SetActive(false);
 
         if(m_playManager->manager.app->globalSettings.video.usePpe)
             m_playManager->ppe.boost->SetEnable(false);
@@ -382,28 +354,6 @@ void Player::TakeDammage(Ammo* ammo)
     }
 
     m_playManager->manager.sound->Play("hit", this);
-}
-
-void Player::SetBullettime(int bullettime)
-{
-    this->m_bullettime = min(bullettime, BULLETTIME_MAX_VALUE);
-}
-
-int Player::GetBullettime() const
-{
-    return m_bullettime * 100 / BULLETTIME_MAX_VALUE;
-}
-
-void Player::SetBullettimeMotion(bool bullettimeActive)
-{
-    m_curWeapon->second->SetBullttimeMotion(bullettimeActive);
-
-    this->m_bullettimeActive = bullettimeActive;
-}
-
-bool Player::IsBullettimeMotion() const
-{
-    return m_bullettimeActive;
 }
 
 PlayManager* Player::GetPlayManager() const

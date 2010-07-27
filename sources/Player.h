@@ -9,6 +9,7 @@
 #include "Item.h"
 #include "Settings.h"
 #include "Controller.h"
+#include "BulletTime.h"
 
 class PlayManager;
 
@@ -53,7 +54,7 @@ public:
 
     /** 
      * Routine de traitement pour
-     * le bullettime, le boost et les items
+     * le boost et les items
      */
     void Process();
 
@@ -92,14 +93,6 @@ public:
     void UpLife(int life);
     void SetLife(int life);
     int GetLife() const;
-
-    /// Bullettime (Valeur)
-    void SetBullettime(int bullettime);
-    int GetBullettime() const;
-
-    /// Bullettime (Etat)
-    void SetBullettimeMotion(bool bullettimeActive);
-    bool IsBullettimeMotion() const;
 
     PlayManager* GetPlayManager() const;
 
@@ -164,9 +157,7 @@ public:
 protected:
     int m_life;
     int m_score;
-    int m_bullettime;
     bool m_killed;
-    bool m_bullettimeActive;
     bool m_boostAvalaible;
 
     CheckMe::Array m_checkMe;

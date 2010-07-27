@@ -104,18 +104,20 @@ void UserControl::Process(Player* player)
     if(IsGameActiveAction("shoot"))
         player->Shoot(m_playManager->GetShootTarget());
 
+    BulletTime* btim = m_playManager->GetBullettime();
+
     // Bullettime
     if(IsGameActiveAction("bullettime"))
     {
-        if(!player->GetBullettime())
-            SetGameActiveAction("bullettime", false);
+        if(btim->GetValue() > 0.0)
+            btim->SetActive(true);
 
-        else if(!player->IsBullettimeMotion())
-            m_playManager->ActivateBullttime();
+        else
+            SetGameActiveAction("bullettime", false);
     }
 
     else
     {
-        m_playManager->DeactivateBullttime();
+        btim->SetActive(false);
     }
 }

@@ -141,7 +141,7 @@ void FragModeAi::Process(Player* player)
 
     if(m_targetPlayer)
         if(m_targetPos - playerPos < m_minDistToShoot)
-            if(player->IsBullettimeMotion() && m_targetPlayer == m_playManager->GetUserPlayer())
+            if(m_targetPlayer == m_playManager->GetUserPlayer() && m_playManager->GetBullettime()->IsActive())
             {
                 Vector3f velocity;
                 NewtonBodyGetVelocity(m_targetPlayer->GetBody(), velocity);
