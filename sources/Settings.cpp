@@ -158,11 +158,6 @@ void Settings::ReadScoreInfo()
     }
 
     sort(availableScore.begin(), availableScore.end(), ScoreSort);
-
-    vector<Settings::ScoreInfo>::iterator
-    newEnd = unique(availableScore.begin(), availableScore.end(), ScoreUnique);
-
-    availableScore.erase(newEnd, availableScore.end());
 }
 
 void Settings::ReadPlayerInfo()

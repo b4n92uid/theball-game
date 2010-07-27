@@ -70,8 +70,6 @@ Player::~Player()
 
 Object* Player::Clone()
 {
-    //    Player* playernew Player(m_playManager, m_name, m_filepath);
-    //    return player;
     return NULL;
 }
 
