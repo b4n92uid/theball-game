@@ -496,8 +496,8 @@ void AppManager::SetupMenuGui()
         m_controls.score.scoreText->Write(txt);
 
         m_controls.score.sortType
-                ->Push("Tri pad Date")
-                .Push("Tri par Valeur");
+                ->Push("Tri par date", 1)
+                .Push("Tri par points", 2);
     }
 
     // Menu de configuration des touches
@@ -776,17 +776,17 @@ void AppManager::ProcessScoreMenuEvent()
 
     else if(m_controls.score.sortType->IsActivate())
     {
-        switch(m_controls.score.sortType->GetCurrent())
+        switch(m_controls.score.sortType->GetData().GetValue<int>())
         {
-            case 0:
-                std::sort(globalSettings.availableScore.begin(),
-                          globalSettings.availableScore.end(),
-                          ScoreSortByValue);
-                break;
             case 1:
                 std::sort(globalSettings.availableScore.begin(),
                           globalSettings.availableScore.end(),
                           ScoreSortByDate);
+                break;
+            case 2:
+                std::sort(globalSettings.availableScore.begin(),
+                          globalSettings.availableScore.end(),
+                          ScoreSortByValue);
                 break;
         }
 
