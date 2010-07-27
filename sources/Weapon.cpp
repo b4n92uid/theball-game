@@ -31,8 +31,6 @@ Weapon::Weapon(PlayManager* playManager)
     m_shootSpeed = 0;
     m_shootCadency = 0;
 
-    m_saveShootCadency = 0;
-
     m_fireSound = NULL;
 
     m_playManager->parallelscene.particles->AddParticlesEmiter("", this);
@@ -123,7 +121,9 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
     }
 
     // Controle de la cadence de tire
-    if(!m_shootCadencyClock.IsEsplanedTime(m_shootCadency))
+    long shootCadency = m_playManager->GetBullettime()->IsActive() ? m_shootCadency * 4 : m_shootCadency;
+
+    if(!m_shootCadencyClock.IsEsplanedTime(shootCadency))
         return;
 
     if(m_ammosPack.size() > m_maxAmmoCount)
@@ -150,15 +150,9 @@ Player* Weapon::GetShooter() const
     return m_parent;
 }
 
-void Weapon::RestoreShootCadency()
-{
-    m_shootCadency = m_saveShootCadency;
-}
-
 void Weapon::SetShootCadency(unsigned shootCadency)
 {
     this->m_shootCadency = shootCadency;
-    m_saveShootCadency = shootCadency;
 }
 
 unsigned Weapon::GetShootCadency() const
@@ -227,21 +221,6 @@ void Weapon::SetShootSpeed(float shootSpeed)
 float Weapon::GetShootSpeed() const
 {
     return m_shootSpeed;
-}
-
-void Weapon::SetBullttimeMotion(bool state)
-{
-    if(state)
-    {
-        m_shootCadency = m_saveShootCadency;
-        m_saveShootCadency = m_shootCadency;
-        m_shootCadency *= 4;
-    }
-
-    else
-    {
-        m_shootCadency = m_saveShootCadency;
-    }
 }
 
 Weapon & Weapon::operator=(const Weapon& copy)

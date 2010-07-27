@@ -10,12 +10,14 @@
 
 #include "GameManager.h"
 #include "AppManager.h"
-
 #include "AIControl.h"
+#include "Player.h"
 
 class BldPlayModeParser;
 class UserControl;
 class MaterialManager;
+
+class BulletTime;
 
 class StaticObject;
 class DynamicObject;
@@ -52,9 +54,6 @@ public:
     /// Rotine d'affichage de notification
     void Log(std::string msg);
 
-    void ActivateBullttime();
-    void DeactivateBullttime();
-
     void SetGameOver();
     bool IsGameOver() const;
 
@@ -64,6 +63,7 @@ public:
     tbe::Vector3f GetShootTarget() const;
 
     Player* GetUserPlayer() const;
+    BulletTime* GetBullettime() const;
 
     struct
     {
@@ -137,6 +137,7 @@ protected:
     };
 
     Player* m_userPlayer;
+    BulletTime* m_bullettime;
 
     AppManager::PlaySetting m_playSetting;
 
