@@ -119,7 +119,10 @@ protected:
 
     static bool PlayerScoreSortProcess(Player* p1, Player* p2)
     {
-        return (p1->GetScore() > p2->GetScore());
+        if(p1->GetScore() == p2->GetScore())
+            return(p1->GetName() > p2->GetName());
+        else
+            return(p1->GetScore() > p2->GetScore());
     }
 
 

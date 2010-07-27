@@ -173,6 +173,7 @@ void PlayManager::SetupGui()
     hud.scorelist->SetSize(screenSize * Vector2f(0.75, 0.75));
     hud.scorelist->SetDefinedSize(true);
     hud.scorelist->SetBackground(GUI_TEXTBOX_H);
+    hud.scorelist->SetTextAlign(TextBox::LEFT);
     hud.scorelist->SetBackgroundPadding(8);
 
     manager.gui->AddLayoutStretchSpace();
@@ -373,10 +374,22 @@ void PlayManager::EventProcess()
             manager.scene->GetCurCamera()->SetRelRotate(event->mousePosRel);
 
         // Affichage des scores
-        if(event->keyState[EventManager::KEY_TAB])
+        if(event->notify == EventManager::EVENT_KEY_DOWN
+           && event->lastActiveKey.first == EventManager::KEY_TAB)
+        {
+            manager.gameEngine->SetGrabInput(false);
+            manager.gameEngine->SetMouseVisible(true);
+
             m_timeTo = TIME_TO_VIEWSCORE;
-        else
+        }
+        if(event->notify == EventManager::EVENT_KEY_UP
+           && event->lastActiveKey.first == EventManager::KEY_TAB)
+        {
+            manager.gameEngine->SetGrabInput(true);
+            manager.gameEngine->SetMouseVisible(false);
+
             m_timeTo = TIME_TO_PLAY;
+        }
 
         // Touche de pause (Esc)
         if(event->keyState[EventManager::KEY_ESCAPE])
@@ -451,10 +464,18 @@ void PlayManager::GameProcess()
     // - les joueurs hors de l'arene pour les remetren place
     for(unsigned i = 0; i < players.size(); i++)
     {
-        Player*& player = players[i];
+        Player* player = players[i];
 
         if(player->IsKilled())
         {
+            if(player == m_userPlayer)
+            {
+                manager.gameEngine->SetGrabInput(true);
+                manager.gameEngine->SetMouseVisible(false);
+
+                m_timeTo = TIME_TO_PLAY;
+            }
+
             if(player->clocks.readyToDelete.IsEsplanedTime(1000))
             {
                 player->ReBorn();
