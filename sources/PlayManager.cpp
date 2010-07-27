@@ -389,7 +389,6 @@ void PlayManager::EventProcess()
         if(event->notify == EventManager::EVENT_KEY_DOWN
            && event->lastActiveKey.first == EventManager::KEY_TAB)
         {
-//            manager.gameEngine->SetGrabInput(false);
             manager.gameEngine->SetMouseVisible(true);
 
             m_timeTo = TIME_TO_VIEWSCORE;
@@ -397,7 +396,6 @@ void PlayManager::EventProcess()
         if(event->notify == EventManager::EVENT_KEY_UP
            && event->lastActiveKey.first == EventManager::KEY_TAB)
         {
-//            manager.gameEngine->SetGrabInput(true);
             manager.gameEngine->SetMouseVisible(false);
 
             m_timeTo = TIME_TO_PLAY;
@@ -482,7 +480,6 @@ void PlayManager::GameProcess()
         {
             if(player == m_userPlayer)
             {
-                //                manager.gameEngine->SetGrabInput(true);
                 manager.gameEngine->SetMouseVisible(false);
 
                 m_timeTo = TIME_TO_PLAY;
@@ -691,7 +688,6 @@ void PlayManager::SetGameOver()
         NewtonBodySetFreezeState(players[i]->GetBody(), true);
 
     manager.gameEngine->SetMouseVisible(true);
-    //    manager.gameEngine->SetGrabInput(false);
 
     hud.background.gameover->SetEnable(true);
 

@@ -68,7 +68,7 @@ public:
     tbe::SDLDevice* GetGameEngine() const;
 
     void UpdateGuiContent();
-    
+
 protected:
     /// Configure les options vidéo
     void SetupVideoMode();
@@ -87,6 +87,7 @@ protected:
     void ProcessEditMenuEvent();
     void ProcessSettingMenuEvent();
     void ProcessSettingKeyMenuEvent();
+    void ProcessScoreMenuEvent();
 
 protected:
     tbe::SDLDevice* m_gameEngine;
@@ -103,7 +104,6 @@ protected:
 
     struct
     {
-        tbe::gui::TextBox* scoreText;
         tbe::gui::TextBox* aboutText;
 
         struct
@@ -113,8 +113,6 @@ protected:
             tbe::gui::SwitchString* modSelect;
             tbe::gui::SwitchString* timeSelect;
             tbe::gui::SwitchNumeric<int>* playerCount;
-            tbe::gui::Image* playerPreview;
-            tbe::gui::Image* levelPreview;
             tbe::gui::EditBox* playerName;
 
         } playmenu;
@@ -136,6 +134,13 @@ protected:
             tbe::gui::Button* ret;
 
         } edit;
+
+        struct
+        {
+            tbe::gui::TextBox* scoreText;
+            tbe::gui::SwitchString* sortType;
+            tbe::gui::Button* ret;
+        } score;
 
     } m_controls;
 };

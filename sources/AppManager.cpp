@@ -11,6 +11,53 @@
 using namespace std;
 using namespace tbe;
 
+inline bool ScoreSortByDate(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& p2)
+{
+    return p1.timestamp > p2.timestamp;
+}
+
+inline bool ScoreSortByValue(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& p2)
+{
+    if(p1.playerName == p2.playerName)
+        return p1.score > p2.score;
+    else
+        return p1.playerName > p2.playerName;
+}
+
+inline string UnsignedToPlayMod(unsigned pm)
+{
+    switch(pm)
+    {
+        case AppManager::FRAG: return "Frag";
+        case AppManager::ALONE: return "Alone";
+        case AppManager::TEAM: return "Team";
+        default: return "Inconnu";
+    }
+}
+
+inline string WriteScore(vector<Settings::ScoreInfo>& scores)
+{
+    stringstream text;
+
+    text << "Les Scores enregistrer" << endl;
+    text << "Nom : Date : Type : Carte : Temps : Score" << endl;
+    text << endl;
+
+    for(unsigned i = 0; i < scores.size(); i++)
+    {
+        Settings::ScoreInfo& si = scores[i];
+
+        text << si.playerName << " : "
+                << ticks::Clock::Date("%x", si.timestamp) << " : "
+                << UnsignedToPlayMod(si.playMod) << " : "
+                << si.levelName << " : "
+                << si.playTime << " sec : "
+                << si.score << " point(s)" << endl;
+    }
+
+    return text.str();
+}
+
 AppManager::AppManager()
 {
     m_gameEngine = new SDLDevice;
@@ -82,17 +129,6 @@ void AppManager::SetupSound()
 
     if(!m_mainMusic)
         throw tbe::Exception("AppManager::AppManager; Main music load error (%s)", SOUND_MAINTHEME);
-}
-
-inline string UnsignedToPlayMod(unsigned pm)
-{
-    switch(pm)
-    {
-        case AppManager::FRAG: return "Frag";
-        case AppManager::ALONE: return "Alone";
-        case AppManager::TEAM: return "Team";
-        default: return "Inconnu";
-    }
 }
 
 void AppManager::SetupMenuGui()
@@ -171,9 +207,6 @@ void AppManager::SetupMenuGui()
     m_guiManager->AddLayoutStretchSpace();
 
     m_controls.playmenu.playerSelect = m_guiManager->AddSwitchString("playerSelect");
-    //    m_controls.playmenu.playerPreview = m_guiManager->AddImage("playerPreview", GUI_PREVIEW);
-    //    m_controls.playmenu.playerPreview->SetSize(200);
-    //    m_controls.playmenu.playerPreview->SetDrawDiriction(Image::DRAW_UPPER_RIGHT);
     m_guiManager->AddTextBox("")->Write("Personnage");
 
     m_controls.playmenu.modSelect = m_guiManager->AddSwitchString("modSelect");
@@ -190,9 +223,6 @@ void AppManager::SetupMenuGui()
     m_guiManager->AddLayoutStretchSpace();
 
     m_controls.playmenu.mapSelect = m_guiManager->AddSwitchString("levelSelect");
-    //    m_controls.playmenu.mapPreview = m_guiManager->AddImage("mapPreview", GUI_PREVIEW);
-    //    m_controls.playmenu.mapPreview->SetSize(200);
-    //    m_controls.playmenu.mapPreview->SetDrawDiriction(Image::DRAW_UPPER_RIGHT);
     m_guiManager->AddTextBox("")->Write("Carte à jouer");
 
     m_controls.playmenu.timeSelect = m_guiManager->AddSwitchString("timeSelect");
@@ -387,14 +417,17 @@ void AppManager::SetupMenuGui()
     m_guiManager->AddLayout(Layout::Vertical, 10);
     m_guiManager->AddLayoutStretchSpace();
 
-    m_guiManager->AddButton("return", "Retour");
+    m_guiManager->AddLayout(Layout::Horizental, 10);
+    m_controls.score.ret = m_guiManager->AddButton("score.ret", "Retour");
+    m_controls.score.sortType = m_guiManager->AddSwitchString("score.sortType");
+    m_guiManager->EndLayout();
 
-    m_controls.scoreText = m_guiManager->AddTextBox("");
-    m_controls.scoreText->SetSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
-    m_controls.scoreText->SetDefinedSize(true);
-    m_controls.scoreText->SetBackgroundPadding(8);
-    m_controls.scoreText->SetBackground(GUI_TEXTBOX_H);
-    m_controls.scoreText->SetTextAlign(TextBox::LEFT);
+    m_controls.score.scoreText = m_guiManager->AddTextBox("");
+    m_controls.score.scoreText->SetSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
+    m_controls.score.scoreText->SetDefinedSize(true);
+    m_controls.score.scoreText->SetBackgroundPadding(8);
+    m_controls.score.scoreText->SetBackground(GUI_TEXTBOX_H);
+    m_controls.score.scoreText->SetTextAlign(TextBox::LEFT);
 
     m_guiManager->AddLayoutStretchSpace();
     m_guiManager->EndLayout();
@@ -454,25 +487,17 @@ void AppManager::SetupMenuGui()
 
     // Menu des scores
     {
-        stringstream text;
+        sort(globalSettings.availableScore.begin(),
+             globalSettings.availableScore.end(),
+             ScoreSortByValue);
 
-        text << "Les Scores enregistrer" << endl;
-        text << "Nom : Date : Type : Carte : Temps : Score" << endl;
-        text << endl;
+        string txt = WriteScore(globalSettings.availableScore);
 
-        for(unsigned i = 0; i < globalSettings.availableScore.size(); i++)
-        {
-            Settings::ScoreInfo& si = globalSettings.availableScore[i];
+        m_controls.score.scoreText->Write(txt);
 
-            text << si.playerName << " : "
-                    << ticks::Clock::Date("%x", si.timestamp) << " : "
-                    << UnsignedToPlayMod(si.playMod) << " : "
-                    << si.levelName << " : "
-                    << si.playTime << " sec : "
-                    << si.score << " point(s)" << endl;
-        }
-
-        m_controls.scoreText->Write(text.str());
+        m_controls.score.sortType
+                ->Push("Tri pad Date")
+                .Push("Tri par Valeur");
     }
 
     // Menu de configuration des touches
@@ -744,6 +769,32 @@ void AppManager::ProcessSettingKeyMenuEvent()
     }
 }
 
+void AppManager::ProcessScoreMenuEvent()
+{
+    if(m_controls.score.ret->IsActivate())
+        m_guiManager->SetSession(MENU_MAIN);
+
+    else if(m_controls.score.sortType->IsActivate())
+    {
+        switch(m_controls.score.sortType->GetCurrent())
+        {
+            case 0:
+                std::sort(globalSettings.availableScore.begin(),
+                          globalSettings.availableScore.end(),
+                          ScoreSortByValue);
+                break;
+            case 1:
+                std::sort(globalSettings.availableScore.begin(),
+                          globalSettings.availableScore.end(),
+                          ScoreSortByDate);
+                break;
+        }
+
+        const string& txt = WriteScore(globalSettings.availableScore);
+        m_controls.score.scoreText->Write(txt);
+    }
+}
+
 void AppManager::ExecuteMenu()
 {
     using namespace tbe::gui;
@@ -773,8 +824,7 @@ void AppManager::ExecuteMenu()
                     break;
 
                 case MENU_SCORE:
-                    if(m_guiManager->GetControl("return")->IsActivate())
-                        m_guiManager->SetSession(MENU_MAIN);
+                    ProcessScoreMenuEvent();
                     break;
 
                 case MENU_SETTING_KEYS:
