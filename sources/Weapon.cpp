@@ -357,7 +357,7 @@ WeaponShotgun::WeaponShotgun(PlayManager* playManager) : Weapon(playManager)
 {
     SetMaxAmmoCount(50);
     SetAmmoCount(40);
-    SetMaxAmmoDammage(25);
+    SetMaxAmmoDammage(75);
     SetShootCadency(512);
     SetShootSpeed(64);
     SetFireSound(SOUND_SHOTGUN);

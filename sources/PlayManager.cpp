@@ -169,6 +169,8 @@ void PlayManager::SetupGui()
 
     Vector2f screenSize = manager.app->globalSettings.video.screenSize;
 
+    Pencil bigPen(GUI_FONT, int(GUI_FONTSIZE * manager.app->globalSettings.video.guiSizeFactor * 1.5));
+
     // Tabaleau des joueur ------------------------------------------------------
 
     manager.gui->SetSession(SCREEN_PLAYERSLIST);
@@ -229,7 +231,9 @@ void PlayManager::SetupGui()
 
     manager.gui->AddLayoutStretchSpace();
 
-    manager.gui->AddTextBox("")->Write("Pause !");
+    TextBox* pauseLabel = manager.gui->AddTextBox("hud.pauseLabel");
+    pauseLabel->SetPencil(bigPen);
+    pauseLabel->Write("Menu Pause !");
 
     manager.gui->EndLayout();
 
@@ -275,8 +279,6 @@ void PlayManager::SetupGui()
     // -------- Log
     manager.gui->AddLayout(Layout::Horizental);
     manager.gui->AddLayoutStretchSpace();
-
-    Pencil bigPen(GUI_FONT, int(GUI_FONTSIZE * manager.app->globalSettings.video.guiSizeFactor * 1.5));
 
     hud.log = manager.gui->AddTextBox("hud.log");
     hud.log->SetPencil(bigPen);
@@ -387,7 +389,7 @@ void PlayManager::EventProcess()
         if(event->notify == EventManager::EVENT_KEY_DOWN
            && event->lastActiveKey.first == EventManager::KEY_TAB)
         {
-            manager.gameEngine->SetGrabInput(false);
+//            manager.gameEngine->SetGrabInput(false);
             manager.gameEngine->SetMouseVisible(true);
 
             m_timeTo = TIME_TO_VIEWSCORE;
@@ -395,7 +397,7 @@ void PlayManager::EventProcess()
         if(event->notify == EventManager::EVENT_KEY_UP
            && event->lastActiveKey.first == EventManager::KEY_TAB)
         {
-            manager.gameEngine->SetGrabInput(true);
+//            manager.gameEngine->SetGrabInput(true);
             manager.gameEngine->SetMouseVisible(false);
 
             m_timeTo = TIME_TO_PLAY;
@@ -480,7 +482,7 @@ void PlayManager::GameProcess()
         {
             if(player == m_userPlayer)
             {
-                manager.gameEngine->SetGrabInput(true);
+                //                manager.gameEngine->SetGrabInput(true);
                 manager.gameEngine->SetMouseVisible(false);
 
                 m_timeTo = TIME_TO_PLAY;
@@ -689,7 +691,7 @@ void PlayManager::SetGameOver()
         NewtonBodySetFreezeState(players[i]->GetBody(), true);
 
     manager.gameEngine->SetMouseVisible(true);
-    manager.gameEngine->SetGrabInput(false);
+    //    manager.gameEngine->SetGrabInput(false);
 
     hud.background.gameover->SetEnable(true);
 

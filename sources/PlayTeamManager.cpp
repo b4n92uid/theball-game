@@ -35,8 +35,15 @@ public:
     {
         scene::Particle* particles = BeginParticlesPosProcess();
 
+        unsigned show = 0;
         for(unsigned i = 0; i < m_teamPlayers.size(); i++)
-            particles[i].pos = m_teamPlayers[i]->NewtonNode::GetPos() + Vector3f(0, 1, 0);
+            if(!m_teamPlayers[i]->IsKilled())
+            {
+                particles[show].pos = m_teamPlayers[i]->NewtonNode::GetPos() + Vector3f(0, 1, 0);
+                show++;
+            }
+
+        SetDrawNumber(show);
 
         EndParticlesPosProcess();
     }
@@ -64,7 +71,7 @@ public:
 
     virtual bool OnTakeDammage(Player* player, Ammo* ammo)
     {
-        return (m_playManager->IsInBleuTeam(player)
+        return(m_playManager->IsInBleuTeam(player)
                 != m_playManager->IsInBleuTeam(ammo->GetParent()->GetShooter())
                 && m_playManager->IsInRedTeam(player)
                 != m_playManager->IsInRedTeam(ammo->GetParent()->GetShooter()));
@@ -79,6 +86,8 @@ void PlayTeamManager::ModSetupAi()
     using namespace scene;
 
     unsigned middle = players.size() / 2;
+
+    std::random_shuffle(players.begin(), players.end());
 
     for(unsigned i = 0; i < middle; i++)
     {
