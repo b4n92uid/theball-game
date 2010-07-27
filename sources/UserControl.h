@@ -22,8 +22,11 @@ public:
 
     void Process(Player* player);
 
-    void SetGameActiveAction(std::string name, bool state);
-    bool IsGameActiveAction(std::string name);
+    bool IsActionJustDown(std::string name);
+    bool IsActionJustUp(std::string name);
+
+    void SetActionStateDown(std::string name, bool state);
+    bool IsActionStateDown(std::string name);
 
 private:
     Settings::Control m_control;

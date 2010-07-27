@@ -55,6 +55,9 @@ void BulletTime::SetActive(bool active)
 {
     this->m_active = active;
 
+    if(m_value <= 0)
+        m_active = false;
+
     if(m_active)
     {
         m_playManager->manager.sound->Play("bullettime", m_userPlayer);
