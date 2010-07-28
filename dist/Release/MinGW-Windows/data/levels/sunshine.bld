@@ -1,12 +1,12 @@
 # Ball level descriptor
-# Generated 07/27/10 - 02:21:31
+# Generated 07/28/10 - 19:50:42
 
 .map
 name=SunShine
 ambient=0,0,0,1
 
 .music
-filePath=data/music/smmoth.ogg
+filePath=data/music/stuff.ogg
 
 .skybox
 front=data/gfxart/skybox/early_morning_FR.jpg
