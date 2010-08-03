@@ -20,6 +20,8 @@
 #include "Weapon.h"
 #include "FragModeAi.h"
 
+#include <tinyxml.h>
+
 using namespace std;
 using namespace tbe;
 
