@@ -6,9 +6,6 @@
 #include <vector>
 #include <map>
 
-#include <dirent.h>
-#include <io.h>
-
 #include <fmod.h>
 
 #include <Tbe.h>
@@ -18,6 +15,9 @@
 #include "Platform.h"
 
 #include "Settings.h"
+
+#include <boost/date_time.hpp>
+#include <boost/filesystem.hpp>
 
 class AppManager
 {

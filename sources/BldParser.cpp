@@ -5,8 +5,6 @@
  * Created on 2 décembre 2009, 21:46
  */
 
-#include <bits/stringfwd.h>
-
 #include "BldParser.h"
 
 #include "PlayManager.h"
@@ -38,6 +36,8 @@ void BldParser::SaveLevel()
 
 void BldParser::SaveLevel(const std::string& filepath)
 {
+    using namespace boost::posix_time;
+
     ofstream file(filepath.c_str());
 
     if(!file)
@@ -46,7 +46,7 @@ void BldParser::SaveLevel(const std::string& filepath)
     m_openFileName = filepath;
 
     file << "# Ball level descriptor" << endl;
-    file << "# Generated " << ticks::Clock::Date("%x - %X") << endl;
+    file << "# Generated " << second_clock::local_time() << endl;
     file << endl;
 
 

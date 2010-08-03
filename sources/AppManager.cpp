@@ -37,6 +37,8 @@ inline string UnsignedToPlayMod(unsigned pm)
 
 inline string WriteScore(vector<Settings::ScoreInfo>& scores)
 {
+    using namespace boost::posix_time;
+
     stringstream text;
 
     text << "Les Scores enregistrer" << endl;
@@ -48,7 +50,7 @@ inline string WriteScore(vector<Settings::ScoreInfo>& scores)
         Settings::ScoreInfo& si = scores[i];
 
         text << si.playerName << " : "
-                << ticks::Clock::Date("%x", si.timestamp) << " : "
+                << from_time_t(si.timestamp) << " : "
                 << UnsignedToPlayMod(si.playMod) << " : "
                 << si.levelName << " : "
                 << si.playTime << " sec : "
@@ -1057,6 +1059,9 @@ tbe::SDLDevice* AppManager::GetGameEngine() const
 
 int main(int argc, char** argv)
 {
+    using namespace boost::posix_time;
+    using namespace boost::filesystem;
+
     #ifndef THEBALL_COMPILE_DEBUG
     ofstream log("theball.log");
     streambuf* defaultCout = cout.rdbuf();
@@ -1067,9 +1072,9 @@ int main(int argc, char** argv)
     {
         cout
                 << "theBall (b4n92uid)" << endl
-                << "Start in " << ticks::Clock::Date("%X - %x") << endl
+                << "Start in " << second_clock::local_time() << endl
                 << "Build in " << __DATE__ << endl
-                << "Current dir : " << SDLDevice::GetCWD() << endl;
+                << "Current dir : " << current_path() << endl;
 
         AppManager theBall;
 

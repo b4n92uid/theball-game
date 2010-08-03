@@ -95,25 +95,23 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
     }
 }
 
-inline bool MusicCheck(string filename)
+inline bool MusicCheck(const boost::filesystem::path& filename)
 {
-    string::size_type pos = filename.find_last_of('.');
-
-    if(pos == string::npos)
-        return false;
-
     string validExt[] = {
-        "mp3", "wav", "ogg"
+        ".mp3", ".wav", ".ogg"
     };
 
     string* end = validExt + 3;
 
-    return find(validExt, end, filename.substr(pos + 1)) != end;
+    return find(validExt, end, filename.extension()) != end;
 }
 
 void EditorManager::SetupGui()
 {
     using namespace gui;
+    using namespace boost::filesystem;
+
+    directory_iterator endDir;
 
     const Vector2f& screenSize = manager.app->globalSettings.video.screenSize;
     const float& sizeFactor = manager.app->globalSettings.video.guiSizeFactor;
@@ -308,16 +306,13 @@ void EditorManager::SetupGui()
             .Push("Droite", skyTex[5].GetFilename());
 
     {
-        DIR* skyDir = opendir("data/gfxart/skybox");
+        for(directory_iterator it("data/gfxart/skybox"); it != endDir; it++)
+        {
+            const path& imgFilename = it->path();
 
-        while(readdir(skyDir))
-            if(!(skyDir->dd_dta.attrib & _A_SUBDIR))
-            {
-                string fullFilePath = string("data/gfxart/skybox/") + skyDir->dd_dta.name;
-                hud.sky.list->Push(skyDir->dd_dta.name, fullFilePath);
-            }
-
-        closedir(skyDir);
+            if(!is_directory(imgFilename))
+                hud.sky.list->Push(imgFilename.filename(), imgFilename.string());
+        }
 
         hud.sky.list->Update();
     }
@@ -341,33 +336,26 @@ void EditorManager::SetupGui()
 
     // Statique
     {
-        DIR* staticDir = opendir("data/scene");
+        for(directory_iterator it("data/scene"); it != endDir; it++)
+        {
+            const path& staricFilename = it->path();
 
-        while(readdir(staticDir))
-            if(!(staticDir->dd_dta.attrib & _A_SUBDIR) && strstr(staticDir->dd_dta.name, ".obj"))
-            {
-                string fullFilePath = string("data/scene/") + staticDir->dd_dta.name;
-                hud.entity.list->Push(staticDir->dd_dta.name, fullFilePath);
-            }
-
-        closedir(staticDir);
+            if(!is_directory(staricFilename) && staricFilename.extension() == ".obj")
+                hud.entity.list->Push(staricFilename.filename(), staricFilename.string());
+        }
 
         hud.entity.list->Update();
     }
 
     // Musique
     {
-        DIR* musicDir = opendir("data/music");
+        for(directory_iterator it("data/music"); it != endDir; it++)
+        {
+            const path& musicFilename = it->path();
 
-        while(readdir(musicDir))
-            if(!(musicDir->dd_dta.attrib & _A_SUBDIR)
-               && MusicCheck(musicDir->dd_dta.name))
-            {
-                string fullFilePath = string("data/music/") + musicDir->dd_dta.name;
-                hud.music.list->Push(musicDir->dd_dta.name, fullFilePath);
-            }
-
-        closedir(musicDir);
+            if(!is_directory(musicFilename) && MusicCheck(musicFilename))
+                hud.music.list->Push(musicFilename.filename(), musicFilename.string());
+        }
 
         hud.music.list->Update();
     }
