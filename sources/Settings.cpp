@@ -9,6 +9,9 @@
 #include "AppManager.h"
 #include "Weapon.h"
 
+#include <tinyxml.h>
+#include <fstream>
+
 using namespace std;
 using namespace tbe;
 using namespace tbe::gui;

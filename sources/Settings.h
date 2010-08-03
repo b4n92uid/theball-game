@@ -10,9 +10,6 @@
 
 #include <Tbe.h>
 
-#include <tinyxml.h>
-#include <fstream>
-
 class Settings
 {
 public:
