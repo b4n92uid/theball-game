@@ -162,44 +162,46 @@ void Settings::ReadScoreInfo()
 
 void Settings::ReadPlayerInfo()
 {
+    using namespace boost::filesystem;
+
     availablePlayer.clear();
 
-    string playersDir("data/players/");
-
-    _finddata_t file;
-    int handle = _findfirst((playersDir + "*.bpd").c_str(), &file);
-
-
-    do
+    directory_iterator end;
+    for(directory_iterator it("data/players/"); it != end; it++)
     {
-        Settings::PlayerInfo pi(playersDir + file.name);
+        const path& filename = it->path();
 
-        cout << "Load player : " << pi.model << endl;
+        if(filename.extension() == ".bpd")
+        {
+            Settings::PlayerInfo pi(filename.file_string());
 
-        availablePlayer.push_back(pi);
+            cout << "Load player : " << pi.model << endl;
 
+            availablePlayer.push_back(pi);
+        }
     }
-    while(!_findnext(handle, &file));
 }
 
 void Settings::ReadMapInfo()
 {
+    using namespace boost::filesystem;
+    
     availableMap.clear();
 
-    string mapsDir("data/levels/");
-
-    _finddata_t file;
-    int handle = _findfirst((mapsDir + "*.bld").c_str(), &file);
-
-    do
+    directory_iterator end;
+    for(directory_iterator it("data/levels/"); it != end; it++)
     {
-        Settings::MapInfo mi(mapsDir + file.name);
+        const path& filename = it->path();
 
-        cout << "Load map : " << mi.file << endl;
+        if(filename.extension() == ".bld")
+        {
+            Settings::MapInfo mi(filename.file_string());
 
-        availableMap.push_back(mi);
+            cout << "Load map : " << mi.file << endl;
+
+            availableMap.push_back(mi);
+        }
     }
-    while(!_findnext(handle, &file));
 }
 
 void Settings::ReadSetting()

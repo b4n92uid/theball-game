@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 07/12/10 - 18:59:56
+# Generated 2010-Aug-03 20:43:15
 
 .map
 name=StarField
@@ -23,7 +23,7 @@ type=POINT
 pos=-9.60724,3.2,21.4818
 ambient=0,0,0,0
 diffuse=1,1,1,1
-specular=0,0,0,0
+specular=1,1,1,1
 radius=4
 
 +light
