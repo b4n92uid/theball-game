@@ -188,7 +188,7 @@ void Settings::ReadPlayerInfo()
 void Settings::ReadMapInfo()
 {
     using namespace boost::filesystem;
-    
+
     availableMap.clear();
 
     directory_iterator end;
@@ -363,6 +363,9 @@ Settings::MapInfo::MapInfo(std::string path)
     string buffer;
 
     while(getline(file, buffer))
+    {
+        tools::cleanLine(buffer);
+
         if(buffer == ".map")
         {
             if(buffer.empty() || buffer[0] == '#')
@@ -373,6 +376,8 @@ Settings::MapInfo::MapInfo(std::string path)
                 if(buffer.empty() || buffer[0] == '#')
                     continue;
 
+                tools::cleanLine(buffer);
+
                 if(buffer.find("name") != string::npos)
                     name = buffer.substr(buffer.find_first_of('=') + 1);
 
@@ -381,6 +386,7 @@ Settings::MapInfo::MapInfo(std::string path)
 
             break;
         }
+    }
 }
 
 Settings::PlayerInfo::PlayerInfo()
@@ -405,6 +411,8 @@ Settings::PlayerInfo::PlayerInfo(std::string path)
     {
         if(buffer.empty() || buffer[0] == '#')
             continue;
+
+        tools::cleanLine(buffer);
 
         int eqPos = buffer.find_first_of('=');
         string key(buffer, 0, eqPos), value(buffer, eqPos + 1);
