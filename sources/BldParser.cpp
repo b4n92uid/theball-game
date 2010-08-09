@@ -146,6 +146,8 @@ void BldParser::LoadLevel(const std::string& filepath)
         if(buffer.empty() || buffer[0] == '#')
             continue;
 
+        tools::cleanLine(buffer);
+
         while(buffer[buffer.size() - 1] == ' ')
             buffer.erase(buffer.size() - 1);
 
@@ -215,6 +217,8 @@ BldParser::AttribMap BldParser::GetAttributs(std::ifstream& file)
 
         if(buffer[0] == '#')
             continue;
+
+        tools::cleanLine(buffer);
 
         while(buffer[buffer.size() - 1] == ' ')
             buffer.erase(buffer.size() - 1);
