@@ -1,12 +1,6 @@
 #ifndef _DEFINE_H
 #define	_DEFINE_H
 
-// -----------------------------------------------------------------------------
-#ifdef THEBALL_COMPILE_DEBUG
-#define DISABLE_MUSIC
-#define DISABLE_SOUND
-#endif
-
 #define CAPTION_TITLE "theBall ("__DATE__")"
 
 // BACKGROUND ------------------------------------------------------------------

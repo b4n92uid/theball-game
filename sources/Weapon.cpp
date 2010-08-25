@@ -50,8 +50,10 @@ Weapon::~Weapon()
     for(unsigned i = 0; i < m_ammosPack.size(); i++)
         delete m_ammosPack[i];
 
+    #ifndef THE_BALL_DISABLE_SOUND
     if(m_fireSound)
         FSOUND_Sample_Free(m_fireSound);
+    #endif
 }
 
 void Weapon::Process()
@@ -81,12 +83,14 @@ void Weapon::Process()
 
 void Weapon::SetFireSound(std::string fireSound)
 {
+    #ifndef THE_BALL_DISABLE_SOUND
     m_fireSound = FSOUND_Sample_Load(FSOUND_FREE, fireSound.c_str(), FSOUND_HW3D | FSOUND_LOOP_OFF, 0, 0);
 
     if(!m_fireSound)
-        throw tbe::Exception("WeaponEngine::SetFireSound\nFire sound load error (%s)\n\n", fireSound.c_str());
+        throw tbe::Exception("WeaponEngine::SetFireSound; Fire sound load error (%s)", fireSound.c_str());
     else
         FSOUND_Sample_SetMinMaxDistance(m_fireSound, SOUND_MIN_DIST, SOUND_MAX_DIST);
+    #endif
 }
 
 FSOUND_SAMPLE* Weapon::GetFireSound() const
@@ -129,7 +133,7 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
     if(m_ammosPack.size() > m_maxAmmoCount)
         return;
 
-    #ifndef DISABLE_SOUND
+    #ifndef THEBALL_DISABLE_SOUND
     FSOUND_3D_SetAttributes(FSOUND_PlaySound(FSOUND_FREE, m_fireSound), m_parent->NewtonNode::GetPos(), 0);
     #endif
 

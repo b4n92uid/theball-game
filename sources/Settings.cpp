@@ -362,21 +362,17 @@ Settings::MapInfo::MapInfo(std::string path)
 
     string buffer;
 
-    while(getline(file, buffer))
+    while(tools::getline(file, buffer))
     {
-        tools::cleanLine(buffer);
-
         if(buffer == ".map")
         {
             if(buffer.empty() || buffer[0] == '#')
                 continue;
 
-            while(getline(file, buffer))
+            while(tools::getline(file, buffer))
             {
                 if(buffer.empty() || buffer[0] == '#')
                     continue;
-
-                tools::cleanLine(buffer);
 
                 if(buffer.find("name") != string::npos)
                     name = buffer.substr(buffer.find_first_of('=') + 1);
@@ -407,12 +403,10 @@ Settings::PlayerInfo::PlayerInfo(std::string path)
 
     string buffer;
 
-    while(getline(file, buffer))
+    while(tools::getline(file, buffer))
     {
         if(buffer.empty() || buffer[0] == '#')
             continue;
-
-        tools::cleanLine(buffer);
 
         int eqPos = buffer.find_first_of('=');
         string key(buffer, 0, eqPos), value(buffer, eqPos + 1);

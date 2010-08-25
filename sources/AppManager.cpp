@@ -127,10 +127,14 @@ void AppManager::SetupSound()
     FSOUND_SetDriver(1);
     FSOUND_Init(44100, 32, 0);
 
+    #ifndef THE_BALL_DISABLE_MUSIC
     m_mainMusic = FSOUND_Stream_Open(SOUND_MAINTHEME, FSOUND_LOOP_NORMAL, 0, 0);
 
     if(!m_mainMusic)
-        throw tbe::Exception("AppManager::AppManager; Main music load error (%s)", SOUND_MAINTHEME);
+        throw tbe::Exception("AppManager::AppManager; %s (%s)",
+                             FMOD_ErrorString(FSOUND_GetError()),
+                             SOUND_MAINTHEME);
+    #endif
 }
 
 void AppManager::SetupMenuGui()
@@ -802,7 +806,7 @@ void AppManager::ExecuteMenu()
     using namespace tbe::gui;
     using namespace tbe::scene;
 
-    #ifndef DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     FSOUND_Stream_Play(FSOUND_FREE, m_mainMusic);
     #endif
 
@@ -892,7 +896,7 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
 
-    #ifndef DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     FSOUND_Stream_Stop(m_mainMusic);
     #endif
 
@@ -963,7 +967,7 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
 
     delete gameManager;
 
-    #ifndef DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     FSOUND_Stream_Play(FSOUND_FREE, m_mainMusic);
     #endif
 }
@@ -975,7 +979,7 @@ void AppManager::ExecuteEditor(const EditSetting& editSetting)
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
 
-    #ifndef DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     FSOUND_Stream_Stop(m_mainMusic);
     #endif
 
@@ -1027,7 +1031,7 @@ void AppManager::ExecuteEditor(const EditSetting& editSetting)
 
     delete editorManager;
 
-    #ifndef DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     FSOUND_Stream_Play(FSOUND_FREE, m_mainMusic);
     #endif
 }
