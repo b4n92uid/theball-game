@@ -37,7 +37,7 @@ protected:
     GameManager* m_gameManager;
     int m_staticGroupe;
     int m_dynamicGroupe;
-    int m_weaponsGroupe;
+    int m_bulletGroupe;
     int m_playersGroupe;
     int m_itemGroupe;
     int m_ghostGroupe;

@@ -149,7 +149,7 @@ int PlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* 
     return 0;
 }
 
-void WeaponsOnMapContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
+void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
     NewtonBody* body1 = NewtonJointGetBody1(contact);
@@ -164,15 +164,15 @@ void WeaponsOnMapContactsProcess(const NewtonJoint* contact, dFloat timestep, in
     PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
     int weaponGroup = playManager->manager.material->GetWeaponsGroupe();
 
-    Ammo* ammo = NULL;
+    Bullet* ammo = NULL;
 
     try
     {
         if(group0 == weaponGroup)
-            ammo = dynamic_cast<Ammo*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
+            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
 
         else if(group1 == weaponGroup)
-            ammo = dynamic_cast<Ammo*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
+            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
 
         else
             return;
@@ -186,7 +186,7 @@ void WeaponsOnMapContactsProcess(const NewtonJoint* contact, dFloat timestep, in
     }
 }
 
-int WeaponsOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int threadIndex)
+int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int threadIndex)
 {
     static tbe::ticks::Clock cheerClock;
     static int cheerCount = 0;
@@ -199,7 +199,7 @@ int WeaponsOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody
 
     Player* striker = NULL;
     Player* striked = NULL;
-    Ammo* ammo = NULL;
+    Bullet* ammo = NULL;
 
     NewtonWorld* nWorld = NewtonBodyGetWorld(body0);
     PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
@@ -210,13 +210,13 @@ int WeaponsOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody
         if(group0 == weaponGroup)
         {
             striked = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-            ammo = dynamic_cast<Ammo*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
+            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
         }
 
         else if(group1 == weaponGroup)
         {
             striked = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-            ammo = dynamic_cast<Ammo*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
+            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
         }
 
         else
@@ -229,13 +229,7 @@ int WeaponsOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody
             striked->TakeDammage(ammo);
             ammo->SetLife(0);
 
-            if(playManager->GetUserPlayer() == striked)
-            {
-                playManager->hud.background.dammage->SetOpacity(0.75);
-                playManager->hud.background.dammage->SetEnable(true);
-            }
-
-            else if(playManager->GetUserPlayer() == striker)
+            if(playManager->GetUserPlayer() == striker)
             {
                 if(cheerClock.IsEsplanedTime(3000))
                     cheerCount = 0;
@@ -284,7 +278,7 @@ MaterialManager::MaterialManager(GameManager * playManager)
 
     Settings::Physics& worldSettings = m_gameManager->worldSettings;
 
-    m_weaponsGroupe = NewtonMaterialCreateGroupID(m_world);
+    m_bulletGroupe = NewtonMaterialCreateGroupID(m_world);
     m_playersGroupe = NewtonMaterialCreateGroupID(m_world);
     m_itemGroupe = NewtonMaterialCreateGroupID(m_world);
     m_staticGroupe = NewtonMaterialCreateGroupID(m_world);
@@ -296,20 +290,20 @@ MaterialManager::MaterialManager(GameManager * playManager)
 
     NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_itemGroupe, m_gameManager, PlayerOnItemsAABBOverlape, 0);
 
-    NewtonMaterialSetCollisionCallback(m_world, m_weaponsGroupe, m_dynamicGroupe, m_gameManager, 0, WeaponsOnMapContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_weaponsGroupe, m_staticGroupe, m_gameManager, 0, WeaponsOnMapContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_weaponsGroupe, m_weaponsGroupe, m_gameManager, WeaponsOnPlayerAABBOverlape, 0);
-    NewtonMaterialSetCollisionCallback(m_world, m_weaponsGroupe, m_playersGroupe, m_gameManager, WeaponsOnPlayerAABBOverlape, 0);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_dynamicGroupe, m_gameManager, 0, BulletOnMapContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_staticGroupe, m_gameManager, 0, BulletOnMapContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_bulletGroupe, m_gameManager, BulletOnPlayerAABBOverlape, 0);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, m_gameManager, BulletOnPlayerAABBOverlape, 0);
 
     NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_staticGroupe, worldSettings.staticFriction, worldSettings.keniticFriction);
 
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_weaponsGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_itemGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_staticGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_dynamicGroupe, false);
 
-    NewtonMaterialSetDefaultCollidable(m_world, m_weaponsGroupe, m_itemGroupe, false);
+    //    NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_itemGroupe, false);
 }
 
 MaterialManager::~MaterialManager()
@@ -351,7 +345,7 @@ void MaterialManager::AddStatic(tbe::scene::NewtonNode * body)
 
 void MaterialManager::AddWeapon(tbe::scene::NewtonNode * body)
 {
-    NewtonBodySetMaterialGroupID(body->GetBody(), m_weaponsGroupe);
+    NewtonBodySetMaterialGroupID(body->GetBody(), m_bulletGroupe);
 }
 
 void MaterialManager::AddPlayer(tbe::scene::NewtonNode * body)
@@ -371,7 +365,7 @@ int MaterialManager::GetPlayersGroupe() const
 
 int MaterialManager::GetWeaponsGroupe() const
 {
-    return m_weaponsGroupe;
+    return m_bulletGroupe;
 }
 
 int MaterialManager::GetItemGroupe() const

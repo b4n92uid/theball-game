@@ -11,6 +11,8 @@
 #include "MaterialManager.h"
 #include "UserControl.h"
 
+#include <fmod_errors.h>
+
 using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
@@ -233,7 +235,7 @@ void BldParser::OnLoadMusic(AttribMap& att)
     string& filePath = att["filePath"];
     m_gameManager->map.musicPath = filePath;
 
-    #ifndef THE_BALL_DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     m_gameManager->map.musicStream = FSOUND_Stream_Open(filePath.c_str(), FSOUND_LOOP_NORMAL, 0, 0);
 
     if(!m_gameManager->map.musicStream)

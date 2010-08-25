@@ -278,7 +278,7 @@ class SuperLifeEffect : public Player::CheckMe
 {
 public:
 
-    bool OnTakeDammage(Player* player, Ammo* ammo)
+    bool OnTakeDammage(Player* player, Bullet* ammo)
     {
         return false;
     }

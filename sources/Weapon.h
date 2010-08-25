@@ -16,14 +16,14 @@
 
 class PlayManager;
 class Player;
-class Ammo;
+class Bullet;
 class Weapon;
 
-class Ammo : public tbe::scene::Node, public tbe::scene::NewtonNode
+class Bullet : public tbe::scene::Node, public tbe::scene::NewtonNode
 {
 public:
 
-    Ammo(Weapon* weapon);
+    Bullet(Weapon* weapon);
 
     void Shoot(tbe::Vector3f startpos, tbe::Vector3f shootdiri, float shootspeed);
 
@@ -113,7 +113,7 @@ protected:
 
     tbe::ticks::Clock m_shootCadencyClock;
 
-    std::vector<Ammo*> m_ammosPack;
+    std::vector<Bullet*> m_ammosPack;
 
     tbe::AABB m_mapAABB;
 

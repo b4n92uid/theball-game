@@ -104,6 +104,8 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     if(fog->IsEnable())
         manager.scene->SetZFar(fog->GetEnd());
+    else
+        manager.scene->SetZFar(DEFAULT_ZFAR_FRUSTUM);
 
     manager.scene->UpdateViewParameter();
 
@@ -457,7 +459,8 @@ void PlayManager::EventProcess()
 
     if(m_timeTo == TIME_TO_GAMEOVER)
     {
-        if(event->keyState[EventManager::KEY_SPACE])
+        if(event->keyState[EventManager::KEY_SPACE]
+           && m_validGameOver.IsEsplanedTime(3000))
             running = false;
     }
 }
@@ -466,9 +469,6 @@ void PlayManager::GameProcess()
 {
     using namespace tbe;
     using namespace tbe::scene;
-
-    if(m_gameOver)
-        return;
 
     // Pour chaque joueurs
     // - les joueurs mort pour les reconstruires
