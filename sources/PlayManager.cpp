@@ -303,7 +303,7 @@ void PlayManager::SetupGui()
 
 void PlayManager::OnStartGame()
 {
-    #ifndef DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     if(map.musicStream)
         map.musicChannel = FSOUND_Stream_Play(FSOUND_FREE, map.musicStream);
 

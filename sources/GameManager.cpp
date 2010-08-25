@@ -56,8 +56,10 @@ GameManager::~GameManager()
     manager.gameEngine->SetGrabInput(false);
     manager.gameEngine->SetMouseVisible(true);
 
+    #ifndef THE_BALL_DISABLE_MUSIC
     if(map.musicStream)
         FSOUND_Stream_Close(map.musicStream);
+    #endif
 
     delete manager.sound;
     delete manager.material;

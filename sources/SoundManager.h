@@ -10,6 +10,7 @@
 
 #include <map>
 #include <fmod.h>
+
 #include <Tbe.h>
 
 class GameManager;
@@ -23,9 +24,11 @@ public:
 
     /// Jouer un son
     void Play(std::string soundName, tbe::scene::Node* object);
-    
+
+    typedef std::map<std::string, FSOUND_SAMPLE*> SoundMap;
+
 protected:
-    std::map<std::string, FSOUND_SAMPLE*> m_sounds;
+    SoundMap m_sounds;
     GameManager* m_gameManager;
 };
 

@@ -136,20 +136,15 @@ void BldParser::LoadLevel(const std::string& filepath)
     ifstream file(filepath.c_str());
 
     if(!file)
-        throw tbe::Exception("BLDLoader::LoadScene\nOpen file error (%s)\n\n", filepath.c_str());
+        throw tbe::Exception("BLDLoader::LoadScene; Open file error (%s)", filepath.c_str());
 
     m_openFileName = filepath;
 
     string buffer;
-    while(getline(file, buffer))
+    while(tools::getline(file, buffer))
     {
         if(buffer.empty() || buffer[0] == '#')
             continue;
-
-        tools::cleanLine(buffer);
-
-        while(buffer[buffer.size() - 1] == ' ')
-            buffer.erase(buffer.size() - 1);
 
         if(buffer == ".map")
         {
@@ -189,7 +184,7 @@ void BldParser::LoadLevel(const std::string& filepath)
         }
 
         else
-            throw tbe::Exception("BLDLoader::LoadScene\nParse error (%s)", buffer.c_str());
+            throw tbe::Exception("BLDLoader::LoadScene; Parse error (%s)", buffer.c_str());
     }
 
     file.close();
@@ -210,18 +205,13 @@ BldParser::AttribMap BldParser::GetAttributs(std::ifstream& file)
     BldParser::AttribMap fileMap;
     string buffer;
 
-    while(getline(file, buffer))
+    while(tools::getline(file, buffer))
     {
         if(buffer.empty())
             break;
 
         if(buffer[0] == '#')
             continue;
-
-        tools::cleanLine(buffer);
-
-        while(buffer[buffer.size() - 1] == ' ')
-            buffer.erase(buffer.size() - 1);
 
         string key(buffer, 0, buffer.find_first_of('=')),
                 value(buffer, buffer.find_first_of('=') + 1);
@@ -242,10 +232,14 @@ void BldParser::OnLoadMusic(AttribMap& att)
 {
     string& filePath = att["filePath"];
     m_gameManager->map.musicPath = filePath;
+
+    #ifndef THE_BALL_DISABLE_MUSIC
     m_gameManager->map.musicStream = FSOUND_Stream_Open(filePath.c_str(), FSOUND_LOOP_NORMAL, 0, 0);
 
     if(!m_gameManager->map.musicStream)
-        throw Exception("BldParser::OnLoadMusic; Open file error (%s)", filePath.c_str());
+        throw Exception("BldParser::OnLoadMusic; %s (%s)",
+                        FMOD_ErrorString(FSOUND_GetError()), filePath.c_str());
+    #endif
 }
 
 void BldParser::OnLoadFog(AttribMap& att)
@@ -310,7 +304,7 @@ void BldParser::OnLoadLight(AttribMap& att)
     }
 
     else
-        throw tbe::Exception("BLDLoader::LoadScene\nUnknown light type (%s)", att["type"].c_str());
+        throw tbe::Exception("BLDLoader::LoadScene; Unknown light type (%s)", att["type"].c_str());
 
     light->SetPos(att["pos"]);
 
@@ -348,7 +342,7 @@ Item* BldParser::CreateItem(std::string add, tbe::Matrix4f pos)
         item = new ItemAddShotgun(m_gameManager, pos);
 
     else
-        throw tbe::Exception("LevelLoader::OnLoadNode\nUnknown item add (%s)", add.c_str());
+        throw tbe::Exception("LevelLoader::OnLoadNode; Unknown item add (%s)", add.c_str());
 
     m_gameManager->RegisterItem(item);
 
@@ -366,7 +360,7 @@ DynamicObject* BldParser::CreateDynamic(std::string action, tbe::Matrix4f pos)
         dyo = new DYTeleporter(m_gameManager, pos);
 
     else
-        throw tbe::Exception("LevelLoader::OnLoadNode\nUnknown dynamic action (%s)", action.c_str());
+        throw tbe::Exception("LevelLoader::OnLoadNode; Unknown dynamic action (%s)", action.c_str());
 
     m_gameManager->RegisterDynamic(dyo);
 

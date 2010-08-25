@@ -7,6 +7,7 @@
 #include <map>
 
 #include <fmod.h>
+#include <fmod_errors.h>
 
 #include <Tbe.h>
 #include <SDLDevice/SDLDevice.h>

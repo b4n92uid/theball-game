@@ -27,7 +27,7 @@ int main(int argc, char** argv)
                 << "theBall (b4n92uid)" << endl
                 << "Start in " << second_clock::local_time() << endl
                 << "Build in " << __DATE__ << endl
-                << "Current dir : " << current_path() << endl;
+                << current_path() << endl;
 
         AppManager theBall;
 

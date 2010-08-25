@@ -243,7 +243,7 @@ void Player::SetCurWeapon(std::string weaponName)
     m_curWeapon = m_weaponsPack.find(weaponName);
 
     if(m_curWeapon == m_weaponsPack.end())
-        throw tbe::Exception("PlayerEngine::SetCurWeapon\nWeapon not found (%s)\n\n", weaponName.c_str());
+        throw tbe::Exception("PlayerEngine::SetCurWeapon; Weapon not found (%s)", weaponName.c_str());
 }
 
 Weapon* Player::GetCurWeapon() const
