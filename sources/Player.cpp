@@ -52,7 +52,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
     AddWeapon("blaster", blaster);
 
-    
+
 }
 
 Player::~Player()
@@ -333,7 +333,7 @@ void Player::AddCheckPoint(CheckMe* cm)
     m_checkMe.push_back(cm);
 }
 
-void Player::TakeDammage(Ammo* ammo)
+void Player::TakeDammage(Bullet* ammo)
 {
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         if(!m_checkMe[i]->OnTakeDammage(this, ammo))
@@ -349,6 +349,12 @@ void Player::TakeDammage(Ammo* ammo)
     {
         striker->m_score += 10;
         Kill();
+    }
+
+    if(this == m_playManager->GetUserPlayer())
+    {
+        m_playManager->hud.background.dammage->SetOpacity(0.75);
+        m_playManager->hud.background.dammage->SetEnable(true);
     }
 
     m_playManager->manager.sound->Play("hit", this);

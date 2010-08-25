@@ -50,7 +50,7 @@ public:
     void Boost();
 
     /// Assigne les dommages et augemente le score
-    void TakeDammage(Ammo* ammo);
+    void TakeDammage(Bullet* ammo);
 
     /** 
      * Routine de traitement pour
@@ -126,7 +126,7 @@ public:
             return false;
         }
 
-        virtual bool OnTakeDammage(Player* player, Ammo* ammo)
+        virtual bool OnTakeDammage(Player* player, Bullet* ammo)
         {
             return true;
         }

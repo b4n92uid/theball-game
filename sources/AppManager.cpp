@@ -8,6 +8,8 @@
 #include "PlayAloneManager.h"
 #include "PlayTeamManager.h"
 
+#include <fmod_errors.h>
+
 using namespace std;
 using namespace tbe;
 
@@ -127,7 +129,7 @@ void AppManager::SetupSound()
     FSOUND_SetDriver(1);
     FSOUND_Init(44100, 32, 0);
 
-    #ifndef THE_BALL_DISABLE_MUSIC
+    #ifndef THEBALL_DISABLE_MUSIC
     m_mainMusic = FSOUND_Stream_Open(SOUND_MAINTHEME, FSOUND_LOOP_NORMAL, 0, 0);
 
     if(!m_mainMusic)

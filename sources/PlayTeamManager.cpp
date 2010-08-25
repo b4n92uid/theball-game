@@ -69,7 +69,7 @@ public:
         m_playManager = playManager;
     }
 
-    virtual bool OnTakeDammage(Player* player, Ammo* ammo)
+    virtual bool OnTakeDammage(Player* player, Bullet* ammo)
     {
         return(m_playManager->IsInBleuTeam(player)
                 != m_playManager->IsInBleuTeam(ammo->GetParent()->GetShooter())

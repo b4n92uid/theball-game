@@ -59,7 +59,7 @@ public:
         return true;
     }
 
-    bool OnTakeDammage(Player* player, Ammo* ammo)
+    bool OnTakeDammage(Player* player, Bullet* ammo)
     {
         ammo->SetDammage(ammo->GetDammage() / 2);
         return true;

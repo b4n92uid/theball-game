@@ -10,6 +10,8 @@
 
 #include "Define.h"
 
+#include <fmod_errors.h>
+
 using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
@@ -50,7 +52,7 @@ Weapon::~Weapon()
     for(unsigned i = 0; i < m_ammosPack.size(); i++)
         delete m_ammosPack[i];
 
-    #ifndef THE_BALL_DISABLE_SOUND
+    #ifndef THEBALL_DISABLE_SOUND
     if(m_fireSound)
         FSOUND_Sample_Free(m_fireSound);
     #endif
@@ -65,7 +67,7 @@ void Weapon::Process()
         if(m_ammosPack[i]->IsDeadAmmo())
         {
             delete m_ammosPack[i];
-            m_ammosPack.erase((vector<Ammo*>::iterator) & m_ammosPack[i]);
+            m_ammosPack.erase((vector<Bullet*>::iterator) & m_ammosPack[i]);
         }
 
         else
@@ -83,11 +85,12 @@ void Weapon::Process()
 
 void Weapon::SetFireSound(std::string fireSound)
 {
-    #ifndef THE_BALL_DISABLE_SOUND
+    #ifndef THEBALL_DISABLE_SOUND
     m_fireSound = FSOUND_Sample_Load(FSOUND_FREE, fireSound.c_str(), FSOUND_HW3D | FSOUND_LOOP_OFF, 0, 0);
 
     if(!m_fireSound)
-        throw tbe::Exception("WeaponEngine::SetFireSound; Fire sound load error (%s)", fireSound.c_str());
+        throw tbe::Exception("Weapon::SetFireSound; %s (%s)",
+                             FMOD_ErrorString(FSOUND_GetError()), fireSound.c_str());
     else
         FSOUND_Sample_SetMinMaxDistance(m_fireSound, SOUND_MIN_DIST, SOUND_MAX_DIST);
     #endif
@@ -242,7 +245,7 @@ Weapon & Weapon::operator=(const Weapon& copy)
 
 // Ammo ------------------------------------------------------------------------
 
-Ammo::Ammo(Weapon* weapon)
+Bullet::Bullet(Weapon* weapon)
 {
     m_weapon = weapon;
     m_playManager = m_weapon->GetShooter()->GetPlayManager();
@@ -250,54 +253,54 @@ Ammo::Ammo(Weapon* weapon)
     m_dammage = 0;
 }
 
-void Ammo::SetShootSpeed(float shootSpeed)
+void Bullet::SetShootSpeed(float shootSpeed)
 {
     this->m_shootSpeed = shootSpeed;
 }
 
-float Ammo::GetShootSpeed() const
+float Bullet::GetShootSpeed() const
 {
     return m_shootSpeed;
 }
 
-void Ammo::SetDammage(int dammage)
+void Bullet::SetDammage(int dammage)
 {
     this->m_dammage = dammage;
 }
 
-int Ammo::GetDammage() const
+int Bullet::GetDammage() const
 {
     return m_dammage;
 }
 
-void Ammo::SetLife(int life)
+void Bullet::SetLife(int life)
 {
 
     this->m_life = life;
 }
 
-int Ammo::GetLife() const
+int Bullet::GetLife() const
 {
 
     return m_life;
 }
 
-void Ammo::SetParent(Weapon* shooter)
+void Bullet::SetParent(Weapon* shooter)
 {
     this->m_weapon = shooter;
 }
 
-Weapon* Ammo::GetParent() const
+Weapon* Bullet::GetParent() const
 {
     return m_weapon;
 }
 
-bool Ammo::IsDeadAmmo()
+bool Bullet::IsDeadAmmo()
 {
     return(m_life <= 0 || !m_playManager->map.aabb.IsInner(m_matrix.GetPos()));
 }
 
-void Ammo::Shoot(Vector3f startpos, Vector3f shootdiri, float shootspeed)
+void Bullet::Shoot(Vector3f startpos, Vector3f shootdiri, float shootspeed)
 {
     m_startPos = startpos;
     m_shootDiri = shootdiri;
@@ -346,7 +349,7 @@ void WeaponBlaster::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
     Vector3f shootdiri = (targetpos - startpos).Normalize();
 
     // Creation du tire
-    Ammo * fire = new Ammo(this);
+    Bullet * fire = new Bullet(this);
     fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
@@ -383,7 +386,7 @@ void WeaponShotgun::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
                                  Vector3f(m_worldSettings.playerSize * 0.5));
 
         // Creation du tire
-        Ammo * fire = new Ammo(this);
+        Bullet * fire = new Bullet(this);
         fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
         fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
@@ -418,7 +421,7 @@ void WeaponBomb::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     Vector3f shootdiri = (targetpos - startpos).Normalize();
 
     // Creation du tire
-    Ammo * fire = new Ammo(this);
+    Bullet * fire = new Bullet(this);
     fire->SetDammage(100);
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
@@ -454,7 +457,7 @@ void WeaponFinder::Process()
         if(m_ammosPack[i]->IsDeadAmmo())
         {
             delete m_ammosPack[i];
-            m_ammosPack.erase((vector<Ammo*>::iterator) & m_ammosPack[i]);
+            m_ammosPack.erase((vector<Bullet*>::iterator) & m_ammosPack[i]);
         }
 
         else
@@ -493,7 +496,7 @@ void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     Vector3f shootdiri = (targetpos - startpos).Normalize();
 
     // Creation du tire
-    Ammo * fire = new Ammo(this);
+    Bullet * fire = new Bullet(this);
     fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 

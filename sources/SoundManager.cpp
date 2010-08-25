@@ -11,6 +11,8 @@
 #include "Player.h"
 #include "Define.h"
 
+#include <fmod_errors.h>
+
 using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
@@ -19,7 +21,7 @@ SoundManager::SoundManager(GameManager* gameManager)
 {
     m_gameManager = gameManager;
 
-    #ifndef THE_BALL_DISABLE_SOUND
+    #ifndef THEBALL_DISABLE_SOUND
     map<string, string> soundPaths;
 
     soundPaths["appear"] = "data/sfxart/appear.wav";
@@ -59,7 +61,7 @@ SoundManager::SoundManager(GameManager* gameManager)
 
 void SoundManager::Play(std::string soundName, Node* node)
 {
-    #ifndef THE_BALL_DISABLE_SOUND
+    #ifndef THEBALL_DISABLE_SOUND
     int channel = FSOUND_PlaySound(FSOUND_FREE, m_sounds[soundName]);
     FSOUND_3D_SetAttributes(channel, node->GetMatrix().GetPos(), 0);
     #endif
