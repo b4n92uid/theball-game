@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 07/15/10 - 00:03:25
+# Generated 2010-Aug-25 21:57:30
 
 .map
 name=JumpMe
@@ -37,42 +37,42 @@ modelPath=data/scene/jumpme.obj
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,1.25884,1.9447,-16.75,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,1.25884,0.994702,-16.75,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,0.897777,1.54337,15.9121,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,0.897777,0.809864,15.9121,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-15.3627,1.51447,0.0287824,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-15.3627,0.825162,0.0287824,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,16.5285,1.79166,-0.0867426,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,16.5285,0.867039,-0.0867426,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8.93576,0.903813,-11.3638,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-9.81886,0.299243,-12.6741,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,11.7463,1.2677,-10.9462,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,11.5622,0.2667,-11.6569,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,10.5463,1.36496,12.6177,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,10.1805,0.323561,12.0394,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-11.0141,0.991932,9.96159,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-11.5827,0.32984,10.682,1
 action=JUMPER
 
 +node
