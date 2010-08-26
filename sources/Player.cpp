@@ -105,7 +105,7 @@ void Player::SetRandomPosInTheFloor()
 
     do
     {
-        randPos = tools::rand(m_playManager->map.aabb);
+        randPos = tools::rand(m_playManager->map.aabb - Vector3f(4, 0, 4));
         randPos.y = 1;
         randPos = m_newtonScene->FindFloor(randPos);
     }

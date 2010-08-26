@@ -1,17 +1,20 @@
 # Ball level descriptor
-# Generated 2010-Aug-25 22:23:14
+# Generated 2010-Aug-26 01:24:04
 
 .map
 name=Slide
 ambient=0.1,0.1,0.1,1
 
+.music
+filePath=data/music/smmoth.ogg
+
 .skybox
-front=data/gfxart/skybox/cloudy_noon_FR.jpg
-back=data/gfxart/skybox/cloudy_noon_BK.jpg
-top=data/gfxart/skybox/cloudy_noon_UP.jpg
-bottom=data/gfxart/skybox/cloudy_noon_DN.jpg
-left=data/gfxart/skybox/cloudy_noon_LF.jpg
-right=data/gfxart/skybox/cloudy_noon_RT.jpg
+front=data/gfxart/skybox/frontax2.jpg
+back=data/gfxart/skybox/backax2.jpg
+top=data/gfxart/skybox/topax2.jpg
+bottom=data/gfxart/skybox/bottomtax2.jpg
+left=data/gfxart/skybox/leftax2.jpg
+right=data/gfxart/skybox/rightax2.jpg
 
 # Light
 
@@ -53,22 +56,22 @@ action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.213778,-2.89024,-4.89516,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.161088,-2.40415,-4.01078,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,6.49117,-2.87694,0.275219,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,4.99527,-2.36,-0.200696,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.0606185,-3,5.7057,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.0734068,-2.4,4.04455,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-6.35912,-2.91022,0.0204619,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-5.5569,-2.4,-0.229677,1
 action=JUMPER
 
 # Item
@@ -90,7 +93,7 @@ add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.049978,-2,2.00148,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2,2,1
 add=AMMO
 
 +node
@@ -145,6 +148,11 @@ add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-1,0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,1,-2,0,1
 add=FATALSHOT
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,-2,0,1
+add=SUPERLIFE
 
