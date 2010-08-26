@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 07/12/10 - 15:34:04
+# Generated 2010-Aug-26 00:29:43
 
 .map
 name=Travell
@@ -9,12 +9,12 @@ ambient=0.1,0.1,0.1,1
 filePath=data/music/run.ogg
 
 .skybox
-front=data/gfxart/skybox/frontax2.jpg
-back=data/gfxart/skybox/backax2.jpg
-top=data/gfxart/skybox/topax2.jpg
-bottom=data/gfxart/skybox/bottomtax2.jpg
-left=data/gfxart/skybox/leftax2.jpg
-right=data/gfxart/skybox/rightax2.jpg
+front=data/gfxart/skybox/cloudy_noon_FR.jpg
+back=data/gfxart/skybox/cloudy_noon_BK.jpg
+top=data/gfxart/skybox/cloudy_noon_UP.jpg
+bottom=data/gfxart/skybox/cloudy_noon_DN.jpg
+left=data/gfxart/skybox/cloudy_noon_LF.jpg
+right=data/gfxart/skybox/cloudy_noon_RT.jpg
 
 # Light
 
@@ -36,69 +36,69 @@ modelPath=data/scene/taravel.obj
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,-25,13,-8,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,-19.314,6.30494,-7.87213,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,-26,13,-1,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,-19.2327,5.32436,-0.455509,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,-24.9942,13,6.20063,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,-19.7878,6.45573,6.91755,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,26,13,-8,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,21.311,6.74751,-8.2178,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,27,13,-1,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,21.2423,5.93183,-0.867591,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0,0,-1,0,0,1,0,0,1,0,0,0,26,13,5,1
+matrix=0,0,-1,0,0,1,0,0,1,0,0,0,22.4745,6.95905,5.92963,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.77892,3.05826,-6.9876,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,1.8,-6,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.366936,2.10905,-0.370658,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,1.13333,1,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,2.85,6,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,2.07778,8,1
 action=JUMPER
 
 # Item
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-26,13,3,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18,6,3,1
 add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-26,13,-4,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18.5741,6.15924,-4.40252,1
 add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.152147,2.67662,3.01422,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,3,4,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.554493,2.80991,-3.52356,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,3,-3,1
 add=AMMO
 
 +node
@@ -108,26 +108,26 @@ add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.268351,3.59437,-9.75573,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,4,-10,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,26.0468,12,2.29861,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,18,6,4,1
 add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,26,12,-5,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,18.7339,6.33874,-5.13129,1
 add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,11,5,1,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,11.784,5.06825,-0.223799,1
 add=FATALSHOT
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-13,6,2,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-13.334,3.85828,-0.435497,1
 add=SUPERLIFE
 

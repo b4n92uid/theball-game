@@ -449,7 +449,12 @@ bool EditorManager::SettingSkyEvent(tbe::EventManager* event)
 bool EditorManager::SettingFogEvent(tbe::EventManager* event)
 {
     if(hud.fog.enable->IsActivate())
+    {
         m_fog->SetEnable(hud.fog.enable->GetCurrent());
+
+        manager.scene->SetZNear(m_fog->IsEnable() ? m_fog->GetEnd() : DEFAULT_ZFAR_FRUSTUM);
+        manager.scene->UpdateViewParameter();
+    }
 
     else if(hud.fog.color->IsActivate())
         m_fog->SetColor(vec34(hud.fog.color->GetValue()));
@@ -470,6 +475,9 @@ bool EditorManager::SettingFogEvent(tbe::EventManager* event)
         gui::SwitchNumeric<float>::Range* range = new gui::SwitchNumeric<float>::Range(0, hud.fog.end->GetValue() - 1);
 
         hud.fog.start->SetRange(range);
+
+        manager.scene->SetZNear(m_fog->GetEnd());
+        manager.scene->UpdateViewParameter();
     }
 
     return false;
