@@ -3,8 +3,6 @@
 
 #define CAPTION_TITLE "theBall ("__DATE__")"
 
-#define DEFAULT_ZFAR_FRUSTUM 512
-
 // BACKGROUND ------------------------------------------------------------------
 #define BACKGROUND_MAINMENU     "data/gfxart/background/main.png"
 #define BACKGROUND_BULLETTIME   "data/gfxart/background/bullettime.png"

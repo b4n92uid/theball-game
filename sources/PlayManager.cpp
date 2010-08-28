@@ -102,11 +102,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     scene::Fog* fog = manager.scene->GetFog();
 
-    if(fog->IsEnable())
-        manager.scene->SetZFar(fog->GetEnd());
-    else
-        manager.scene->SetZFar(DEFAULT_ZFAR_FRUSTUM);
-
+    manager.scene->SetZFar(fog->IsEnable() ? fog->GetEnd() : map.aabb.GetSize());
     manager.scene->UpdateViewParameter();
 
     // PLAYERS -----------------------------------------------------------------
