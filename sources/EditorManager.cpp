@@ -50,6 +50,9 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
 {
     m_editSetting = editSetting;
 
+    m_fog = manager.scene->GetFog();
+    m_sky = manager.scene->GetSkybox();
+
     if(m_editSetting.createNew)
     {
         map.name = "NewMap";
@@ -68,10 +71,10 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
         m_allEntity.insert(m_allEntity.end(), map.items.begin(), map.items.end());
 
         m_selectedLight = map.lights.empty() ? NULL : map.lights.front();
-    }
 
-    m_fog = manager.scene->GetFog();
-    m_sky = manager.scene->GetSkybox();
+        manager.scene->SetZFar(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize());
+        manager.scene->UpdateViewParameter();
+    }
 
     m_axes = new scene::Axes(2, 2);
     parallelscene.meshs->AddMesh("", m_axes);
@@ -452,7 +455,7 @@ bool EditorManager::SettingFogEvent(tbe::EventManager* event)
     {
         m_fog->SetEnable(hud.fog.enable->GetCurrent());
 
-        manager.scene->SetZNear(m_fog->IsEnable() ? m_fog->GetEnd() : DEFAULT_ZFAR_FRUSTUM);
+        manager.scene->SetZNear(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize());
         manager.scene->UpdateViewParameter();
     }
 
