@@ -3,7 +3,7 @@ dist/Debug/*
 install/*
 doc/html/*
 nbproject/*
-versions/*
+extras/*
 
 syntax: regexp
 .*(\.exe)$
