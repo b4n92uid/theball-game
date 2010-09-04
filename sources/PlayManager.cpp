@@ -108,6 +108,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
     // PLAYERS -----------------------------------------------------------------
 
     Settings::PlayerInfo pi(m_playSetting.playerModel);
+
     m_userPlayer = new Player(this, m_playSetting.playerName, pi.model);
     m_userPlayer->AttachController(new UserControl(this));
 
