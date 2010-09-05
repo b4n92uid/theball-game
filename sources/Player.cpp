@@ -51,8 +51,6 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
     AddWeapon("blaster", blaster);
-
-
 }
 
 Player::~Player()
