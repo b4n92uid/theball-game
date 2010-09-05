@@ -892,6 +892,7 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
             << "playLevel = " << playSetting.playMap << endl
             << "playMod = " << playSetting.playMod << endl
             << "playTime = " << playSetting.playTime << endl
+            << "playerCount = " << playSetting.playerCount << endl
             << "playerModel = " << playSetting.playerModel << endl
             << "playerName = " << playSetting.playerName << endl;
 
