@@ -1,17 +1,20 @@
-build/*
-dist/Debug/*
-install/*
-doc/html/*
-nbproject/*
-extras/*
+build
+doc/html
+extras
+sourcesold
+nbproject
+dist/Debug
+
+.dep.inc
+Makefile
+
+syntax: glob
+dist/*/**.pdf
+dist/*/**.log
+dist/*/**.xml
 
 syntax: regexp
 .*(\.exe)$
 .*(\.dll)$
 .*(\.lnk)$
 .*(\.bat)$
-.*(\.tdl)$
-.*(\.xml)$
-.*(\.log)$
-.*(\.pdf)$
-.*(\.txt)$
