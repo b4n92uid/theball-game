@@ -309,8 +309,12 @@ void PlayManager::OnStartGame()
     FMOD_CHANNELGROUP* chgrp;
     FMOD_System_GetMasterChannelGroup(manager.fmodsys, &chgrp);
 
+    FMOD_CHANNELGROUP* musicchgrp;
+    FMOD_System_CreateChannelGroup(manager.fmodsys, "musicchgrp", &musicchgrp);
+    FMOD_Channel_SetChannelGroup(map.musicChannel, musicchgrp);
+
     FMOD_ChannelGroup_SetVolume(chgrp, 0.6);
-    FMOD_Channel_SetVolume(map.musicChannel, 1.0);
+    FMOD_ChannelGroup_SetVolume(musicchgrp, 1.0);
 
     //    FSOUND_SetSFXMasterVolume(160);
     //    FSOUND_SetVolumeAbsolute(map.musicChannel, 255);

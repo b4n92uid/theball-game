@@ -69,10 +69,12 @@ void SoundManager::Play(std::string soundName, Object* node)
     #ifndef THEBALL_DISABLE_SOUND
     FMOD_CHANNEL* channel;
 
-    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], false, &channel);
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
 
     FMOD_Channel_Set3DAttributes(channel,
                                  (FMOD_VECTOR*)(float*)node->NewtonNode::GetPos(),
                                  (FMOD_VECTOR*)(float*)node->NewtonNode::GetVelocity());
+
+    FMOD_Channel_SetPaused(channel, false);
     #endif
 }
