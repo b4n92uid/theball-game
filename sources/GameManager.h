@@ -43,8 +43,8 @@ public:
     {
         std::string name;
 
-        FSOUND_STREAM* musicStream;
-        unsigned musicChannel;
+        FMOD_SOUND* musicStream;
+        FMOD_CHANNEL* musicChannel;
         std::string musicPath;
         
         Item::Array items;
@@ -63,11 +63,14 @@ public:
         tbe::gui::GuiManager* gui;
         tbe::ppe::PostProcessManager* ppe;
         tbe::ticks::FpsManager* fps;
+
         MaterialManager* material;
         BldParser* level;
 
         AppManager* app;
         SoundManager* sound;
+
+        FMOD_SYSTEM* fmodsys;
 
     } manager;
 

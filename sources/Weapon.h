@@ -87,7 +87,7 @@ public:
     Player* GetShooter() const;
 
     void SetFireSound(std::string fireSound);
-    FSOUND_SAMPLE* GetFireSound() const;
+    FMOD_SOUND* GetFireSound() const;
 
     std::string GetWeaponName() const;
     void SetWeaponName(std::string weaponName);
@@ -120,7 +120,9 @@ protected:
     PlayManager* m_playManager;
     Player* m_parent;
 
-    FSOUND_SAMPLE* m_fireSound;
+    FMOD_SYSTEM* m_fmodsys;
+    FMOD_SOUND* m_fireSound;
+    FMOD_CHANNEL* m_fireSoundCh;
 
     Settings::Physics m_worldSettings;
 };

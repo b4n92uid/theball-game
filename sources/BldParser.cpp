@@ -20,11 +20,13 @@ using namespace tbe::scene;
 BldParser::BldParser(GameManager* gameManager)
 {
     m_gameManager = gameManager;
-    m_sceneManager = gameManager->manager.scene;
-    m_materialManager = gameManager->manager.material;
+    m_sceneManager = m_gameManager->manager.scene;
+    m_materialManager = m_gameManager->manager.material;
 
-    m_meshScene = gameManager->parallelscene.meshs;
-    m_newtonScene = gameManager->parallelscene.newton;
+    m_meshScene = m_gameManager->parallelscene.meshs;
+    m_newtonScene = m_gameManager->parallelscene.newton;
+
+    m_fmodsys = m_gameManager->manager.fmodsys;
 }
 
 BldParser::~BldParser()
@@ -236,11 +238,13 @@ void BldParser::OnLoadMusic(AttribMap& att)
     m_gameManager->map.musicPath = filePath;
 
     #ifndef THEBALL_DISABLE_MUSIC
-    m_gameManager->map.musicStream = FSOUND_Stream_Open(filePath.c_str(), FSOUND_LOOP_NORMAL, 0, 0);
+    FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, filePath.c_str(),
+                                               FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
+                                               0, &m_gameManager->map.musicStream);
 
-    if(!m_gameManager->map.musicStream)
+    if(res != FMOD_OK)
         throw Exception("BldParser::OnLoadMusic; %s (%s)",
-                        FMOD_ErrorString(FSOUND_GetError()), filePath.c_str());
+                        FMOD_ErrorString(res), filePath.c_str());
     #endif
 }
 

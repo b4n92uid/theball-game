@@ -39,6 +39,8 @@ GameManager::GameManager(AppManager* appManager)
     parallelscene.particles = new scene::ParticlesParallelScene;
     manager.scene->AddParallelScene("3:ParticlesScene", parallelscene.particles);
 
+    manager.fmodsys = appManager->GetFmodSystem();
+
     manager.material = new MaterialManager(this);
     manager.sound = new SoundManager(this);
     manager.level = new BldParser(this);
@@ -58,7 +60,7 @@ GameManager::~GameManager()
 
     #ifndef THEBALL_DISABLE_MUSIC
     if(map.musicStream)
-        FSOUND_Stream_Close(map.musicStream);
+        FMOD_Sound_Release(map.musicStream);
     #endif
 
     delete manager.sound;

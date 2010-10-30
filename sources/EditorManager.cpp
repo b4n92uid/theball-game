@@ -372,8 +372,8 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
         {
             if(map.musicStream)
             {
-                FSOUND_Stream_Stop(map.musicStream);
-                FSOUND_Stream_Close(map.musicStream);
+                FMOD_Channel_Stop(map.musicChannel);
+                FMOD_Sound_Release(map.musicStream);
             }
 
             map.musicChannel = 0;
@@ -384,10 +384,9 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 
         if(event->lastActiveKey.first == EventManager::KEY_SPACE && map.musicStream)
         {
-            if(FSOUND_IsPlaying(map.musicChannel))
-                FSOUND_Stream_Stop(map.musicStream);
-            else
-                map.musicChannel = FSOUND_Stream_Play(FSOUND_FREE, map.musicStream);
+            FMOD_BOOL state = false;
+            FMOD_Channel_GetPaused(map.musicChannel, &state);
+            FMOD_Channel_SetPaused(map.musicChannel, !state);
         }
     }
 
@@ -395,15 +394,18 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
     {
         if(map.musicStream)
         {
-            FSOUND_Stream_Stop(map.musicStream);
-            FSOUND_Stream_Close(map.musicStream);
+            FMOD_Channel_Stop(map.musicChannel);
+            FMOD_Sound_Release(map.musicStream);
         }
 
         map.musicPath = hud.music.list->GetCurrentData().GetValue<string > ();
-        map.musicStream = FSOUND_Stream_Open(map.musicPath.c_str(), FSOUND_LOOP_NORMAL, 0, 0);
 
-        if(map.musicStream)
-            map.musicChannel = FSOUND_Stream_Play(FSOUND_FREE, map.musicStream);
+        FMOD_RESULT res = FMOD_System_CreateStream(manager.fmodsys, map.musicPath.c_str(),
+                                                   FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
+                                                   0, &map.musicStream);
+
+        if(res != FMOD_OK)
+            FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
 
         hud.music.list->SetActivate(false);
     }

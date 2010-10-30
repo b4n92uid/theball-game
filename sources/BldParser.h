@@ -53,6 +53,8 @@ protected:
 
     std::string m_openFileName;
 
+    FMOD_SYSTEM* m_fmodsys;
+
     tbe::scene::MeshParallelScene* m_meshScene;
     tbe::scene::SceneManager* m_sceneManager;
     tbe::scene::NewtonParallelScene* m_newtonScene;

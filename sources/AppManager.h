@@ -66,6 +66,7 @@ public:
     tbe::scene::SceneManager* GetSceneMng() const;
     tbe::gui::GuiManager* GetGuiMng() const;
     tbe::SDLDevice* GetGameEngine() const;
+    FMOD_SYSTEM* GetFmodSystem() const;
 
     void UpdateGuiContent();
 
@@ -100,7 +101,9 @@ protected:
     tbe::scene::Mesh* m_logo;
     tbe::scene::Camera* m_camera;
 
-    FSOUND_STREAM* m_mainMusic;
+    FMOD_SYSTEM* m_fmodsys;
+    FMOD_SOUND* m_mainMusic;
+    FMOD_CHANNEL* m_mainMusicCh;
 
     struct
     {

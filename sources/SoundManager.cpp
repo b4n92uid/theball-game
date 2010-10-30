@@ -10,6 +10,7 @@
 #include "GameManager.h"
 #include "Player.h"
 #include "Define.h"
+#include "StaticObject.h"
 
 #include <fmod_errors.h>
 
@@ -20,6 +21,8 @@ using namespace tbe::scene;
 SoundManager::SoundManager(GameManager* gameManager)
 {
     m_gameManager = gameManager;
+
+    m_fmodsys = m_gameManager->manager.fmodsys;
 
     #ifndef THEBALL_DISABLE_SOUND
     map<string, string> soundPaths;
@@ -48,21 +51,28 @@ SoundManager::SoundManager(GameManager* gameManager)
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
     {
-        m_sounds[it->first] = FSOUND_Sample_Load(FSOUND_FREE, it->second.c_str(), FSOUND_HW3D | FSOUND_LOOP_OFF, 0, 0);
+        FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, it->second.c_str(),
+                                                  FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
+                                                  0, &m_sounds[it->first]);
 
-        if(!m_sounds[it->first])
+        if(res != FMOD_OK)
             throw tbe::Exception("SoundManager::SoundManager; %s (%s)",
-                                 FMOD_ErrorString(FSOUND_GetError()), it->first.c_str());
+                                 FMOD_ErrorString(res), it->second.c_str());
         else
-            FSOUND_Sample_SetMinMaxDistance(m_sounds[it->first], SOUND_MIN_DIST, SOUND_MAX_DIST);
+            FMOD_Sound_Set3DMinMaxDistance(m_sounds[it->first], SOUND_MIN_DIST, SOUND_MAX_DIST);
     }
     #endif
 }
 
-void SoundManager::Play(std::string soundName, Node* node)
+void SoundManager::Play(std::string soundName, Object* node)
 {
     #ifndef THEBALL_DISABLE_SOUND
-    int channel = FSOUND_PlaySound(FSOUND_FREE, m_sounds[soundName]);
-    FSOUND_3D_SetAttributes(channel, node->GetMatrix().GetPos(), 0);
+    FMOD_CHANNEL* channel;
+
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], false, &channel);
+
+    FMOD_Channel_Set3DAttributes(channel,
+                                 (FMOD_VECTOR*)(float*)node->NewtonNode::GetPos(),
+                                 (FMOD_VECTOR*)(float*)node->NewtonNode::GetVelocity());
     #endif
 }
