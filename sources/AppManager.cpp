@@ -74,7 +74,7 @@ AppManager::AppManager()
 
 AppManager::~AppManager()
 {
-    FSOUND_Close();
+    FMOD_System_Release(m_fmodsys);
 
     delete m_gameEngine;
 }
@@ -125,16 +125,19 @@ void AppManager::SetupVideoMode()
 
 void AppManager::SetupSound()
 {
-    FSOUND_SetOutput(FSOUND_OUTPUT_DSOUND);
-    FSOUND_SetDriver(1);
-    FSOUND_Init(44100, 32, 0);
+    FMOD_System_Create(&m_fmodsys);
+    FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
+    FMOD_System_SetDriver(m_fmodsys, 1);
+    FMOD_System_Init(m_fmodsys, 32, FMOD_INIT_NORMAL, 0);
 
     #ifndef THEBALL_DISABLE_MUSIC
-    m_mainMusic = FSOUND_Stream_Open(SOUND_MAINTHEME, FSOUND_LOOP_NORMAL, 0, 0);
+    FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, SOUND_MAINTHEME,
+                                               FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
+                                               0, &m_mainMusic);
 
-    if(!m_mainMusic)
+    if(res != FMOD_OK)
         throw tbe::Exception("AppManager::AppManager; %s (%s)",
-                             FMOD_ErrorString(FSOUND_GetError()),
+                             FMOD_ErrorString(res),
                              SOUND_MAINTHEME);
     #endif
 }
@@ -809,7 +812,7 @@ void AppManager::ExecuteMenu()
     using namespace tbe::scene;
 
     #ifndef THEBALL_DISABLE_MUSIC
-    FSOUND_Stream_Play(FSOUND_FREE, m_mainMusic);
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
     #endif
 
     bool done = false;
@@ -900,7 +903,7 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
     m_ppeManager->ClearAll();
 
     #ifndef THEBALL_DISABLE_MUSIC
-    FSOUND_Stream_Stop(m_mainMusic);
+    FMOD_Channel_Stop(m_mainMusicCh);
     #endif
 
     // Affichage de l'ecran de chargement --------------------------------------
@@ -971,7 +974,7 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
     delete gameManager;
 
     #ifndef THEBALL_DISABLE_MUSIC
-    FSOUND_Stream_Play(FSOUND_FREE, m_mainMusic);
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
     #endif
 }
 
@@ -983,7 +986,7 @@ void AppManager::ExecuteEditor(const EditSetting& editSetting)
     m_ppeManager->ClearAll();
 
     #ifndef THEBALL_DISABLE_MUSIC
-    FSOUND_Stream_Stop(m_mainMusic);
+    FMOD_Channel_Stop(m_mainMusicCh);
     #endif
 
     // Affichage de l'ecran de chargement --------------------------------------
@@ -1035,7 +1038,7 @@ void AppManager::ExecuteEditor(const EditSetting& editSetting)
     delete editorManager;
 
     #ifndef THEBALL_DISABLE_MUSIC
-    FSOUND_Stream_Play(FSOUND_FREE, m_mainMusic);
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
     #endif
 }
 
@@ -1062,4 +1065,9 @@ tbe::gui::GuiManager* AppManager::GetGuiMng() const
 tbe::SDLDevice* AppManager::GetGameEngine() const
 {
     return m_gameEngine;
+}
+
+FMOD_SYSTEM* AppManager::GetFmodSystem() const
+{
+    return m_fmodsys;
 }
