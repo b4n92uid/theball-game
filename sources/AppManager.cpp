@@ -126,9 +126,9 @@ void AppManager::SetupVideoMode()
 void AppManager::SetupSound()
 {
     FMOD_System_Create(&m_fmodsys);
-    FMOD_System_Init(m_fmodsys, 64, FMOD_INIT_NORMAL, 0);
+    FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
+    FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
 
-    #ifndef THEBALL_DISABLE_MUSIC
     FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, SOUND_MAINTHEME,
                                                FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
                                                0, &m_mainMusic);
@@ -137,7 +137,6 @@ void AppManager::SetupSound()
         throw tbe::Exception("AppManager::AppManager; %s (%s)",
                              FMOD_ErrorString(res),
                              SOUND_MAINTHEME);
-    #endif
 }
 
 void AppManager::SetupMenuGui()

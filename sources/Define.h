@@ -57,10 +57,11 @@
 
 // SOUND & MUSIC ---------------------------------------------------------------
 #define SOUND_MAINTHEME "data/music/research.ogg"
-#define SOUND_BLASTER   "data/sfxart/blaster.wav"
-#define SOUND_SHOTGUN   "data/sfxart/shotgun.wav"
-#define SOUND_BOMB      "data/sfxart/bomb.wav"
-#define SOUND_FINDER    "data/sfxart/finder.wav"
+
+#define SOUND_BLASTER   "data/sfxart/weapons/blaster.wav"
+#define SOUND_SHOTGUN   "data/sfxart/weapons/shotgun.wav"
+#define SOUND_BOMB      "data/sfxart/weapons/bomb.wav"
+#define SOUND_FINDER    "data/sfxart/weapons/finder.wav"
 
 #define SOUND_MIN_DIST 16
 #define SOUND_MAX_DIST 10000

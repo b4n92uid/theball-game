@@ -13,6 +13,7 @@
 #include <fmod.h>
 
 #include "Settings.h"
+#include "Object.h"
 
 class PlayManager;
 class Player;
@@ -87,7 +88,6 @@ public:
     Player* GetShooter() const;
 
     void SetFireSound(std::string fireSound);
-    FMOD_SOUND* GetFireSound() const;
 
     std::string GetWeaponName() const;
     void SetWeaponName(std::string weaponName);
@@ -116,13 +116,11 @@ protected:
     std::vector<Bullet*> m_ammosPack;
 
     tbe::AABB m_mapAABB;
+    std::string m_soundID;
 
     PlayManager* m_playManager;
+    SoundManager* m_soundManager;
     Player* m_parent;
-
-    FMOD_SYSTEM* m_fmodsys;
-    FMOD_SOUND* m_fireSound;
-    FMOD_CHANNEL* m_fireSoundCh;
 
     Settings::Physics m_worldSettings;
 };

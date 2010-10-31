@@ -19,6 +19,7 @@
 #include "Tools.h"
 #include "Weapon.h"
 #include "FragModeAi.h"
+#include "PlaySoundManager.h"
 
 #include <tinyxml.h>
 
@@ -35,6 +36,8 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
 
     m_camera = new scene::Camera(scene::Camera::TARGET_RELATIVE);
     manager.scene->AddCamera("MainCam", m_camera);
+
+    delete manager.sound, manager.sound = new PlaySoundManager(this);
 }
 
 BulletTime* PlayManager::GetBullettime() const
@@ -309,16 +312,12 @@ void PlayManager::OnStartGame()
     FMOD_CHANNELGROUP* chgrp;
     FMOD_System_GetMasterChannelGroup(manager.fmodsys, &chgrp);
 
-    FMOD_CHANNELGROUP* musicchgrp;
-    FMOD_System_CreateChannelGroup(manager.fmodsys, "musicchgrp", &musicchgrp);
-    FMOD_Channel_SetChannelGroup(map.musicChannel, musicchgrp);
+    FMOD_CHANNELGROUP* musicChGrp;
+    FMOD_System_CreateChannelGroup(manager.fmodsys, "musicChGrp", &musicChGrp);
+    FMOD_Channel_SetChannelGroup(map.musicChannel, musicChGrp);
 
-    FMOD_ChannelGroup_SetVolume(chgrp, 0.6);
-    FMOD_ChannelGroup_SetVolume(musicchgrp, 1.0);
-
-    //    FSOUND_SetSFXMasterVolume(160);
-    //    FSOUND_SetVolumeAbsolute(map.musicChannel, 255);
-
+    FMOD_ChannelGroup_SetVolume(chgrp, 0.75);
+    FMOD_ChannelGroup_SetVolume(musicChGrp, 1.00);
     #endif
 }
 
@@ -499,7 +498,7 @@ void PlayManager::GameProcess()
             {
                 player->ReBorn();
 
-                manager.sound->Play("appear", player);
+                manager.sound->Play("respawn", player);
             }
         }
 

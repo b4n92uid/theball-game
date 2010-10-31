@@ -11,8 +11,8 @@
 Object::Object(GameManager* gameManager)
 {
     m_gameManager = gameManager;
-    m_soundManager = gameManager->manager.sound;
-    m_worldSettings = gameManager->manager.app->globalSettings.physics;
+    m_soundManager = m_gameManager->manager.sound;
+    m_worldSettings = m_gameManager->manager.app->globalSettings.physics;
 
     SetNewtonWorld(m_gameManager->parallelscene.newton->GetNewtonWorld());
     SetUpdatedMatrix(&m_matrix);

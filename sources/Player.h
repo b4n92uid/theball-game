@@ -170,6 +170,7 @@ protected:
     tbe::scene::ParticlesEmiter* m_deadExplode;
 
     PlayManager* m_playManager;
+    SoundManager* m_soundManager;
 };
 
 #endif /* _PLAYERENGINE_H */

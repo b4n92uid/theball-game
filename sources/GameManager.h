@@ -65,10 +65,10 @@ public:
         tbe::ticks::FpsManager* fps;
 
         MaterialManager* material;
+        SoundManager* sound;
         BldParser* level;
 
         AppManager* app;
-        SoundManager* sound;
 
         FMOD_SYSTEM* fmodsys;
 

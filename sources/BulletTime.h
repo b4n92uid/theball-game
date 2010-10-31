@@ -10,6 +10,7 @@
 
 class Player;
 class PlayManager;
+class SoundManager;
 
 class BulletTime
 {
@@ -30,6 +31,7 @@ private:
     bool m_active;
     Player* m_userPlayer;
     PlayManager* m_playManager;
+    SoundManager* m_soundManager;
 };
 
 #endif	/* BULLETTIME_H */
