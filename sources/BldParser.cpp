@@ -237,7 +237,6 @@ void BldParser::OnLoadMusic(AttribMap& att)
     string& filePath = att["filePath"];
     m_gameManager->map.musicPath = filePath;
 
-    #ifndef THEBALL_DISABLE_MUSIC
     FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, filePath.c_str(),
                                                FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
                                                0, &m_gameManager->map.musicStream);
@@ -245,7 +244,6 @@ void BldParser::OnLoadMusic(AttribMap& att)
     if(res != FMOD_OK)
         throw Exception("BldParser::OnLoadMusic; %s (%s)",
                         FMOD_ErrorString(res), filePath.c_str());
-    #endif
 }
 
 void BldParser::OnLoadFog(AttribMap& att)

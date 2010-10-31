@@ -20,18 +20,25 @@ class SoundManager
 {
 public:
 
-    /// Constructeur
+    typedef std::map<std::string, FMOD_SOUND*> SoundMap;
+
     SoundManager(GameManager* gameManager);
+
+    virtual ~SoundManager();
+
+    /// *
+    void RegisterSound(std::string name, std::string filename);
 
     /// Jouer un son
     void Play(std::string soundName, Object* object);
 
-    typedef std::map<std::string, FMOD_SOUND*> SoundMap;
+protected:
+    virtual void ProcessEffect(std::string soundName, FMOD_CHANNEL* channel);
 
 protected:
+    GameManager* m_gameManager;
     FMOD_SYSTEM* m_fmodsys;
     SoundMap m_sounds;
-    GameManager* m_gameManager;
 };
 
 #endif	/* _SOUNDMANAGER_H */

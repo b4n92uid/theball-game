@@ -21,7 +21,8 @@ BulletTime::BulletTime(PlayManager* playManager)
     m_active = false;
     m_value = 1;
     m_playManager = playManager;
-    m_userPlayer = playManager->GetUserPlayer();
+    m_userPlayer = m_playManager->GetUserPlayer();
+    m_soundManager = m_playManager->manager.sound;
 }
 
 BulletTime::~BulletTime()
@@ -60,7 +61,7 @@ void BulletTime::SetActive(bool active)
 
     if(m_active)
     {
-        m_playManager->manager.sound->Play("bullettime", m_userPlayer);
+        m_soundManager->Play("bullettime", m_userPlayer);
 
         m_playManager->hud.background.bullettime->SetEnable(true);
         m_playManager->hud.background.bullettime->SetOpacity(0.5);

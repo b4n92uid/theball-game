@@ -59,8 +59,7 @@ GameManager::~GameManager()
     manager.gameEngine->SetMouseVisible(true);
 
     #ifndef THEBALL_DISABLE_MUSIC
-    if(map.musicStream)
-        FMOD_Sound_Release(map.musicStream);
+    FMOD_Sound_Release(map.musicStream);
     #endif
 
     delete manager.sound;

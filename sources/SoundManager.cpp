@@ -24,47 +24,52 @@ SoundManager::SoundManager(GameManager* gameManager)
 
     m_fmodsys = m_gameManager->manager.fmodsys;
 
-    #ifndef THEBALL_DISABLE_SOUND
     map<string, string> soundPaths;
-
-    soundPaths["appear"] = "data/sfxart/appear.wav";
 
     soundPaths["boost"] = "data/sfxart/boost.wav";
     soundPaths["bullettime"] = "data/sfxart/bullettime.wav";
-
     soundPaths["hit"] = "data/sfxart/hit.wav";
-    soundPaths["kill"] = "data/sfxart/kill.wav";
-
-    soundPaths["land"] = "data/sfxart/land.wav";
-    soundPaths["contact"] = "data/sfxart/contact.wav";
-
-    soundPaths["takeammo"] = "data/sfxart/takeammo.wav";
-    soundPaths["takelife"] = "data/sfxart/takelife.wav";
-    soundPaths["takefatalshot"] = "data/sfxart/takefatalshot.wav";
-    soundPaths["takesuperlife"] = "data/sfxart/takesuperlife.wav";
-
     soundPaths["jumper"] = "data/sfxart/jumper.wav";
-    soundPaths["teleporter"] = "data/sfxart/teleporter.wav";
-
-    soundPaths["notime"] = "data/sfxart/notime.wav";
+    soundPaths["kill"] = "data/sfxart/kill.wav";
     soundPaths["noAvailable"] = "data/sfxart/noAvailable.wav";
+    soundPaths["notime"] = "data/sfxart/notime.wav";
+    soundPaths["respawn"] = "data/sfxart/respawn.wav";
+    soundPaths["takeammo"] = "data/sfxart/takeammo.wav";
+    soundPaths["takefatalshot"] = "data/sfxart/takefatalshot.wav";
+    soundPaths["takelife"] = "data/sfxart/takelife.wav";
+    soundPaths["takesuperlife"] = "data/sfxart/takesuperlife.wav";
+    soundPaths["teleport"] = "data/sfxart/teleport.wav";
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
-    {
-        FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, it->second.c_str(),
-                                                  FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
-                                                  0, &m_sounds[it->first]);
-
-        if(res != FMOD_OK)
-            throw tbe::Exception("SoundManager::SoundManager; %s (%s)",
-                                 FMOD_ErrorString(res), it->second.c_str());
-        else
-            FMOD_Sound_Set3DMinMaxDistance(m_sounds[it->first], SOUND_MIN_DIST, SOUND_MAX_DIST);
-    }
-    #endif
+        RegisterSound(it->first, it->second);
 }
 
-void SoundManager::Play(std::string soundName, Object* node)
+SoundManager::~SoundManager()
+{
+}
+
+void SoundManager::RegisterSound(std::string name, std::string filename)
+{
+    if(m_sounds.count(name))
+    {
+        cout << "Load Shared Sound : " << filename << endl;
+        return;
+    }
+
+    cout << "Load Sound : " << filename << endl;
+
+    FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, filename.c_str(),
+                                              FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
+                                              0, &m_sounds[name]);
+
+    if(res != FMOD_OK)
+        throw tbe::Exception("SoundManager::RegisterSound; %s (%s)",
+                             FMOD_ErrorString(res), filename.c_str());
+    else
+        FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], SOUND_MIN_DIST, SOUND_MAX_DIST);
+}
+
+void SoundManager::Play(std::string soundName, Object* object)
 {
     #ifndef THEBALL_DISABLE_SOUND
     FMOD_CHANNEL* channel;
@@ -72,9 +77,16 @@ void SoundManager::Play(std::string soundName, Object* node)
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
 
     FMOD_Channel_Set3DAttributes(channel,
-                                 (FMOD_VECTOR*)(float*)node->NewtonNode::GetPos(),
-                                 (FMOD_VECTOR*)(float*)node->NewtonNode::GetVelocity());
+                                 (FMOD_VECTOR*)(float*)object->NewtonNode::GetPos(),
+                                 (FMOD_VECTOR*)(float*)object->NewtonNode::GetVelocity());
+
+    ProcessEffect(soundName, channel);
 
     FMOD_Channel_SetPaused(channel, false);
     #endif
+}
+
+void SoundManager::ProcessEffect(std::string soundName, FMOD_CHANNEL* channel)
+{
+
 }

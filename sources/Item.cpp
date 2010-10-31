@@ -98,8 +98,6 @@ void ItemAddAmmo::ModifPlayer(Player* player)
     m_soundManager->Play("takeammo", this);
 
     SetTaked(true);
-
-
 }
 
 bool ItemAddAmmo::IsNeeded(Player* player)
@@ -151,8 +149,6 @@ void ItemAddLife::ModifPlayer(Player* player)
     m_soundManager->Play("takelife", this);
 
     SetTaked(true);
-
-
 }
 
 bool ItemAddLife::IsNeeded(Player* player)
@@ -369,8 +365,6 @@ void ItemAddFinder::ModifPlayer(Player* player)
     m_soundManager->Play("takeammo", this);
 
     SetTaked(true);
-
-
 }
 
 bool ItemAddFinder::IsNeeded(Player* player)
@@ -420,8 +414,6 @@ void ItemAddBomb::ModifPlayer(Player* player)
     m_soundManager->Play("takeammo", this);
 
     SetTaked(true);
-
-
 }
 
 bool ItemAddBomb::IsNeeded(Player* player)
@@ -471,8 +463,6 @@ void ItemAddShotgun::ModifPlayer(Player* player)
     m_soundManager->Play("takeammo", this);
 
     SetTaked(true);
-
-
 }
 
 bool ItemAddShotgun::IsNeeded(Player* player)

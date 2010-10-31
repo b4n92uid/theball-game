@@ -155,5 +155,5 @@ void DYTeleporter::Process()
 void DYTeleporter::InteractWith(Player* player)
 {
     player->SetRandomPosInTheFloor();
-    m_soundManager->Play("teleporter", player);
+    m_soundManager->Play("teleport", player);
 }

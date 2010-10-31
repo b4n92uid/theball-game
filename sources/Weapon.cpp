@@ -12,6 +12,8 @@
 
 #include <fmod_errors.h>
 
+typedef boost::filesystem::path fspath;
+
 using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
@@ -24,7 +26,7 @@ Weapon::Weapon(PlayManager* playManager)
 
     m_playManager = playManager;
     m_worldSettings = m_playManager->manager.app->globalSettings.physics;
-    m_fmodsys = m_playManager->manager.fmodsys;
+    m_soundManager = m_playManager->manager.sound;
 
     m_maxAmmoDammage = 0;
     m_maxAmmoCount = 0;
@@ -33,8 +35,6 @@ Weapon::Weapon(PlayManager* playManager)
 
     m_shootSpeed = 0;
     m_shootCadency = 0;
-
-    m_fireSound = NULL;
 
     m_playManager->parallelscene.particles->AddParticlesEmiter("", this);
 
@@ -52,11 +52,6 @@ Weapon::~Weapon()
 
     for(unsigned i = 0; i < m_ammosPack.size(); i++)
         delete m_ammosPack[i];
-
-    #ifndef THEBALL_DISABLE_SOUND
-    if(m_fireSound)
-        FMOD_Sound_Release(m_fireSound);
-    #endif
 }
 
 void Weapon::Process()
@@ -86,23 +81,10 @@ void Weapon::Process()
 
 void Weapon::SetFireSound(std::string fireSound)
 {
-    #ifndef THEBALL_DISABLE_SOUND
+    fspath path(fireSound);
+    m_soundID = path.stem();
 
-    FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, fireSound.c_str(),
-                                              FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
-                                              0, &m_fireSound);
-
-    if(res != FMOD_OK)
-        throw tbe::Exception("Weapon::SetFireSound; %s (%s)",
-                             FMOD_ErrorString(res), fireSound.c_str());
-    else
-        FMOD_Sound_Set3DMinMaxDistance(m_fireSound, SOUND_MIN_DIST, SOUND_MAX_DIST);
-    #endif
-}
-
-FMOD_SOUND* Weapon::GetFireSound() const
-{
-    return m_fireSound;
+    m_soundManager->RegisterSound(m_soundID, fireSound);
 }
 
 bool Weapon::IsEmpty()
@@ -126,7 +108,7 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
     if(m_ammoCount <= 0)
     {
         if(m_parent->clocks.shoot.IsEsplanedTime(1000))
-            m_playManager->manager.sound->Play("noAvailable", m_parent);
+            m_soundManager->Play("noAvailable", m_parent);
 
         return;
     }
@@ -140,15 +122,7 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
     if(m_ammosPack.size() > m_maxAmmoCount)
         return;
 
-    #ifndef THEBALL_DISABLE_SOUND
-    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_fireSound, true, &m_fireSoundCh);
-
-    FMOD_Channel_Set3DAttributes(m_fireSoundCh,
-                                 (FMOD_VECTOR*)(float*)m_parent->NewtonNode::GetPos(),
-                                 (FMOD_VECTOR*)(float*)m_parent->NewtonNode::GetVelocity());
-
-    FMOD_Channel_SetPaused(m_fireSoundCh, false);
-    #endif
+    m_soundManager->Play(m_soundID, m_parent);
 
     m_ammoCount--;
 
@@ -157,13 +131,11 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
 
 void Weapon::SetShooter(Player* shooter)
 {
-
     m_parent = shooter;
 }
 
 Player* Weapon::GetShooter() const
 {
-
     return m_parent;
 }
 

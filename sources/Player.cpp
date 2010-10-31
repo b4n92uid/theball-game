@@ -25,6 +25,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_score = 0;
     m_life = 100;
     m_attachedCotroller = NULL;
+    m_soundManager = playManager->manager.sound;
 
     // Effet explosion
     m_deadExplode = new ParticlesEmiter;
@@ -185,7 +186,7 @@ void Player::Boost()
 
         NewtonBodyAddImpulse(m_body, impulseDeri, m_matrix.GetPos());
 
-        m_playManager->manager.sound->Play("boost", this);
+        m_soundManager->Play("boost", this);
 
         clocks.boostAvailableSound.SnapShoot();
         clocks.boostAvailable.SnapShoot();
@@ -199,7 +200,7 @@ void Player::Boost()
 
     else if(clocks.boostAvailableSound.IsEsplanedTime(800))
     {
-        m_playManager->manager.sound->Play("noAvailable", this);
+        m_soundManager->Play("noAvailable", this);
     }
 }
 
@@ -270,7 +271,7 @@ void Player::Kill()
     SetFreeze(true);
     SetEnable(false);
 
-    m_playManager->manager.sound->Play("kill", this);
+    m_soundManager->Play("kill", this);
 
     if(m_playManager->GetUserPlayer() == this)
     {
@@ -355,7 +356,7 @@ void Player::TakeDammage(Bullet* ammo)
         m_playManager->hud.background.dammage->SetEnable(true);
     }
 
-    m_playManager->manager.sound->Play("hit", this);
+    m_soundManager->Play("hit", this);
 }
 
 PlayManager* Player::GetPlayManager() const
