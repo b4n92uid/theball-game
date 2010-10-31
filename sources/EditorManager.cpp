@@ -371,10 +371,7 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
         if(event->lastActiveKey.first == EventManager::KEY_DELETE)
         {
             if(map.musicStream)
-            {
-                FMOD_Channel_Stop(map.musicChannel);
                 FMOD_Sound_Release(map.musicStream);
-            }
 
             map.musicChannel = 0;
             map.musicStream = NULL;
@@ -382,21 +379,24 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
             hud.music.list->CancelSelection();
         }
 
-        if(event->lastActiveKey.first == EventManager::KEY_SPACE && map.musicStream)
+        if(event->lastActiveKey.first == EventManager::KEY_SPACE)
         {
             FMOD_BOOL state = false;
-            FMOD_Channel_GetPaused(map.musicChannel, &state);
-            FMOD_Channel_SetPaused(map.musicChannel, !state);
+            FMOD_Channel_IsPlaying(map.musicChannel, &state);
+
+            if(state)
+                FMOD_Channel_Stop(map.musicChannel);
+            
+            else
+                FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE,
+                                        map.musicStream, false, &map.musicChannel);
         }
     }
 
     if(hud.music.list->IsActivate())
     {
         if(map.musicStream)
-        {
-            FMOD_Channel_Stop(map.musicChannel);
             FMOD_Sound_Release(map.musicStream);
-        }
 
         map.musicPath = hud.music.list->GetCurrentData().GetValue<string > ();
 
@@ -404,7 +404,7 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
                                                    FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
                                                    0, &map.musicStream);
 
-        if(res != FMOD_OK)
+        if(res == FMOD_OK)
             FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
 
         hud.music.list->SetActivate(false);
