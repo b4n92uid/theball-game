@@ -134,7 +134,7 @@ void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
         str << "Temps : Infinie" << endl;
 }
 
-void PlayTeamManager::ModUpdateScoreText(std::ostringstream& ss)
+void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
 {
     using namespace gui;
 

@@ -40,7 +40,7 @@ void PlayFragManager::ModUpdateStateText(std::ostringstream& ss)
         ss << "Temps : Infinie" << endl;
 }
 
-void PlayFragManager::ModUpdateScoreText(std::ostringstream& ss)
+void PlayFragManager::ModUpdateScoreListText(std::ostringstream& ss)
 {
     using namespace gui;
 

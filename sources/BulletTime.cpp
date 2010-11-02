@@ -62,20 +62,18 @@ void BulletTime::SetActive(bool active)
     if(m_active)
     {
         m_soundManager->Play("bullettime", m_userPlayer);
-
-        m_playManager->hud.background.bullettime->SetEnable(true);
-        m_playManager->hud.background.bullettime->SetOpacity(0.5);
+        m_playManager->HudBullettimeDisplay(true);
 
         if(m_playManager->manager.app->globalSettings.video.usePpe)
-            m_playManager->ppe.bullettime->SetEnable(true);
+            m_playManager->PPeBullettime(true);
     }
 
     else
     {
-        m_playManager->hud.background.bullettime->SetEnable(false);
+        m_playManager->HudBullettimeDisplay(false);
 
         if(m_playManager->manager.app->globalSettings.video.usePpe)
-            m_playManager->ppe.bullettime->SetEnable(false);
+            m_playManager->PPeBullettime(false);
     }
 }
 

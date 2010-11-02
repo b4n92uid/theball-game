@@ -19,7 +19,7 @@ public:
 protected:
     void ModSetupAi();
     void ModUpdateStateText(std::ostringstream& ss);
-    void ModUpdateScoreText(std::ostringstream& ss);
+    void ModUpdateScoreListText(std::ostringstream& ss);
     void ModUpdateGameOverText(std::ostringstream& ss);
 };
 
