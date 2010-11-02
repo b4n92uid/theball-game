@@ -74,7 +74,9 @@ AppManager::AppManager()
 
 AppManager::~AppManager()
 {
+    #ifndef THEBALL_NO_AUDIO
     FMOD_System_Release(m_fmodsys);
+    #endif
 
     delete m_gameEngine;
 }
@@ -125,6 +127,9 @@ void AppManager::SetupVideoMode()
 
 void AppManager::SetupSound()
 {
+    m_fmodsys = NULL;
+
+    #ifndef THEBALL_NO_AUDIO
     FMOD_System_Create(&m_fmodsys);
     FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
     FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
@@ -137,6 +142,7 @@ void AppManager::SetupSound()
         throw tbe::Exception("AppManager::AppManager; %s (%s)",
                              FMOD_ErrorString(res),
                              SOUND_MAINTHEME);
+    #endif
 }
 
 void AppManager::SetupMenuGui()
@@ -648,6 +654,7 @@ void AppManager::SetupBackgroundScene()
 
         m_ppeManager->ClearAll();
 
+        // NOTE BlurEffect
         #if 0
         BlurEffect* blur = new BlurEffect;
         blur->SetPasse(4);
@@ -808,7 +815,7 @@ void AppManager::ExecuteMenu()
     using namespace tbe::gui;
     using namespace tbe::scene;
 
-    #ifndef THEBALL_DISABLE_MUSIC
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
     #endif
 
@@ -899,7 +906,7 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
 
-    #ifndef THEBALL_DISABLE_MUSIC
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
     FMOD_Channel_Stop(m_mainMusicCh);
     #endif
 
@@ -970,7 +977,7 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
 
     delete gameManager;
 
-    #ifndef THEBALL_DISABLE_MUSIC
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
     #endif
 }
@@ -982,7 +989,7 @@ void AppManager::ExecuteEditor(const EditSetting& editSetting)
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
 
-    #ifndef THEBALL_DISABLE_MUSIC
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
     FMOD_Channel_Stop(m_mainMusicCh);
     #endif
 
@@ -1034,7 +1041,7 @@ void AppManager::ExecuteEditor(const EditSetting& editSetting)
 
     delete editorManager;
 
-    #ifndef THEBALL_DISABLE_MUSIC
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
     #endif
 }

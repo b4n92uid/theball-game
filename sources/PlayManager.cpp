@@ -306,7 +306,7 @@ void PlayManager::SetupGui()
 
 void PlayManager::OnStartGame()
 {
-    #ifndef THEBALL_DISABLE_MUSIC
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
     if(map.musicStream)
         FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
 
@@ -657,10 +657,12 @@ void PlayManager::Render()
 
     // Son 3D ------------------------------------------------------------------
 
+    #ifndef THEBALL_NO_AUDIO
     FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)m_camera->GetPos(), 0,
                                         (FMOD_VECTOR*)(float*)m_camera->GetTarget(),
                                         (FMOD_VECTOR*)(float*)m_camera->GetUp());
     FMOD_System_Update(manager.fmodsys);
+    #endif
 
     // Rendue ------------------------------------------------------------------
 

@@ -39,7 +39,11 @@ GameManager::GameManager(AppManager* appManager)
     parallelscene.particles = new scene::ParticlesParallelScene;
     manager.scene->AddParallelScene("3:ParticlesScene", parallelscene.particles);
 
+    #ifndef THEBALL_NO_AUDIO
     manager.fmodsys = appManager->GetFmodSystem();
+    #else
+    manager.fmodsys = NULL;
+    #endif
 
     manager.material = new MaterialManager(this);
     manager.sound = new SoundManager(this);
@@ -58,7 +62,7 @@ GameManager::~GameManager()
     manager.gameEngine->SetGrabInput(false);
     manager.gameEngine->SetMouseVisible(true);
 
-    #ifndef THEBALL_DISABLE_MUSIC
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
     FMOD_Sound_Release(map.musicStream);
     #endif
 

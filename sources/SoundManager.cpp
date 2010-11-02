@@ -50,6 +50,7 @@ SoundManager::~SoundManager()
 
 void SoundManager::RegisterSound(std::string name, std::string filename)
 {
+    #ifndef THEBALL_NO_AUDIO
     if(m_sounds.count(name))
     {
         cout << "Load Shared Sound : " << filename << endl;
@@ -67,11 +68,12 @@ void SoundManager::RegisterSound(std::string name, std::string filename)
                              FMOD_ErrorString(res), filename.c_str());
     else
         FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
+    #endif
 }
 
 void SoundManager::Play(std::string soundName, Object* object)
 {
-    #ifndef THEBALL_DISABLE_SOUND
+    #if !defined(THEBALL_DISABLE_SOUND) && !defined(THEBALL_NO_AUDIO)
     FMOD_CHANNEL* channel;
 
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
