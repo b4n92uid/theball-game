@@ -124,14 +124,12 @@ void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    stringstream str;
-
-    str << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
+    ss << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : Infinie" << endl;
+        ss << "Temps : Infinie" << endl;
 }
 
 void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
@@ -151,27 +149,25 @@ void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
         redScore += redTeamPlayers[i]->GetScore();
     redScore /= redTeamPlayers.size();
 
-    stringstream str;
-
-    str << "Carte : " << map.name << endl;
-    str << "Type : Team" << endl;
+    ss << "Carte : " << map.name << endl;
+    ss << "Type : Team" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : " << "Infinie" << endl;
+        ss << "Temps : " << "Infinie" << endl;
 
-    str << endl;
+    ss << endl;
 
-    str << "Equipe bleu [" << bleuScore << "]" << endl;
+    ss << "Equipe bleu [" << bleuScore << "]" << endl;
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        str << blueTeamPlayers[i]->GetName() << " [" << blueTeamPlayers[i]->GetScore() << "] point(s)" << endl;
-    str << endl;
+        ss << blueTeamPlayers[i]->GetName() << " [" << blueTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+    ss << endl;
 
-    str << "Equipe rouge [" << redScore << "]" << endl;
+    ss << "Equipe rouge [" << redScore << "]" << endl;
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        str << redTeamPlayers[i]->GetName() << " [" << redTeamPlayers[i]->GetScore() << "] point(s)" << endl;
-    str << endl;
+        ss << redTeamPlayers[i]->GetName() << " [" << redTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+    ss << endl;
 }
 
 void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
@@ -191,29 +187,27 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
         redScore += redTeamPlayers[i]->GetScore();
     redScore /= redTeamPlayers.size();
 
-    stringstream str;
-
-    str << "Carte : " << map.name << endl;
-    str << "Type : Team" << endl;
+    ss << "Carte : " << map.name << endl;
+    ss << "Type : Team" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : " << "Infinie" << endl;
+        ss << "Temps : " << "Infinie" << endl;
 
-    str << endl;
+    ss << endl;
 
-    str << "Equipe bleu [" << bleuScore << "]" << endl;
+    ss << "Equipe bleu [" << bleuScore << "]" << endl;
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        str << blueTeamPlayers[i]->GetName() << " [" << blueTeamPlayers[i]->GetScore() << "] point(s)" << endl;
-    str << endl;
+        ss << blueTeamPlayers[i]->GetName() << " [" << blueTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+    ss << endl;
 
-    str << "Equipe rouge [" << redScore << "]" << endl;
+    ss << "Equipe rouge [" << redScore << "]" << endl;
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        str << redTeamPlayers[i]->GetName() << " [" << redTeamPlayers[i]->GetScore() << "] point(s)" << endl;
-    str << endl;
+        ss << redTeamPlayers[i]->GetName() << " [" << redTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+    ss << endl;
 
-    str << "Appuyez sur espace pour continuer..." << endl;
+    ss << "Appuyez sur espace pour continuer..." << endl;
 }
 
 bool PlayTeamManager::IsInBleuTeam(Player* player)
