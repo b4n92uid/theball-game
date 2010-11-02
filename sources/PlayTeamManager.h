@@ -25,7 +25,7 @@ public:
 protected:
     virtual void ModSetupAi();
     virtual void ModUpdateStateText(std::ostringstream& ss);
-    virtual void ModUpdateScoreText(std::ostringstream& ss);
+    virtual void ModUpdateScoreListText(std::ostringstream& ss);
     virtual void ModUpdateGameOverText(std::ostringstream& ss);
 
 protected:

@@ -202,7 +202,7 @@ void PlayManager::SetupGui()
 
     hud.background.gameover = manager.gui->AddImage("hud.background.gameover", BACKGROUND_PAUSE);
     hud.background.gameover->SetSize(screenSize);
-    hud.background.gameover->SetOpacity(0);
+    hud.background.gameover->SetOpacity(0.75);
     hud.background.gameover->SetEnable(false);
 
     manager.gui->AddLayout(Layout::Vertical, 10, 10);
@@ -250,6 +250,7 @@ void PlayManager::SetupGui()
     hud.background.dammage->SetEnable(false);
 
     hud.background.bullettime = manager.gui->AddImage("1:hud.background.bullettime", BACKGROUND_BULLETTIME);
+    hud.background.bullettime->SetOpacity(0.5);
     hud.background.bullettime->SetSize(screenSize);
     hud.background.bullettime->SetEnable(false);
 
@@ -753,22 +754,26 @@ void PlayManager::UnRegisterPlayer(Player* player, bool keep)
 
 void PlayManager::PPeBullettime(bool status)
 {
+    ppe.bullettime->SetEnable(status);
 }
 
 void PlayManager::PPeBoost(bool status)
 {
+    ppe.boost->SetEnable(status);
 }
 
 void PlayManager::HudNotifyDammage()
 {
-    hud.background.dammage->SetOpacity(0.75);
     hud.background.dammage->SetEnable(true);
+    hud.background.dammage->SetOpacity(0.75);
 }
 
 void PlayManager::HudNotifyItem(bool status)
 {
+    hud.item->SetCurState(status);
 }
 
 void PlayManager::HudBullettimeDisplay(bool status)
 {
+    hud.background.bullettime->SetEnable(status);
 }
