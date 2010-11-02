@@ -18,9 +18,9 @@ public:
 
 protected:
     void ModSetupAi();
-    void ModUpdateStateText();
-    void ModUpdateScoreText();
-    void ModUpdateGameOverText();
+    void ModUpdateStateText(std::ostringstream& ss);
+    void ModUpdateScoreText(std::ostringstream& ss);
+    void ModUpdateGameOverText(std::ostringstream& ss);
 };
 
 #endif	/* _PLAYFRAGMANAGER_H */

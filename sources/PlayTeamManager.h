@@ -24,9 +24,9 @@ public:
 
 protected:
     virtual void ModSetupAi();
-    virtual void ModUpdateStateText();
-    virtual void ModUpdateScoreText();
-    virtual void ModUpdateGameOverText();
+    virtual void ModUpdateStateText(std::ostringstream& ss);
+    virtual void ModUpdateScoreText(std::ostringstream& ss);
+    virtual void ModUpdateGameOverText(std::ostringstream& ss);
 
 protected:
     tbe::scene::ParticlesEmiter* m_teamBleuIcon;

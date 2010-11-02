@@ -142,7 +142,7 @@ void Player::Process()
     {
         if(m_playManager->manager.app->globalSettings.video.usePpe)
             if(clocks.boostDisableBlur.IsEsplanedTime(1000))
-                m_playManager->ppe.boost->SetEnable(false);
+                m_playManager->PPeBoost(false);
 
         if(clocks.boostAvailable.IsEsplanedTime(3000))
             m_boostAvalaible = true;
@@ -194,7 +194,7 @@ void Player::Boost()
         if(m_playManager->manager.app->globalSettings.video.usePpe)
         {
             clocks.boostDisableBlur.SnapShoot();
-            m_playManager->ppe.boost->SetEnable(true);
+            m_playManager->PPeBoost(true);
         }
     }
 
@@ -278,7 +278,7 @@ void Player::Kill()
         m_playManager->GetBullettime()->SetActive(false);
 
         if(m_playManager->manager.app->globalSettings.video.usePpe)
-            m_playManager->ppe.boost->SetEnable(false);
+            m_playManager->PPeBoost(false);
     }
 }
 
@@ -352,8 +352,7 @@ void Player::TakeDammage(Bullet* ammo)
 
     if(this == m_playManager->GetUserPlayer())
     {
-        m_playManager->hud.background.dammage->SetOpacity(0.75);
-        m_playManager->hud.background.dammage->SetEnable(true);
+        m_playManager->HudNotifyDammage();
     }
 
     m_soundManager->Play("hit", this);

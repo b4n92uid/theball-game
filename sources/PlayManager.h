@@ -63,7 +63,74 @@ public:
     tbe::Vector3f GetShootTarget() const;
 
     Player* GetUserPlayer() const;
+    
+    const Player::Array& GetPlayers() const;
+
     BulletTime* GetBullettime() const;
+
+    void PPeBullettime(bool status);
+    void PPeBoost(bool status);
+
+    void HudNotifyDammage();
+    void HudNotifyItem(bool status);
+    void HudBullettimeDisplay(bool status);
+
+protected:
+
+    virtual void ModSetupAi() = 0;
+
+    virtual void ModUpdateStateText(std::ostringstream& ss) = 0;
+    virtual void ModUpdateScoreListText(std::ostringstream& ss) = 0;
+    virtual void ModUpdateGameOverText(std::ostringstream& ss) = 0;
+
+    static bool PlayerScoreSortProcess(Player* p1, Player* p2)
+    {
+        if(p1->GetScore() == p2->GetScore())
+            return(p1->GetName() > p2->GetName());
+        else
+            return(p1->GetScore() > p2->GetScore());
+    }
+
+    enum TimtTo
+    {
+        TIME_TO_VIEWSCORE,
+        TIME_TO_PLAY,
+        TIME_TO_PAUSE,
+        TIME_TO_GAMEOVER,
+    };
+
+    struct
+    {
+        int startChrono;
+        int curChrono;
+        tbe::ticks::Clock clock;
+        time_t startTimestamp;
+
+    } m_playTimeManager;
+
+    Player* m_userPlayer;
+
+    Player::Array m_players;
+
+    BulletTime* m_bullettime;
+
+    AppManager::PlaySetting m_playSetting;
+
+    tbe::ticks::Clock m_logClock;
+    tbe::ticks::Clock m_newtonClock;
+    tbe::ticks::Clock m_validGameOver;
+
+    tbe::scene::Camera* m_camera;
+
+    tbe::Vector3f m_shootTarget;
+
+    std::list<tbe::Vector3f> m_playerPosRec;
+
+    TimtTo m_timeTo;
+
+    bool m_gameOver;
+
+private:
 
     struct
     {
@@ -107,60 +174,8 @@ public:
 
     } hud;
 
-    Player::Array players;
-
-protected:
-    virtual void ModSetupAi() = 0;
-    virtual void ModUpdateStateText() = 0;
-    virtual void ModUpdateScoreText() = 0;
-    virtual void ModUpdateGameOverText() = 0;
-
     void ProcessDevelopperCodeEvent();
 
-    static bool PlayerScoreSortProcess(Player* p1, Player* p2)
-    {
-        if(p1->GetScore() == p2->GetScore())
-            return(p1->GetName() > p2->GetName());
-        else
-            return(p1->GetScore() > p2->GetScore());
-    }
-
-
-protected:
-
-    enum TimtTo
-    {
-        TIME_TO_VIEWSCORE,
-        TIME_TO_PLAY,
-        TIME_TO_PAUSE,
-        TIME_TO_GAMEOVER,
-    };
-
-    Player* m_userPlayer;
-    BulletTime* m_bullettime;
-
-    AppManager::PlaySetting m_playSetting;
-
-    struct
-    {
-        int startChrono;
-        int curChrono;
-        tbe::ticks::Clock clock;
-        time_t startTimestamp;
-
-    } m_playTimeManager;
-
-    tbe::ticks::Clock m_logClock;
-    tbe::ticks::Clock m_newtonClock;
-    tbe::ticks::Clock m_validGameOver;
-
-    tbe::scene::Camera* m_camera;
-
-    tbe::Vector3f m_shootTarget;
-    std::list<tbe::Vector3f> m_playerPosRec;
-
-    TimtTo m_timeTo;
-    bool m_gameOver;
 };
 
 #endif	/* _PLAYMODEMANAGER_H */

@@ -85,28 +85,28 @@ void PlayTeamManager::ModSetupAi()
 {
     using namespace scene;
 
-    unsigned middle = players.size() / 2;
+    unsigned middle = m_players.size() / 2;
 
-    std::random_shuffle(players.begin(), players.end());
+    std::random_shuffle(m_players.begin(), m_players.end());
 
     for(unsigned i = 0; i < middle; i++)
     {
-        if(players[i] != m_userPlayer)
-            players[i]->AttachController(new TeamModeAi(this));
+        if(m_players[i] != m_userPlayer)
+            m_players[i]->AttachController(new TeamModeAi(this));
 
-        players[i]->AddCheckPoint(new TeamModeCheckPlayers(this));
+        m_players[i]->AddCheckPoint(new TeamModeCheckPlayers(this));
 
-        blueTeamPlayers.push_back(players[i]);
+        blueTeamPlayers.push_back(m_players[i]);
     }
 
-    for(unsigned i = middle; i < players.size(); i++)
+    for(unsigned i = middle; i < m_players.size(); i++)
     {
-        if(players[i] != m_userPlayer)
-            players[i]->AttachController(new TeamModeAi(this));
+        if(m_players[i] != m_userPlayer)
+            m_players[i]->AttachController(new TeamModeAi(this));
 
-        players[i]->AddCheckPoint(new TeamModeCheckPlayers(this));
+        m_players[i]->AddCheckPoint(new TeamModeCheckPlayers(this));
 
-        redTeamPlayers.push_back(players[i]);
+        redTeamPlayers.push_back(m_players[i]);
     }
 
     m_teamBleuIcon = new BillboardIcon(blueTeamPlayers);
@@ -120,7 +120,7 @@ void PlayTeamManager::ModSetupAi()
     parallelscene.particles->AddParticlesEmiter("", m_teamRedIcon);
 }
 
-void PlayTeamManager::ModUpdateStateText()
+void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
 {
     using namespace gui;
 
@@ -132,11 +132,9 @@ void PlayTeamManager::ModUpdateStateText()
         str << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
     else
         str << "Temps : Infinie" << endl;
-
-    hud.state->Write(str.str());
 }
 
-void PlayTeamManager::ModUpdateScoreText()
+void PlayTeamManager::ModUpdateScoreText(std::ostringstream& ss)
 {
     using namespace gui;
 
@@ -174,11 +172,9 @@ void PlayTeamManager::ModUpdateScoreText()
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
         str << redTeamPlayers[i]->GetName() << " [" << redTeamPlayers[i]->GetScore() << "] point(s)" << endl;
     str << endl;
-
-    hud.scorelist->Write(str.str());
 }
 
-void PlayTeamManager::ModUpdateGameOverText()
+void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
 {
     using namespace gui;
 
@@ -218,8 +214,6 @@ void PlayTeamManager::ModUpdateGameOverText()
     str << endl;
 
     str << "Appuyez sur espace pour continuer..." << endl;
-
-    hud.gameover->Write(str.str());
 }
 
 bool PlayTeamManager::IsInBleuTeam(Player* player)

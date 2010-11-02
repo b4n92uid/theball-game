@@ -340,16 +340,16 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
         if(event->keyState[EventManager::KEY_F10])
         {
-            for(unsigned i = 0; i < players.size(); i++)
-                if(players[i] != m_userPlayer)
+            for(unsigned i = 0; i < m_players.size(); i++)
+                if(m_players[i] != m_userPlayer)
                 {
-                    UnRegisterPlayer(players[i], true);
-                    delete players[i];
+                    UnRegisterPlayer(m_players[i], true);
+                    delete m_players[i];
                 }
 
-            Player::Array::iterator newEnd = remove_if(players.begin(), players.end(),
+            Player::Array::iterator newEnd = remove_if(m_players.begin(), m_players.end(),
                                                        bind1st(not_equal_to<Player*>(), m_userPlayer));
-            players.erase(newEnd, players.end());
+            m_players.erase(newEnd, m_players.end());
         }
 
         if(event->keyState[EventManager::KEY_F5])
@@ -418,7 +418,7 @@ void PlayManager::EventProcess()
             manager.gameEngine->SetGrabInput(false);
             manager.gameEngine->SetMouseVisible(true);
 
-            for(unsigned i = 0; i < players.size(); i++)
+            for(unsigned i = 0; i < m_players.size(); i++)
                 m_bullettime->SetActive(false);
 
             m_timeTo = TIME_TO_PAUSE;
@@ -430,7 +430,7 @@ void PlayManager::EventProcess()
         #endif
     }
 
-    // Session de pause
+        // Session de pause
     else if(m_timeTo == TIME_TO_PAUSE)
     {
         manager.gui->SetSession(SCREEN_PAUSEMENU);
@@ -484,9 +484,9 @@ void PlayManager::GameProcess()
     // - les joueurs mort pour les reconstruires
     // - les joueurs en fin de vie pour la préparation a la mort ;)
     // - les joueurs hors de l'arene pour les remetren place
-    for(unsigned i = 0; i < players.size(); i++)
+    for(unsigned i = 0; i < m_players.size(); i++)
     {
-        Player* player = players[i];
+        Player* player = m_players[i];
 
         if(player->IsKilled())
         {
@@ -559,6 +559,8 @@ void PlayManager::HudProcess()
 
     // Gestion de l'ETH en jeu -------------------------------------------------
 
+    sort(m_players.begin(), m_players.end(), PlayerScoreSortProcess);
+
     if(m_timeTo == TIME_TO_PLAY && !m_userPlayer->IsKilled())
     {
         manager.gui->SetSession(SCREEN_HUD);
@@ -577,7 +579,10 @@ void PlayManager::HudProcess()
         #undef ammoIn100Range
         #undef btimeIn100Range
 
-        ModUpdateStateText();
+        ostringstream ss;
+        ModUpdateStateText(ss);
+
+        hud.state->Write(ss.str());
 
         // Affichage de l'ecran de dommage si besoins
 
@@ -598,7 +603,10 @@ void PlayManager::HudProcess()
     {
         manager.gui->SetSession(SCREEN_PLAYERSLIST);
 
-        ModUpdateScoreText();
+        ostringstream ss;
+        ModUpdateScoreListText(ss);
+
+        hud.scorelist->Write(ss.str());
     }
 
     // Gestion de l'ETH en gameover --------------------------------------------
@@ -607,7 +615,10 @@ void PlayManager::HudProcess()
     {
         manager.gui->SetSession(SCREEN_GAMEOVER);
 
-        ModUpdateGameOverText();
+        ostringstream ss;
+        ModUpdateGameOverText(ss);
+
+        hud.gameover->Write(ss.str());
 
         // Affichage de l'ecran gameover si besoin
 
@@ -688,15 +699,23 @@ Player* PlayManager::GetUserPlayer() const
     return m_userPlayer;
 }
 
+const Player::Array& PlayManager::GetPlayers() const
+{
+    return m_players;
+}
+
 void PlayManager::SetGameOver()
 {
     m_gameOver = true;
     m_timeTo = TIME_TO_GAMEOVER;
 
-    ModUpdateScoreText();
+    ostringstream ss;
+    ModUpdateScoreListText(ss);
 
-    for(unsigned i = 0; i < players.size(); i++)
-        NewtonBodySetFreezeState(players[i]->GetBody(), true);
+    hud.scorelist->Write(ss.str());
+
+    for(unsigned i = 0; i < m_players.size(); i++)
+        NewtonBodySetFreezeState(m_players[i]->GetBody(), true);
 
     manager.gameEngine->SetMouseVisible(true);
 
@@ -717,7 +736,7 @@ void PlayManager::RegisterPlayer(Player* player)
     parallelscene.newton->AddNode(player->GetName(), player);
     manager.material->AddPlayer(player);
 
-    players.push_back(player);
+    m_players.push_back(player);
 }
 
 void PlayManager::UnRegisterPlayer(Player* player, bool keep)
@@ -727,7 +746,29 @@ void PlayManager::UnRegisterPlayer(Player* player, bool keep)
 
     if(!keep)
     {
-        Player::Array::iterator it = find(players.begin(), players.end(), player);
-        players.erase(it);
+        Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
+        m_players.erase(it);
     }
+}
+
+void PlayManager::PPeBullettime(bool status)
+{
+}
+
+void PlayManager::PPeBoost(bool status)
+{
+}
+
+void PlayManager::HudNotifyDammage()
+{
+    hud.background.dammage->SetOpacity(0.75);
+    hud.background.dammage->SetEnable(true);
+}
+
+void PlayManager::HudNotifyItem(bool status)
+{
+}
+
+void PlayManager::HudBullettimeDisplay(bool status)
+{
 }

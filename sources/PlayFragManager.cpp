@@ -23,73 +23,57 @@ PlayFragManager::~PlayFragManager()
 
 void PlayFragManager::ModSetupAi()
 {
-    for(unsigned i = 0; i < players.size(); i++)
-        if(players[i] != m_userPlayer)
-            players[i]->AttachController(new FragModeAi(this));
+    for(unsigned i = 0; i < m_players.size(); i++)
+        if(m_players[i] != m_userPlayer)
+            m_players[i]->AttachController(new FragModeAi(this));
 }
 
-void PlayFragManager::ModUpdateStateText()
+void PlayFragManager::ModUpdateStateText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    stringstream str;
-
-    str << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
+    ss << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : Infinie" << endl;
-
-    hud.state->Write(str.str());
+        ss << "Temps : Infinie" << endl;
 }
 
-void PlayFragManager::ModUpdateScoreText()
+void PlayFragManager::ModUpdateScoreText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    sort(players.begin(), players.end(), PlayerScoreSortProcess);
-
-    stringstream str;
-
-    str << "Carte : " << map.name << endl;
-    str << "Type : Frag" << endl;
+    ss << "Carte : " << map.name << endl;
+    ss << "Type : Frag" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : " << "Infinie" << endl;
+        ss << "Temps : " << "Infinie" << endl;
 
-    str << endl;
+    ss << endl;
 
-    for(unsigned i = 0; i < players.size(); i++)
-        str << players[i]->GetName() << " [" << players[i]->GetScore() << "] point(s)" << endl;
-
-    hud.scorelist->Write(str.str());
+    for(unsigned i = 0; i < m_players.size(); i++)
+        ss << m_players[i]->GetName() << " [" << m_players[i]->GetScore() << "] point(s)" << endl;
 }
 
-void PlayFragManager::ModUpdateGameOverText()
+void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    sort(players.begin(), players.end(), PlayerScoreSortProcess);
-
-    stringstream str;
-
-    str << "Carte : " << map.name << endl;
-    str << "Type : Frag" << endl;
+    ss << "Carte : " << map.name << endl;
+    ss << "Type : Frag" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : " << "Infinie" << endl;
+        ss << "Temps : " << "Infinie" << endl;
 
-    str << endl;
+    ss << endl;
 
-    for(unsigned i = 0; i < players.size(); i++)
-        str << players[i]->GetName() << " [" << players[i]->GetScore() << "] point(s)" << endl;
+    for(unsigned i = 0; i < m_players.size(); i++)
+        ss << m_players[i]->GetName() << " [" << m_players[i]->GetScore() << "] point(s)" << endl;
 
-    str << "Appuyez sur espace pour continuer..." << endl;
-
-    hud.gameover->Write(str.str());
+    ss << "Appuyez sur espace pour continuer..." << endl;
 }
