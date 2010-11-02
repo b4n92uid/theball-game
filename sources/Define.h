@@ -63,9 +63,6 @@
 #define SOUND_BOMB      "data/sfxart/weapons/bomb.wav"
 #define SOUND_FINDER    "data/sfxart/weapons/finder.wav"
 
-#define SOUND_MIN_DIST 16
-#define SOUND_MAX_DIST 10000
-
 // AI --------------------------------------------------------------------------
 #define AI_SWITCH_TARGET_TIME 10000
 #define AI_CRITICAL_LIFE_VALUE 25
