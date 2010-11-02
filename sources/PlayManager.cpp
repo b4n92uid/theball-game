@@ -148,7 +148,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
         ppe.bullettime = new ColorEffect;
         ppe.bullettime->SetFusionMode(ColorEffect::BLACK_WHITE);
-        ppe.bullettime->SetColor(Vector4f(1, 1, 1, 0.5));
+        ppe.bullettime->SetColor(Vector4f(1, 1, 1, 1));
         ppe.bullettime->SetEnable(false);
         manager.ppe->AddPostEffect("blettimeEffect", ppe.bullettime);
 
@@ -431,7 +431,7 @@ void PlayManager::EventProcess()
     }
 
     // Session de pause
-    if(m_timeTo == TIME_TO_PAUSE)
+    else if(m_timeTo == TIME_TO_PAUSE)
     {
         manager.gui->SetSession(SCREEN_PAUSEMENU);
 
@@ -464,7 +464,7 @@ void PlayManager::EventProcess()
         }
     }
 
-    if(m_timeTo == TIME_TO_GAMEOVER)
+    else if(m_timeTo == TIME_TO_GAMEOVER)
     {
         if(event->keyState[EventManager::KEY_SPACE]
            && m_validGameOver.IsEsplanedTime(3000))
@@ -476,6 +476,9 @@ void PlayManager::GameProcess()
 {
     using namespace tbe;
     using namespace tbe::scene;
+
+    if(m_gameOver)
+        return;
 
     // Pour chaque joueurs
     // - les joueurs mort pour les reconstruires

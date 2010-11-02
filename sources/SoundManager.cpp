@@ -66,7 +66,7 @@ void SoundManager::RegisterSound(std::string name, std::string filename)
         throw tbe::Exception("SoundManager::RegisterSound; %s (%s)",
                              FMOD_ErrorString(res), filename.c_str());
     else
-        FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], SOUND_MIN_DIST, SOUND_MAX_DIST);
+        FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
 }
 
 void SoundManager::Play(std::string soundName, Object* object)
