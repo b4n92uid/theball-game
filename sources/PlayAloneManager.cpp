@@ -71,73 +71,61 @@ private:
 
 void PlayAloneManager::ModSetupAi()
 {
-    for(unsigned i = 0; i < players.size(); i++)
-        if(players[i] != m_userPlayer)
+    for(unsigned i = 0; i < m_players.size(); i++)
+        if(m_players[i] != m_userPlayer)
         {
-            players[i]->AttachController(new AloneModeAi(this));
-            players[i]->AddCheckPoint(new AloneModeCheckPlayers(this));
-            players[i]->SetLife(1);
+            m_players[i]->AttachController(new AloneModeAi(this));
+            m_players[i]->AddCheckPoint(new AloneModeCheckPlayers(this));
+            m_players[i]->SetLife(1);
         }
 
     m_userPlayer->AddCheckPoint(new AloneModeCheckUserPlayer(this));
 }
 
-void PlayAloneManager::ModUpdateStateText()
+void PlayAloneManager::ModUpdateStateText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    stringstream str;
-
-    str << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
+    ss << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : Infinie" << endl;
-
-    hud.state->Write(str.str());
+        ss << "Temps : Infinie" << endl;
 }
 
-void PlayAloneManager::ModUpdateScoreText()
+void PlayAloneManager::ModUpdateScoreListText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    stringstream str;
-
-    str << "Carte : " << map.name << endl;
-    str << "Type : Alone" << endl;
+    ss << "Carte : " << map.name << endl;
+    ss << "Type : Alone" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : " << "Infinie" << endl;
+        ss << "Temps : " << "Infinie" << endl;
 
-    str << endl;
+    ss << endl;
 
-    str << m_userPlayer->GetName() << " : " << m_userPlayer->GetScore() << " point(s)" << endl;
-
-    hud.scorelist->Write(str.str());
+    ss << m_userPlayer->GetName() << " : " << m_userPlayer->GetScore() << " point(s)" << endl;
 }
 
-void PlayAloneManager::ModUpdateGameOverText()
+void PlayAloneManager::ModUpdateGameOverText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    stringstream str;
-
-    str << "Carte : " << map.name << endl;
-    str << "Type : Alone" << endl;
+    ss << "Carte : " << map.name << endl;
+    ss << "Type : Alone" << endl;
 
     if(m_playTimeManager.startChrono > 0)
-        str << "Temps : " << m_playTimeManager.startChrono << endl;
+        ss << "Temps : " << m_playTimeManager.startChrono << endl;
     else
-        str << "Temps : " << "Infinie" << endl;
+        ss << "Temps : " << "Infinie" << endl;
 
-    str << endl;
+    ss << endl;
 
-    str << m_userPlayer->GetName() << " : " << m_userPlayer->GetScore() << " point(s)" << endl;
+    ss << m_userPlayer->GetName() << " : " << m_userPlayer->GetScore() << " point(s)" << endl;
 
-    str << "Appuyez sur espace pour continuer..." << endl;
-
-    hud.gameover->Write(str.str());
+    ss << "Appuyez sur espace pour continuer..." << endl;
 }

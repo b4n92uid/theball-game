@@ -12,16 +12,16 @@
 
 class PlayAloneManager : public PlayManager
 {
-
 public:
     PlayAloneManager(AppManager* appManager);
     virtual ~PlayAloneManager();
 
 protected:
     void ModSetupAi();
-    void ModUpdateStateText();
-    void ModUpdateScoreText();
-    void ModUpdateGameOverText();
+
+    void ModUpdateStateText(std::ostringstream& ss);
+    void ModUpdateScoreListText(std::ostringstream& ss);
+    void ModUpdateGameOverText(std::ostringstream& ss);
 };
 
 #endif	/* _PLAYALONEMANAGER_H */

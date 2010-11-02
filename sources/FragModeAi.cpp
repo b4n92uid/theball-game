@@ -62,10 +62,11 @@ void FragModeAi::Process(Player* player)
     if(player->IsKilled())
         return;
 
-    Player::Array& players = m_playManager->players;
-    Item::Array& items = m_playManager->map.items;
-    StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
-    DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
+    const Player::Array& players = m_playManager->GetPlayers();
+
+    const Item::Array& items = m_playManager->map.items;
+    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
+    const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
     Vector3f playerPos = player->NewtonNode::GetPos();
