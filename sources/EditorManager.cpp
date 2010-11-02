@@ -366,6 +366,7 @@ void EditorManager::SetupGui()
 
 bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 {
+    #ifndef THEBALL_NO_AUDIO
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
         if(event->lastActiveKey.first == EventManager::KEY_DELETE)
@@ -386,10 +387,10 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 
             if(state)
                 FMOD_Channel_Stop(map.musicChannel);
-            
+
             else
                 FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE,
-                                        map.musicStream, false, &map.musicChannel);
+                                      map.musicStream, false, &map.musicChannel);
         }
     }
 
@@ -409,6 +410,7 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 
         hud.music.list->SetActivate(false);
     }
+    #endif
 
     return false;
 }
