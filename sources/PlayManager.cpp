@@ -21,6 +21,8 @@
 #include "FragModeAi.h"
 #include "PlaySoundManager.h"
 
+#include <boost/format.hpp>
+
 #include <tinyxml.h>
 
 using namespace std;
@@ -562,39 +564,59 @@ void PlayManager::HudProcess()
 
     sort(m_players.begin(), m_players.end(), PlayerScoreSortProcess);
 
-    if(m_timeTo == TIME_TO_PLAY && !m_userPlayer->IsKilled())
+    if(m_timeTo == TIME_TO_PLAY)
     {
+        using boost::format;
+
         manager.gui->SetSession(SCREEN_HUD);
 
-        // Mise a jour des bar de progression (Vie, Muinition, Bullettime, Boost)
+        const Weapon* curWeapon = m_userPlayer->GetCurWeapon();
 
-        #define ammoIn100Range m_userPlayer->GetCurWeapon()->GetAmmoCount() * 100 / m_userPlayer->GetCurWeapon()->GetMaxAmmoCount()
-        #define btimeIn100Range static_cast<int>(m_bullettime->GetValue() * 100)
+        const int &ammoCount = curWeapon->GetAmmoCount(),
+                &ammoCountMax = curWeapon->GetMaxAmmoCount(),
+                &life = m_userPlayer->GetLife(),
+                &bullettime = static_cast<int>(m_bullettime->GetValue() * 100);
 
-        hud.ammo->SetLabel(m_userPlayer->GetCurWeapon()->GetWeaponName());
-        hud.ammo->SetValue(ammoIn100Range);
-        hud.life->SetValue(m_userPlayer->GetLife());
-        hud.bullettime->SetValue(btimeIn100Range);
-        hud.boost->SetCurState(m_userPlayer->IsBoostAvalaible());
-
-        #undef ammoIn100Range
-        #undef btimeIn100Range
-
-        ostringstream ss;
-        ModUpdateStateText(ss);
-
-        hud.state->Write(ss.str());
-
-        // Affichage de l'ecran de dommage si besoins
-
-        if(hud.background.dammage->IsEnable())
+        if(!m_userPlayer->IsKilled())
         {
-            float opacity = hud.background.dammage->GetOpacity();
+            // Mise a jour des bar de progression (Vie, Muinition, Bullettime, Boost)
 
-            if(opacity > 0)
-                hud.background.dammage->SetOpacity(opacity - 0.01f);
-            else
-                hud.background.dammage->SetEnable(false);
+            hud.ammo->SetLabel((format("%1% %2%/%3%")
+                               % curWeapon->GetWeaponName() % ammoCount % ammoCountMax).str());
+
+            hud.ammo->SetValue(ammoCount * 100 / ammoCountMax);
+
+            hud.life->SetLabel((format("Santé %1%/100") % life).str());
+
+            hud.life->SetValue(life);
+
+            hud.bullettime->SetLabel((format("Bullettilme %1%/100") % bullettime).str());
+
+            hud.bullettime->SetValue(bullettime);
+
+            hud.boost->SetCurState(m_userPlayer->IsBoostAvalaible());
+
+            ostringstream ss;
+            ModUpdateStateText(ss);
+
+            hud.state->Write(ss.str());
+
+            // Affichage de l'ecran de dommage si besoins
+
+            if(hud.background.dammage->IsEnable())
+            {
+                float opacity = hud.background.dammage->GetOpacity();
+
+                if(opacity > 0)
+                    hud.background.dammage->SetOpacity(opacity - 0.01f);
+                else
+                    hud.background.dammage->SetEnable(false);
+            }
+        }
+        else
+        {
+            hud.life->SetLabel("Mort !");
+            hud.life->SetValue(0);
         }
     }
 
