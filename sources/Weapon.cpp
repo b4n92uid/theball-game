@@ -447,6 +447,8 @@ void WeaponFinder::Process()
             m_ammosPack[i]->UpdateMatrix();
             particles[i].pos = m_ammosPack[i]->NewtonNode::GetPos();
 
+            bool targetLocked = false;
+
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
             const Player::Array& players = m_playManager->GetPlayers();
@@ -462,10 +464,14 @@ void WeaponFinder::Process()
                     playerdiri.Normalize();
 
                     if(Vector3f::Dot(playerdiri, ammodiri) > 0.0)
+                    {
                         minDist = min(players[j]->NewtonNode::GetPos() - m_ammosPack[i]->NewtonNode::GetPos(), minDist);
+                        targetLocked = true;
+                    }
                 }
 
-            m_ammosPack[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed);
+            if(targetLocked)
+                m_ammosPack[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed);
         }
     }
 

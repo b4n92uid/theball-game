@@ -40,7 +40,8 @@ unsigned Item::GetRebornTime() const
 
 void Item::ResetPosition()
 {
-    NewtonBodySetVelocity(m_body, Vector3f(0));
+    SetVelocity(0);
+
     NewtonNode::SetMatrix(m_initialMatrix);
 }
 
