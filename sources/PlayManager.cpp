@@ -97,7 +97,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
     manager.level->LoadLevel(m_playSetting.playMap);
 
     // Marge
-    map.aabb.Add(AABB(Vector3f(-32, 0, -32), Vector3f(32, 64, 32)));
+    map.aabb.Add(AABB(Vector3f(-8, 0, -8), Vector3f(8, 64, 8)));
 
     AABB newtonWordSize = map.aabb;
     newtonWordSize.Add(32);

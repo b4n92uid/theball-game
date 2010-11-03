@@ -102,15 +102,18 @@ void Player::SetRandomPosInTheFloor()
 {
     Vector3f randPos;
 
+    float factor = 20 * m_playManager->map.aabb.GetSize() / 100;
+
     do
     {
-        randPos = tools::rand(m_playManager->map.aabb - Vector3f(4, 0, 4));
+        randPos = tools::rand(m_playManager->map.aabb - Vector3f(factor));
         randPos.y = 1;
         randPos = m_newtonScene->FindFloor(randPos);
     }
     while(randPos.y < m_playManager->map.aabb.min.y);
 
-    NewtonBodySetVelocity(m_body, Vector3f(0));
+    SetVelocity(0);
+
     NewtonNode::SetMatrix(randPos);
 }
 

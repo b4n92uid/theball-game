@@ -86,11 +86,11 @@ void DYJumper::Process()
 
 void DYJumper::InteractWith(Player* player)
 {
-    Vector3f velocity;
-    NewtonBodyGetVelocity(player->GetBody(), velocity);
+    Vector3f velocity = player->GetVelocity();
 
     velocity.y = 0;
-    NewtonBodySetVelocity(player->GetBody(), velocity);
+
+    player->SetVelocity(velocity);
 
     NewtonBodyAddImpulse(player->GetBody(), Vector3f(0, 32, 0), player->NewtonNode::GetPos());
 
