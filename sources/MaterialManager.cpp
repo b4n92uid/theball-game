@@ -219,9 +219,6 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
             ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
         }
 
-        else
-            return 1;
-
         striker = ammo->GetParent()->GetShooter();
 
         if(striked != striker)
@@ -229,24 +226,20 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
             striked->TakeDammage(ammo);
             ammo->SetLife(0);
 
-            if(playManager->GetUserPlayer() == striker)
+            if(striker == playManager->GetUserPlayer() && striked->IsKilled())
             {
-                if(cheerClock.IsEsplanedTime(3000))
-                    cheerCount = 0;
+                cheerCount++;
 
-                if(!striked->IsKilled() && striked->GetLife() <= 0)
+                if(cheerCount >= 2)
                 {
-                    cheerClock.SnapShoot();
-                    cheerCount++;
-
-                    if(cheerCount > 1)
+                    if(!cheerClock.IsEsplanedTime(4000))
                         switch(cheerCount)
                         {
-                            case 2: playManager->Log("Double Frag");
+                            case 2: playManager->Log("Double kill");
                                 break;
-                            case 3: playManager->Log("Triple Frag");
+                            case 3: playManager->Log("Triple kill");
                                 break;
-                            case 4: playManager->Log("A Killer");
+                            case 4: playManager->Log("Carnage");
                                 break;
                             case 5: playManager->Log("The One");
                                 break;
@@ -257,6 +250,10 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
                             default: playManager->Log("...");
                                 break;
                         }
+                    else
+                        cheerCount = 0;
+
+                    cheerClock.SnapShoot();
                 }
             }
         }
