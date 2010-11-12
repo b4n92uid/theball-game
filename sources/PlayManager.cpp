@@ -182,11 +182,12 @@ void PlayManager::SetupGui()
     manager.gui->AddLayoutStretchSpace();
 
     hud.scorelist = manager.gui->AddTextBox("hud.scorelist");
+    hud.scorelist->SetPencil(bigPen);
     hud.scorelist->SetSize(screenSize * Vector2f(0.75, 0.75));
     hud.scorelist->SetDefinedSize(true);
-    hud.scorelist->SetBackground(GUI_TEXTBOX_H);
+    hud.scorelist->SetBackground(GUI_SCORE);
     hud.scorelist->SetTextAlign(TextBox::LEFT);
-    hud.scorelist->SetBackgroundPadding(8);
+    hud.scorelist->SetBackgroundPadding(Vector2f(16, 8));
 
     manager.gui->AddLayoutStretchSpace();
     manager.gui->EndLayout();
@@ -284,8 +285,8 @@ void PlayManager::SetupGui()
 
     hud.log = manager.gui->AddTextBox("hud.log");
     hud.log->SetPencil(bigPen);
-    hud.log->SetBackground(GUI_TEXTBOX_H);
-    hud.log->SetBackgroundPadding(16);
+    hud.log->SetBackground(GUI_NOTIFY);
+    hud.log->SetBackgroundPadding(Vector2f(32, 16));
     hud.log->SetEnable(false);
 
     manager.gui->AddLayoutStretchSpace();
