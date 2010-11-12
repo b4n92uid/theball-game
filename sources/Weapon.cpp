@@ -50,6 +50,8 @@ Weapon::Weapon(const Weapon& copy)
 
 Weapon::~Weapon()
 {
+    m_playManager->parallelscene.particles->ReleaseChild(this);
+
     for(unsigned i = 0; i < m_bulletArray.size(); i++)
         delete m_bulletArray[i];
 }
