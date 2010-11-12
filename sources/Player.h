@@ -172,6 +172,18 @@ protected:
 
     PlayManager* m_playManager;
     SoundManager* m_soundManager;
+
+    class StartProtection : public CheckMe
+    {
+    public:
+
+        StartProtection(Player* player);
+        bool OnTakeDammage(Player* player, Bullet* ammo);
+        bool Shutdown(Player* player);
+
+    private:
+        tbe::ticks::Clock m_clock;
+    };
 };
 
 #endif /* _PLAYERENGINE_H */
