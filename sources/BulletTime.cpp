@@ -61,8 +61,12 @@ void BulletTime::SetActive(bool active)
 
     if(m_active)
     {
+        FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 0.1);
+
         m_soundManager->Play("bullettime", m_userPlayer);
+
         m_playManager->HudBullettimeDisplay(true);
+
 
         if(m_playManager->manager.app->globalSettings.video.usePpe)
             m_playManager->PPeBullettime(true);
@@ -70,6 +74,8 @@ void BulletTime::SetActive(bool active)
 
     else
     {
+        FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 1.0);
+
         m_playManager->HudBullettimeDisplay(false);
 
         if(m_playManager->manager.app->globalSettings.video.usePpe)
