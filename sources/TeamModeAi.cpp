@@ -39,14 +39,14 @@ void TeamModeAi::Process(Player* player)
     DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
-    Vector3f playerPos = player->NewtonNode::GetPos();
+    Vector3f playerPos = player->GetPos();
 
     // Test de collision avec la map
 
     bool isCollidWithMap = false;
 
     for(unsigned i = 0; i < staticObjects.size(); i++)
-        if(isCollidWithMap = player->IsCollidWith(staticObjects[i]))
+        if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
             break;
 
     // Recherche d'item
@@ -55,7 +55,7 @@ void TeamModeAi::Process(Player* player)
 
     for(unsigned i = 0; i < dynamicObjects.size(); i++)
     {
-        if(dynamicObjects[i]->NewtonNode::GetPos() - playerPos < AI_DYNAMIC_INTERACTION)
+        if(dynamicObjects[i]->GetPos() - playerPos < AI_DYNAMIC_INTERACTION)
             m_targetOtp = dynamicObjects[i];
     }
 
@@ -71,14 +71,14 @@ void TeamModeAi::Process(Player* player)
     // Priorité aux items
     if(m_targetOtp)
     {
-        addForce = m_targetOtp->NewtonNode::GetPos();
+        addForce = m_targetOtp->GetPos();
     }
 
     else
     {
         // Mete a jour la position de la cible
         if(m_targetPlayer)
-            m_targetPos = m_targetPlayer->NewtonNode::GetPos();
+            m_targetPos = m_targetPlayer->GetPos();
 
         // Recherche d'une nouvelle cible
         // Si Temps écouler
@@ -96,7 +96,7 @@ void TeamModeAi::Process(Player* player)
                 if(players[i] != player && !players[i]->IsKilled()
                    && m_mapAABB.IsInner(players[i]))
                 {
-                    Vector3f testedDist = players[i]->NewtonNode::GetPos() - playerPos;
+                    Vector3f testedDist = players[i]->GetPos() - playerPos;
 
                     if(testedDist < minDist)
                     {
@@ -105,7 +105,7 @@ void TeamModeAi::Process(Player* player)
                     }
                 }
 
-            m_targetPos = m_targetPlayer->NewtonNode::GetPos();
+            m_targetPos = m_targetPlayer->GetPos();
 
             // Recherche d'une position d'attack
             do
@@ -120,19 +120,20 @@ void TeamModeAi::Process(Player* player)
     }
 
     // Routine d'attack
-    if(m_targetPlayer)
-        if(m_targetPos - playerPos < m_minDistToShoot)
-            if(m_targetPlayer == m_playManager->GetUserPlayer() && m_playManager->GetBullettime()->IsActive())
-            {
-                Vector3f velocity;
-                NewtonBodyGetVelocity(m_targetPlayer->GetBody(), velocity);
+    if(m_targetPlayer && m_targetPos - playerPos < m_minDistToShoot)
+    {
+        if(m_targetPlayer == m_playManager->GetUserPlayer() && m_playManager->GetBullettime()->IsActive())
+        {
+            Vector3f velocity;
+            NewtonBodyGetVelocity(m_targetPlayer->GetPhysicBody()->GetBody(), velocity);
 
-                player->Shoot(m_targetPos - velocity);
-            }
-            else
-            {
-                player->Shoot(m_targetPos);
-            }
+            player->Shoot(m_targetPos - velocity);
+        }
+        else
+        {
+            player->Shoot(m_targetPos);
+        }
+    }
 
     // Changement d'arme
     if(player->GetCurWeapon()->IsEmpty())
@@ -142,5 +143,5 @@ void TeamModeAi::Process(Player* player)
     addForce = (addForce - playerPos).Normalize() * m_worldSettings.playerMoveSpeed;
     addForce.y = 0;
 
-    player->SetApplyForce(addForce);
+    player->GetPhysicBody()->SetApplyForce(addForce);
 }

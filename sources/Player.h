@@ -26,13 +26,13 @@ public:
     /// Destructeur
     ~Player();
 
-    Object* Clone();
+    Object* CloneToObject();
 
     /** 
      * Ajoute une arme au joueur
      * si l'arme existe déja on ajouter les munitions puis on la supprime
      */
-    void AddWeapon(std::string name, Weapon* weapon);
+    void AddWeapon(Weapon* weapon);
 
     /// Tire sur le vecteur targetpos
     void Shoot(tbe::Vector3f targetpos);
@@ -77,7 +77,7 @@ public:
     void SwitchDownWeapon();
 
     /// Armes
-    void SetCurWeapon(std::string weaponName);
+    void SetCurWeapon(unsigned slot);
     Weapon* GetCurWeapon() const;
 
     /// Boost
@@ -107,6 +107,7 @@ public:
         tbe::ticks::Clock boostAvailableSound;
         tbe::ticks::Clock shoot;
         tbe::ticks::Clock readyToDelete;
+
     } clocks;
 
     class CheckMe
@@ -162,8 +163,8 @@ protected:
 
     CheckMe::Array m_checkMe;
 
-    Weapon::Map::iterator m_curWeapon;
-    Weapon::Map m_weaponsPack;
+    Weapon* m_curWeapon;
+    Weapon::Array m_weaponsPack;
 
     Controller* m_attachedCotroller;
 

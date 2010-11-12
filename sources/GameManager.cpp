@@ -32,7 +32,6 @@ GameManager::GameManager(AppManager* appManager)
     manager.scene->AddParallelScene("1:MeshScene", parallelscene.meshs);
 
     parallelscene.newton = new scene::NewtonParallelScene;
-    parallelscene.newton->SetSharedNode(true);
     parallelscene.newton->SetGravity(worldSettings.gravity);
     manager.scene->AddParallelScene("2:NewtonNodeScene", parallelscene.newton);
 
@@ -75,20 +74,16 @@ GameManager::~GameManager()
 
 void GameManager::RegisterItem(Item* item)
 {
-    std::string name = tools::NameGen(map.items, "ITEM#");
-
-    parallelscene.meshs->AddMesh(name, item);
-    parallelscene.newton->AddNode(name, item);
+    parallelscene.meshs->AddChild(item);
+    parallelscene.newton->AddChild(item->GetPhysicBody());
     manager.material->AddItem(item);
     map.items.push_back(item);
 }
 
 void GameManager::RegisterStatic(StaticObject* staticObject)
 {
-    std::string name = tools::NameGen(map.staticObjects, "STATIC#");
-
-    parallelscene.meshs->AddMesh(name, staticObject);
-    parallelscene.newton->AddNode(name, staticObject);
+    parallelscene.meshs->AddChild(staticObject);
+    parallelscene.newton->AddChild(staticObject->GetPhysicBody());
     manager.material->AddStatic(staticObject);
     map.staticObjects.push_back(staticObject);
     map.aabb.Count(staticObject);
@@ -96,18 +91,16 @@ void GameManager::RegisterStatic(StaticObject* staticObject)
 
 void GameManager::RegisterDynamic(DynamicObject* dynamicObject)
 {
-    std::string name = tools::NameGen(map.dynamicObjects, "DYNAMIC#");
-
-    parallelscene.meshs->AddMesh(name, dynamicObject);
-    parallelscene.newton->AddNode(name, dynamicObject);
+    parallelscene.meshs->AddChild(dynamicObject);
+    parallelscene.newton->AddChild(dynamicObject->GetPhysicBody());
     manager.material->AddDynamic(dynamicObject);
     map.dynamicObjects.push_back(dynamicObject);
 }
 
 void GameManager::UnRegisterItem(Item* item)
 {
-    parallelscene.meshs->ReleaseMesh(item->GetName());
-    parallelscene.newton->ReleaseNode(item->GetName());
+    parallelscene.meshs->ReleaseChild(item);
+    parallelscene.newton->ReleaseChild(item->GetPhysicBody());
 
     Item::Array::iterator it = find(map.items.begin(),
                                     map.items.end(), item);
@@ -117,21 +110,19 @@ void GameManager::UnRegisterItem(Item* item)
 
 void GameManager::UnRegisterStatic(StaticObject* staticObject)
 {
-    parallelscene.meshs->ReleaseMesh(staticObject->GetName());
-    parallelscene.newton->ReleaseNode(staticObject->GetName());
+    parallelscene.meshs->ReleaseChild(staticObject);
+    parallelscene.newton->ReleaseChild(staticObject->GetPhysicBody());
 
     StaticObject::Array::iterator it = find(map.staticObjects.begin(),
                                             map.staticObjects.end(), staticObject);
 
     map.staticObjects.erase(it);
-
-    map.aabb.Count(staticObject);
 }
 
 void GameManager::UnRegisterDynamic(DynamicObject* dynamicObject)
 {
-    parallelscene.meshs->ReleaseMesh(dynamicObject->GetName());
-    parallelscene.newton->ReleaseNode(dynamicObject->GetName());
+    parallelscene.meshs->ReleaseChild(dynamicObject);
+    parallelscene.newton->ReleaseChild(dynamicObject->GetPhysicBody());
 
     DynamicObject::Array::iterator it = find(map.dynamicObjects.begin(),
                                              map.dynamicObjects.end(), dynamicObject);

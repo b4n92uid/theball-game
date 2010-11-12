@@ -42,11 +42,6 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
     delete manager.sound, manager.sound = new PlaySoundManager(this);
 }
 
-BulletTime* PlayManager::GetBullettime() const
-{
-    return m_bullettime;
-}
-
 PlayManager::~PlayManager()
 {
     if(m_gameOver)
@@ -659,7 +654,7 @@ void PlayManager::Render()
     Vector2i& screenSize = manager.app->globalSettings.video.screenSize;
     // Positionement camera ----------------------------------------------------
 
-    Vector3f setPos = m_userPlayer->NewtonNode::GetPos();
+    Vector3f setPos = m_userPlayer->GetPos();
 
     if(!m_playerPosRec.empty())
         setPos.y -= (setPos.y - m_playerPosRec.back().y) / 3 * 2;
@@ -740,7 +735,7 @@ void PlayManager::SetGameOver()
     hud.scorelist->Write(ss.str());
 
     for(unsigned i = 0; i < m_players.size(); i++)
-        NewtonBodySetFreezeState(m_players[i]->GetBody(), true);
+        NewtonBodySetFreezeState(m_players[i]->GetPhysicBody()->GetBody(), true);
 
     manager.gameEngine->SetMouseVisible(true);
 
@@ -757,8 +752,8 @@ bool PlayManager::IsGameOver() const
 
 void PlayManager::RegisterPlayer(Player* player)
 {
-    parallelscene.meshs->AddMesh(player->GetName(), player);
-    parallelscene.newton->AddNode(player->GetName(), player);
+    parallelscene.meshs->AddChild(player);
+    parallelscene.newton->AddChild(player->GetPhysicBody());
     manager.material->AddPlayer(player);
 
     m_players.push_back(player);
@@ -766,13 +761,13 @@ void PlayManager::RegisterPlayer(Player* player)
 
 void PlayManager::UnRegisterPlayer(Player* player, bool keep)
 {
-    parallelscene.meshs->ReleaseMesh(player->GetName());
-    parallelscene.newton->ReleaseNode(player->GetName());
+    parallelscene.meshs->ReleaseChild(player);
+    parallelscene.newton->ReleaseChild(player->GetPhysicBody());
 
     if(!keep)
     {
-        Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
-        m_players.erase(it);
+        delete player;
+        m_players.erase(Player::Array::iterator(&player));
     }
 }
 
@@ -800,4 +795,9 @@ void PlayManager::HudNotifyItem(bool status)
 void PlayManager::HudBullettimeDisplay(bool status)
 {
     hud.background.bullettime->SetEnable(status);
+}
+
+BulletTime* PlayManager::GetBullettime() const
+{
+    return m_bullettime;
 }

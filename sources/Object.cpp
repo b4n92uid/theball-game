@@ -14,10 +14,23 @@ Object::Object(GameManager* gameManager)
     m_soundManager = m_gameManager->manager.sound;
     m_worldSettings = m_gameManager->manager.app->globalSettings.physics;
 
-    SetNewtonWorld(m_gameManager->parallelscene.newton->GetNewtonWorld());
-    SetUpdatedMatrix(&m_matrix);
+    m_physicBody = new tbe::scene::NewtonNode;
+    m_physicBody->SetNewtonWorld(m_gameManager->parallelscene.newton->GetNewtonWorld());
+    m_physicBody->SetUpdatedMatrix(&m_matrix);
+
+    m_physicBody->SetParent(this);
 }
 
 Object::~Object()
 {
+}
+
+void Object::SetPhysicBody(tbe::scene::NewtonNode* physicBody)
+{
+    this->m_physicBody = physicBody;
+}
+
+tbe::scene::NewtonNode* Object::GetPhysicBody() const
+{
+    return m_physicBody;
 }

@@ -48,7 +48,7 @@ bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
 
 void EditorManager::NewEntity(Object* ent)
 {
-    Vector3f pos = ent->NewtonNode::GetPos();
+    Vector3f pos = ent->GetPos();
 
     m_allEntity.push_back(ent);
 
@@ -64,7 +64,7 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
 
     if(c == 'c' && event->notify == EventManager::EVENT_KEY_DOWN && m_selectedNode)
     {
-        Object* clone = m_selectedNode->Clone();
+        Object* clone = m_selectedNode->CloneToObject();
         NewEntity(clone);
 
         m_selectedNode = clone;
@@ -219,8 +219,8 @@ bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
 
         if(m_selectedNode)
         {
-            m_axes->SetPos(m_selectedNode->NewtonNode::GetPos());
-            m_OCamera->SetCenter(m_selectedNode->NewtonNode::GetPos());
+            m_axes->SetPos(m_selectedNode->GetPos());
+            m_OCamera->SetCenter(m_selectedNode->GetPos());
 
             return true;
         }
@@ -261,10 +261,10 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
                 transform.y = 0;
             }
 
-            transform += m_selectedNode->NewtonNode::GetPos();
+            transform += m_selectedNode->GetPos();
 
 
-            m_selectedNode->NewtonNode::SetPos(transform);
+            m_selectedNode->SetPos(transform);
             m_axes->SetPos(transform);
         }
 
@@ -277,17 +277,17 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
             else if(event->lastActiveMouse.first == EventManager::MOUSE_BUTTON_WHEEL_DOWN)
                 transform.y--;
 
-            transform += m_selectedNode->NewtonNode::GetPos();
+            transform += m_selectedNode->GetPos();
 
 
-            m_selectedNode->NewtonNode::SetPos(transform);
+            m_selectedNode->SetPos(transform);
             m_axes->SetPos(transform);
         }
 
         else if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
-            Vector3f pos = m_selectedNode->NewtonNode::GetPos();
-            Matrix4f matrix = m_selectedNode->NewtonNode::GetMatrix();
+            Vector3f pos = m_selectedNode->GetPos();
+            Matrix4f matrix = m_selectedNode->GetMatrix();
 
             // Rotation
             if(event->keyState['A'])
@@ -321,7 +321,7 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
             // Apply
             matrix.SetPos(pos);
 
-            m_selectedNode->NewtonNode::SetMatrix(matrix);
+            m_selectedNode->SetMatrix(matrix);
             m_axes->SetPos(pos);
         }
 

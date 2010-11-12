@@ -19,7 +19,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Attributes
     m_name = name;
     m_playManager = playManager;
-    m_curWeapon = m_weaponsPack.end();
+    m_curWeapon = NULL;
     m_killed = false;
     m_boostAvalaible = true;
     m_score = 0;
@@ -35,31 +35,32 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_deadExplode->SetFreeMove(0.05);
     m_deadExplode->SetNumber(500);
     m_deadExplode->SetAutoRebuild(false);
+    m_deadExplode->SetParent(this);
 
-    m_playManager->parallelscene.particles->AddParticlesEmiter("", m_deadExplode);
+    m_playManager->parallelscene.particles->AddChild(m_deadExplode);
 
     // Rendue
     Open(model);
 
     // Physique
-    BuildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
+    m_physicBody->BuildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
+
     SetRandomPosInTheFloor();
 
-    NewtonBodySetContinuousCollisionMode(m_body, true);
-    NewtonBodySetLinearDamping(m_body, m_worldSettings.playerLinearDamping);
-    NewtonBodySetAutoSleep(m_body, false);
+    NewtonBodySetContinuousCollisionMode(m_physicBody->GetBody(), true);
+    NewtonBodySetLinearDamping(m_physicBody->GetBody(), m_worldSettings.playerLinearDamping);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
-    AddWeapon("blaster", blaster);
+
+    AddWeapon(blaster);
 }
 
 Player::~Player()
 {
-    m_playManager->parallelscene.particles->DeleteParticlesEmiter(m_deadExplode);
-
-    for(Weapon::Map::iterator i = m_weaponsPack.begin(); i != m_weaponsPack.end(); i++)
-        delete i->second;
+    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
+        delete m_weaponsPack[i];
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         delete m_checkMe[i];
@@ -67,35 +68,9 @@ Player::~Player()
     delete m_attachedCotroller;
 }
 
-Object* Player::Clone()
+Object* Player::CloneToObject()
 {
     return NULL;
-}
-
-void Player::ReBorn()
-{
-    m_life = 100;
-    m_killed = false;
-
-    m_boostAvalaible = true;
-
-    m_playManager->manager.material->SetGhost(this, false);
-
-    SetFreeze(false);
-    SetEnable(true);
-
-    for(Weapon::Map::iterator i = m_weaponsPack.begin(); i != m_weaponsPack.end(); i++)
-        delete i->second;
-
-    m_weaponsPack.clear();
-
-    WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
-    AddWeapon("blaster", blaster);
-
-    SetRandomPosInTheFloor();
-
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        m_checkMe[i]->AfterReborn(this);
 }
 
 void Player::SetRandomPosInTheFloor()
@@ -108,13 +83,13 @@ void Player::SetRandomPosInTheFloor()
     {
         randPos = tools::rand(m_playManager->map.aabb - Vector3f(factor));
         randPos.y = 1;
-        randPos = m_newtonScene->FindFloor(randPos);
+        randPos = m_physicBody->GetNewtonScene()->FindFloor(randPos);
     }
     while(randPos.y < m_playManager->map.aabb.min.y);
 
-    SetVelocity(0);
+    m_physicBody->SetVelocity(0);
 
-    NewtonNode::SetMatrix(randPos);
+    m_physicBody->SetMatrix(randPos);
 }
 
 void Player::AttachItem(Item* item)
@@ -138,6 +113,8 @@ Controller* Player::GetAttachedCotroller() const
 
 void Player::Process()
 {
+    Object::Process();
+
     if(m_playManager->IsGameOver())
         return;
 
@@ -164,30 +141,29 @@ void Player::Process()
 
 void Player::Shoot(Vector3f targetpos)
 {
-    m_curWeapon->second->Shoot(m_matrix.GetPos(), targetpos);
+    m_curWeapon->Shoot(m_matrix.GetPos(), targetpos);
 }
 
 void Player::Jump()
 {
-    if(!m_body)
-        return;
-
-    NewtonBodyAddImpulse(m_body, Vector3f(0, m_worldSettings.playerJumpForce, 0), m_matrix.GetPos());
+    NewtonBodyAddImpulse(m_physicBody->GetBody(), Vector3f(0, m_worldSettings.playerJumpForce, 0), m_matrix.GetPos());
 }
 
 void Player::Boost()
 {
-    if(!m_body || m_applyForce == 0.0f)
+    if(m_physicBody->GetApplyForce() == 0.0f)
         return;
 
     if(m_boostAvalaible)
     {
         m_boostAvalaible = false;
 
-        Vector3f impulseDeri = Vector3f::Normalize(m_applyForce) * m_worldSettings.playerBoostSpeed;
+        Vector3f impulseDeri = m_physicBody->GetApplyForce().Normalize()
+                * m_worldSettings.playerBoostSpeed;
+
         impulseDeri.y = 0;
 
-        NewtonBodyAddImpulse(m_body, impulseDeri, m_matrix.GetPos());
+        NewtonBodyAddImpulse(m_physicBody->GetBody(), impulseDeri, m_matrix.GetPos());
 
         m_soundManager->Play("boost", this);
 
@@ -207,50 +183,96 @@ void Player::Boost()
     }
 }
 
-void Player::AddWeapon(std::string name, Weapon* weapon)
+inline bool IsWeaponSameName(Weapon* w1, Weapon* w2)
 {
-    if(m_weaponsPack.find(name) != m_weaponsPack.end())
+    return w1->GetWeaponName() == w2->GetWeaponName();
+}
+
+void Player::AddWeapon(Weapon* weapon)
+{
+    Weapon::Array::iterator select = find_if(m_weaponsPack.begin(), m_weaponsPack.end(),
+                                             bind2nd(ptr_fun(IsWeaponSameName), weapon));
+
+    if(select != m_weaponsPack.end())
     {
-        m_weaponsPack[name]->UpAmmoCount(weapon->GetAmmoCount());
+        (*select)->UpAmmoCount(weapon->GetAmmoCount());
+
+        m_playManager->parallelscene.particles->ReleaseChild(weapon);
+
         delete weapon;
+
+        m_curWeapon = *select;
     }
 
     else
     {
-        m_weaponsPack[name] = weapon;
-    }
+        weapon->SetShooter(this);
 
-    m_curWeapon = m_weaponsPack.find(name);
-    m_curWeapon->second->SetShooter(this);
+        m_weaponsPack.push_back(weapon);
+
+        m_curWeapon = m_weaponsPack.back();
+    }
 }
 
 void Player::SwitchUpWeapon()
 {
     m_curWeapon++;
 
-    if(m_curWeapon == m_weaponsPack.end())
-        m_curWeapon = m_weaponsPack.begin();
+    if(m_curWeapon > m_weaponsPack.back())
+        m_curWeapon = m_weaponsPack.front();
 }
 
 void Player::SwitchDownWeapon()
 {
-    if(m_curWeapon == m_weaponsPack.begin())
-        m_curWeapon = m_weaponsPack.end();
-
     m_curWeapon--;
+
+    if(m_curWeapon < m_weaponsPack.front())
+        m_curWeapon = m_weaponsPack.back();
 }
 
-void Player::SetCurWeapon(std::string weaponName)
+void Player::SetCurWeapon(unsigned slot)
 {
-    m_curWeapon = m_weaponsPack.find(weaponName);
+    if(slot >= m_weaponsPack.size())
+        throw tbe::Exception("PlayerEngine::SetCurWeapon; Invalid weapon slot (%d)", slot);
 
-    if(m_curWeapon == m_weaponsPack.end())
-        throw tbe::Exception("PlayerEngine::SetCurWeapon; Weapon not found (%s)", weaponName.c_str());
+    m_curWeapon = m_weaponsPack[slot];
 }
 
 Weapon* Player::GetCurWeapon() const
 {
-    return m_curWeapon->second;
+    return m_curWeapon;
+}
+
+void Player::ReBorn()
+{
+    m_life = 100;
+    m_killed = false;
+
+    m_boostAvalaible = true;
+
+    m_playManager->manager.material->SetGhost(this, false);
+
+    SetEnableRender(true);
+
+    m_physicBody->SetFreeze(false);
+
+    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
+    {
+        m_playManager->parallelscene.particles->ReleaseChild(m_weaponsPack[i]);
+
+        delete m_weaponsPack[i];
+    }
+
+    m_weaponsPack.clear();
+
+    WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
+
+    AddWeapon(blaster);
+
+    SetRandomPosInTheFloor();
+
+    for(unsigned i = 0; i < m_checkMe.size(); i++)
+        m_checkMe[i]->AfterReborn(this);
 }
 
 void Player::Kill()
@@ -262,21 +284,19 @@ void Player::Kill()
     m_killed = true;
     m_life = 0;
 
-    m_deadExplode->SetEnable(true);
-    m_deadExplode->SetDeadEmiter(false);
-    m_deadExplode->SetPos(m_matrix.GetPos());
     m_deadExplode->Build();
 
     m_playManager->manager.material->SetGhost(this, true);
 
     clocks.readyToDelete.SnapShoot();
 
-    SetFreeze(true);
-    SetEnable(false);
+    SetEnableRender(false);
+
+    m_physicBody->SetFreeze(true);
 
     m_soundManager->Play("kill", this);
 
-    if(m_playManager->GetUserPlayer() == this)
+    if(this == m_playManager->GetUserPlayer())
     {
         m_playManager->GetBullettime()->SetActive(false);
 
@@ -341,7 +361,7 @@ void Player::TakeDammage(Bullet* ammo)
         if(!m_checkMe[i]->OnTakeDammage(this, ammo))
             return;
 
-    Player* striker = ammo->GetParent()->GetShooter();
+    Player* striker = ammo->GetWeapon()->GetShooter();
 
     m_life = max(m_life - ammo->GetDammage(), 0);
 

@@ -635,7 +635,7 @@ void AppManager::SetupBackgroundScene()
     m_sceneManager->AddParallelScene("nodeScene", meshScene);
 
     m_logo = new OBJMesh("data/scene/logo.obj");
-    meshScene->AddMesh("logo", m_logo);
+    meshScene->AddChild(m_logo);
 
     m_camera = new Camera(Camera::TARGET_RELATIVE);
     m_camera->SetRotate(Vector2f(180, 5));

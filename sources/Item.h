@@ -65,7 +65,7 @@ class ItemAddAmmo : public Item
 {
 public:
     ItemAddAmmo(GameManager* gameManager, tbe::Matrix4f pos);
-    Object* Clone();
+    Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
     void OutputConstruction(std::ofstream& file);
@@ -77,7 +77,7 @@ class ItemAddLife : public Item
 {
 public:
     ItemAddLife(GameManager* gameManager, tbe::Matrix4f pos);
-    Object* Clone();
+    Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
     void OutputConstruction(std::ofstream& file);
@@ -89,7 +89,7 @@ class ItemFatalShot : public Item
 {
 public:
     ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos);
-    Object* Clone();
+    Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
     void OutputConstruction(std::ofstream& file);
@@ -101,7 +101,7 @@ class ItemSuperLife : public Item
 {
 public:
     ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos);
-    Object* Clone();
+    Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
     void OutputConstruction(std::ofstream& file);
@@ -113,7 +113,7 @@ class ItemAddFinder : public Item
 {
 public:
     ItemAddFinder(GameManager* gameManager, tbe::Matrix4f pos);
-    Object* Clone();
+    Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
     void OutputConstruction(std::ofstream& file);
@@ -125,7 +125,7 @@ class ItemAddBomb : public Item
 {
 public:
     ItemAddBomb(GameManager* gameManager, tbe::Matrix4f pos);
-    Object* Clone();
+    Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
     void OutputConstruction(std::ofstream& file);
@@ -137,7 +137,7 @@ class ItemAddShotgun : public Item
 {
 public:
     ItemAddShotgun(GameManager* gameManager, tbe::Matrix4f pos);
-    Object* Clone();
+    Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
     void OutputConstruction(std::ofstream& file);

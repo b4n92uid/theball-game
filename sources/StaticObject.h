@@ -16,7 +16,8 @@ public:
     StaticObject(GameManager* gameManager, std::string path, tbe::Matrix4f pos);
     ~StaticObject();
 
-    Object* Clone();
+    Object* CloneToObject();
+    
     void OutputConstruction(std::ofstream& file);
 
     typedef std::map<std::string, StaticObject*> Map;

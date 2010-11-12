@@ -97,7 +97,7 @@ void UserControl::Process(Player* player)
     bool collideWithStatic = false;
 
     for(unsigned i = 0; i < m_playManager->map.staticObjects.size(); i++)
-        if(player->IsCollidWith(m_playManager->map.staticObjects[i]))
+        if(player->GetPhysicBody()->IsCollidWith(m_playManager->map.staticObjects[i]->GetPhysicBody()))
         {
             collideWithStatic = true;
             break;
@@ -117,7 +117,7 @@ void UserControl::Process(Player* player)
 
     addForce.y = 0;
 
-    player->SetApplyForce(addForce);
+    player->GetPhysicBody()->SetApplyForce(addForce);
 
     // Jump
     if(collideWithStatic)

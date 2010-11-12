@@ -15,8 +15,6 @@
 #include "Define.h"
 #include "PlayManager.h"
 
-//#define DISABLE_PARTICLES
-
 using namespace tbe;
 using namespace tbe::scene;
 
@@ -33,12 +31,12 @@ DYJumper::DYJumper(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObje
 {
     Open(OBJ_JUMPER);
 
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
 
-    #ifndef DISABLE_PARTICLES
     m_particles = new ParticlesEmiter;
-    m_particles->SetPos(m_matrix * (m_aabb.min * 0.75f));
-    m_particles->SetEndPos(m_matrix * (m_aabb.max * 1.25f) - m_matrix.GetPos());
+    m_particles->SetPos(m_aabb.min * 0.75f);
+    m_particles->SetEndPos(m_aabb.max * 1.25f);
+    m_particles->SetGravity(Vector3f(0, 0.001, 0));
     m_particles->SetFreeMove(0);
     m_particles->SetTexture(PARTICLE_JUMPER);
     m_particles->SetLifeInit(2);
@@ -47,18 +45,16 @@ DYJumper::DYJumper(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObje
     m_particles->SetContinousMode(true);
     m_particles->Build();
 
-    m_gameManager->parallelscene.particles->AddParticlesEmiter("", m_particles);
-    #endif
+    m_particles->SetParent(this);
+
+    m_gameManager->parallelscene.particles->AddChild(m_particles);
 }
 
 DYJumper::~DYJumper()
 {
-    #ifndef DISABLE_PARTICLES
-    m_gameManager->parallelscene.particles->DeleteParticlesEmiter(m_particles);
-    #endif
 }
 
-Object* DYJumper::Clone()
+Object* DYJumper::CloneToObject()
 {
     DYJumper* dj = new DYJumper(m_gameManager, m_matrix);
     m_gameManager->RegisterDynamic(dj);
@@ -76,23 +72,16 @@ void DYJumper::OutputConstruction(std::ofstream& file)
     file << endl;
 }
 
-void DYJumper::Process()
-{
-    #ifndef DISABLE_PARTICLES
-    m_particles->SetPos(m_matrix * (m_aabb.min * 0.75f));
-    m_particles->SetEndPos(m_matrix * (m_aabb.max * 1.25f) - m_matrix.GetPos());
-    #endif
-}
-
 void DYJumper::InteractWith(Player* player)
 {
-    Vector3f velocity = player->GetVelocity();
+    Vector3f velocity = player->GetPhysicBody()->GetVelocity();
 
     velocity.y = 0;
 
-    player->SetVelocity(velocity);
+    player->GetPhysicBody()->SetVelocity(velocity);
 
-    NewtonBodyAddImpulse(player->GetBody(), Vector3f(0, 32, 0), player->NewtonNode::GetPos());
+    NewtonBodyAddImpulse(player->GetPhysicBody()->GetBody(),
+                         Vector3f(0, 32, 0), player->GetPos());
 
     m_soundManager->Play("jumper", player);
 }
@@ -101,12 +90,11 @@ DYTeleporter::DYTeleporter(GameManager* gameManager, tbe::Matrix4f matrix) : Dyn
 {
     Open(OBJ_TELEPORTER);
 
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
 
-    #ifndef DISABLE_PARTICLES
     m_particles = new ParticlesEmiter;
-    m_particles->SetPos(m_matrix * (m_aabb.min * 0.75f));
-    m_particles->SetEndPos(m_matrix * (m_aabb.max * 1.25f) - m_matrix.GetPos());
+    m_particles->SetPos(m_aabb.min * 0.75f);
+    m_particles->SetEndPos(m_aabb.max * 1.25f);
     m_particles->SetFreeMove(0);
     m_particles->SetTexture(PARTICLE_TELEPORTER);
     m_particles->SetLifeInit(2);
@@ -115,18 +103,16 @@ DYTeleporter::DYTeleporter(GameManager* gameManager, tbe::Matrix4f matrix) : Dyn
     m_particles->SetContinousMode(true);
     m_particles->Build();
 
-    m_gameManager->parallelscene.particles->AddParticlesEmiter("", m_particles);
-    #endif
+    m_particles->SetParent(this);
+
+    m_gameManager->parallelscene.particles->AddChild(m_particles);
 }
 
 DYTeleporter::~DYTeleporter()
 {
-    #ifndef DISABLE_PARTICLES
-    m_gameManager->parallelscene.particles->DeleteParticlesEmiter(m_particles);
-    #endif
 }
 
-Object* DYTeleporter::Clone()
+Object* DYTeleporter::CloneToObject()
 {
     DYTeleporter* dt = new DYTeleporter(m_gameManager, m_matrix);
     m_gameManager->RegisterDynamic(dt);
@@ -142,14 +128,6 @@ void DYTeleporter::OutputConstruction(std::ofstream& file)
     file << "matrix=" << m_matrix << endl;
     file << "action=TELEPORTER" << endl;
     file << endl;
-}
-
-void DYTeleporter::Process()
-{
-    #ifndef DISABLE_PARTICLES
-    m_particles->SetPos(m_matrix * (m_aabb.min * 0.75f));
-    m_particles->SetEndPos(m_matrix * (m_aabb.max * 1.25f) - m_matrix.GetPos());
-    #endif
 }
 
 void DYTeleporter::InteractWith(Player* player)

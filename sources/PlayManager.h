@@ -111,6 +111,7 @@ protected:
     Player* m_userPlayer;
 
     Player::Array m_players;
+    Weapon::Array m_weapons;
 
     BulletTime* m_bullettime;
 
