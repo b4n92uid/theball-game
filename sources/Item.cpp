@@ -40,9 +40,9 @@ unsigned Item::GetRebornTime() const
 
 void Item::ResetPosition()
 {
-    SetVelocity(0);
+    m_physicBody->SetVelocity(0);
 
-    NewtonNode::SetMatrix(m_initialMatrix);
+    m_physicBody->SetMatrix(m_initialMatrix);
 }
 
 void Item::Reborn()
@@ -78,10 +78,11 @@ bool Item::IsReadyToReborn()
 ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_AMMOPACK);
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+    
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
 }
 
-Object* ItemAddAmmo::Clone()
+Object* ItemAddAmmo::CloneToObject()
 {
     Item* it = new ItemAddAmmo(m_gameManager, m_matrix);
     m_gameManager->RegisterItem(it);
@@ -128,10 +129,11 @@ void ItemAddAmmo::OutputConstruction(std::ofstream& file)
 ItemAddLife::ItemAddLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_MEDPACK);
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
 }
 
-Object* ItemAddLife::Clone()
+Object* ItemAddLife::CloneToObject()
 {
     Item* it = new ItemAddLife(m_gameManager, m_matrix);
     m_gameManager->RegisterItem(it);
@@ -177,11 +179,13 @@ void ItemAddLife::OutputConstruction(std::ofstream& file)
 ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_FATALSHOT);
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+    
     m_rebornTime = 16000;
 }
 
-Object* ItemFatalShot::Clone()
+Object* ItemFatalShot::CloneToObject()
 {
     Item* it = new ItemFatalShot(m_gameManager, m_matrix);
     m_gameManager->RegisterItem(it);
@@ -238,7 +242,7 @@ void ItemFatalShot::ModifPlayer(Player* player)
 
 bool ItemFatalShot::IsNeeded(Player* player)
 {
-    if(!IsTaked() && player->NewtonNode::GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
         return true;
 
     return false;
@@ -260,11 +264,13 @@ void ItemFatalShot::OutputConstruction(std::ofstream& file)
 ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_SUPERLIFE);
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+    
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+
     m_rebornTime = 16000;
 }
 
-Object* ItemSuperLife::Clone()
+Object* ItemSuperLife::CloneToObject()
 {
     Item* it = new ItemSuperLife(m_gameManager, m_matrix);
     m_gameManager->RegisterItem(it);
@@ -321,7 +327,7 @@ void ItemSuperLife::ModifPlayer(Player* player)
 
 bool ItemSuperLife::IsNeeded(Player* player)
 {
-    if(!IsTaked() && player->NewtonNode::GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
         return true;
 
     return false;
@@ -343,10 +349,11 @@ void ItemSuperLife::OutputConstruction(std::ofstream& file)
 ItemAddFinder::ItemAddFinder(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_ADDFINDER);
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
 }
 
-Object* ItemAddFinder::Clone()
+Object* ItemAddFinder::CloneToObject()
 {
     Item* it = new ItemAddFinder(m_gameManager, m_matrix);
     m_gameManager->RegisterItem(it);
@@ -361,7 +368,7 @@ void ItemAddFinder::ModifPlayer(Player* player)
         playManager->Log("Arme : Finder");
 
     WeaponFinder* finder = new WeaponFinder(playManager);
-    player->AddWeapon("finder", finder);
+    player->AddWeapon(finder);
 
     m_soundManager->Play("takeammo", this);
 
@@ -370,7 +377,7 @@ void ItemAddFinder::ModifPlayer(Player* player)
 
 bool ItemAddFinder::IsNeeded(Player* player)
 {
-    if(!IsTaked() && player->NewtonNode::GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
         return true;
 
     return false;
@@ -392,10 +399,11 @@ void ItemAddFinder::OutputConstruction(std::ofstream& file)
 ItemAddBomb::ItemAddBomb(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_ADDBOMB);
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
 }
 
-Object* ItemAddBomb::Clone()
+Object* ItemAddBomb::CloneToObject()
 {
     Item* it = new ItemAddBomb(m_gameManager, m_matrix);
     m_gameManager->RegisterItem(it);
@@ -410,7 +418,7 @@ void ItemAddBomb::ModifPlayer(Player* player)
         playManager->Log("Arme : Bomb");
 
     WeaponBomb* bomb = new WeaponBomb(playManager);
-    player->AddWeapon("bomb", bomb);
+    player->AddWeapon(bomb);
 
     m_soundManager->Play("takeammo", this);
 
@@ -419,7 +427,7 @@ void ItemAddBomb::ModifPlayer(Player* player)
 
 bool ItemAddBomb::IsNeeded(Player* player)
 {
-    if(!IsTaked() && player->NewtonNode::GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
         return true;
 
     return false;
@@ -441,10 +449,11 @@ void ItemAddBomb::OutputConstruction(std::ofstream& file)
 ItemAddShotgun::ItemAddShotgun(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_ADDSHOTGUN);
-    BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
+
+    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0.75);
 }
 
-Object* ItemAddShotgun::Clone()
+Object* ItemAddShotgun::CloneToObject()
 {
     Item* it = new ItemAddShotgun(m_gameManager, m_matrix);
     m_gameManager->RegisterItem(it);
@@ -459,7 +468,7 @@ void ItemAddShotgun::ModifPlayer(Player* player)
         playManager->Log("Arme : Shotgun");
 
     WeaponShotgun* shotgun = new WeaponShotgun(playManager);
-    player->AddWeapon("shotgun", shotgun);
+    player->AddWeapon(shotgun);
 
     m_soundManager->Play("takeammo", this);
 
@@ -468,7 +477,7 @@ void ItemAddShotgun::ModifPlayer(Player* player)
 
 bool ItemAddShotgun::IsNeeded(Player* player)
 {
-    if(!IsTaked() && player->NewtonNode::GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
         return true;
 
     return false;

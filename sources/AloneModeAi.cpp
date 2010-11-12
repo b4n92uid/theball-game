@@ -59,19 +59,19 @@ void AloneModeAi::Process(Player* player)
     StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
 
     Vector3f addForce;
-    Vector3f playerPos = player->NewtonNode::GetPos();
+    Vector3f playerPos = player->GetPos();
 
     // -------------------------------------------------------------------------
 
     bool isCollidWithMap = false;
 
     for(unsigned i = 0; i < staticObjects.size(); i++)
-        if(isCollidWithMap = player->IsCollidWith(staticObjects[i]))
+        if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
             break;
 
     // -------------------------------------------------------------------------
 
-    m_targetPos = m_targetPlayer->NewtonNode::GetPos();
+    m_targetPos = m_targetPlayer->GetPos();
 
     if(m_switchTarget.IsEsplanedTime(AI_SWITCH_TARGET_TIME)
        || m_strikePos - playerPos < m_minDistToSwith)
@@ -83,18 +83,19 @@ void AloneModeAi::Process(Player* player)
         m_strikePos.y = 0;
     }
 
-    if(m_targetPos - playerPos < m_minDistToShoot)
-        if(m_targetPlayer == m_playManager->GetUserPlayer() && m_playManager->GetBullettime()->IsActive())
-        {
-            Vector3f velocity;
-            NewtonBodyGetVelocity(m_targetPlayer->GetBody(), velocity);
+    if(m_targetPos - playerPos < m_minDistToShoot
+       && m_targetPlayer == m_playManager->GetUserPlayer()
+       && m_playManager->GetBullettime()->IsActive())
+    {
+        Vector3f velocity;
+        NewtonBodyGetVelocity(m_targetPlayer->GetPhysicBody()->GetBody(), velocity);
 
-            player->Shoot(m_targetPos - velocity);
-        }
-        else
-        {
-            player->Shoot(m_targetPos);
-        }
+        player->Shoot(m_targetPos - velocity);
+    }
+    else
+    {
+        player->Shoot(m_targetPos);
+    }
 
     if(player->GetCurWeapon()->IsEmpty())
         player->SwitchUpWeapon();
@@ -103,5 +104,5 @@ void AloneModeAi::Process(Player* player)
     addForce = (addForce - playerPos).Normalize() * m_worldSettings.playerMoveSpeed;
     addForce.y = 0;
 
-    player->SetApplyForce(addForce);
+    player->GetPhysicBody()->SetApplyForce(addForce);
 }

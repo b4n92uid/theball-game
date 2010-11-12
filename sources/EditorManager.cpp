@@ -77,7 +77,7 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
     }
 
     m_axes = new scene::Axes(2, 2);
-    parallelscene.meshs->AddMesh("", m_axes);
+    parallelscene.meshs->AddChild(m_axes);
 
     // PPE ---------------------------------------------------------------------
 
@@ -717,7 +717,7 @@ void EditorManager::HudProcess()
             info << "Entités" << endl;
 
             if(m_selectedNode)
-                info << "Selection : " << m_selectedNode->GetName() << " ; " << m_selectedNode->NewtonNode::GetPos();
+                info << "Selection : " << m_selectedNode->GetName() << " ; " << m_selectedNode->GetPos();
             else
                 info << "Selection : NULL";
 

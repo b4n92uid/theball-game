@@ -10,6 +10,11 @@
 
 #include <Newton/Newton.h>
 
+#include "Weapon.h"
+#include "Item.h"
+#include "StaticObject.h"
+#include "DynamicObject.h"
+
 class GameManager;
 
 class MaterialManager
@@ -18,13 +23,13 @@ public:
     MaterialManager(GameManager* playManager);
     virtual ~MaterialManager();
 
-    void SetGhost(tbe::scene::NewtonNode* body, bool state);
+    void SetGhost(Object* body, bool state);
 
-    void AddWeapon(tbe::scene::NewtonNode* body);
-    void AddPlayer(tbe::scene::NewtonNode* body);
-    void AddStatic(tbe::scene::NewtonNode* body);
-    void AddDynamic(tbe::scene::NewtonNode* body);
-    void AddItem(tbe::scene::NewtonNode* body);
+    void AddBullet(Bullet* body);
+    void AddPlayer(Player* body);
+    void AddStatic(StaticObject* body);
+    void AddDynamic(DynamicObject* body);
+    void AddItem(Item* body);
 
     int GetPlayersGroupe() const;
     int GetWeaponsGroupe() const;

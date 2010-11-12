@@ -36,10 +36,9 @@ class DYJumper : public DynamicObject
 public:
     DYJumper(GameManager* gameManager, tbe::Matrix4f pos);
     ~DYJumper();
-    Object* Clone();
+    Object* CloneToObject();
     void OutputConstruction(std::ofstream& file);
     void InteractWith(Player* player);
-    void Process();
 
 
 protected:
@@ -51,10 +50,9 @@ class DYTeleporter : public DynamicObject
 public:
     DYTeleporter(GameManager* gameManager, tbe::Matrix4f pos);
     ~DYTeleporter();
-    Object* Clone();
+    Object* CloneToObject();
     void OutputConstruction(std::ofstream& file);
     void InteractWith(Player* player);
-    void Process();
 
 protected:
     tbe::scene::ParticlesEmiter* m_particles;

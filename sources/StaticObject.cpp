@@ -28,10 +28,10 @@ StaticObject::StaticObject(GameManager* gameManager, std::string path, tbe::Matr
     for(unsigned i = 0; i < materials.size(); i++)
         materials[i]->Enable(Material::BACKFACE_CULL);
 
-    BuildTreeNode(m_hardwareBuffer.GetAllFace());
+    m_physicBody->BuildTreeNode(m_hardwareBuffer.GetAllFace());
 }
 
-Object* StaticObject::Clone()
+Object* StaticObject::CloneToObject()
 {
     StaticObject* so = new StaticObject(m_gameManager, m_filepath, m_matrix);
     m_gameManager->RegisterStatic(so);

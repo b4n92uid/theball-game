@@ -22,11 +22,11 @@ using namespace tbe::scene;
 
 Weapon::Weapon(PlayManager* playManager)
 {
-    m_parent = NULL;
-
     m_playManager = playManager;
     m_worldSettings = m_playManager->manager.app->globalSettings.physics;
     m_soundManager = m_playManager->manager.sound;
+
+    m_shooter = NULL;
 
     m_maxAmmoDammage = 0;
     m_maxAmmoCount = 0;
@@ -36,9 +36,11 @@ Weapon::Weapon(PlayManager* playManager)
     m_shootSpeed = 0;
     m_shootCadency = 0;
 
-    m_playManager->parallelscene.particles->AddParticlesEmiter("", this);
-
     m_mapAABB = m_playManager->map.aabb;
+
+    m_playManager->parallelscene.particles->AddChild(this);
+
+    SetLockPtr(true);
 }
 
 Weapon::Weapon(const Weapon& copy)
@@ -48,35 +50,34 @@ Weapon::Weapon(const Weapon& copy)
 
 Weapon::~Weapon()
 {
-    m_playManager->parallelscene.particles->ReleaseParticlesEmiter(this);
-
-    for(unsigned i = 0; i < m_ammosPack.size(); i++)
-        delete m_ammosPack[i];
+    for(unsigned i = 0; i < m_bulletArray.size(); i++)
+        delete m_bulletArray[i];
 }
 
 void Weapon::Process()
 {
     Particle* particles = BeginParticlesPosProcess();
 
-    for(unsigned i = 0; i < m_ammosPack.size(); i++)
+    for(unsigned i = 0; i < m_bulletArray.size(); i++)
     {
-        if(m_ammosPack[i]->IsDeadAmmo())
+        if(m_bulletArray[i]->IsDeadAmmo())
         {
-            delete m_ammosPack[i];
-            m_ammosPack.erase((vector<Bullet*>::iterator) & m_ammosPack[i]);
+            delete m_bulletArray[i], m_bulletArray[i] = NULL;
         }
 
         else
         {
-            m_ammosPack[i]->UpdateMatrix();
-            particles[i].pos = m_ammosPack[i]->NewtonNode::GetPos();
+            m_bulletArray[i]->Process();
+            particles[i].pos = m_bulletArray[i]->GetPos();
         }
-
     }
 
     EndParticlesPosProcess();
 
-    SetDrawNumber(m_ammosPack.size());
+    Bullet::Array::iterator newend = remove(m_bulletArray.begin(), m_bulletArray.end(), (Bullet*)NULL);
+    m_bulletArray.erase(newend, m_bulletArray.end());
+
+    SetDrawNumber(m_bulletArray.size());
 }
 
 void Weapon::SetFireSound(std::string fireSound)
@@ -90,6 +91,16 @@ void Weapon::SetFireSound(std::string fireSound)
 bool Weapon::IsEmpty()
 {
     return(m_ammoCount == 0);
+}
+
+void Weapon::SetShooter(Player* shooter)
+{
+    this->m_shooter = shooter;
+}
+
+Player* Weapon::GetShooter() const
+{
+    return m_shooter;
 }
 
 std::string Weapon::GetWeaponName() const
@@ -107,8 +118,8 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
     // Controle des munitions
     if(m_ammoCount <= 0)
     {
-        if(m_parent->clocks.shoot.IsEsplanedTime(1000))
-            m_soundManager->Play("noAvailable", m_parent);
+        if(m_shooter->clocks.shoot.IsEsplanedTime(1000))
+            m_soundManager->Play("noAvailable", m_shooter);
 
         return;
     }
@@ -119,24 +130,14 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
     if(!m_shootCadencyClock.IsEsplanedTime(shootCadency))
         return;
 
-    if(m_ammosPack.size() > m_maxAmmoCount)
+    if(m_bulletArray.size() > m_maxAmmoCount)
         return;
 
-    m_soundManager->Play(m_soundID, m_parent);
+    m_soundManager->Play(m_soundID, m_shooter);
 
     m_ammoCount--;
 
     ProcessShoot(startpos, targetpos);
-}
-
-void Weapon::SetShooter(Player* shooter)
-{
-    m_parent = shooter;
-}
-
-Player* Weapon::GetShooter() const
-{
-    return m_parent;
 }
 
 void Weapon::SetShootCadency(unsigned shootCadency)
@@ -212,6 +213,11 @@ float Weapon::GetShootSpeed() const
     return m_shootSpeed;
 }
 
+bool Weapon::operator==(const Weapon& copy)
+{
+    return m_name == copy.m_name;
+}
+
 Weapon & Weapon::operator=(const Weapon& copy)
 {
     m_maxAmmoDammage = copy.m_maxAmmoDammage;
@@ -227,12 +233,12 @@ Weapon & Weapon::operator=(const Weapon& copy)
 
 // Ammo ------------------------------------------------------------------------
 
-Bullet::Bullet(Weapon* weapon)
+Bullet::Bullet(PlayManager* playManager)
 {
-    m_weapon = weapon;
-    m_playManager = m_weapon->GetShooter()->GetPlayManager();
+    m_playManager = playManager;
     m_life = 300;
     m_dammage = 0;
+    m_weapon = NULL;
 }
 
 void Bullet::SetShootSpeed(float shootSpeed)
@@ -255,26 +261,24 @@ int Bullet::GetDammage() const
     return m_dammage;
 }
 
+void Bullet::SetWeapon(Weapon* weapon)
+{
+    this->m_weapon = weapon;
+}
+
+Weapon* Bullet::GetWeapon() const
+{
+    return m_weapon;
+}
+
 void Bullet::SetLife(int life)
 {
-
     this->m_life = life;
 }
 
 int Bullet::GetLife() const
 {
-
     return m_life;
-}
-
-void Bullet::SetParent(Weapon* shooter)
-{
-    this->m_weapon = shooter;
-}
-
-Weapon* Bullet::GetParent() const
-{
-    return m_weapon;
 }
 
 bool Bullet::IsDeadAmmo()
@@ -290,7 +294,7 @@ void Bullet::Shoot(Vector3f startpos, Vector3f shootdiri, float shootspeed)
 
     m_matrix.SetPos(startpos);
 
-    SetNewtonWorld(m_weapon->GetShooter()->GetNewtonWorld());
+    SetNewtonWorld(m_weapon->GetShooter()->GetPhysicBody()->GetNewtonWorld());
     SetUpdatedMatrix(&m_matrix);
 
     Settings::Physics& worldSettings = m_playManager->manager.app->globalSettings.physics;
@@ -300,7 +304,7 @@ void Bullet::Shoot(Vector3f startpos, Vector3f shootdiri, float shootspeed)
     NewtonBodySetLinearDamping(m_body, 0);
     NewtonBodySetContinuousCollisionMode(m_body, true);
 
-    m_playManager->manager.material->AddWeapon(this);
+    m_playManager->manager.material->AddBullet(this);
 
     NewtonBodyAddImpulse(m_body, m_shootDiri*m_shootSpeed, m_startPos);
 }
@@ -331,13 +335,12 @@ void WeaponBlaster::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
     Vector3f shootdiri = (targetpos - startpos).Normalize();
 
     // Creation du tire
-    Bullet * fire = new Bullet(this);
+    Bullet* fire = new Bullet(m_playManager);
+    fire->SetWeapon(this);
     fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
-    m_playManager->manager.material->AddWeapon(fire);
-
-    m_ammosPack.push_back(fire);
+    m_bulletArray.push_back(fire);
 }
 
 // WeaponShotgun ---------------------------------------------------------------
@@ -368,13 +371,14 @@ void WeaponShotgun::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
                                  Vector3f(m_worldSettings.playerSize * 0.5));
 
         // Creation du tire
-        Bullet * fire = new Bullet(this);
+        Bullet * fire = new Bullet(m_playManager);
+        fire->SetWeapon(this);
         fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
         fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
-        m_playManager->manager.material->AddWeapon(fire);
+        m_playManager->manager.material->AddBullet(fire);
 
-        m_ammosPack.push_back(fire);
+        m_bulletArray.push_back(fire);
     }
 
     m_ammoCount--;
@@ -403,13 +407,14 @@ void WeaponBomb::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     Vector3f shootdiri = (targetpos - startpos).Normalize();
 
     // Creation du tire
-    Bullet * fire = new Bullet(this);
+    Bullet * fire = new Bullet(m_playManager);
+    fire->SetWeapon(this);
     fire->SetDammage(100);
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
-    m_playManager->manager.material->AddWeapon(fire);
+    m_playManager->manager.material->AddBullet(fire);
 
-    m_ammosPack.push_back(fire);
+    m_bulletArray.push_back(fire);
 }
 
 // WeaponFinder ----------------------------------------------------------------
@@ -434,18 +439,17 @@ void WeaponFinder::Process()
 {
     Particle* particles = BeginParticlesPosProcess();
 
-    for(unsigned i = 0; i < m_ammosPack.size(); i++)
+    for(unsigned i = 0; i < m_bulletArray.size(); i++)
     {
-        if(m_ammosPack[i]->IsDeadAmmo())
+        if(m_bulletArray[i]->IsDeadAmmo())
         {
-            delete m_ammosPack[i];
-            m_ammosPack.erase((vector<Bullet*>::iterator) & m_ammosPack[i]);
+            delete m_bulletArray[i], m_bulletArray[i] = NULL;
         }
 
         else
         {
-            m_ammosPack[i]->UpdateMatrix();
-            particles[i].pos = m_ammosPack[i]->NewtonNode::GetPos();
+            m_bulletArray[i]->Process();
+            particles[i].pos = m_bulletArray[i]->GetPos();
 
             bool targetLocked = false;
 
@@ -454,30 +458,33 @@ void WeaponFinder::Process()
             const Player::Array& players = m_playManager->GetPlayers();
 
             for(unsigned j = 0; j < players.size(); j++)
-                if(players[j] != m_parent)
+                if(players[j] != m_shooter)
                 {
                     Vector3f ammodiri;
-                    NewtonBodyGetVelocity(m_ammosPack[i]->GetBody(), ammodiri);
+                    NewtonBodyGetVelocity(m_bulletArray[i]->GetBody(), ammodiri);
                     ammodiri.Normalize();
 
-                    Vector3f playerdiri = players[j]->NewtonNode::GetPos() - m_ammosPack[i]->NewtonNode::GetPos();
+                    Vector3f playerdiri = players[j]->GetPos() - m_bulletArray[i]->GetPos();
                     playerdiri.Normalize();
 
                     if(Vector3f::Dot(playerdiri, ammodiri) > 0.0)
                     {
-                        minDist = min(players[j]->NewtonNode::GetPos() - m_ammosPack[i]->NewtonNode::GetPos(), minDist);
+                        minDist = min(players[j]->GetPos() - m_bulletArray[i]->GetPos(), minDist);
                         targetLocked = true;
                     }
                 }
 
             if(targetLocked)
-                m_ammosPack[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed);
+                m_bulletArray[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed);
         }
     }
 
     EndParticlesPosProcess();
 
-    SetDrawNumber(m_ammosPack.size());
+    Bullet::Array::iterator newend = remove(m_bulletArray.begin(), m_bulletArray.end(), (Bullet*)NULL);
+    m_bulletArray.erase(newend, m_bulletArray.end());
+
+    SetDrawNumber(m_bulletArray.size());
 }
 
 void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -485,13 +492,14 @@ void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     Vector3f shootdiri = (targetpos - startpos).Normalize();
 
     // Creation du tire
-    Bullet * fire = new Bullet(this);
+    Bullet * fire = new Bullet(m_playManager);
+    fire->SetWeapon(this);
     fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
     fire->Shoot(startpos, shootdiri, m_shootSpeed);
 
     NewtonBodySetForceAndTorqueCallback(fire->GetBody(), NewtonParallelScene::ApplyForceAndTorque);
 
-    m_playManager->manager.material->AddWeapon(fire);
+    m_playManager->manager.material->AddBullet(fire);
 
-    m_ammosPack.push_back(fire);
+    m_bulletArray.push_back(fire);
 }

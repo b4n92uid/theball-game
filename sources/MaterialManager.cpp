@@ -20,6 +20,18 @@ using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
 
+template<typename T> T GetUserData(const NewtonBody* body)
+{
+    NewtonNode* nn = static_cast<NewtonNode*>(NewtonBodyGetUserData(body));
+    return dynamic_cast<T>(nn);
+}
+
+template<typename T> T GetParentUserData(const NewtonBody* body)
+{
+    NewtonNode* nn = static_cast<NewtonNode*>(NewtonBodyGetUserData(body));
+    return dynamic_cast<T>(nn->GetParent());
+}
+
 void PlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
@@ -38,31 +50,20 @@ void PlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, 
     Player* player = NULL;
     NewtonNode* obj = NULL;
 
-    try
+    if(group0 == playerGroup)
     {
-        if(group0 == playerGroup)
-        {
-            player = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-            obj = dynamic_cast<NewtonNode*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-        }
-
-        else if(group1 == playerGroup)
-        {
-            player = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-            obj = dynamic_cast<NewtonNode*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-        }
-
-        else
-            return;
+        player = GetParentUserData<Player*>(body0);
+        obj = GetParentUserData<NewtonNode*>(body1);
     }
 
-    catch(...)
+    else if(group1 == playerGroup)
     {
-
+        player = GetParentUserData<Player*>(body1);
+        obj = GetParentUserData<NewtonNode*>(body0);
     }
 }
 
-void PlayerOnDynamicContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
+void PlayerOnDynamicContactsProcess(const NewtonJoint* contact, dFloat, int)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
     NewtonBody* body1 = NewtonJointGetBody1(contact);
@@ -80,33 +81,22 @@ void PlayerOnDynamicContactsProcess(const NewtonJoint* contact, dFloat timestep,
     Player* player = NULL;
     DynamicObject* obj = NULL;
 
-    try
+    if(group0 == playerGroup)
     {
-        if(group0 == playerGroup)
-        {
-            obj = dynamic_cast<DynamicObject*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-            player = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-        }
-
-        else if(group1 == playerGroup)
-        {
-            obj = dynamic_cast<DynamicObject*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-            player = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-        }
-
-        else
-            return;
-
-        obj->InteractWith(player);
+        obj = GetParentUserData<DynamicObject*>(body1);
+        player = GetParentUserData<Player*>(body0);
     }
 
-    catch(...)
+    else if(group1 == playerGroup)
     {
-
+        obj = GetParentUserData<DynamicObject*>(body0);
+        player = GetParentUserData<Player*>(body1);
     }
+
+    obj->InteractWith(player);
 }
 
-int PlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int threadIndex)
+int PlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
 {
     int group0 = NewtonBodyGetMaterialGroupID(body0);
     int group1 = NewtonBodyGetMaterialGroupID(body1);
@@ -121,35 +111,24 @@ int PlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* 
     PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
     int itemGroup = playManager->manager.material->GetItemGroupe();
 
-    try
+    if(group0 == itemGroup)
     {
-        if(group0 == itemGroup)
-        {
-            item = dynamic_cast<Item*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-            player = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-        }
-
-        else if(group1 == itemGroup)
-        {
-            item = dynamic_cast<Item*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-            player = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-        }
-
-        else
-            return 1;
-
-        player->AttachItem(item);
+        item = GetParentUserData<Item*>(body0);
+        player = GetParentUserData<Player*>(body1);
     }
 
-    catch(...)
+    else if(group1 == itemGroup)
     {
-
+        item = GetParentUserData<Item*>(body1);
+        player = GetParentUserData<Player*>(body0);
     }
+
+    player->AttachItem(item);
 
     return 0;
 }
 
-void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
+void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
     NewtonBody* body1 = NewtonJointGetBody1(contact);
@@ -164,29 +143,18 @@ void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat timestep, int
     PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
     int weaponGroup = playManager->manager.material->GetWeaponsGroupe();
 
-    Bullet* ammo = NULL;
+    Bullet* bullet = NULL;
 
-    try
-    {
-        if(group0 == weaponGroup)
-            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
+    if(group0 == weaponGroup)
+        bullet = GetUserData<Bullet*>(body0);
 
-        else if(group1 == weaponGroup)
-            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
+    else if(group1 == weaponGroup)
+        bullet = GetUserData<Bullet*>(body1);
 
-        else
-            return;
-
-        ammo->SetLife(0);
-    }
-
-    catch(...)
-    {
-
-    }
+    bullet->SetLife(0);
 }
 
-int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int threadIndex)
+int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
 {
     static tbe::ticks::Clock cheerClock;
     static int cheerCount = 0;
@@ -199,69 +167,62 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
 
     Player* striker = NULL;
     Player* striked = NULL;
-    Bullet* ammo = NULL;
+    Bullet* bullet = NULL;
 
     NewtonWorld* nWorld = NewtonBodyGetWorld(body0);
     PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
     int weaponGroup = playManager->manager.material->GetWeaponsGroupe();
 
-    try
+    if(group0 == weaponGroup)
     {
-        if(group0 == weaponGroup)
-        {
-            striked = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-        }
-
-        else if(group1 == weaponGroup)
-        {
-            striked = dynamic_cast<Player*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body0));
-            ammo = dynamic_cast<Bullet*>((tbe::scene::NewtonNode*)NewtonBodyGetUserData(body1));
-        }
-
-        striker = ammo->GetParent()->GetShooter();
-
-        if(striked != striker)
-        {
-            striked->TakeDammage(ammo);
-            ammo->SetLife(0);
-
-            if(striker == playManager->GetUserPlayer() && striked->IsKilled())
-            {
-                cheerCount++;
-
-                if(cheerCount >= 2)
-                {
-                    if(!cheerClock.IsEsplanedTime(4000))
-                        switch(cheerCount)
-                        {
-                            case 2: playManager->Log("Double kill");
-                                break;
-                            case 3: playManager->Log("Triple kill");
-                                break;
-                            case 4: playManager->Log("Carnage");
-                                break;
-                            case 5: playManager->Log("The One");
-                                break;
-                            case 6: playManager->Log("War Warrior");
-                                break;
-                            case 7: playManager->Log("God Of War !!!");
-                                break;
-                            default: playManager->Log("...");
-                                break;
-                        }
-                    else
-                        cheerCount = 0;
-
-                    cheerClock.SnapShoot();
-                }
-            }
-        }
+        striked = GetParentUserData<Player*>(body1);
+        bullet = GetUserData<Bullet*>(body0);
     }
 
-    catch(...)
+    else if(group1 == weaponGroup)
     {
+        striked = GetParentUserData<Player*>(body0);
+        bullet = GetUserData<Bullet*>(body1);
+    }
 
+    striker = bullet->GetWeapon()->GetShooter();
+
+    if(striked == striker)
+        return 0;
+
+    striked->TakeDammage(bullet);
+
+    bullet->SetLife(0);
+
+    if(striker == playManager->GetUserPlayer() && striked->IsKilled())
+    {
+        cheerCount++;
+
+        if(cheerCount >= 2)
+        {
+            if(!cheerClock.IsEsplanedTime(4000))
+                switch(cheerCount)
+                {
+                    case 2: playManager->Log("Double kill");
+                        break;
+                    case 3: playManager->Log("Triple kill");
+                        break;
+                    case 4: playManager->Log("Carnage");
+                        break;
+                    case 5: playManager->Log("The One");
+                        break;
+                    case 6: playManager->Log("War Warrior");
+                        break;
+                    case 7: playManager->Log("God Of War !!!");
+                        break;
+                    default: playManager->Log("...");
+                        break;
+                }
+            else
+                cheerCount = 0;
+
+            cheerClock.SnapShoot();
+        }
     }
 
     return 0;
@@ -308,51 +269,53 @@ MaterialManager::~MaterialManager()
     NewtonMaterialDestroyAllGroupID(m_world);
 }
 
-void MaterialManager::SetGhost(tbe::scene::NewtonNode* body, bool state)
+void MaterialManager::SetGhost(Object* body, bool state)
 {
+    NewtonNode* xbody = body->GetPhysicBody();
+
     if(state)
     {
-        if(m_ghostState.count(body))
+        if(m_ghostState.count(xbody))
             return;
 
-        int newtonMaterial = NewtonBodyGetMaterialGroupID(body->GetBody());
-        m_ghostState[body] = newtonMaterial;
-        NewtonBodySetMaterialGroupID(body->GetBody(), m_ghostGroupe);
+        int newtonMaterial = NewtonBodyGetMaterialGroupID(xbody->GetBody());
+        m_ghostState[xbody] = newtonMaterial;
+        NewtonBodySetMaterialGroupID(xbody->GetBody(), m_ghostGroupe);
     }
 
     else
     {
-        if(!m_ghostState.count(body))
+        if(!m_ghostState.count(xbody))
             return;
 
-        NewtonBodySetMaterialGroupID(body->GetBody(), m_ghostState[body]);
-        m_ghostState.erase(body);
+        NewtonBodySetMaterialGroupID(xbody->GetBody(), m_ghostState[xbody]);
+        m_ghostState.erase(xbody);
     }
 }
 
-void MaterialManager::AddDynamic(tbe::scene::NewtonNode * body)
+void MaterialManager::AddDynamic(DynamicObject* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetBody(), m_dynamicGroupe);
+    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_dynamicGroupe);
 }
 
-void MaterialManager::AddStatic(tbe::scene::NewtonNode * body)
+void MaterialManager::AddStatic(StaticObject* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetBody(), m_staticGroupe);
+    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_staticGroupe);
 }
 
-void MaterialManager::AddWeapon(tbe::scene::NewtonNode * body)
+void MaterialManager::AddBullet(Bullet* body)
 {
     NewtonBodySetMaterialGroupID(body->GetBody(), m_bulletGroupe);
 }
 
-void MaterialManager::AddPlayer(tbe::scene::NewtonNode * body)
+void MaterialManager::AddPlayer(Player* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetBody(), m_playersGroupe);
+    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_playersGroupe);
 }
 
-void MaterialManager::AddItem(tbe::scene::NewtonNode * body)
+void MaterialManager::AddItem(Item* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetBody(), m_itemGroupe);
+    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_itemGroupe);
 }
 
 int MaterialManager::GetPlayersGroupe() const

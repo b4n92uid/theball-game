@@ -20,11 +20,11 @@ class Player;
 class Bullet;
 class Weapon;
 
-class Bullet : public tbe::scene::Node, public tbe::scene::NewtonNode
+class Bullet : public tbe::scene::NewtonNode
 {
 public:
 
-    Bullet(Weapon* weapon);
+    Bullet(PlayManager* playManager);
 
     void Shoot(tbe::Vector3f startpos, tbe::Vector3f shootdiri, float shootspeed);
 
@@ -33,17 +33,19 @@ public:
     void SetLife(int life);
     int GetLife() const;
 
-    void SetParent(Weapon* shooter);
-    Weapon* GetParent() const;
+    void SetWeapon(Weapon* weapon);
+    Weapon* GetWeapon() const;
 
     void SetDiripos(tbe::Vector3f diripos);
     tbe::Vector3f GetDiripos() const;
 
     void SetShootSpeed(float shootSpeed);
     float GetShootSpeed() const;
-    
+
     void SetDammage(int dammage);
     int GetDammage() const;
+
+    typedef std::vector<Bullet*> Array;
 
 protected:
     PlayManager* m_playManager;
@@ -59,14 +61,17 @@ class Weapon : public tbe::scene::ParticlesEmiter
 {
 public:
     Weapon(PlayManager* playManager);
-
     Weapon(const Weapon& copy);
-
     virtual ~Weapon();
 
     Weapon & operator=(const Weapon& copy);
 
+    bool operator==(const Weapon& copy);
+
     void Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
+
+    void SetShooter(Player* shooter);
+    Player* GetShooter() const;
 
     void SetShootCadency(unsigned shootCadency);
     unsigned GetShootCadency() const;
@@ -84,9 +89,6 @@ public:
     void SetShootSpeed(float shootSpeed);
     float GetShootSpeed() const;
 
-    void SetShooter(Player* shooter);
-    Player* GetShooter() const;
-
     void SetFireSound(std::string fireSound);
 
     std::string GetWeaponName() const;
@@ -94,7 +96,7 @@ public:
 
     bool IsEmpty();
 
-    typedef std::map<std::string, Weapon*> Map;
+    typedef std::vector<Weapon*> Array;
 
 protected:
     virtual void ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos) = 0;
@@ -113,16 +115,17 @@ protected:
 
     tbe::ticks::Clock m_shootCadencyClock;
 
-    std::vector<Bullet*> m_ammosPack;
+    Bullet::Array m_bulletArray;
 
     tbe::AABB m_mapAABB;
     std::string m_soundID;
 
     PlayManager* m_playManager;
     SoundManager* m_soundManager;
-    Player* m_parent;
 
     Settings::Physics m_worldSettings;
+
+    Player* m_shooter;
 };
 
 class WeaponBlaster : public Weapon

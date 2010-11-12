@@ -39,7 +39,7 @@ public:
         for(unsigned i = 0; i < m_teamPlayers.size(); i++)
             if(!m_teamPlayers[i]->IsKilled())
             {
-                particles[show].pos = m_teamPlayers[i]->NewtonNode::GetPos() + Vector3f(0, 1, 0);
+                particles[show].pos = m_teamPlayers[i]->GetPos() + Vector3f(0, 1, 0);
                 show++;
             }
 
@@ -72,9 +72,9 @@ public:
     virtual bool OnTakeDammage(Player* player, Bullet* ammo)
     {
         return(m_playManager->IsInBleuTeam(player)
-                != m_playManager->IsInBleuTeam(ammo->GetParent()->GetShooter())
+                != m_playManager->IsInBleuTeam(ammo->GetWeapon()->GetShooter())
                 && m_playManager->IsInRedTeam(player)
-                != m_playManager->IsInRedTeam(ammo->GetParent()->GetShooter()));
+                != m_playManager->IsInRedTeam(ammo->GetWeapon()->GetShooter()));
     }
 
 private:
@@ -112,12 +112,12 @@ void PlayTeamManager::ModSetupAi()
     m_teamBleuIcon = new BillboardIcon(blueTeamPlayers);
     m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
     m_teamBleuIcon->Build();
-    parallelscene.particles->AddParticlesEmiter("", m_teamBleuIcon);
+    parallelscene.particles->AddChild(m_teamBleuIcon);
 
     m_teamRedIcon = new BillboardIcon(redTeamPlayers);
     m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
     m_teamRedIcon->Build();
-    parallelscene.particles->AddParticlesEmiter("", m_teamRedIcon);
+    parallelscene.particles->AddChild(m_teamRedIcon);
 }
 
 void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
