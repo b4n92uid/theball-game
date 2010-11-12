@@ -12,6 +12,8 @@
 
 // GUI -------------------------------------------------------------------------
 #define GUI_TEXTBOX_V   "data/gfxart/gui/textboxv.png"
+#define GUI_SCORE       "data/gfxart/gui/score.png"
+#define GUI_NOTIFY      "data/gfxart/gui/notify.png"
 #define GUI_TEXTBOX_H   "data/gfxart/gui/textboxh.png"
 #define GUI_LISTBOX_V   "data/gfxart/gui/listboxv.png"
 #define GUI_LISTBOX_H   "data/gfxart/gui/listboxh.png"
