@@ -60,20 +60,22 @@ public:
     void RegisterPlayer(Player* player);
     void UnRegisterPlayer(Player* player, bool keep = false);
 
-    tbe::Vector3f GetShootTarget() const;
-
-    Player* GetUserPlayer() const;
-    
-    const Player::Array& GetPlayers() const;
-
-    BulletTime* GetBullettime() const;
-
     void PPeBullettime(bool status);
     void PPeBoost(bool status);
 
     void HudNotifyDammage();
     void HudNotifyItem(bool status);
     void HudBullettimeDisplay(bool status);
+
+    virtual BulletTime* GetBullettime() const;
+
+    virtual tbe::Vector3f GetShootTarget() const;
+
+    virtual Player* GetUserPlayer() const;
+
+    virtual const Player::Array& GetPlayers() const;
+
+    virtual const Player::Array GetTargetsOf(Player* player) const;
 
 protected:
 

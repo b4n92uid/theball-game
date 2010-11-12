@@ -27,16 +27,10 @@ void TeamModeAi::Process(Player* player)
     if(player->IsKilled())
         return;
 
-    Player::Array& players = find(m_playManager->blueTeamPlayers.begin(),
-                                  m_playManager->blueTeamPlayers.end(),
-                                  player) == m_playManager->blueTeamPlayers.end()
-            ? m_playManager->blueTeamPlayers
-            : m_playManager->redTeamPlayers;
-
-    Item::Array& items = m_playManager->map.items;
-
-    StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
-    DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
+    const Player::Array players = m_playManager->GetTargetsOf(player);
+    const Item::Array& items = m_playManager->map.items;
+    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
+    const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
     Vector3f playerPos = player->GetPos();

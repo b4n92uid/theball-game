@@ -457,7 +457,7 @@ void WeaponFinder::Process()
 
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
-            const Player::Array& players = m_playManager->GetPlayers();
+            const Player::Array& players = m_playManager->GetTargetsOf(m_shooter);
 
             for(unsigned j = 0; j < players.size(); j++)
                 if(players[j] != m_shooter)

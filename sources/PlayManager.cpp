@@ -210,8 +210,9 @@ void PlayManager::SetupGui()
     hud.gameover = manager.gui->AddTextBox("hud.gameover");
     hud.gameover->SetSize(screenSize * Vector2f(0.75, 0.75));
     hud.gameover->SetDefinedSize(true);
-    hud.gameover->SetBackground(GUI_TEXTBOX_H);
-    hud.gameover->SetBackgroundPadding(8);
+    hud.gameover->SetPencil(bigPen);
+    hud.gameover->SetBackground(GUI_SCORE);
+    hud.gameover->SetBackgroundPadding(Vector2f(16, 8));
     manager.gui->AddLayoutStretchSpace();
     manager.gui->EndLayout();
     manager.gui->AddLayoutStretchSpace();
@@ -795,4 +796,12 @@ void PlayManager::HudBullettimeDisplay(bool status)
 BulletTime* PlayManager::GetBullettime() const
 {
     return m_bullettime;
+}
+
+const Player::Array PlayManager::GetTargetsOf(Player* player) const
+{
+    Player::Array array(m_players);
+    array.erase(find(array.begin(), array.end(), player));
+
+    return array;
 }

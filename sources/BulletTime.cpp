@@ -61,7 +61,7 @@ void BulletTime::SetActive(bool active)
 
     if(m_active)
     {
-        FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 0.1);
+        FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 0.5);
 
         m_soundManager->Play("bullettime", m_userPlayer);
 

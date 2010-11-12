@@ -62,7 +62,7 @@ void FragModeAi::Process(Player* player)
     if(player->IsKilled())
         return;
 
-    const Player::Array& players = m_playManager->GetPlayers();
+    const Player::Array& players = m_playManager->GetTargetsOf(player);
 
     const Item::Array& items = m_playManager->map.items;
     const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
@@ -116,7 +116,7 @@ void FragModeAi::Process(Player* player)
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
             for(unsigned i = 0; i < players.size(); i++)
-                if(players[i] != player && !players[i]->IsKilled() && m_mapAABB.IsInner(players[i]))
+                if(!players[i]->IsKilled() && m_mapAABB.IsInner(players[i]))
                 {
                     Vector3f testedDist = players[i]->GetPos() - playerPos;
 
