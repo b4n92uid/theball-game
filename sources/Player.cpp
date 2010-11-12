@@ -42,6 +42,8 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Rendue
     Open(model);
 
+    m_checkMe.push_back(new StartProtection(this));
+
     // Physique
     m_physicBody->BuildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
 
@@ -267,6 +269,8 @@ void Player::ReBorn()
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         m_checkMe[i]->AfterReborn(this);
+
+    m_checkMe.push_back(new StartProtection(this));
 }
 
 void Player::Kill()
@@ -378,4 +382,52 @@ void Player::TakeDammage(Bullet* ammo)
 PlayManager* Player::GetPlayManager() const
 {
     return m_playManager;
+}
+
+Player::StartProtection::StartProtection(Player* player)
+{
+    using namespace tbe;
+    using namespace tbe::scene;
+
+    HardwareBuffer& hb = player->GetHardwareBuffer();
+
+    Vertex* vs = hb.Lock();
+    for(unsigned i = 0; i < hb.GetVertexCount(); i++)
+        vs[i].color.w = 0.25;
+    hb.UnLock();
+
+    Material::Array mats = player->GetAllMaterial();
+
+    for(unsigned i = 0; i < mats.size(); i++)
+        mats[i]->Enable(Material::BLEND_MOD);
+}
+
+bool Player::StartProtection::OnTakeDammage(Player* player, Bullet* ammo)
+{
+    return false;
+}
+
+bool Player::StartProtection::Shutdown(Player* player)
+{
+    using namespace tbe;
+    using namespace tbe::scene;
+
+    if(m_clock.IsEsplanedTime(4000))
+    {
+        HardwareBuffer& hb = player->GetHardwareBuffer();
+
+        Vertex* vs = hb.Lock();
+        for(unsigned i = 0; i < hb.GetVertexCount(); i++)
+            vs[i].color.w = 1;
+        hb.UnLock();
+
+        Material::Array mats = player->GetAllMaterial();
+
+        for(unsigned i = 0; i < mats.size(); i++)
+            mats[i]->Disable(Material::BLEND_MOD);
+
+        return true;
+    }
+
+    return false;
 }
