@@ -210,12 +210,17 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
     ss << "Appuyez sur espace pour continuer..." << endl;
 }
 
-bool PlayTeamManager::IsInBleuTeam(Player* player)
+bool PlayTeamManager::IsInBleuTeam(Player* player) const
 {
     return find(blueTeamPlayers.begin(), blueTeamPlayers.end(), player) != blueTeamPlayers.end();
 }
 
-bool PlayTeamManager::IsInRedTeam(Player* player)
+bool PlayTeamManager::IsInRedTeam(Player* player) const
 {
     return find(redTeamPlayers.begin(), redTeamPlayers.end(), player) != redTeamPlayers.end();
+}
+
+const Player::Array PlayTeamManager::GetTargetsOf(Player* player) const
+{
+    return IsInRedTeam(player) ? blueTeamPlayers : redTeamPlayers;
 }

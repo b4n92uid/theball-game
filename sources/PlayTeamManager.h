@@ -16,11 +16,10 @@ public:
     PlayTeamManager(AppManager* appManager);
     virtual ~PlayTeamManager();
 
-    bool IsInBleuTeam(Player* player);
-    bool IsInRedTeam(Player* player);
+    bool IsInBleuTeam(Player* player) const;
+    bool IsInRedTeam(Player* player) const;
 
-    Player::Array blueTeamPlayers;
-    Player::Array redTeamPlayers;
+    const Player::Array GetTargetsOf(Player* player) const;
 
 protected:
     virtual void ModSetupAi();
@@ -29,6 +28,9 @@ protected:
     virtual void ModUpdateGameOverText(std::ostringstream& ss);
 
 protected:
+    Player::Array blueTeamPlayers;
+    Player::Array redTeamPlayers;
+
     tbe::scene::ParticlesEmiter* m_teamBleuIcon;
     tbe::scene::ParticlesEmiter* m_teamRedIcon;
 };
