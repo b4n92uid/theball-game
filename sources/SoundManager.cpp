@@ -79,8 +79,8 @@ void SoundManager::Play(std::string soundName, Object* object)
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
 
     FMOD_Channel_Set3DAttributes(channel,
-                                 (FMOD_VECTOR*)(float*)object->NewtonNode::GetPos(),
-                                 (FMOD_VECTOR*)(float*)object->NewtonNode::GetVelocity());
+                                 (FMOD_VECTOR*)(float*)object->GetPos(),
+                                 (FMOD_VECTOR*)(float*)object->GetPhysicBody()->GetVelocity());
 
     ProcessEffect(soundName, channel);
 

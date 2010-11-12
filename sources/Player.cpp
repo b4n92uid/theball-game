@@ -31,9 +31,9 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_deadExplode = new ParticlesEmiter;
     m_deadExplode->SetTexture(PARTICLE_EXPLODE);
     m_deadExplode->SetLifeInit(0.5);
-    m_deadExplode->SetLifeDown(0.02);
-    m_deadExplode->SetFreeMove(0.05);
-    m_deadExplode->SetNumber(500);
+    m_deadExplode->SetLifeDown(0.025);
+    m_deadExplode->SetFreeMove(0.075);
+    m_deadExplode->SetNumber(128);
     m_deadExplode->SetAutoRebuild(false);
     m_deadExplode->SetParent(this);
 
@@ -197,8 +197,6 @@ void Player::AddWeapon(Weapon* weapon)
     {
         (*select)->UpAmmoCount(weapon->GetAmmoCount());
 
-        m_playManager->parallelscene.particles->ReleaseChild(weapon);
-
         delete weapon;
 
         m_curWeapon = *select;
@@ -257,11 +255,7 @@ void Player::ReBorn()
     m_physicBody->SetFreeze(false);
 
     for(unsigned i = 0; i < m_weaponsPack.size(); i++)
-    {
-        m_playManager->parallelscene.particles->ReleaseChild(m_weaponsPack[i]);
-
         delete m_weaponsPack[i];
-    }
 
     m_weaponsPack.clear();
 

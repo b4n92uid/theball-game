@@ -333,24 +333,17 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
-        if(event->keyState[EventManager::KEY_F11])
+        if(event->keyState[EventManager::KEY_F5])
             m_userPlayer->Kill();
 
-        if(event->keyState[EventManager::KEY_F10])
+        if(event->keyState[EventManager::KEY_F6])
         {
             for(unsigned i = 0; i < m_players.size(); i++)
                 if(m_players[i] != m_userPlayer)
-                {
-                    UnRegisterPlayer(m_players[i], true);
-                    delete m_players[i];
-                }
-
-            Player::Array::iterator newEnd = remove_if(m_players.begin(), m_players.end(),
-                                                       bind1st(not_equal_to<Player*>(), m_userPlayer));
-            m_players.erase(newEnd, m_players.end());
+                    UnRegisterPlayer(m_players[i]);
         }
 
-        if(event->keyState[EventManager::KEY_F5])
+        if(event->keyState[EventManager::KEY_F7])
         {
             unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
 
@@ -360,7 +353,7 @@ void PlayManager::ProcessDevelopperCodeEvent()
             RegisterPlayer(player);
         }
 
-        if(event->keyState[EventManager::KEY_F6])
+        if(event->keyState[EventManager::KEY_F8])
         {
             unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
 
@@ -764,11 +757,12 @@ void PlayManager::UnRegisterPlayer(Player* player, bool keep)
     parallelscene.meshs->ReleaseChild(player);
     parallelscene.newton->ReleaseChild(player->GetPhysicBody());
 
+    Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
+
+    m_players.erase(it);
+
     if(!keep)
-    {
         delete player;
-        m_players.erase(Player::Array::iterator(&player));
-    }
 }
 
 void PlayManager::PPeBullettime(bool status)
