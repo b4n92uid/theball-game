@@ -18,7 +18,8 @@ class BillboardIcon : public tbe::scene::ParticlesEmiter
 {
 public:
 
-    BillboardIcon(Player::Array& teamPlayers) : m_teamPlayers(teamPlayers)
+    BillboardIcon(PlayManager* playManager, Player::Array& teamPlayers)
+    : m_playManager(playManager), m_teamPlayers(teamPlayers)
     {
         SetNumber(m_teamPlayers.size());
         SetBlendEq(ParticlesEmiter::MODULAR);
@@ -37,7 +38,8 @@ public:
 
         unsigned show = 0;
         for(unsigned i = 0; i < m_teamPlayers.size(); i++)
-            if(!m_teamPlayers[i]->IsKilled())
+            if(m_teamPlayers[i] != m_playManager->GetUserPlayer()
+               && !m_teamPlayers[i]->IsKilled())
             {
                 particles[show].pos = m_teamPlayers[i]->GetPos() + Vector3f(0, 1, 0);
                 show++;
@@ -49,6 +51,7 @@ public:
     }
 
 protected:
+    PlayManager* m_playManager;
     Player::Array& m_teamPlayers;
 };
 
@@ -109,12 +112,14 @@ void PlayTeamManager::ModSetupAi()
         redTeamPlayers.push_back(m_players[i]);
     }
 
-    m_teamBleuIcon = new BillboardIcon(blueTeamPlayers);
+    m_userBleuTeam = IsInBleuTeam(m_userPlayer);
+
+    m_teamBleuIcon = new BillboardIcon(this, blueTeamPlayers);
     m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
     m_teamBleuIcon->Build();
     parallelscene.particles->AddChild(m_teamBleuIcon);
 
-    m_teamRedIcon = new BillboardIcon(redTeamPlayers);
+    m_teamRedIcon = new BillboardIcon(this, redTeamPlayers);
     m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
     m_teamRedIcon->Build();
     parallelscene.particles->AddChild(m_teamRedIcon);
@@ -130,6 +135,8 @@ void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
         ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
     else
         ss << "Temps : Infinie" << endl;
+
+    ss << "Equipe : " << (m_userBleuTeam ? "Bleu" : "Rouge") << endl;
 }
 
 void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
