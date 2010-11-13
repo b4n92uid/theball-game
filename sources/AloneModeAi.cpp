@@ -50,9 +50,6 @@ void AloneModeAi::Process(Player* player)
      }
      */
 
-    if(player->IsKilled())
-        return;
-
     if(!m_targetPlayer)
         m_targetPlayer = m_playManager->GetUserPlayer();
 

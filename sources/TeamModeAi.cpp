@@ -24,9 +24,6 @@ TeamModeAi::~TeamModeAi()
 
 void TeamModeAi::Process(Player* player)
 {
-    if(player->IsKilled())
-        return;
-
     const Player::Array players = m_playManager->GetTargetsOf(player);
     const Item::Array& items = m_playManager->map.items;
     const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;

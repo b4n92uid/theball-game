@@ -130,7 +130,7 @@ void Player::Process()
             m_boostAvalaible = true;
     }
 
-    if(m_attachedCotroller)
+    if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->Process(this);
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
