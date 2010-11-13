@@ -161,12 +161,12 @@ void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
 
     ss << "Equipe bleu [" << bleuScore << "]" << endl;
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        ss << blueTeamPlayers[i]->GetName() << " [" << blueTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+        ss << " [" << blueTeamPlayers[i]->GetScore() << "] " << blueTeamPlayers[i]->GetName() << endl;
     ss << endl;
 
     ss << "Equipe rouge [" << redScore << "]" << endl;
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        ss << redTeamPlayers[i]->GetName() << " [" << redTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+        ss << " [" << redTeamPlayers[i]->GetScore() << "] " << redTeamPlayers[i]->GetName() << endl;
     ss << endl;
 }
 
@@ -199,12 +199,12 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     ss << "Equipe bleu [" << bleuScore << "]" << endl;
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        ss << blueTeamPlayers[i]->GetName() << " [" << blueTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+        ss << " [" << blueTeamPlayers[i]->GetScore() << "] " << blueTeamPlayers[i]->GetName() << endl;
     ss << endl;
 
     ss << "Equipe rouge [" << redScore << "]" << endl;
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        ss << redTeamPlayers[i]->GetName() << " [" << redTeamPlayers[i]->GetScore() << "] point(s)" << endl;
+        ss << " [" << redTeamPlayers[i]->GetScore() << "] " << redTeamPlayers[i]->GetName() << endl;
     ss << endl;
 
     ss << "Appuyez sur espace pour continuer..." << endl;

@@ -108,7 +108,7 @@ void PlayAloneManager::ModUpdateScoreListText(std::ostringstream& ss)
 
     ss << endl;
 
-    ss << m_userPlayer->GetName() << " : " << m_userPlayer->GetScore() << " point(s)" << endl;
+    ss << "[" << m_userPlayer->GetScore() << "] " << m_userPlayer->GetName() << endl;
 }
 
 void PlayAloneManager::ModUpdateGameOverText(std::ostringstream& ss)
@@ -125,7 +125,7 @@ void PlayAloneManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     ss << endl;
 
-    ss << m_userPlayer->GetName() << " : " << m_userPlayer->GetScore() << " point(s)" << endl;
+    ss << "[" << m_userPlayer->GetScore() << "] " << m_userPlayer->GetName() << endl;
 
     ss << "Appuyez sur espace pour continuer..." << endl;
 }

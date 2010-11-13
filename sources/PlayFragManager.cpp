@@ -55,7 +55,7 @@ void PlayFragManager::ModUpdateScoreListText(std::ostringstream& ss)
     ss << endl;
 
     for(unsigned i = 0; i < m_players.size(); i++)
-        ss << m_players[i]->GetName() << " [" << m_players[i]->GetScore() << "] point(s)" << endl;
+        ss << " [" << m_players[i]->GetScore() << "] " << m_players[i]->GetName() << endl;
 }
 
 void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
@@ -73,7 +73,7 @@ void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
     ss << endl;
 
     for(unsigned i = 0; i < m_players.size(); i++)
-        ss << m_players[i]->GetName() << " [" << m_players[i]->GetScore() << "] point(s)" << endl;
+        ss << " [" << m_players[i]->GetScore() << "] " << m_players[i]->GetName() << endl;
 
     ss << "Appuyez sur espace pour continuer..." << endl;
 }

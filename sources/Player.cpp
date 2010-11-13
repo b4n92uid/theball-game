@@ -79,7 +79,7 @@ void Player::SetRandomPosInTheFloor()
 {
     Vector3f randPos;
 
-    float factor = 20 * m_playManager->map.aabb.GetSize() / 100;
+    float factor = 5 * m_playManager->map.aabb.GetSize() / 100;
 
     do
     {
@@ -299,7 +299,10 @@ void Player::Kill()
         m_playManager->GetBullettime()->SetActive(false);
 
         if(m_playManager->manager.app->globalSettings.video.usePpe)
+        {
             m_playManager->PPeBoost(false);
+            m_playManager->PPeBullettime(false);
+        }
     }
 }
 
