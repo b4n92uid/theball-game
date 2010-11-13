@@ -24,6 +24,7 @@
 #include <boost/format.hpp>
 
 #include <tinyxml.h>
+#include <cmath>
 
 using namespace std;
 using namespace tbe;
@@ -44,7 +45,7 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
 
 PlayManager::~PlayManager()
 {
-    if(m_gameOver)
+    if(m_gameOver && m_playSetting.playTime > 0)
     {
         using namespace ticks;
 
@@ -222,7 +223,8 @@ void PlayManager::SetupGui()
     hud.gameover->SetDefinedSize(true);
     hud.gameover->SetPencil(bigPen);
     hud.gameover->SetBackground(GUI_SCORE);
-    hud.gameover->SetBackgroundPadding(Vector2f(16, 8));
+    hud.gameover->SetBackgroundPadding(8);
+    hud.gameover->SetTextAlign(TextBox::LEFT);
     manager.gui->AddLayoutStretchSpace();
     manager.gui->EndLayout();
     manager.gui->AddLayoutStretchSpace();
@@ -729,15 +731,15 @@ const Player::Array& PlayManager::GetPlayers() const
     return m_players;
 }
 
+unsigned PlayManager::ModToFinalScore(unsigned score)
+{
+    return ceil(score / (m_playSetting.playTime / 60) * m_playSetting.playerCount);
+}
+
 void PlayManager::SetGameOver()
 {
     m_gameOver = true;
     m_timeTo = TIME_TO_GAMEOVER;
-
-    ostringstream ss;
-    ModUpdateScoreListText(ss);
-
-    hud.scorelist->Write(ss.str());
 
     for(unsigned i = 0; i < m_players.size(); i++)
         NewtonBodySetFreezeState(m_players[i]->GetPhysicBody()->GetBody(), true);
@@ -748,6 +750,11 @@ void PlayManager::SetGameOver()
 
     if(manager.app->globalSettings.video.usePpe)
         ppe.gameover->SetEnable(true);
+
+    ostringstream ss;
+    ModUpdateScoreListText(ss);
+
+    hud.scorelist->Write(ss.str());
 }
 
 bool PlayManager::IsGameOver() const

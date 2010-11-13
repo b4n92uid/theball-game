@@ -77,6 +77,8 @@ public:
 
     virtual const Player::Array GetTargetsOf(Player* player) const;
 
+    unsigned ModToFinalScore(unsigned score);
+
 protected:
 
     virtual void ModSetupAi() = 0;
@@ -178,7 +180,6 @@ private:
     } hud;
 
     void ProcessDevelopperCodeEvent();
-
 };
 
 #endif	/* _PLAYMODEMANAGER_H */

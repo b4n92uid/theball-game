@@ -333,7 +333,7 @@ void Player::SetScore(int frag)
 
 int Player::GetScore() const
 {
-    return m_score;
+    return m_playManager->ModToFinalScore(m_score);
 }
 
 void Player::UpLife(int life)
