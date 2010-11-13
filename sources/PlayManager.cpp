@@ -107,6 +107,19 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     // PLAYERS -----------------------------------------------------------------
 
+    vector<string> names;
+
+    {
+        ifstream namefile("NAMES.txt");
+
+        do names.push_back(string());
+        while(getline(namefile, names.back()));
+
+        names.pop_back();
+
+        namefile.close();
+    }
+
     Settings::PlayerInfo pi(m_playSetting.playerModel);
 
     m_userPlayer = new Player(this, m_playSetting.playerName, pi.model);
@@ -116,17 +129,14 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     m_bullettime = new BulletTime(this);
 
-    for(unsigned i = 0; i < m_playSetting.playerCount; i++)
+    for(unsigned i = 0; i < m_playSetting.playerCount - 1; i++)
     {
-        unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
+        unsigned select = tools::rand(0, names.size());
 
-        Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
-
-        stringstream name;
-        name << pi.name << "#" << i;
-
-        Player* player = new Player(this, name.str(), pi.model);
+        Player* player = new Player(this, names[select], pi.model);
         RegisterPlayer(player);
+
+        names.erase(names.begin() + select);
     }
 
     ModSetupAi();
