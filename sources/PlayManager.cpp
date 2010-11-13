@@ -121,9 +121,9 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
         namefile.close();
     }
 
-    Settings::PlayerInfo pi(m_playSetting.playerModel);
+    Settings::PlayerInfo upi(m_playSetting.playerModel);
 
-    m_userPlayer = new Player(this, m_playSetting.playerName, pi.model);
+    m_userPlayer = new Player(this, m_playSetting.playerName, upi.model);
     m_userPlayer->AttachController(new UserControl(this));
 
     RegisterPlayer(m_userPlayer);
@@ -132,12 +132,14 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     for(unsigned i = 0; i < m_playSetting.playerCount - 1; i++)
     {
-        unsigned select = tools::rand(0, names.size());
+        unsigned selectPlayer = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
 
-        Player* player = new Player(this, names[select], pi.model);
+        Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[selectPlayer];
+
+        unsigned selectName = tools::rand(0, names.size());
+
+        Player* player = new Player(this, names[selectName], pi.model);
         RegisterPlayer(player);
-
-        names.erase(names.begin() + select);
     }
 
     ModSetupAi();
