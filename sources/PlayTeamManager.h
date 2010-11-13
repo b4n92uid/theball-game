@@ -30,9 +30,9 @@ protected:
 protected:
     Player::Array blueTeamPlayers;
     Player::Array redTeamPlayers;
-
     tbe::scene::ParticlesEmiter* m_teamBleuIcon;
     tbe::scene::ParticlesEmiter* m_teamRedIcon;
+    bool m_userBleuTeam;
 };
 
 #endif	/* _PLAYTEAMMANAGER_H */
