@@ -59,9 +59,6 @@ void FragModeAi::Process(Player* player)
      Mouvement vers addForce
      */
 
-    if(player->IsKilled())
-        return;
-
     const Player::Array& players = m_playManager->GetTargetsOf(player);
 
     const Item::Array& items = m_playManager->map.items;
