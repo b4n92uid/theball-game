@@ -632,7 +632,7 @@ void AppManager::SetupBackgroundScene()
     m_sceneManager->ClearAll();
 
     MeshParallelScene* meshScene = new MeshParallelScene;
-    m_sceneManager->AddParallelScene("nodeScene", meshScene);
+    m_sceneManager->AddParallelScene(meshScene);
 
     m_logo = new OBJMesh("data/scene/logo.obj");
     meshScene->AddChild(m_logo);
