@@ -29,14 +29,14 @@ GameManager::GameManager(AppManager* appManager)
     manager.ppe = manager.gameEngine->GetPostProcessManager();
 
     parallelscene.meshs = new scene::MeshParallelScene;
-    manager.scene->AddParallelScene("1:MeshScene", parallelscene.meshs);
+    manager.scene->AddParallelScene(parallelscene.meshs);
 
     parallelscene.newton = new scene::NewtonParallelScene;
     parallelscene.newton->SetGravity(worldSettings.gravity);
-    manager.scene->AddParallelScene("2:NewtonNodeScene", parallelscene.newton);
+    manager.scene->AddParallelScene(parallelscene.newton);
 
     parallelscene.particles = new scene::ParticlesParallelScene;
-    manager.scene->AddParallelScene("3:ParticlesScene", parallelscene.particles);
+    manager.scene->AddParallelScene(parallelscene.particles);
 
     #ifndef THEBALL_NO_AUDIO
     manager.fmodsys = appManager->GetFmodSystem();
