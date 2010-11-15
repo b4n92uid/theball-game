@@ -1,12 +1,9 @@
 # Ball level descriptor
-# Generated 07/03/10 - 23:05:23
+# Generated 2010-Nov-15 21:25:11
 
 .map
 name=Desert
 ambient=0.2,0.2,0.2,1
-
-.music
-filePath=data/music/speed.ogg
 
 .fog
 color=1,1,0.75,1
@@ -51,7 +48,7 @@ action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,19.577,0.442742,4.88444,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,20,0.55,5,1
 action=JUMPER
 
 +node
@@ -66,7 +63,7 @@ action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=0.0707372,0,-0.997495,0,0,1,0,0,0.997495,0,0.0707372,0,-20.0555,1.05033,-7.58527,1
+matrix=0.755354,0,-0.655317,0,0,1,0,0,0.655317,0,0.755354,0,-15.9252,1.55033,-11.9596,1
 action=TELEPORTER
 
 +node
@@ -76,7 +73,7 @@ action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0.0707371,0,-0.997495,0,0,1,0,0,0.997495,0,0.0707371,0,27,-0.862765,24,1
+matrix=0.0707371,0,-0.997495,0,0,1,0,0,0.997495,0,0.0707371,0,27,-0.562765,24,1
 action=TELEPORTER
 
 +node
@@ -143,12 +140,12 @@ add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,19.2665,0.871136,1.80663,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,21,1,8,1
 add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,19.1294,0.973558,8.21512,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,19,1,8,1
 add=FINDER
 
 +node
@@ -170,4 +167,34 @@ add=AMMO
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,23,-0.426294,24,1
 add=AMMO
+
+# Spawn
+
++node
+type=SPAWN
+pos=-2,2,25
+
++node
+type=SPAWN
+pos=-18,1,7
+
++node
+type=SPAWN
+pos=21,2,10
+
++node
+type=SPAWN
+pos=11,1,-18
+
++node
+type=SPAWN
+pos=-6,1,-18
+
++node
+type=SPAWN
+pos=-18,1,1
+
++node
+type=SPAWN
+pos=19,2,10
 
