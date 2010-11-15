@@ -386,6 +386,8 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 
             map.musicChannel = 0;
             map.musicStream = NULL;
+            
+            map.musicPath.clear();
 
             hud.music.list->CancelSelection();
         }

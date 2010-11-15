@@ -5,6 +5,9 @@
 name=Desert
 ambient=0.2,0.2,0.2,1
 
+.music
+filePath=data/music/speed.ogg
+
 .fog
 color=1,1,0.75,1
 start=30
