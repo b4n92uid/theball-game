@@ -139,6 +139,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
         unsigned selectName = tools::rand(0, names.size());
 
         Player* player = new Player(this, names[selectName], pi.model);
+        player->SetEnable(false);
         RegisterPlayer(player);
     }
 
@@ -487,10 +488,19 @@ void PlayManager::GameProcess()
     if(m_gameOver)
         return;
 
-    // Pour chaque joueurs
-    // - les joueurs mort pour les reconstruires
-    // - les joueurs en fin de vie pour la préparation a la mort ;)
-    // - les joueurs hors de l'arene pour les remetren place
+    for(unsigned i = 0; i < m_players.size(); i++)
+        if(!m_players[i]->IsEnable() && m_spawnPlayer.IsEsplanedTime(4000))
+        {
+            m_players[i]->SetEnable(true);
+            break;
+        }
+
+    /*
+     * Pour chaque joueurs
+     *  - les joueurs mort pour les reconstruires
+     *  - les joueurs en fin de vie pour la préparation a la mort ;)
+     *  - les joueurs hors de l'arene pour les remetren place
+     */
     for(unsigned i = 0; i < m_players.size(); i++)
     {
         Player* player = m_players[i];
@@ -522,9 +532,11 @@ void PlayManager::GameProcess()
         }
     }
 
-    // Pour chaque Items
-    // - les items pris pour les remplacer
-    // - les items hors-aréne
+    /*
+     * Pour chaque Items
+     * - les items pris pour les remplacer
+     * - les items hors-aréne
+     */
     for(unsigned i = 0; i < map.items.size(); i++)
     {
         Item*& item = map.items[i];

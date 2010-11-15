@@ -127,6 +127,9 @@ Controller* Player::GetAttachedCotroller() const
 
 void Player::Process()
 {
+    if(!m_enable || !m_enableProcess)
+        return;
+
     Object::Process();
 
     if(m_playManager->IsGameOver())
@@ -408,7 +411,7 @@ Player::StartProtection::StartProtection(Player* player)
 
     Vertex* vs = hb.Lock();
     for(unsigned i = 0; i < hb.GetVertexCount(); i++)
-        vs[i].color.w = 0.25;
+        vs[i].color.w = 0.1;
     hb.UnLock();
 
     Material::Array mats = player->GetAllMaterial();
