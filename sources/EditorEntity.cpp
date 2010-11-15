@@ -17,26 +17,23 @@ bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
 
     if(event->lastActiveKey.first == EventManager::KEY_DELETE)
     {
-        {
-            StaticObject* toSt = dynamic_cast<StaticObject*>(m_selectedNode);
-            if(find(map.staticObjects.begin(), map.staticObjects.end(), toSt) != map.staticObjects.end())
-                UnRegisterStatic(toSt);
-        }
-        {
-            DynamicObject* toDy = dynamic_cast<DynamicObject*>(m_selectedNode);
-            if(find(map.dynamicObjects.begin(), map.dynamicObjects.end(), toDy) != map.dynamicObjects.end())
-                UnRegisterDynamic(toDy);
-        }
-        {
-            Item* toItem = dynamic_cast<Item*>(m_selectedNode);
+        if(tools::find(map.staticObjects, m_selectedNode))
+            UnRegisterStatic(dynamic_cast<StaticObject*>(m_selectedNode));
 
-            if(find(map.items.begin(), map.items.end(), toItem) != map.items.end())
-                UnRegisterItem(toItem);
+        if(tools::find(map.dynamicObjects, m_selectedNode))
+            UnRegisterDynamic(dynamic_cast<DynamicObject*>(m_selectedNode));
+
+        if(tools::find(map.items, m_selectedNode))
+            UnRegisterItem(dynamic_cast<Item*>(m_selectedNode));
+
+        if(tools::find(m_visualSpawnPoints, m_selectedNode))
+        {
+            tools::erase(m_visualSpawnPoints, m_selectedNode);
+
+            parallelscene.meshs->ReleaseChild(m_selectedNode);
         }
 
-        Object::Array::iterator it = find(m_allEntity.begin(), m_allEntity.end(), m_selectedNode);
-
-        m_allEntity.erase(it);
+        tools::erase(m_allEntity, m_selectedNode);
 
         delete m_selectedNode, m_selectedNode = NULL;
 
@@ -129,6 +126,16 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
             RegisterItem(it);
             newObj = it;
         }
+    }
+
+    else if(event->keyState['p'] && event->notify == EventManager::EVENT_KEY_DOWN)
+    {
+        StaticObject* visualSpawn = new StaticObject(this, "data/scene/spawn.obj", m_axes->GetPos());
+
+        m_visualSpawnPoints.push_back(visualSpawn);
+        parallelscene.meshs->AddChild(visualSpawn);
+
+        NewEntity(visualSpawn);
     }
 
         // Static
@@ -264,7 +271,7 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
             transform += m_selectedNode->GetPos();
 
 
-            m_selectedNode->SetPos(transform);
+            m_selectedNode->GetPhysicBody()->SetPos(transform);
             m_axes->SetPos(transform);
         }
 

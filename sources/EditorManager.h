@@ -148,6 +148,8 @@ protected:
 
     } hud;
 
+    Object::Array m_visualSpawnPoints;
+
     tbe::scene::FreeFlyCamera* m_FFCamera;
     tbe::scene::OrbitalCamera* m_OCamera;
     tbe::scene::UserCamera* m_camera;

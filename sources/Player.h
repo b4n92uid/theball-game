@@ -70,7 +70,7 @@ public:
     Controller* GetAttachedCotroller() const;
 
     /// Assigne une position alétoire au sol
-    void SetRandomPosInTheFloor();
+    void SetRandomSpawnPos();
 
     /// Change l'arme courante
     void SwitchUpWeapon();

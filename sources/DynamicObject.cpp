@@ -132,6 +132,6 @@ void DYTeleporter::OutputConstruction(std::ofstream& file)
 
 void DYTeleporter::InteractWith(Player* player)
 {
-    player->SetRandomPosInTheFloor();
+    player->SetRandomSpawnPos();
     m_soundManager->Play("teleport", player);
 }
