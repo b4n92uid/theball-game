@@ -124,6 +124,7 @@ protected:
     tbe::ticks::Clock m_logClock;
     tbe::ticks::Clock m_newtonClock;
     tbe::ticks::Clock m_validGameOver;
+    tbe::ticks::Clock m_spawnPlayer;
 
     tbe::scene::Camera* m_camera;
 
