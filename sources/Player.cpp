@@ -79,7 +79,9 @@ void Player::SetRandomSpawnPos()
 {
     Vector3f randPos;
 
-    if(m_playManager->map.spawnPoints.empty())
+    Vector3f::Array& spawns = m_playManager->map.spawnPoints;
+
+    if(spawns.empty())
     {
         float factor = 5 * m_playManager->map.aabb.GetSize() / 100;
 
@@ -94,13 +96,13 @@ void Player::SetRandomSpawnPos()
 
     else
     {
-        unsigned selectSpwan = tools::rand(0, m_playManager->map.spawnPoints.size());
+        randPos = spawns.back();
 
-        randPos = m_playManager->map.spawnPoints[selectSpwan];
-
-        m_physicBody->SetVelocity(0);
+        spawns.pop_back();
+        spawns.insert(spawns.begin(), randPos);
     }
 
+    m_physicBody->SetVelocity(0);
     m_physicBody->SetMatrix(randPos);
 }
 
