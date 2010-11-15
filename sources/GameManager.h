@@ -54,6 +54,8 @@ public:
 
         tbe::AABB aabb;
 
+        tbe::Vector3f::Array spawnPoints;
+
     } map;
 
     struct

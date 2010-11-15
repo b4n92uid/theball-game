@@ -132,6 +132,17 @@ void BldParser::SaveLevel(const std::string& filepath)
     for(unsigned i = 0; i < m_gameManager->map.items.size(); i++)
         m_gameManager->map.items[i]->OutputConstruction(file);
 
+    file << "# Spawn" << endl;
+    file << endl;
+
+    for(unsigned i = 0; i < m_gameManager->map.spawnPoints.size(); i++)
+    {
+        file << "+node" << endl;
+        file << "type=SPAWN" << endl;
+        file << "pos=" << m_gameManager->map.spawnPoints[i] << endl;
+        file << endl;
+    }
+
     file.close();
 }
 
@@ -287,6 +298,9 @@ void BldParser::OnLoadNode(AttribMap& att)
 
     else if(att["type"] == "STATIC")
         CreateStatic(att["modelPath"], att["matrix"]);
+
+    else if(att["type"] == "SPAWN")
+        m_gameManager->map.spawnPoints.push_back(att["pos"]);
 
     else
         throw tbe::Exception("BLDLoader::OnLoadNode; Unknown node type (%s)", att["type"].c_str());

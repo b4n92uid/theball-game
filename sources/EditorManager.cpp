@@ -72,12 +72,22 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
 
         m_selectedLight = map.lights.empty() ? NULL : map.lights.front();
 
-        manager.scene->SetZFar(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize());
+        manager.scene->SetZFar(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize() * 2);
         manager.scene->UpdateViewParameter();
     }
 
     m_axes = new scene::Axes(2, 2);
     parallelscene.meshs->AddChild(m_axes);
+
+    for(unsigned i = 0; i < map.spawnPoints.size(); i++)
+    {
+        StaticObject* visualSpawn = new StaticObject(this, "data/scene/spawn.obj", map.spawnPoints[i]);
+
+        m_visualSpawnPoints.push_back(visualSpawn);
+        parallelscene.meshs->AddChild(visualSpawn);
+
+        NewEntity(visualSpawn);
+    }
 
     // PPE ---------------------------------------------------------------------
 
@@ -628,6 +638,11 @@ void EditorManager::GuiEventPorcess(tbe::EventManager* event)
 
         if(!map.name.empty())
         {
+            map.spawnPoints.clear();
+
+            for(unsigned i = 0; i < m_visualSpawnPoints.size(); i++)
+                map.spawnPoints.push_back(m_visualSpawnPoints[i]->GetPos());
+
             if(m_editSetting.createNew)
             {
                 manager.level->SaveLevel(saveFileName);

@@ -103,7 +103,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     scene::Fog* fog = manager.scene->GetFog();
 
-    manager.scene->SetZFar(fog->IsEnable() ? fog->GetEnd() : map.aabb.GetSize());
+    manager.scene->SetZFar(fog->IsEnable() ? fog->GetEnd() : map.aabb.GetSize() * 2);
     manager.scene->UpdateViewParameter();
 
     // PLAYERS -----------------------------------------------------------------
@@ -517,7 +517,7 @@ void PlayManager::GameProcess()
 
             if(!map.aabb.IsInner(player))
             {
-                player->SetRandomPosInTheFloor();
+                player->SetRandomSpawnPos();
             }
         }
     }

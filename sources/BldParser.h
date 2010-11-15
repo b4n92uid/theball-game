@@ -46,6 +46,7 @@ protected:
     Item* CreateItem(std::string add, tbe::Matrix4f pos);
     StaticObject* CreateStatic(std::string modelPath, tbe::Matrix4f pos);
     DynamicObject* CreateDynamic(std::string action, tbe::Matrix4f pos);
+    Object* CreateSpawn(tbe::Vector3f pos);
 
 protected:
     GameManager* m_gameManager;

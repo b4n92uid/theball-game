@@ -47,7 +47,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Physique
     m_physicBody->BuildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
 
-    SetRandomPosInTheFloor();
+    SetRandomSpawnPos();
 
     NewtonBodySetContinuousCollisionMode(m_physicBody->GetBody(), true);
     NewtonBodySetLinearDamping(m_physicBody->GetBody(), m_worldSettings.playerLinearDamping);
@@ -75,21 +75,31 @@ Object* Player::CloneToObject()
     return NULL;
 }
 
-void Player::SetRandomPosInTheFloor()
+void Player::SetRandomSpawnPos()
 {
     Vector3f randPos;
 
-    float factor = 5 * m_playManager->map.aabb.GetSize() / 100;
-
-    do
+    if(m_playManager->map.spawnPoints.empty())
     {
-        randPos = tools::rand(m_playManager->map.aabb - Vector3f(factor));
-        randPos.y = 1;
-        randPos = m_physicBody->GetNewtonScene()->FindFloor(randPos);
-    }
-    while(randPos.y < m_playManager->map.aabb.min.y);
+        float factor = 5 * m_playManager->map.aabb.GetSize() / 100;
 
-    m_physicBody->SetVelocity(0);
+        do
+        {
+            randPos = tools::rand(m_playManager->map.aabb - Vector3f(factor));
+            randPos.y = 1;
+            randPos = m_physicBody->GetNewtonScene()->FindFloor(randPos);
+        }
+        while(randPos.y < m_playManager->map.aabb.min.y);
+    }
+
+    else
+    {
+        unsigned selectSpwan = tools::rand(0, m_playManager->map.spawnPoints.size());
+
+        randPos = m_playManager->map.spawnPoints[selectSpwan];
+
+        m_physicBody->SetVelocity(0);
+    }
 
     m_physicBody->SetMatrix(randPos);
 }
@@ -265,7 +275,7 @@ void Player::ReBorn()
 
     AddWeapon(blaster);
 
-    SetRandomPosInTheFloor();
+    SetRandomSpawnPos();
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         m_checkMe[i]->AfterReborn(this);
