@@ -60,7 +60,7 @@ void BldParser::SaveLevel(const std::string& filepath)
     file << endl;
 
 
-    if(m_gameManager->map.musicStream)
+    if(!m_gameManager->map.musicPath.empty())
     {
         file << ".music" << endl;
         file << "filePath=" << m_gameManager->map.musicPath << endl;
