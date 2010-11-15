@@ -328,7 +328,7 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
             // Apply
             matrix.SetPos(pos);
 
-            m_selectedNode->SetMatrix(matrix);
+            m_selectedNode->GetPhysicBody()->SetMatrix(matrix);
             m_axes->SetPos(pos);
         }
 
