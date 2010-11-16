@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Aug-03 20:43:15
+# Generated 2010-Nov-16 16:28:59
 
 .map
 name=StarField
@@ -20,22 +20,6 @@ right=data/gfxart/skybox/starfield_rt.tga
 
 +light
 type=POINT
-pos=-9.60724,3.2,21.4818
-ambient=0,0,0,0
-diffuse=1,1,1,1
-specular=1,1,1,1
-radius=4
-
-+light
-type=POINT
-pos=19.1277,4.7,-9.36098
-ambient=0,0,0,0
-diffuse=1,1,1,1
-specular=0,0,0,0
-radius=4
-
-+light
-type=POINT
 pos=5.69033,-1.2,6.37604
 ambient=0,0,0,0
 diffuse=0,0,1,1
@@ -44,19 +28,19 @@ radius=6
 
 +light
 type=POINT
-pos=20.6873,2.8,21.0237
+pos=-9.14241,12.8,23.4278
 ambient=0,0,0,0
 diffuse=1,1,1,1
 specular=0,0,0,0
-radius=4
+radius=14
 
 +light
 type=POINT
-pos=-8.96954,4.7,-9.75331
+pos=21.8304,8,-9.35685
 ambient=0,0,0,0
 diffuse=1,1,1,1
 specular=0,0,0,0
-radius=4
+radius=13
 
 # Static
 
@@ -286,11 +270,37 @@ add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,0,7,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-1,7,1
 add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,0,7,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-1,7,1
 add=FINDER
+
+# Spawn
+
++node
+type=SPAWN
+pos=14,-3,-1
+
++node
+type=SPAWN
+pos=14,-3,15
+
++node
+type=SPAWN
+pos=-3,-3,15
+
++node
+type=SPAWN
+pos=-2,-3,-1
+
++node
+type=SPAWN
+pos=-10,0,7
+
++node
+type=SPAWN
+pos=22,0,7
 
