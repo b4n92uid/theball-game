@@ -61,9 +61,21 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
 
     if(c == 'c' && event->notify == EventManager::EVENT_KEY_DOWN && m_selectedNode)
     {
-        Object* clone = m_selectedNode->CloneToObject();
-        NewEntity(clone);
+        Object* clone = NULL;
+        if(tools::find(m_visualSpawnPoints, m_selectedNode))
+        {
+            clone = new StaticObject(this, "data/scene/spawn.obj", m_axes->GetPos());
 
+            m_visualSpawnPoints.push_back(clone);
+            parallelscene.meshs->AddChild(clone);
+        }
+
+        else
+        {
+            clone = m_selectedNode->CloneToObject();
+        }
+
+        NewEntity(clone);
         m_selectedNode = clone;
 
         return true;
@@ -135,7 +147,7 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
         m_visualSpawnPoints.push_back(visualSpawn);
         parallelscene.meshs->AddChild(visualSpawn);
 
-        NewEntity(visualSpawn);
+        newObj = visualSpawn;
     }
 
         // Static
