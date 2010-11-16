@@ -127,5 +127,5 @@ void PlayAloneManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     ss << "[" << m_userPlayer->GetScore() << "] " << m_userPlayer->GetName() << endl;
 
-    ss << "Appuyez sur espace pour continuer..." << endl;
+    ss << "Espace pour continuer..." << endl;
 }
