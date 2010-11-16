@@ -69,17 +69,16 @@ private:
     PlayAloneManager* m_playManager;
 };
 
-void PlayAloneManager::ModSetupAi()
+void PlayAloneManager::ModSetupUser(Player* userPlayer)
 {
-    for(unsigned i = 0; i < m_players.size(); i++)
-        if(m_players[i] != m_userPlayer)
-        {
-            m_players[i]->AttachController(new AloneModeAi(this));
-            m_players[i]->AddCheckPoint(new AloneModeCheckPlayers(this));
-            m_players[i]->SetLife(1);
-        }
+    userPlayer->AddCheckPoint(new AloneModeCheckUserPlayer(this));
+}
 
-    m_userPlayer->AddCheckPoint(new AloneModeCheckUserPlayer(this));
+void PlayAloneManager::ModSetupAi(Player* player)
+{
+    player->AttachController(new AloneModeAi(this));
+    player->AddCheckPoint(new AloneModeCheckPlayers(this));
+    player->SetLife(1);
 }
 
 void PlayAloneManager::ModUpdateStateText(std::ostringstream& ss)

@@ -21,11 +21,14 @@ PlayFragManager::~PlayFragManager()
 {
 }
 
-void PlayFragManager::ModSetupAi()
+void PlayFragManager::ModSetupUser(Player* userPlayer)
 {
-    for(unsigned i = 0; i < m_players.size(); i++)
-        if(m_players[i] != m_userPlayer)
-            m_players[i]->AttachController(new FragModeAi(this));
+
+}
+
+void PlayFragManager::ModSetupAi(Player* player)
+{
+    player->AttachController(new FragModeAi(this));
 }
 
 void PlayFragManager::ModUpdateStateText(std::ostringstream& ss)

@@ -81,7 +81,8 @@ public:
 
 protected:
 
-    virtual void ModSetupAi() = 0;
+    virtual void ModSetupAi(Player* player) = 0;
+    virtual void ModSetupUser(Player* player) = 0;
 
     virtual void ModUpdateStateText(std::ostringstream& ss) = 0;
     virtual void ModUpdateScoreListText(std::ostringstream& ss) = 0;
@@ -131,6 +132,8 @@ protected:
     tbe::Vector3f m_shootTarget;
 
     std::list<tbe::Vector3f> m_playerPosRec;
+
+    std::vector<std::string> m_botNames;
 
     TimtTo m_timeTo;
 

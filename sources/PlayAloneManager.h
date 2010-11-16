@@ -17,8 +17,8 @@ public:
     virtual ~PlayAloneManager();
 
 protected:
-    void ModSetupAi();
-
+    void ModSetupUser(Player* userPlayer);
+    void ModSetupAi(Player* player);
     void ModUpdateStateText(std::ostringstream& ss);
     void ModUpdateScoreListText(std::ostringstream& ss);
     void ModUpdateGameOverText(std::ostringstream& ss);

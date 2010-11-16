@@ -158,6 +158,10 @@ void Player::Process()
 
 void Player::Shoot(Vector3f targetpos)
 {
+    for(unsigned i = 0; i < m_checkMe.size(); i++)
+        if(!m_checkMe[i]->OnShoot(this))
+            return;
+
     m_curWeapon->Shoot(m_matrix.GetPos(), targetpos);
 }
 
@@ -411,7 +415,7 @@ Player::StartProtection::StartProtection(Player* player)
 
     Vertex* vs = hb.Lock();
     for(unsigned i = 0; i < hb.GetVertexCount(); i++)
-        vs[i].color.w = 0.1;
+        vs[i].color.w = 0.25;
     hb.UnLock();
 
     Material::Array mats = player->GetAllMaterial();
@@ -430,7 +434,7 @@ bool Player::StartProtection::Shutdown(Player* player)
     using namespace tbe;
     using namespace tbe::scene;
 
-    if(m_clock.IsEsplanedTime(4000))
+    if(m_clock.IsEsplanedTime(2000))
     {
         HardwareBuffer& hb = player->GetHardwareBuffer();
 

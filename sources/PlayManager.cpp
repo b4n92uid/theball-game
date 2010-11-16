@@ -93,7 +93,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
     manager.level->LoadLevel(m_playSetting.playMap);
 
     // Marge
-    map.aabb.Add(AABB(Vector3f(-8, 0, -8), Vector3f(8, 64, 8)));
+    map.aabb.Add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
 
     AABB newtonWordSize = map.aabb;
     newtonWordSize.Add(32);
@@ -108,18 +108,14 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     // PLAYERS -----------------------------------------------------------------
 
-    vector<string> names;
+    ifstream namefile("NAMES.txt");
 
-    {
-        ifstream namefile("NAMES.txt");
+    do m_botNames.push_back(string());
+    while(getline(namefile, m_botNames.back()));
 
-        do names.push_back(string());
-        while(getline(namefile, names.back()));
+    m_botNames.pop_back();
 
-        names.pop_back();
-
-        namefile.close();
-    }
+    namefile.close();
 
     Settings::PlayerInfo upi(m_playSetting.playerModel);
 
@@ -127,23 +123,9 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
     m_userPlayer->AttachController(new UserControl(this));
 
     RegisterPlayer(m_userPlayer);
+    ModSetupUser(m_userPlayer);
 
     m_bullettime = new BulletTime(this);
-
-    for(unsigned i = 0; i < m_playSetting.playerCount - 1; i++)
-    {
-        unsigned selectPlayer = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
-
-        Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[selectPlayer];
-
-        unsigned selectName = tools::rand(0, names.size());
-
-        Player* player = new Player(this, names[selectName], pi.model);
-        player->SetEnable(false);
-        RegisterPlayer(player);
-    }
-
-    ModSetupAi();
 
     // PPE ---------------------------------------------------------------------
 
@@ -488,10 +470,22 @@ void PlayManager::GameProcess()
     if(m_gameOver)
         return;
 
-    for(unsigned i = 0; i < m_players.size(); i++)
-        if(!m_players[i]->IsEnable() && m_spawnPlayer.IsEsplanedTime(4000))
+    for(unsigned i = m_players.size(); i < m_playSetting.playerCount; i++)
+        if(m_spawnPlayer.IsEsplanedTime(4000))
         {
-            m_players[i]->SetEnable(true);
+            unsigned selectPlayer = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
+
+            Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[selectPlayer];
+
+            unsigned selectName = tools::rand(0, m_botNames.size());
+
+            Player* player = new Player(this, m_botNames[selectName], pi.model);
+
+            RegisterPlayer(player);
+            ModSetupAi(player);
+
+            manager.sound->Play("respawn", player);
+
             break;
         }
 
