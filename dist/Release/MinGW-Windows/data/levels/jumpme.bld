@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Aug-25 21:57:30
+# Generated 2010-Nov-16 16:08:54
 
 .map
 name=JumpMe
@@ -144,7 +144,7 @@ add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,8.62088,1.33527,-14.1422,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,8.62088,1.08527,-14.1422,1
 add=FINDER
 
 +node
@@ -161,4 +161,38 @@ add=SHOTGUN
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-7.67146,1.20658,14.0196,1
 add=BOMB
+
+# Spawn
+
++node
+type=SPAWN
+pos=8.62088,2.03527,-14.1422
+
++node
+type=SPAWN
+pos=14.5531,2.38857,-8.34022
+
++node
+type=SPAWN
+pos=17.1052,2.76062,4.67218
+
++node
+type=SPAWN
+pos=7.80594,2.08482,14.086
+
++node
+type=SPAWN
+pos=-7.67146,2.35658,14.0196
+
++node
+type=SPAWN
+pos=-2.94459,2.42102,-16.2643
+
++node
+type=SPAWN
+pos=-14.6923,2.5408,-4.89514
+
++node
+type=SPAWN
+pos=-13.3147,2.4925,7.48747
 

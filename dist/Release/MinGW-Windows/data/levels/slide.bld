@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-15 21:46:16
+# Generated 2010-Nov-16 16:22:22
 
 .map
 name=Slide
@@ -237,4 +237,24 @@ matrix=1,0,0,0,0,1,0,0,0,0,1,0,3.02655,0,2.9727,1
 add=SUPERLIFE
 
 # Spawn
+
++node
+type=SPAWN
+pos=0,-0,-0
+
++node
+type=SPAWN
+pos=-18,1,18
+
++node
+type=SPAWN
+pos=-18,1,-18
+
++node
+type=SPAWN
+pos=18,1,-18
+
++node
+type=SPAWN
+pos=18,1,18
 

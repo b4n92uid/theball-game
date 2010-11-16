@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 07/28/10 - 19:50:42
+# Generated 2010-Nov-16 16:19:41
 
 .map
 name=SunShine
@@ -120,4 +120,22 @@ add=FATALSHOT
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,-2.66599,0,1
 add=SUPERLIFE
+
+# Spawn
+
++node
+type=SPAWN
+pos=9,-2,0
+
++node
+type=SPAWN
+pos=-10,-2,-0
+
++node
+type=SPAWN
+pos=0.000411115,-2,8.03365
+
++node
+type=SPAWN
+pos=-0,-2,-8
 
