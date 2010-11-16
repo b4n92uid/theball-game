@@ -75,5 +75,5 @@ void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
     for(unsigned i = 0; i < m_players.size(); i++)
         ss << " [" << m_players[i]->GetScore() << "] " << m_players[i]->GetName() << endl;
 
-    ss << "Appuyez sur espace pour continuer..." << endl;
+    ss << "Espace pour continuer..." << endl;
 }

@@ -214,7 +214,7 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
         ss << " [" << redTeamPlayers[i]->GetScore() << "] " << redTeamPlayers[i]->GetName() << endl;
     ss << endl;
 
-    ss << "Appuyez sur espace pour continuer..." << endl;
+    ss << "Espace pour continuer..." << endl;
 }
 
 bool PlayTeamManager::IsInBleuTeam(Player* player) const
