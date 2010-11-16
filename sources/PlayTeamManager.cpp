@@ -21,7 +21,6 @@ public:
     BillboardIcon(PlayManager* playManager, Player::Array& teamPlayers)
     : m_playManager(playManager), m_teamPlayers(teamPlayers)
     {
-        SetNumber(m_teamPlayers.size());
         SetBlendEq(ParticlesEmiter::MODULAR);
         SetDepthTest(true);
     }
@@ -57,6 +56,13 @@ protected:
 
 PlayTeamManager::PlayTeamManager(AppManager* appManager) : PlayManager(appManager)
 {
+    m_teamBleuIcon = new BillboardIcon(this, blueTeamPlayers);
+    m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
+    parallelscene.particles->AddChild(m_teamBleuIcon);
+
+    m_teamRedIcon = new BillboardIcon(this, redTeamPlayers);
+    m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
+    parallelscene.particles->AddChild(m_teamRedIcon);
 }
 
 PlayTeamManager::~PlayTeamManager()
@@ -84,45 +90,36 @@ private:
     PlayTeamManager* m_playManager;
 };
 
-void PlayTeamManager::ModSetupAi()
+void PlayTeamManager::ModSetupUser(Player* userPlayer)
+{
+    m_userBleuTeam = tools::rand(0, 2);
+
+    if(m_userBleuTeam)
+        blueTeamPlayers.push_back(userPlayer);
+    else
+        redTeamPlayers.push_back(userPlayer);
+}
+
+void PlayTeamManager::ModSetupAi(Player* player)
 {
     using namespace scene;
 
-    unsigned middle = m_players.size() / 2;
+    player->AttachController(new TeamModeAi(this));
+    player->AddCheckPoint(new TeamModeCheckPlayers(this));
 
-    std::random_shuffle(m_players.begin(), m_players.end());
-
-    for(unsigned i = 0; i < middle; i++)
+    if(redTeamPlayers.size() > blueTeamPlayers.size())
     {
-        if(m_players[i] != m_userPlayer)
-            m_players[i]->AttachController(new TeamModeAi(this));
-
-        m_players[i]->AddCheckPoint(new TeamModeCheckPlayers(this));
-
-        blueTeamPlayers.push_back(m_players[i]);
+        blueTeamPlayers.push_back(player);
+        m_teamBleuIcon->SetNumber(blueTeamPlayers.size());
+        m_teamBleuIcon->Build();
+    }
+    else
+    {
+        redTeamPlayers.push_back(player);
+        m_teamRedIcon->SetNumber(redTeamPlayers.size());
+        m_teamRedIcon->Build();
     }
 
-    for(unsigned i = middle; i < m_players.size(); i++)
-    {
-        if(m_players[i] != m_userPlayer)
-            m_players[i]->AttachController(new TeamModeAi(this));
-
-        m_players[i]->AddCheckPoint(new TeamModeCheckPlayers(this));
-
-        redTeamPlayers.push_back(m_players[i]);
-    }
-
-    m_userBleuTeam = IsInBleuTeam(m_userPlayer);
-
-    m_teamBleuIcon = new BillboardIcon(this, blueTeamPlayers);
-    m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
-    m_teamBleuIcon->Build();
-    parallelscene.particles->AddChild(m_teamBleuIcon);
-
-    m_teamRedIcon = new BillboardIcon(this, redTeamPlayers);
-    m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
-    m_teamRedIcon->Build();
-    parallelscene.particles->AddChild(m_teamRedIcon);
 }
 
 void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)

@@ -132,6 +132,11 @@ public:
             return true;
         }
 
+        virtual bool OnShoot(Player* player)
+        {
+            return true;
+        }
+
         virtual bool OnKilled(Player* player)
         {
             return true;

@@ -22,10 +22,11 @@ public:
     const Player::Array GetTargetsOf(Player* player) const;
 
 protected:
-    virtual void ModSetupAi();
-    virtual void ModUpdateStateText(std::ostringstream& ss);
-    virtual void ModUpdateScoreListText(std::ostringstream& ss);
-    virtual void ModUpdateGameOverText(std::ostringstream& ss);
+    void ModSetupUser(Player* userPlayer);
+    void ModSetupAi(Player* player);
+    void ModUpdateStateText(std::ostringstream& ss);
+    void ModUpdateScoreListText(std::ostringstream& ss);
+    void ModUpdateGameOverText(std::ostringstream& ss);
 
 protected:
     Player::Array blueTeamPlayers;
