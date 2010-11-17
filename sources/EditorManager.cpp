@@ -81,7 +81,7 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
 
     for(unsigned i = 0; i < map.spawnPoints.size(); i++)
     {
-        StaticObject* visualSpawn = new StaticObject(this, "data/scene/spawn.obj", map.spawnPoints[i]);
+        StaticObject* visualSpawn = new StaticObject(this, OBJ_SPAWN, map.spawnPoints[i]);
 
         m_visualSpawnPoints.push_back(visualSpawn);
         parallelscene.meshs->AddChild(visualSpawn);
@@ -319,7 +319,7 @@ void EditorManager::SetupGui()
             .Push("Droite", skyTex[5].GetFilename());
 
     {
-        for(directory_iterator it("data/gfxart/skybox"); it != endDir; it++)
+        for(directory_iterator it(SKYBOX_DIR); it != endDir; it++)
         {
             const path& imgFilename = it->path();
 
@@ -349,7 +349,7 @@ void EditorManager::SetupGui()
 
     // Statique
     {
-        for(directory_iterator it("data/scene"); it != endDir; it++)
+        for(directory_iterator it(MODELS_MAPS_DIR); it != endDir; it++)
         {
             const path& staricFilename = it->path();
 
@@ -362,7 +362,7 @@ void EditorManager::SetupGui()
 
     // Musique
     {
-        for(directory_iterator it("data/music"); it != endDir; it++)
+        for(directory_iterator it(MUSIC_DIR); it != endDir; it++)
         {
             const path& musicFilename = it->path();
 
@@ -636,7 +636,7 @@ void EditorManager::GuiEventPorcess(tbe::EventManager* event)
     else if(hud.pause.save->IsActivate())
     {
         map.name = hud.pause.name->GetLabel();
-        string saveFileName = "data/levels/" + tools::UnixName(map.name) + ".bld";
+        string saveFileName = MAPS_DIR + tools::UnixName(map.name) + ".bld";
 
         if(!map.name.empty())
         {

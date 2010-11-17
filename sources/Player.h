@@ -168,7 +168,7 @@ protected:
 
     CheckMe::Array m_checkMe;
 
-    Weapon* m_curWeapon;
+    Weapon::Array::iterator m_curWeapon;
     Weapon::Array m_weaponsPack;
 
     Controller* m_attachedCotroller;

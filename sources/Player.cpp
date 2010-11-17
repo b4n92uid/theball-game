@@ -19,7 +19,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Attributes
     m_name = name;
     m_playManager = playManager;
-    m_curWeapon = NULL;
+    m_curWeapon = m_weaponsPack.end();
     m_killed = false;
     m_boostAvalaible = true;
     m_score = 0;
@@ -162,7 +162,7 @@ void Player::Shoot(Vector3f targetpos)
         if(!m_checkMe[i]->OnShoot(this))
             return;
 
-    m_curWeapon->Shoot(m_matrix.GetPos(), targetpos);
+    (*m_curWeapon)->Shoot(m_matrix.GetPos(), targetpos);
 }
 
 void Player::Jump()
@@ -216,20 +216,19 @@ void Player::AddWeapon(Weapon* weapon)
 
     if(select != m_weaponsPack.end())
     {
-        (*select)->UpAmmoCount(weapon->GetAmmoCount());
+        m_curWeapon = select;
+        (*m_curWeapon)->UpAmmoCount(weapon->GetAmmoCount());
 
         delete weapon;
-
-        m_curWeapon = *select;
     }
 
     else
     {
-        weapon->SetShooter(this);
-
         m_weaponsPack.push_back(weapon);
 
-        m_curWeapon = m_weaponsPack.back();
+        m_curWeapon = --m_weaponsPack.end();
+        (*m_curWeapon)->SetShooter(this);
+
     }
 }
 
@@ -237,16 +236,16 @@ void Player::SwitchUpWeapon()
 {
     m_curWeapon++;
 
-    if(m_curWeapon > m_weaponsPack.back())
-        m_curWeapon = m_weaponsPack.front();
+    if(m_curWeapon >= m_weaponsPack.end())
+        m_curWeapon = m_weaponsPack.begin();
 }
 
 void Player::SwitchDownWeapon()
 {
     m_curWeapon--;
 
-    if(m_curWeapon < m_weaponsPack.front())
-        m_curWeapon = m_weaponsPack.back();
+    if(m_curWeapon < m_weaponsPack.begin())
+        m_curWeapon = --m_weaponsPack.end();
 }
 
 void Player::SetCurWeapon(unsigned slot)
@@ -254,12 +253,12 @@ void Player::SetCurWeapon(unsigned slot)
     if(slot >= m_weaponsPack.size())
         throw tbe::Exception("PlayerEngine::SetCurWeapon; Invalid weapon slot (%d)", slot);
 
-    m_curWeapon = m_weaponsPack[slot];
+    m_curWeapon = m_weaponsPack.begin() + slot;
 }
 
 Weapon* Player::GetCurWeapon() const
 {
-    return m_curWeapon;
+    return (*m_curWeapon);
 }
 
 void Player::ReBorn()

@@ -170,7 +170,7 @@ void Settings::ReadPlayerInfo()
     availablePlayer.clear();
 
     directory_iterator end;
-    for(directory_iterator it("data/players/"); it != end; it++)
+    for(directory_iterator it(PLAYERS_DIR); it != end; it++)
     {
         const path& filename = it->path();
 
@@ -192,7 +192,7 @@ void Settings::ReadMapInfo()
     availableMap.clear();
 
     directory_iterator end;
-    for(directory_iterator it("data/levels/"); it != end; it++)
+    for(directory_iterator it(MAPS_DIR); it != end; it++)
     {
         const path& filename = it->path();
 
