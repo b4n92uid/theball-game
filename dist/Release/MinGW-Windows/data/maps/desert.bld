@@ -35,7 +35,7 @@ specular=1,1,1,1
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
-modelPath=data/scene/desert.obj
+modelPath=data/models/maps/desert.obj
 
 # Dynamic
 

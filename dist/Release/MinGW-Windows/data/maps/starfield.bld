@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-16 16:28:59
+# Generated 2010-Nov-17 14:53:30
 
 .map
 name=StarField
@@ -47,127 +47,127 @@ radius=13
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,-4,-1,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-4,-1,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-4,7,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,-6,7,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,-4,7,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,-4,-1,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,-4,15,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,-4,15,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-4,15,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-2,-1,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-2,7,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-2,15,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-2,23,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-2,23,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,-2,23,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,-2,23,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-2,23,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-2,15,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-2,7,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-2,-1,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-2,-9,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,-2,-9,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,-2,-9,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-2,-9,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-2,-9,1
-modelPath=data/scene/tiles-metal-4.obj
+modelPath=data/models/maps/tiles-metal-4.obj
 
 # Dynamic
 
@@ -215,32 +215,12 @@ add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,-2,8,1
-add=AMMO
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,-2,6,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,6,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,-2,8,1
-add=AMMO
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,13,-2,8,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,13,-2,6,1
 add=AMMO
 
 +node
@@ -277,6 +257,26 @@ add=SHOTGUN
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-1,7,1
 add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,6,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,-2,8,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,13,-2,6,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,-2,8,1
+add=LIFE
 
 # Spawn
 

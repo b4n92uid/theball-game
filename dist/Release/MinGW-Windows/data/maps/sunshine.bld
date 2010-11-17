@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-16 16:19:41
+# Generated 2010-Nov-17 14:53:10
 
 .map
 name=SunShine
@@ -30,7 +30,7 @@ specular=1,1,1,1
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
-modelPath=data/scene/sunshine.obj
+modelPath=data/models/maps/sunshine.obj
 
 # Dynamic
 
@@ -68,17 +68,7 @@ add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.80197,-2.41599,-2.94061,1
-add=AMMO
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.41599,-3,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2.41599,-3,1
 add=AMMO
 
 +node
@@ -88,17 +78,7 @@ add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2.41599,3,1
-add=AMMO
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.41599,3,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.95846,-2.41599,2.65157,1
 add=AMMO
 
 +node
@@ -121,6 +101,26 @@ type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,-2.66599,0,1
 add=SUPERLIFE
 
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.80197,-2.41599,-2.94061,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2.41599,3,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2.41599,-3,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.95846,-2.41599,2.65157,1
+add=LIFE
+
 # Spawn
 
 +node
@@ -129,7 +129,7 @@ pos=9,-2,0
 
 +node
 type=SPAWN
-pos=-10,-2,-0
+pos=-10,-2,0
 
 +node
 type=SPAWN
@@ -137,5 +137,5 @@ pos=0.000411115,-2,8.03365
 
 +node
 type=SPAWN
-pos=-0,-2,-8
+pos=0,-2,-8
 

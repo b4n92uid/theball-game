@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-16 16:22:22
+# Generated 2010-Nov-17 15:14:57
 
 .map
 name=Slide
@@ -29,8 +29,8 @@ specular=0.5,0.5,0.5,1
 
 +node
 type=STATIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
-modelPath=data/scene/silde.obj
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,0,0,1
+modelPath=data/models/maps/silde.obj
 
 # Dynamic
 
@@ -52,26 +52,6 @@ action=JUMPER
 +node
 type=DYNAMIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-9,0,9,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.161088,-2.40415,-4.01078,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,4.99527,-2.36,-0.200696,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.0734068,-2.4,4.04455,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-5.5569,-2.4,-0.229677,1
 action=JUMPER
 
 +node
@@ -108,26 +88,6 @@ action=JUMPER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2,-2,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2,0,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,0,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2,2,1
-add=AMMO
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-14,1,5,1
 add=FINDER
 
@@ -158,36 +118,6 @@ add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2,-2,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2,2,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,-2,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,2,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,1,-2,0,1
-add=FATALSHOT
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,-2,0,1
-add=SUPERLIFE
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,1,-12,1
 add=SHOTGUN
 
@@ -208,12 +138,12 @@ add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-5,1,13,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,1,13,1
 add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,1,13,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,13,1
 add=FINDER
 
 +node
@@ -228,33 +158,53 @@ add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,0,-3,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.72707,-0.299999,-2.1823,1
 add=FATALSHOT
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3.02655,0,2.9727,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,2.6684,-0.249999,2.68559,1
 add=SUPERLIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-5.10422,-0.149999,4.92517,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,4.85415,-0.15,-4.85514,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-5.09266,-0.302958,-4.71794,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,4.96536,-0.302959,4.90372,1
+add=LIFE
 
 # Spawn
 
 +node
 type=SPAWN
-pos=0,-0,-0
+pos=0,0,0
 
 +node
 type=SPAWN
-pos=-18,1,18
+pos=-14,2,2
 
 +node
 type=SPAWN
-pos=-18,1,-18
+pos=16,2,0
 
 +node
 type=SPAWN
-pos=18,1,-18
+pos=0,1,-12
 
 +node
 type=SPAWN
-pos=18,1,18
+pos=0,1,13
 
