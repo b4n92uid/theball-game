@@ -582,6 +582,7 @@ void AppManager::SetupMenuGui()
 
     m_controls.playmenu.timeSelect->
             Push("60 sec", 60).
+            Push("2 min", 60 * 2).
             Push("5 min", 60 * 5).
             Push("20 min", 60 * 20).
             Push("Infinie", 0);
@@ -634,7 +635,7 @@ void AppManager::SetupBackgroundScene()
     MeshParallelScene* meshScene = new MeshParallelScene;
     m_sceneManager->AddParallelScene(meshScene);
 
-    m_logo = new OBJMesh("data/scene/logo.obj");
+    m_logo = new OBJMesh(OBJ_LOGO);
     meshScene->AddChild(m_logo);
 
     m_camera = new Camera(Camera::TARGET_RELATIVE);
@@ -914,7 +915,8 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
 
     m_guiManager->SetSession(MENU_LOAD);
 
-    m_guiManager->GetControl<gui::TextBox > ("load:stateText")->Write("Chargement en cours...");
+    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+            ->Write("Chargement en cours...");
 
     m_gameEngine->BeginScene();
     m_guiManager->Render();
@@ -943,7 +945,8 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
 
     m_guiManager->SetSession(MENU_LOAD);
 
-    m_guiManager->GetControl<gui::TextBox > ("load:stateText")->Write("Appuyer sur \"Espace\" pour continuer...");
+    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+            ->Write("Appuyer sur \"Espace\" pour continuer...");
 
     while(!m_eventMng->keyState[EventManager::KEY_SPACE])
     {

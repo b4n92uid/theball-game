@@ -32,13 +32,13 @@
 #define GUI_ITEM        "data/gfxart/gui/item.png"
 
 // ITEM ------------------------------------------------------------------------
-#define ITEM_MEDPACK    "data/items/medpack.obj"
-#define ITEM_AMMOPACK   "data/items/ammopack.obj"
-#define ITEM_FATALSHOT  "data/items/fatalshot.obj"
-#define ITEM_SUPERLIFE  "data/items/superlife.obj"
-#define ITEM_ADDFINDER  "data/items/addfinder.obj"
-#define ITEM_ADDBOMB    "data/items/addbomb.obj"
-#define ITEM_ADDSHOTGUN "data/items/addshotgun.obj"
+#define ITEM_MEDPACK    "data/models/items/medpack.obj"
+#define ITEM_AMMOPACK   "data/models/items/ammopack.obj"
+#define ITEM_FATALSHOT  "data/models/items/fatalshot.obj"
+#define ITEM_SUPERLIFE  "data/models/items/superlife.obj"
+#define ITEM_ADDFINDER  "data/models/items/addfinder.obj"
+#define ITEM_ADDBOMB    "data/models/items/addbomb.obj"
+#define ITEM_ADDSHOTGUN "data/models/items/addshotgun.obj"
 
 // PARTICLES -------------------------------------------------------------------
 #define PARTICLE_JUMPER         "data/gfxart/particles/jumper.bmp"
@@ -48,8 +48,10 @@
 #define PARTICLE_REDTEAM        "data/gfxart/particles/redteam.png"
 
 // Dynamics --------------------------------------------------------------------
-#define OBJ_JUMPER      "data/scene/jumper.obj"
-#define OBJ_TELEPORTER  "data/scene/teleporter.obj"
+#define OBJ_JUMPER      "data/models/dynamics/jumper.obj"
+#define OBJ_TELEPORTER  "data/models/dynamics/teleporter.obj"
+#define OBJ_SPAWN       "data/models/dynamics/spawn.obj"
+#define OBJ_LOGO        "data/models/logo.obj"
 
 // WEAPONS ---------------------------------------------------------------------
 #define WEAPON_BLASTER  "data/weapons/blaster.bmp"
@@ -64,6 +66,14 @@
 #define SOUND_SHOTGUN   "data/sfxart/weapons/shotgun.wav"
 #define SOUND_BOMB      "data/sfxart/weapons/bomb.wav"
 #define SOUND_FINDER    "data/sfxart/weapons/finder.wav"
+
+// Paths -----------------------------------------------------------------------
+#define MAPS_DIR            "data/maps/"
+#define PLAYERS_DIR         "data/players/"
+#define SKYBOX_DIR          "data/gfxart/skybox/"
+#define MUSIC_DIR           "data/music/"
+#define MODELS_MAPS_DIR     "data/models/maps/"
+#define MODELS_PLAYERS_DIR  "data/models/maps/"
 
 // AI --------------------------------------------------------------------------
 #define AI_SWITCH_TARGET_TIME 10000

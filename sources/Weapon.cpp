@@ -263,6 +263,36 @@ int Bullet::GetDammage() const
     return m_dammage;
 }
 
+void Bullet::SetShootDiri(tbe::Vector3f shootDiri)
+{
+    this->m_shootDiri = shootDiri;
+}
+
+tbe::Vector3f Bullet::GetShootDiri() const
+{
+    return m_shootDiri;
+}
+
+void Bullet::SetTargetPos(tbe::Vector3f targetPos)
+{
+    this->m_targetPos = targetPos;
+}
+
+tbe::Vector3f Bullet::GetTargetPos() const
+{
+    return m_targetPos;
+}
+
+void Bullet::SetStartPos(tbe::Vector3f startPos)
+{
+    this->m_startPos = startPos;
+}
+
+tbe::Vector3f Bullet::GetStartPos() const
+{
+    return m_startPos;
+}
+
 void Bullet::SetWeapon(Weapon* weapon)
 {
     this->m_weapon = weapon;
@@ -288,11 +318,14 @@ bool Bullet::IsDeadAmmo()
     return(m_life <= 0 || !m_playManager->map.aabb.IsInner(m_matrix.GetPos()));
 }
 
-void Bullet::Shoot(Vector3f startpos, Vector3f shootdiri, float shootspeed)
+void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
 {
     m_startPos = startpos;
-    m_shootDiri = shootdiri;
+    m_targetPos = targetpos;
+    m_shootDiri = (targetpos - startpos).Normalize();
     m_shootSpeed = shootspeed;
+
+    m_shootDiri += tools::rand(AABB(-accuracy, accuracy));
 
     m_matrix.SetPos(startpos);
 
@@ -334,13 +367,11 @@ void WeaponBlaster::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
     startpos += tools::rand(Vector3f(-m_worldSettings.playerSize * 0.5),
                             Vector3f(m_worldSettings.playerSize * 0.5));
 
-    Vector3f shootdiri = (targetpos - startpos).Normalize();
-
     // Creation du tire
     Bullet* fire = new Bullet(m_playManager);
     fire->SetWeapon(this);
     fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
-    fire->Shoot(startpos, shootdiri, m_shootSpeed);
+    fire->Shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
 }
@@ -367,16 +398,11 @@ void WeaponShotgun::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 {
     for(int i = 0; i < 7; i++)
     {
-        Vector3f shootdiri = (targetpos - startpos).Normalize();
-
-        shootdiri += tools::rand(Vector3f(-m_worldSettings.playerSize * 0.5),
-                                 Vector3f(m_worldSettings.playerSize * 0.5));
-
         // Creation du tire
         Bullet * fire = new Bullet(m_playManager);
         fire->SetWeapon(this);
         fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
-        fire->Shoot(startpos, shootdiri, m_shootSpeed);
+        fire->Shoot(startpos, targetpos, m_shootSpeed, 0.1);
 
         m_playManager->manager.material->AddBullet(fire);
 
@@ -406,13 +432,11 @@ WeaponBomb::WeaponBomb(PlayManager* playManager) : Weapon(playManager)
 
 void WeaponBomb::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
-    Vector3f shootdiri = (targetpos - startpos).Normalize();
-
     // Creation du tire
     Bullet * fire = new Bullet(m_playManager);
     fire->SetWeapon(this);
     fire->SetDammage(100);
-    fire->Shoot(startpos, shootdiri, m_shootSpeed);
+    fire->Shoot(startpos, targetpos, m_shootSpeed);
 
     m_playManager->manager.material->AddBullet(fire);
 
@@ -460,24 +484,21 @@ void WeaponFinder::Process()
             const Player::Array& players = m_playManager->GetTargetsOf(m_shooter);
 
             for(unsigned j = 0; j < players.size(); j++)
-                if(players[j] != m_shooter)
+            {
+                Vector3f ammodiri = m_bulletArray[i]->GetVelocity().Normalize();
+                Vector3f playerdiri = (players[j]->GetPos() - m_bulletArray[i]->GetPos()).Normalize();
+
+                if(Vector3f::Dot(playerdiri, ammodiri) > 0.9f)
                 {
-                    Vector3f ammodiri;
-                    NewtonBodyGetVelocity(m_bulletArray[i]->GetBody(), ammodiri);
-                    ammodiri.Normalize();
-
-                    Vector3f playerdiri = players[j]->GetPos() - m_bulletArray[i]->GetPos();
-                    playerdiri.Normalize();
-
-                    if(Vector3f::Dot(playerdiri, ammodiri) > 0.0)
-                    {
-                        minDist = min(players[j]->GetPos() - m_bulletArray[i]->GetPos(), minDist);
-                        targetLocked = true;
-                    }
+                    minDist = min(players[j]->GetPos() - m_bulletArray[i]->GetPos(), minDist);
+                    targetLocked = true;
                 }
+            }
 
             if(targetLocked)
+            {
                 m_bulletArray[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed);
+            }
         }
     }
 
@@ -491,13 +512,11 @@ void WeaponFinder::Process()
 
 void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
-    Vector3f shootdiri = (targetpos - startpos).Normalize();
-
     // Creation du tire
     Bullet * fire = new Bullet(m_playManager);
     fire->SetWeapon(this);
     fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
-    fire->Shoot(startpos, shootdiri, m_shootSpeed);
+    fire->Shoot(startpos, targetpos, m_shootSpeed);
 
     NewtonBodySetForceAndTorqueCallback(fire->GetBody(), NewtonParallelScene::ApplyForceAndTorque);
 

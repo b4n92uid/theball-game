@@ -26,7 +26,7 @@ public:
 
     Bullet(PlayManager* playManager);
 
-    void Shoot(tbe::Vector3f startpos, tbe::Vector3f shootdiri, float shootspeed);
+    void Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy = 0);
 
     bool IsDeadAmmo();
 
@@ -36,14 +36,20 @@ public:
     void SetWeapon(Weapon* weapon);
     Weapon* GetWeapon() const;
 
-    void SetDiripos(tbe::Vector3f diripos);
-    tbe::Vector3f GetDiripos() const;
-
     void SetShootSpeed(float shootSpeed);
     float GetShootSpeed() const;
 
     void SetDammage(int dammage);
     int GetDammage() const;
+
+    void SetShootDiri(tbe::Vector3f shootDiri);
+    tbe::Vector3f GetShootDiri() const;
+
+    void SetTargetPos(tbe::Vector3f targetPos);
+    tbe::Vector3f GetTargetPos() const;
+
+    void SetStartPos(tbe::Vector3f startPos);
+    tbe::Vector3f GetStartPos() const;
 
     typedef std::vector<Bullet*> Array;
 
@@ -54,6 +60,7 @@ protected:
     int m_life;
     float m_shootSpeed;
     tbe::Vector3f m_startPos;
+    tbe::Vector3f m_targetPos;
     tbe::Vector3f m_shootDiri;
 };
 
