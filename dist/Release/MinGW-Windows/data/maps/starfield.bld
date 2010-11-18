@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-17 14:53:30
+# Generated 2010-Nov-18 22:09:06
 
 .map
 name=StarField
@@ -23,7 +23,7 @@ type=POINT
 pos=5.69033,-1.2,6.37604
 ambient=0,0,0,0
 diffuse=0,0,1,1
-specular=0,0,0,0
+specular=0,0,0.5,1
 radius=6
 
 +light
@@ -31,7 +31,7 @@ type=POINT
 pos=-9.14241,12.8,23.4278
 ambient=0,0,0,0
 diffuse=1,1,1,1
-specular=0,0,0,0
+specular=0.5,0.5,0.5,1
 radius=14
 
 +light
@@ -39,7 +39,7 @@ type=POINT
 pos=21.8304,8,-9.35685
 ambient=0,0,0,0
 diffuse=1,1,1,1
-specular=0,0,0,0
+specular=0.5,0.5,0.5,1
 radius=13
 
 # Static
@@ -282,19 +282,19 @@ add=LIFE
 
 +node
 type=SPAWN
-pos=14,-3,-1
+pos=14,-2.75,-1
 
 +node
 type=SPAWN
-pos=14,-3,15
+pos=14,-2.75,15
 
 +node
 type=SPAWN
-pos=-3,-3,15
+pos=-3,-2.75,15
 
 +node
 type=SPAWN
-pos=-2,-3,-1
+pos=-2,-2.75,-1
 
 +node
 type=SPAWN
