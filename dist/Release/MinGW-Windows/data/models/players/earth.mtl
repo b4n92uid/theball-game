@@ -1,13 +1,13 @@
-# Blender3D MTL File: color.blend
+# Blender3D MTL File: earth.blend
 # Material Count: 1
-newmtl Material_color.jpg
+newmtl Material.001_earthmap1k.jpg
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
-Ks 1.000000 1.000000 1.000000
+Ks 1.250000 1.250000 1.250000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd color.jpg
+map_Kd earthmap1k.jpg
 
 
