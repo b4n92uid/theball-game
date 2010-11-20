@@ -1,6 +1,22 @@
+theBall 1.2
+===========
+* Portabilité sur linux
+* Mise a jour du moteur audio FmodEX
+* Plusieur améliorations sur les cartes (audio, models...)
+* Ajout d'un nouveau modele de ball : Void
+* Effet ralentie des sons en bullettime
+* Amélioration sur l'ETH
+* Immunuté de départ (pour éviter les embuscade :p)
+* Modularité des score par le nombre des joueurs et la durré de la  partie
+* Ré-apparition sur les cartes par point définé
+* Apparition des joueurs différé
+* Nommage des bots par des noms défini
+* Changement sur les models des objets dynamiques
+* Corrections sur les particules
+
 theBall 1.1
 ===========
-* 2 Cartes additionelle
+* 2 Cartes additionelle (Slide et SunShine)
 * Manuel de l'éditeur en PDF
 * Manuel du jeu en PDF
 * Option pour le tri des scores
