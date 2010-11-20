@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-17 15:14:57
+# Generated 2010-Nov-20 21:00:23
 
 .map
 name=Slide
@@ -128,26 +128,6 @@ add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,1,-12,1
-add=SHOTGUN
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,1,-12,1
-add=SHOTGUN
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,1,13,1
-add=FINDER
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,13,1
-add=FINDER
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,1,13,1
 add=FINDER
 
@@ -185,6 +165,26 @@ add=LIFE
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,4.96536,-0.302959,4.90372,1
 add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,13,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,1,13,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,1,-12,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,1,-12,1
+add=BOMB
 
 # Spawn
 

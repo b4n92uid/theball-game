@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-17 14:52:39
+# Generated 2010-Nov-20 21:03:09
 
 .map
 name=Travell
@@ -160,6 +160,26 @@ add=LIFE
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,4.10549,1.67654,0.119929,1
 add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,7,2,0,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-7,2,-0,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-7,2,1,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,7,2,1,1
+add=BOMB
 
 # Spawn
 

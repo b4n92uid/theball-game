@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-18 22:09:06
+# Generated 2010-Nov-20 21:01:35
 
 .map
 name=StarField
@@ -278,6 +278,26 @@ type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,-2,8,1
 add=LIFE
 
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.932141,-2.95,13.9853,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,12,-2.95,13,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,12,-2.95,1,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.95,1,1
+add=BOMB
+
 # Spawn
 
 +node
@@ -290,7 +310,7 @@ pos=14,-2.75,15
 
 +node
 type=SPAWN
-pos=-3,-2.75,15
+pos=-2,-2.75,15
 
 +node
 type=SPAWN
