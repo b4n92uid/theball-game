@@ -258,7 +258,7 @@ void Player::SetCurWeapon(unsigned slot)
 
 Weapon* Player::GetCurWeapon() const
 {
-    return (*m_curWeapon);
+    return(*m_curWeapon);
 }
 
 void Player::ReBorn()
