@@ -90,6 +90,9 @@ public:
     void SetMaxAmmoCount(unsigned maxAmmoCount);
     unsigned GetMaxAmmoCount() const;
 
+    void SetShootSize(unsigned shootSize);
+    unsigned GetShootSize() const;
+
     void SetMaxAmmoDammage(unsigned maxAmmoDammage);
     unsigned GetMaxAmmoDammage() const;
 
@@ -110,11 +113,22 @@ protected:
     virtual void Process();
 
 protected:
+    PlayManager* m_playManager;
+    SoundManager* m_soundManager;
+
+    Player* m_shooter;
+
+    Settings::Physics m_worldSettings;
+
+    Bullet::Array m_bulletArray;
+
     std::string m_weaponName;
 
     unsigned m_maxAmmoDammage;
     unsigned m_maxAmmoCount;
     unsigned m_ammoCount;
+
+    unsigned m_shootSize;
 
     float m_shootSpeed;
 
@@ -122,17 +136,8 @@ protected:
 
     tbe::ticks::Clock m_shootCadencyClock;
 
-    Bullet::Array m_bulletArray;
-
     tbe::AABB m_mapAABB;
     std::string m_soundID;
-
-    PlayManager* m_playManager;
-    SoundManager* m_soundManager;
-
-    Settings::Physics m_worldSettings;
-
-    Player* m_shooter;
 };
 
 class WeaponBlaster : public Weapon
