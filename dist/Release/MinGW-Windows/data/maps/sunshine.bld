@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-17 14:53:10
+# Generated 2010-Nov-20 21:02:09
 
 .map
 name=SunShine
@@ -120,6 +120,26 @@ add=LIFE
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.95846,-2.41599,2.65157,1
 add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2,-5,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,-5,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,5,1
+add=BOMB
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,3.00168,-2,4.97326,1
+add=BOMB
 
 # Spawn
 
