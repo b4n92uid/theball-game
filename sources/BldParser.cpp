@@ -240,7 +240,7 @@ BldParser::AttribMap BldParser::GetAttributs(std::ifstream& file)
 void BldParser::OnLoadMap(AttribMap& att)
 {
     m_gameManager->map.name = att["name"];
-    m_sceneManager->SetAmbientLight(vec34(Vector3f(att["ambient"])));
+    m_sceneManager->SetAmbientLight(tools::StrToVec4<float>(att["ambient"], true));
 }
 
 void BldParser::OnLoadMusic(AttribMap& att)
@@ -261,7 +261,7 @@ void BldParser::OnLoadMusic(AttribMap& att)
 
 void BldParser::OnLoadFog(AttribMap& att)
 {
-    Vector4f color = att["color"];
+    Vector4f color = tools::StrToVec4<float>(att["color"], true);
     float start = tools::StrToNum<float>(att["start"]);
     float end = tools::StrToNum<float>(att["end"]);
 
@@ -300,7 +300,7 @@ void BldParser::OnLoadNode(AttribMap& att)
         CreateStatic(att["modelPath"], att["matrix"]);
 
     else if(att["type"] == "SPAWN")
-        m_gameManager->map.spawnPoints.push_back(att["pos"]);
+        m_gameManager->map.spawnPoints.push_back(tools::StrToVec3<float>(att["pos"], true));
 
     else
         throw tbe::Exception("BLDLoader::OnLoadNode; Unknown node type (%s)", att["type"].c_str());
@@ -326,11 +326,11 @@ void BldParser::OnLoadLight(AttribMap& att)
     else
         throw tbe::Exception("BLDLoader::LoadScene; Unknown light type (%s)", att["type"].c_str());
 
-    light->SetPos(att["pos"]);
+    light->SetPos(tools::StrToVec3<float>(att["pos"], true));
 
-    light->SetAmbient(att["ambient"]);
-    light->SetDiffuse(att["diffuse"]);
-    light->SetSpecular(att["specular"]);
+    light->SetAmbient(tools::StrToVec4<float>(att["ambient"], true));
+    light->SetDiffuse(tools::StrToVec4<float>(att["diffuse"], true));
+    light->SetSpecular(tools::StrToVec4<float>(att["specular"], true));
 
     m_sceneManager->AddDynamicLight(tools::numToStr(light), light);
     m_gameManager->map.lights.push_back(light);
