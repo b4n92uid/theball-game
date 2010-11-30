@@ -1,5 +1,5 @@
 /* 
- * File:   BLDLoader.cpp
+ * File:   BldParser.cpp
  * Author: b4n92uid
  * 
  * Created on 2 décembre 2009, 21:46
@@ -45,7 +45,7 @@ void BldParser::SaveLevel(const std::string& filepath)
     ofstream file(filepath.c_str());
 
     if(!file)
-        throw tbe::Exception("BLDLoader::SaveLevel; Open file error (%s)", filepath.c_str());
+        throw tbe::Exception("BldParser::SaveLevel; Open file error (%s)", filepath.c_str());
 
     m_openFileName = filepath;
 
@@ -151,7 +151,7 @@ void BldParser::LoadLevel(const std::string& filepath)
     ifstream file(filepath.c_str());
 
     if(!file)
-        throw tbe::Exception("BLDLoader::LoadScene; Open file error (%s)", filepath.c_str());
+        throw tbe::Exception("BldParser::LoadScene; Open file error (%s)", filepath.c_str());
 
     m_openFileName = filepath;
 
@@ -199,7 +199,7 @@ void BldParser::LoadLevel(const std::string& filepath)
         }
 
         else
-            throw tbe::Exception("BLDLoader::LoadScene; Parse error (%s)", buffer.c_str());
+            throw tbe::Exception("BldParser::LoadScene; Parse error (%s)", buffer.c_str());
     }
 
     file.close();
@@ -303,7 +303,7 @@ void BldParser::OnLoadNode(AttribMap& att)
         m_gameManager->map.spawnPoints.push_back(tools::StrToVec3<float>(att["pos"], true));
 
     else
-        throw tbe::Exception("BLDLoader::OnLoadNode; Unknown node type (%s)", att["type"].c_str());
+        throw tbe::Exception("BldParser::OnLoadNode; Unknown node type (%s)", att["type"].c_str());
 }
 
 void BldParser::OnLoadLight(AttribMap& att)
@@ -324,7 +324,7 @@ void BldParser::OnLoadLight(AttribMap& att)
     }
 
     else
-        throw tbe::Exception("BLDLoader::LoadScene; Unknown light type (%s)", att["type"].c_str());
+        throw tbe::Exception("BldParser::LoadScene; Unknown light type (%s)", att["type"].c_str());
 
     light->SetPos(tools::StrToVec3<float>(att["pos"], true));
 
@@ -332,7 +332,7 @@ void BldParser::OnLoadLight(AttribMap& att)
     light->SetDiffuse(tools::StrToVec4<float>(att["diffuse"], true));
     light->SetSpecular(tools::StrToVec4<float>(att["specular"], true));
 
-    m_sceneManager->AddDynamicLight(tools::numToStr(light), light);
+    m_sceneManager->AddDynamicLight(light);
     m_gameManager->map.lights.push_back(light);
 }
 

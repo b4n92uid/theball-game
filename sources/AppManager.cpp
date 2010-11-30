@@ -640,10 +640,10 @@ void AppManager::SetupBackgroundScene()
 
     m_camera = new Camera(Camera::TARGET_RELATIVE);
     m_camera->SetRotate(Vector2f(180, 5));
-    m_sceneManager->AddCamera("mainCamera", m_camera);
+    m_sceneManager->AddCamera(m_camera);
 
     DiriLight* light0 = new DiriLight;
-    m_sceneManager->AddDynamicLight("light0", light0);
+    m_sceneManager->AddDynamicLight(light0);
 
     m_sceneManager->SetAmbientLight(0.1);
 

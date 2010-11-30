@@ -19,10 +19,10 @@ EditorManager::EditorManager(AppManager* appManager) : GameManager(appManager)
     m_selectedNode = NULL;
 
     m_FFCamera = new scene::FreeFlyCamera;
-    manager.scene->AddCamera("FFCam", m_FFCamera);
+    manager.scene->AddCamera(m_FFCamera);
 
     m_OCamera = new scene::OrbitalCamera;
-    manager.scene->AddCamera("OCam", m_OCamera);
+    manager.scene->AddCamera(m_OCamera);
 
     m_camera = m_OCamera;
 
