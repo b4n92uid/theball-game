@@ -15,7 +15,7 @@ void EditorManager::NewLight(tbe::scene::Light* light)
 
     map.lights.push_back(light);
 
-    manager.scene->AddDynamicLight(tools::numToStr(light), light);
+    manager.scene->AddDynamicLight(light);
 
     m_selectedLight = light;
 
@@ -28,7 +28,7 @@ void EditorManager::DeleteLight(unsigned index)
 
     map.lights.erase(map.lights.begin() + index);
 
-    manager.scene->ReleaseDynamicLight(tools::numToStr(m_selectedLight));
+    manager.scene->ReleaseDynamicLight(m_selectedLight);
 
     delete m_selectedLight, m_selectedLight = NULL;
 

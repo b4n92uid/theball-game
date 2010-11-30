@@ -38,7 +38,7 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
     m_gameOver = false;
 
     m_camera = new scene::Camera(scene::Camera::TARGET_RELATIVE);
-    manager.scene->AddCamera("MainCam", m_camera);
+    manager.scene->AddCamera(m_camera);
 
     delete manager.sound, manager.sound = new PlaySoundManager(this);
 }
