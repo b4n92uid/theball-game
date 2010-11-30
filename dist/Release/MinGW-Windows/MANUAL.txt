@@ -1,0 +1,102 @@
+================================================================================
+<<<<<<<<<<<<<<<<<<<<<<<<<< Manuel du jeu theBall >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+================================================================================
+
+Présentation :
+--------------------------------------------------------------------------------
+theBall est un jeu de shoot en arène, Opens-Sources sous licence GPL, 
+développer en OpenGL avec son propre moteur de rendue : theBall Engine (TBE).
+Le jeu propose différentes cartes et balles à jouer de même que vous pourrez 
+ajouter vos propres modelés et cartes a l’aide de l’éditeur intégré au jeu
+
+Les mouvements que la balle peut effectuer sont :
+--------------------------------------------------------------------------------
+
+-  Déplacement multidirectionnel
+-  Tirer
+-  Sauter
+-  Boost : Accélération brusque
+-  Bullettime : Mouvement au ralenti
+
+Les objets dynamiques :
+--------------------------------------------------------------------------------
+
+Dans une partie vous rencontrerez souvent des objets dynamiques interactifs 
+qui peuvent influencer l'état de la balle :
+-  Téléporteur : il vous téléportera à une position aléatoire dans la carte.
+-  Jumper : vous propulse dans l'aire.
+
+Les Packs (Items) :
+--------------------------------------------------------------------------------
+
+Vous pourrez aussi trouver dans la carte différents packs de munition, 
+de vie, d'armes et de bonus
+Les packs ramassés notifient leur état par la petite icône 
+en forme de i en bas à gauche de l’ETH
+-  Ammo : Ajoute 50% de munition a l’arme actuelle
+-  Life : Ajoute 50% de munition a de santé
+-  Super Life : vous rend invulnérable pendant 8 secondes.
+-  Fatal Shot : vos tires deviennent mortelles pendant 8 secondes.
+-  Arme : Les autres packs vos procure des armes additionnelles
+
+Les armes :
+--------------------------------------------------------------------------------
+
+Pour diversifier les combats, 
+le jeu propose différentes armes avec différents comportements
+-  Blaster : par défaut avec vous, cadence de tire rapide, dégâts moyens.
+-  Shotgun : Fusil à pompe d'énergie, dégâts élevés.
+-  Finder : energie téléguider ils suivent vos adversaires, dégâts élevés.
+-  Bombe : comportement de mine, dégâts mortels.
+ 
+Les modes :
+--------------------------------------------------------------------------------
+
+-  ALONE : Seule contre tous il va falloir survivre. Vos ennemies sont faibles
+            et vous été plus résistant à leur tire, 
+            mais ils sont tous contre vous.
+
+-  TEAM : Deux équipes les rouges et les blues se battent pour avoir le meilleur 
+            score d'équipe. Le score d'équipe est calculé 
+            par la moyenne des membres de l’équipe.
+
+-  FRAG : Le mode match à mort classique. Chacun-pour-soi, classement par score.
+
+Le Score :
+--------------------------------------------------------------------------------
+À la fin de la partie, votre score est enregistré, et vous pourrez y'accéder 
+dans le menu scores ou sont listés les meilleurs scores 
+de chaque joueur enregistré par leur nom.
+
+Le temps d’une partie :
+--------------------------------------------------------------------------------
+Afin de vous adapter, vous pourrez pour chaque partie définir le temps de jeu
+entre 1, 5 et 20 minutes ou encore temps infini, pour ce dernier les scores 
+ne seront pas enregistrés, pour garder une certaine cohérence entre les scores 
+des joueurs, néanmoins il peut être utile pour vous entraîner.
+
+Configuration minimum :
+--------------------------------------------------------------------------------
+
+Le Jeu nécessite les extensions OpenGL suivantes pour fonctionner :
+-  GLEE_ARB_vertex_buffer_object
+-  GLEE_ARB_point_sprite
+
+Les extensions suivantes sont facultatives pour les effets après-traitement :
+-  GLEE_ARB_shading_language_100
+-  GLEE_ARB_shader_objects
+-  GLEE_ARB_vertex_shader
+-  GLEE_ARB_fragment_shader
+
+Touches de contrôle par défaut :
+--------------------------------------------------------------------------------
+
+Ces touches peuvent être reconfiguré dans le menu Option
+-  Mouvement de la souris : Orienter la caméra
+-  Boutons gauches de la souris : Tirer
+-  Boutons droits de la souris : Activer le bullettime (ralentir le temps)
+-  Molette de la souris : Changer d’armes
+-  Shift : Activer le boost (Accélération brusque)
+-  Espace : Sauter
+-  Z, Q, S, D : Déplacement
+-  TAB : Affichage des scores
