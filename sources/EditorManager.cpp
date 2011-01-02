@@ -76,15 +76,15 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
         manager.scene->UpdateViewParameter();
     }
 
-    m_axes = new scene::Axes(2, 2);
-    parallelscene.meshs->AddChild(m_axes);
+    m_axes = new scene::Axes(parallelscene.meshs, 2, 2);
+    manager.scene->GetRootNode()->AddChild(m_axes);
 
     for(unsigned i = 0; i < map.spawnPoints.size(); i++)
     {
         StaticObject* visualSpawn = new StaticObject(this, OBJ_SPAWN, map.spawnPoints[i]);
 
         m_visualSpawnPoints.push_back(visualSpawn);
-        parallelscene.meshs->AddChild(visualSpawn);
+        manager.scene->GetRootNode()->AddChild(visualSpawn);
 
         NewEntity(visualSpawn);
     }
@@ -386,7 +386,7 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 
             map.musicChannel = 0;
             map.musicStream = NULL;
-            
+
             map.musicPath.clear();
 
             hud.music.list->CancelSelection();

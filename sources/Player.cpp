@@ -28,7 +28,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_soundManager = playManager->manager.sound;
 
     // Effet explosion
-    m_deadExplode = new ParticlesEmiter;
+    m_deadExplode = new ParticlesEmiter(playManager->parallelscene.particles);
     m_deadExplode->SetTexture(PARTICLE_EXPLODE);
     m_deadExplode->SetLifeInit(0.5);
     m_deadExplode->SetLifeDown(0.025);
@@ -36,8 +36,6 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_deadExplode->SetNumber(128);
     m_deadExplode->SetAutoRebuild(false);
     m_deadExplode->SetParent(this);
-
-    m_playManager->parallelscene.particles->AddChild(m_deadExplode);
 
     // Rendue
     Open(model);
@@ -89,7 +87,7 @@ void Player::SetRandomSpawnPos()
         {
             randPos = tools::rand(m_playManager->map.aabb - Vector3f(factor));
             randPos.y = 1;
-            randPos = m_physicBody->GetNewtonScene()->FindFloor(randPos);
+            randPos = m_physicBody->GetParallelScene()->FindFloor(randPos);
         }
         while(randPos.y < m_playManager->map.aabb.min.y);
     }
@@ -127,7 +125,7 @@ Controller* Player::GetAttachedCotroller() const
 
 void Player::Process()
 {
-    if(!m_enable || !m_enableProcess)
+    if(!m_enable)
         return;
 
     Object::Process();
@@ -229,6 +227,7 @@ void Player::AddWeapon(Weapon* weapon)
         m_curWeapon = --m_weaponsPack.end();
         (*m_curWeapon)->SetShooter(this);
 
+        m_playManager->manager.scene->GetRootNode()->AddChild(weapon);
     }
 }
 
@@ -258,7 +257,7 @@ void Player::SetCurWeapon(unsigned slot)
 
 Weapon* Player::GetCurWeapon() const
 {
-    return(*m_curWeapon);
+    return (*m_curWeapon);
 }
 
 void Player::ReBorn()
@@ -270,7 +269,7 @@ void Player::ReBorn()
 
     m_playManager->manager.material->SetGhost(this, false);
 
-    SetEnableRender(true);
+    SetVisible(true);
 
     m_physicBody->SetFreeze(false);
 
@@ -306,7 +305,7 @@ void Player::Kill()
 
     clocks.readyToDelete.SnapShoot();
 
-    SetEnableRender(false);
+    SetVisible(false);
 
     m_physicBody->SetFreeze(true);
 

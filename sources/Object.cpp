@@ -8,14 +8,13 @@
 #include "Object.h"
 #include "GameManager.h"
 
-Object::Object(GameManager* gameManager)
+Object::Object(GameManager* gameManager) : OBJMesh(gameManager->parallelscene.meshs)
 {
     m_gameManager = gameManager;
     m_soundManager = m_gameManager->manager.sound;
     m_worldSettings = m_gameManager->manager.app->globalSettings.physics;
 
-    m_physicBody = new tbe::scene::NewtonNode;
-    m_physicBody->SetNewtonWorld(m_gameManager->parallelscene.newton->GetNewtonWorld());
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
     m_physicBody->SetUpdatedMatrix(&m_matrix);
 
     m_physicBody->SetParent(this);

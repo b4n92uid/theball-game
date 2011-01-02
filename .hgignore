@@ -1,6 +1,6 @@
 build
 doc/html
-extras
+ignore
 sourcesold
 nbproject
 dist/Debug

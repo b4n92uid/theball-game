@@ -24,6 +24,7 @@ BldParser::BldParser(GameManager* gameManager)
     m_materialManager = m_gameManager->manager.material;
 
     m_meshScene = m_gameManager->parallelscene.meshs;
+    m_lightScene = m_gameManager->parallelscene.light;
     m_newtonScene = m_gameManager->parallelscene.newton;
 
     m_fmodsys = m_gameManager->manager.fmodsys;
@@ -290,20 +291,25 @@ void BldParser::OnLoadSkyBox(AttribMap& att)
 
 void BldParser::OnLoadNode(AttribMap& att)
 {
+    Node* node = 0;
+
     if(att["type"] == "ITEM")
-        CreateItem(att["add"], att["matrix"]);
+        node = CreateItem(att["add"], att["matrix"]);
 
     else if(att["type"] == "DYNAMIC")
-        CreateDynamic(att["action"], att["matrix"]);
+        node = CreateDynamic(att["action"], att["matrix"]);
 
     else if(att["type"] == "STATIC")
-        CreateStatic(att["modelPath"], att["matrix"]);
+        node = CreateStatic(att["modelPath"], att["matrix"]);
 
     else if(att["type"] == "SPAWN")
         m_gameManager->map.spawnPoints.push_back(tools::StrToVec3<float>(att["pos"], true));
 
     else
         throw tbe::Exception("BldParser::OnLoadNode; Unknown node type (%s)", att["type"].c_str());
+
+    if(node)
+        m_gameManager->manager.scene->GetRootNode()->AddChild(node);
 }
 
 void BldParser::OnLoadLight(AttribMap& att)
@@ -312,14 +318,14 @@ void BldParser::OnLoadLight(AttribMap& att)
 
     if(att["type"] == "DIRI")
     {
-        light = new DiriLight;
+        light = new DiriLight(m_lightScene);
     }
 
     else if(att["type"] == "POINT")
     {
         float radius = tools::StrToNum<float>(att["radius"]);
 
-        light = new PointLight;
+        light = new PointLight(m_lightScene);
         light->SetRadius(radius);
     }
 
@@ -332,7 +338,7 @@ void BldParser::OnLoadLight(AttribMap& att)
     light->SetDiffuse(tools::StrToVec4<float>(att["diffuse"], true));
     light->SetSpecular(tools::StrToVec4<float>(att["specular"], true));
 
-    m_sceneManager->AddDynamicLight(light);
+    m_gameManager->manager.scene->GetRootNode()->AddChild(light);
     m_gameManager->map.lights.push_back(light);
 }
 

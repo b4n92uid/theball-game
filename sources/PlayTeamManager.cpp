@@ -19,7 +19,8 @@ class BillboardIcon : public tbe::scene::ParticlesEmiter
 public:
 
     BillboardIcon(PlayManager* playManager, Player::Array& teamPlayers)
-    : m_playManager(playManager), m_teamPlayers(teamPlayers)
+    : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles)
+    , m_playManager(playManager), m_teamPlayers(teamPlayers)
     {
         SetBlendEq(ParticlesEmiter::MODULAR);
         SetDepthTest(true);
@@ -58,11 +59,11 @@ PlayTeamManager::PlayTeamManager(AppManager* appManager) : PlayManager(appManage
 {
     m_teamBleuIcon = new BillboardIcon(this, blueTeamPlayers);
     m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
-    parallelscene.particles->AddChild(m_teamBleuIcon);
+    manager.scene->GetRootNode()->AddChild(m_teamBleuIcon);
 
     m_teamRedIcon = new BillboardIcon(this, redTeamPlayers);
     m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
-    parallelscene.particles->AddChild(m_teamRedIcon);
+    manager.scene->GetRootNode()->AddChild(m_teamRedIcon);
 }
 
 PlayTeamManager::~PlayTeamManager()
@@ -80,7 +81,7 @@ public:
 
     virtual bool OnTakeDammage(Player* player, Bullet* ammo)
     {
-        return(m_playManager->IsInBleuTeam(player)
+        return (m_playManager->IsInBleuTeam(player)
                 != m_playManager->IsInBleuTeam(ammo->GetWeapon()->GetShooter())
                 && m_playManager->IsInRedTeam(player)
                 != m_playManager->IsInRedTeam(ammo->GetWeapon()->GetShooter()));

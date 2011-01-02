@@ -632,18 +632,21 @@ void AppManager::SetupBackgroundScene()
 
     m_sceneManager->ClearAll();
 
+    LightParallelScene* lightScene = new LightParallelScene;
+    m_sceneManager->AddParallelScene(lightScene);
+
     MeshParallelScene* meshScene = new MeshParallelScene;
     m_sceneManager->AddParallelScene(meshScene);
 
-    m_logo = new OBJMesh(OBJ_LOGO);
-    meshScene->AddChild(m_logo);
+    DiriLight* light0 = new DiriLight(lightScene);
+    m_sceneManager->GetRootNode()->AddChild(light0);
+
+    m_logo = new OBJMesh(meshScene, OBJ_LOGO);
+    m_sceneManager->GetRootNode()->AddChild(m_logo);
 
     m_camera = new Camera(Camera::TARGET_RELATIVE);
     m_camera->SetRotate(Vector2f(180, 5));
     m_sceneManager->AddCamera(m_camera);
-
-    DiriLight* light0 = new DiriLight;
-    m_sceneManager->AddDynamicLight(light0);
 
     m_sceneManager->SetAmbientLight(0.1);
 

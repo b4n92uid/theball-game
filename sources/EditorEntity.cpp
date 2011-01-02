@@ -27,11 +27,7 @@ bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
             UnRegisterItem(dynamic_cast<Item*>(m_selectedNode));
 
         if(tools::find(m_visualSpawnPoints, m_selectedNode))
-        {
             tools::erase(m_visualSpawnPoints, m_selectedNode);
-
-            parallelscene.meshs->ReleaseChild(m_selectedNode);
-        }
 
         tools::erase(m_allEntity, m_selectedNode);
 
@@ -45,9 +41,11 @@ bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
 
 void EditorManager::NewEntity(Object* ent)
 {
-    Vector3f pos = ent->GetPos();
-
     m_allEntity.push_back(ent);
+
+    manager.scene->GetRootNode()->AddChild(ent);
+
+    Vector3f pos = ent->GetPos();
 
     m_axes->SetPos(pos);
     m_OCamera->SetCenter(pos);
@@ -67,7 +65,6 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
             clone = new StaticObject(this, OBJ_SPAWN, m_axes->GetPos());
 
             m_visualSpawnPoints.push_back(clone);
-            parallelscene.meshs->AddChild(clone);
         }
 
         else
@@ -145,7 +142,6 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
         StaticObject* visualSpawn = new StaticObject(this, OBJ_SPAWN, m_axes->GetPos());
 
         m_visualSpawnPoints.push_back(visualSpawn);
-        parallelscene.meshs->AddChild(visualSpawn);
 
         newObj = visualSpawn;
     }
@@ -203,7 +199,7 @@ struct SelectionSort
     bool operator()(const tbe::scene::Node* node1, const tbe::scene::Node * node2)
     {
         if(byPos)
-            return(node1->GetPos() - cameraPos) < (node2->GetPos() - cameraPos);
+            return (node1->GetPos() - cameraPos) < (node2->GetPos() - cameraPos);
         else
             return node1->GetAabb().GetSize() < node2->GetAabb().GetSize();
     }
@@ -271,12 +267,12 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
 
             if(event->keyState[EventManager::KEY_LALT])
             {
-                transform.y -= event->mousePosRel.y * moveSpeed;
+                transform.y = event->mousePosRel.y * moveSpeed;
             }
             else
             {
                 transform = left * (float)event->mousePosRel.x * moveSpeed;
-                transform -= target * (float)event->mousePosRel.y * moveSpeed;
+                transform += target * (float)event->mousePosRel.y * moveSpeed;
                 transform.y = 0;
             }
 

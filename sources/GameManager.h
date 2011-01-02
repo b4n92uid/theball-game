@@ -2,7 +2,7 @@
 #define _GAMEMANAGER_H
 
 #include <Tbe.h>
-#include <Newton/Newton.h>
+#include <NewtonBall/NewtonBall.h>
 #include <SDLDevice/SDLDevice.h>
 
 #include <fmod.h>
@@ -80,6 +80,7 @@ public:
     {
         tbe::scene::MeshParallelScene* meshs;
         tbe::scene::ParticlesParallelScene* particles;
+        tbe::scene::LightParallelScene* light;
         tbe::scene::NewtonParallelScene* newton;
 
     } parallelscene;

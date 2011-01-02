@@ -122,6 +122,8 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
     m_userPlayer = new Player(this, m_playSetting.playerName, upi.model);
     m_userPlayer->AttachController(new UserControl(this));
 
+    manager.scene->GetRootNode()->AddChild(m_userPlayer);
+
     RegisterPlayer(m_userPlayer);
     ModSetupUser(m_userPlayer);
 
@@ -350,6 +352,8 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
             Player* player = new Player(this, "TEST_BOT", pi.model);
             RegisterPlayer(player);
+
+            manager.scene->GetRootNode()->AddChild(player);
         }
 
         if(event->keyState[EventManager::KEY_F8])
@@ -362,6 +366,8 @@ void PlayManager::ProcessDevelopperCodeEvent()
             player->AttachController(new FragModeAi(this));
 
             RegisterPlayer(player);
+
+            manager.scene->GetRootNode()->AddChild(player);
         }
     }
 }
@@ -480,8 +486,10 @@ void PlayManager::GameProcess()
             unsigned selectName = tools::rand(0, m_botNames.size());
 
             Player* player = new Player(this, m_botNames[selectName], pi.model);
-
             RegisterPlayer(player);
+
+            manager.scene->GetRootNode()->AddChild(player);
+
             ModSetupAi(player);
 
             manager.sound->Play("respawn", player);
@@ -667,6 +675,7 @@ void PlayManager::HudProcess()
 void PlayManager::Render()
 {
     Vector2i& screenSize = manager.app->globalSettings.video.screenSize;
+
     // Positionement camera ----------------------------------------------------
 
     Vector3f setPos = m_userPlayer->GetPos();
@@ -693,6 +702,7 @@ void PlayManager::Render()
     FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)m_camera->GetPos(), 0,
                                         (FMOD_VECTOR*)(float*)m_camera->GetTarget(),
                                         (FMOD_VECTOR*)(float*)m_camera->GetUp());
+
     FMOD_System_Update(manager.fmodsys);
     #endif
 
@@ -772,24 +782,16 @@ bool PlayManager::IsGameOver() const
 
 void PlayManager::RegisterPlayer(Player* player)
 {
-    parallelscene.meshs->AddChild(player);
-    parallelscene.newton->AddChild(player->GetPhysicBody());
     manager.material->AddPlayer(player);
 
     m_players.push_back(player);
 }
 
-void PlayManager::UnRegisterPlayer(Player* player, bool keep)
+void PlayManager::UnRegisterPlayer(Player* player)
 {
-    parallelscene.meshs->ReleaseChild(player);
-    parallelscene.newton->ReleaseChild(player->GetPhysicBody());
-
     Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
 
     m_players.erase(it);
-
-    if(!keep)
-        delete player;
 }
 
 void PlayManager::PPeBullettime(bool status)

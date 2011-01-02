@@ -15,7 +15,7 @@ void EditorManager::NewLight(tbe::scene::Light* light)
 
     map.lights.push_back(light);
 
-    manager.scene->AddDynamicLight(light);
+    manager.scene->GetRootNode()->AddChild(light);
 
     m_selectedLight = light;
 
@@ -27,8 +27,6 @@ void EditorManager::DeleteLight(unsigned index)
     hud.light.slector->Delete(index);
 
     map.lights.erase(map.lights.begin() + index);
-
-    manager.scene->ReleaseDynamicLight(m_selectedLight);
 
     delete m_selectedLight, m_selectedLight = NULL;
 
@@ -83,11 +81,11 @@ bool EditorManager::AllocLightEvent(tbe::EventManager* event)
     switch(c)
     {
         case 'p':
-            newLight = new PointLight;
+            newLight = new PointLight(parallelscene.light);
             newLight->SetPos(m_axes->GetPos());
             break;
         case 'd':
-            newLight = new DiriLight;
+            newLight = new DiriLight(parallelscene.light);
             break;
     }
 

@@ -8,7 +8,7 @@
 #ifndef _MATERIALMANAGER_H
 #define	_MATERIALMANAGER_H
 
-#include <Newton/Newton.h>
+#include <NewtonBall/NewtonBall.h>
 
 #include "Weapon.h"
 #include "Item.h"
