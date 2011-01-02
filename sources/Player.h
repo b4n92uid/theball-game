@@ -2,7 +2,7 @@
 #define _PLAYERENGINE_H
 
 #include <Tbe.h>
-#include <Newton/Newton.h>
+#include <NewtonBall/NewtonBall.h>
 
 #include "Object.h"
 #include "Weapon.h"

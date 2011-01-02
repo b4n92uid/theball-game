@@ -7,7 +7,7 @@ theBall 1.2
 * Effet ralentie des sons en bullettime
 * Amélioration sur l'ETH
 * Immunuté de départ (pour éviter les embuscade :p)
-* Modularité des score par le nombre des joueurs et la durré de la  partie
+* Modularité des score par le nombre des joueurs et la durée de la  partie
 * Ré-apparition sur les cartes par point définé
 * Apparition des joueurs différé
 * Nommage des bots par des noms défini

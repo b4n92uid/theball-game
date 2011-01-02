@@ -58,7 +58,7 @@ public:
     bool IsGameOver() const;
 
     void RegisterPlayer(Player* player);
-    void UnRegisterPlayer(Player* player, bool keep = false);
+    void UnRegisterPlayer(Player* player);
 
     void PPeBullettime(bool status);
     void PPeBoost(bool status);

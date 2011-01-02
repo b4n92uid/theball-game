@@ -20,7 +20,7 @@ using namespace tbe::scene;
 
 // Weapon ----------------------------------------------------------------------
 
-Weapon::Weapon(PlayManager* playManager)
+Weapon::Weapon(PlayManager* playManager) : ParticlesEmiter(playManager->parallelscene.particles)
 {
     m_playManager = playManager;
     m_worldSettings = m_playManager->manager.app->globalSettings.physics;
@@ -39,10 +39,6 @@ Weapon::Weapon(PlayManager* playManager)
     m_shootCadency = 0;
 
     m_mapAABB = m_playManager->map.aabb;
-
-    m_playManager->parallelscene.particles->AddChild(this);
-
-    SetLockPtr(true);
 }
 
 void Weapon::SetShootSize(unsigned shootSize)
@@ -55,15 +51,13 @@ unsigned Weapon::GetShootSize() const
     return m_shootSize;
 }
 
-Weapon::Weapon(const Weapon& copy)
+Weapon::Weapon(const Weapon& copy) : ParticlesEmiter(copy)
 {
     *this = copy;
 }
 
 Weapon::~Weapon()
 {
-    m_playManager->parallelscene.particles->ReleaseChild(this);
-
     for(unsigned i = 0; i < m_bulletArray.size(); i++)
         delete m_bulletArray[i];
 }
@@ -100,6 +94,8 @@ void Weapon::Process()
     m_bulletArray.erase(newend, m_bulletArray.end());
 
     SetDrawNumber(m_bulletArray.size());
+
+    m_parallelScene->PushToDraw(this);
 }
 
 void Weapon::SetFireSound(std::string fireSound)
@@ -112,7 +108,7 @@ void Weapon::SetFireSound(std::string fireSound)
 
 bool Weapon::IsEmpty()
 {
-    return(m_ammoCount == 0);
+    return (m_ammoCount == 0);
 }
 
 void Weapon::SetShooter(Player* shooter)
@@ -419,6 +415,8 @@ void WeaponFinder::Process()
     m_bulletArray.erase(newend, m_bulletArray.end());
 
     SetDrawNumber(m_bulletArray.size());
+
+    m_parallelScene->PushToDraw(this);
 }
 
 void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -434,7 +432,7 @@ void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
 // Bullet ----------------------------------------------------------------------
 
-Bullet::Bullet(PlayManager* playManager)
+Bullet::Bullet(PlayManager* playManager) : NewtonNode(playManager->parallelscene.newton)
 {
     m_playManager = playManager;
     m_life = 300;
@@ -514,7 +512,7 @@ int Bullet::GetLife() const
 
 bool Bullet::IsDeadAmmo()
 {
-    return(m_life <= 0 || !m_playManager->map.aabb.IsInner(m_matrix.GetPos()));
+    return (m_life <= 0 || !m_playManager->map.aabb.IsInner(m_matrix.GetPos()));
 }
 
 void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
@@ -528,7 +526,6 @@ void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
 
     m_matrix.SetPos(startpos);
 
-    SetNewtonWorld(m_weapon->GetShooter()->GetPhysicBody()->GetNewtonWorld());
     SetUpdatedMatrix(&m_matrix);
 
     Settings::Physics& worldSettings = m_playManager->manager.app->globalSettings.physics;

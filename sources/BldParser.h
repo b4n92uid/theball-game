@@ -56,8 +56,9 @@ protected:
 
     FMOD_SYSTEM* m_fmodsys;
 
-    tbe::scene::MeshParallelScene* m_meshScene;
     tbe::scene::SceneManager* m_sceneManager;
+    tbe::scene::MeshParallelScene* m_meshScene;
+    tbe::scene::LightParallelScene* m_lightScene;
     tbe::scene::NewtonParallelScene* m_newtonScene;
 
 private:

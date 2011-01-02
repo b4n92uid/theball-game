@@ -9,7 +9,7 @@
 #define	_OBJECT_H
 
 #include <Tbe.h>
-#include <Newton/Newton.h>
+#include <NewtonBall/NewtonBall.h>
 
 #include "AppManager.h"
 
