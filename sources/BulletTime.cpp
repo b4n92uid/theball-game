@@ -65,21 +65,14 @@ void BulletTime::SetActive(bool active)
 
         m_soundManager->Play("bullettime", m_userPlayer);
 
-        m_playManager->HudBullettimeDisplay(true);
-
-
-        if(m_playManager->manager.app->globalSettings.video.usePpe)
-            m_playManager->PPeBullettime(true);
+        m_playManager->HudBullettime(true);
     }
 
     else
     {
         FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 1.0);
 
-        m_playManager->HudBullettimeDisplay(false);
-
-        if(m_playManager->manager.app->globalSettings.video.usePpe)
-            m_playManager->PPeBullettime(false);
+        m_playManager->HudBullettime(false);
     }
 }
 
