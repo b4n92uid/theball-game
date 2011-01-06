@@ -170,7 +170,7 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 
             if(event->notify == EventManager::EVENT_MOUSE_MOVE)
             {
-                float moveSpeed = 0.1f;
+                float moveSpeed = 0.05;
 
                 Vector3f curPos = m_selectedLight->GetPos();
 
@@ -180,12 +180,12 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 
                 if(event->keyState[EventManager::KEY_LALT])
                 {
-                    transform.y -= event->mousePosRel.y * moveSpeed;
+                    transform.y = event->mousePosRel.y * moveSpeed;
                 }
                 else
                 {
                     transform = left * (float)event->mousePosRel.x * moveSpeed;
-                    transform -= target * (float)event->mousePosRel.y * moveSpeed;
+                    transform += target * (float)event->mousePosRel.y * moveSpeed;
                     transform.y = 0;
                 }
 
