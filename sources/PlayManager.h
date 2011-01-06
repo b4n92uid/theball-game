@@ -60,12 +60,10 @@ public:
     void RegisterPlayer(Player* player);
     void UnRegisterPlayer(Player* player);
 
-    void PPeBullettime(bool status);
-    void PPeBoost(bool status);
-
-    void HudNotifyDammage();
-    void HudNotifyItem(bool status);
-    void HudBullettimeDisplay(bool status);
+    void HudItem(bool status);
+    void HudBullettime(bool status);
+    void HudBoost(bool status);
+    void HudDammage(bool status);
 
     virtual BulletTime* GetBullettime() const;
 

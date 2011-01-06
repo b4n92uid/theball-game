@@ -205,7 +205,7 @@ public:
             player->GetCurWeapon()->SetMaxAmmoDammage(initialDammage);
 
             if(playManager->GetUserPlayer() == player)
-                playManager->HudNotifyItem(false);
+                playManager->HudItem(false);
 
             return true;
         }
@@ -225,7 +225,7 @@ void ItemFatalShot::ModifPlayer(Player* player)
     if(playManager->GetUserPlayer() == player)
     {
         playManager->Log("Tire fatale");
-        playManager->HudNotifyItem(true);
+        playManager->HudItem(true);
     }
 
     FatalShotEffect* effect = new FatalShotEffect;
@@ -293,7 +293,7 @@ public:
             PlayManager* playManager = player->GetPlayManager();
 
             if(playManager->GetUserPlayer() == player)
-                playManager->HudNotifyItem(false);
+                playManager->HudItem(false);
 
             return true;
         }
@@ -311,7 +311,7 @@ void ItemSuperLife::ModifPlayer(Player* player)
     if(playManager->GetUserPlayer() == player)
     {
         playManager->Log("Super santé !");
-        playManager->HudNotifyItem(true);
+        playManager->HudItem(true);
     }
 
     SuperLifeEffect* effect = new SuperLifeEffect;

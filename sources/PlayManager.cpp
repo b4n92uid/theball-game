@@ -794,30 +794,41 @@ void PlayManager::UnRegisterPlayer(Player* player)
     m_players.erase(it);
 }
 
-void PlayManager::PPeBullettime(bool status)
-{
-    ppe.bullettime->SetEnable(status);
-}
-
-void PlayManager::PPeBoost(bool status)
-{
-    ppe.boost->SetEnable(status);
-}
-
-void PlayManager::HudNotifyDammage()
-{
-    hud.background.dammage->SetEnable(true);
-    hud.background.dammage->SetOpacity(0.75);
-}
-
-void PlayManager::HudNotifyItem(bool status)
+void PlayManager::HudItem(bool status)
 {
     hud.item->SetCurState(status);
 }
 
-void PlayManager::HudBullettimeDisplay(bool status)
+void PlayManager::HudBullettime(bool status)
 {
-    hud.background.bullettime->SetEnable(status);
+    if(manager.app->globalSettings.video.usePpe)
+    {
+        ppe.bullettime->SetEnable(status);
+    }
+    else
+    {
+        hud.background.bullettime->SetEnable(status);
+    }
+}
+
+void PlayManager::HudBoost(bool status)
+{
+    if(manager.app->globalSettings.video.usePpe)
+    {
+        ppe.boost->SetEnable(status);
+    }
+    else
+    {
+
+    }
+}
+
+void PlayManager::HudDammage(bool status)
+{
+    hud.background.dammage->SetEnable(status);
+
+    if(status)
+        hud.background.dammage->SetOpacity(0.75);
 }
 
 BulletTime* PlayManager::GetBullettime() const
