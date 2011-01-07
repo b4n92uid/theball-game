@@ -91,6 +91,9 @@ void PlayAloneManager::ModUpdateStateText(std::ostringstream& ss)
         ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
     else
         ss << "Temps : Infinie" << endl;
+
+    if(m_playSetting.winCond > 0)
+        ss << "Objectif : " << m_playSetting.winCond << endl;
 }
 
 void PlayAloneManager::ModUpdateScoreListText(std::ostringstream& ss)
@@ -114,6 +117,16 @@ void PlayAloneManager::ModUpdateGameOverText(std::ostringstream& ss)
 {
     using namespace gui;
 
+    if(m_playSetting.winCond > 0)
+    {
+        if(m_userPlayer->GetScore() >= m_playSetting.winCond)
+            ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
+        else
+            ss << "<< VOUS AVEZ PERDU !!! >>" << endl;
+
+        ss << endl;
+    }
+
     ss << "Carte : " << map.name << endl;
     ss << "Type : Alone" << endl;
 
@@ -125,6 +138,8 @@ void PlayAloneManager::ModUpdateGameOverText(std::ostringstream& ss)
     ss << endl;
 
     ss << "[" << m_userPlayer->GetScore() << "] " << m_userPlayer->GetName() << endl;
+
+    ss << endl;
 
     ss << "Espace pour continuer..." << endl;
 }

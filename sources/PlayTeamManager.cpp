@@ -135,6 +135,9 @@ void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
         ss << "Temps : Infinie" << endl;
 
     ss << "Equipe : " << (m_userBleuTeam ? "Bleu" : "Rouge") << endl;
+
+    if(m_playSetting.winCond > 0)
+        ss << "Objectif : " << m_playSetting.winCond << endl;
 }
 
 void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
@@ -182,15 +185,27 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
     sort(blueTeamPlayers.begin(), blueTeamPlayers.end(), PlayerScoreSortProcess);
     sort(redTeamPlayers.begin(), redTeamPlayers.end(), PlayerScoreSortProcess);
 
-    unsigned bleuScore = 0, redScore = 0;
+    unsigned blueScore = 0, redScore = 0;
 
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        bleuScore += blueTeamPlayers[i]->GetScore();
-    bleuScore /= blueTeamPlayers.size();
+        blueScore += blueTeamPlayers[i]->GetScore();
+    blueScore /= blueTeamPlayers.size();
 
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
         redScore += redTeamPlayers[i]->GetScore();
     redScore /= redTeamPlayers.size();
+
+    if(m_playSetting.winCond > 0)
+    {
+        if(m_userBleuTeam && blueScore >= m_playSetting.winCond && blueScore > redScore)
+            ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
+        else if(!m_userBleuTeam && redScore >= m_playSetting.winCond && redScore > blueScore)
+            ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
+        else
+            ss << "<< VOUS AVEZ PERDU !!! >>" << endl;
+
+        ss << endl;
+    }
 
     ss << "Carte : " << map.name << endl;
     ss << "Type : Team" << endl;
@@ -202,7 +217,7 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     ss << endl;
 
-    ss << "Equipe bleu [" << bleuScore << "]" << endl;
+    ss << "Equipe bleu [" << blueScore << "]" << endl;
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
         ss << " [" << blueTeamPlayers[i]->GetScore() << "] " << blueTeamPlayers[i]->GetName() << endl;
     ss << endl;

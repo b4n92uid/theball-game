@@ -26,17 +26,6 @@ inline bool ScoreSortByValue(const Settings::ScoreInfo& p1, const Settings::Scor
         return p1.playerName > p2.playerName;
 }
 
-inline string UnsignedToPlayMod(unsigned pm)
-{
-    switch(pm)
-    {
-        case AppManager::FRAG: return "Frag";
-        case AppManager::ALONE: return "Alone";
-        case AppManager::TEAM: return "Team";
-        default: return "Inconnu";
-    }
-}
-
 inline string WriteScore(vector<Settings::ScoreInfo>& scores)
 {
     using namespace boost::posix_time;
@@ -53,7 +42,7 @@ inline string WriteScore(vector<Settings::ScoreInfo>& scores)
 
         text << si.playerName << " : "
                 << from_time_t(si.timestamp) << " : "
-                << UnsignedToPlayMod(si.playMod) << " : "
+                << AppManager::UnsignedToPlayMod(si.playMod) << " : "
                 << si.levelName << " : "
                 << si.playTime << " sec : "
                 << si.score << " point(s)" << endl;
@@ -177,6 +166,8 @@ void AppManager::SetupMenuGui()
 
     m_guiManager->SetSkin(guiskin);
 
+    Pencil bigpen(GUI_FONT, int(sizeFactor * GUI_FONTSIZE * 1.5));
+
     // Construction ------------------------------------------------------------
 
     Texture background(BACKGROUND_MAINMENU);
@@ -198,7 +189,38 @@ void AppManager::SetupMenuGui()
     m_guiManager->AddButton("score", "Scores");
     m_guiManager->AddButton("setting", "Options");
     m_guiManager->AddButton("editor", "Editeur");
-    m_guiManager->AddButton("newgame", "Jouer");
+    m_guiManager->AddButton("quickplay", "Partie rapide");
+    m_guiManager->AddButton("campaign", "Jouer");
+
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->EndLayout();
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->EndLayout();
+
+    // Menu Campaign
+
+    m_guiManager->SetSession(MENU_CAMPAIGN);
+
+    m_guiManager->AddImage("", background)
+            ->SetSize(screenSize);
+
+    m_guiManager->AddLayout(Layout::Horizental, 10, 10);
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->AddLayout(Layout::Vertical, 10);
+    m_guiManager->AddLayoutStretchSpace();
+
+    m_controls.campaign.ret = m_guiManager->AddButton("ret", "Retour");
+
+    m_controls.campaign.levelSelect = m_guiManager->AddSwitchString("level_select");
+    m_guiManager->AddTextBox("")->Write("Niveau");
+
+    m_controls.campaign.playerSelect = m_guiManager->AddSwitchString("playerSelect");
+    m_guiManager->AddTextBox("")->Write("Personnage");
+
+    m_controls.campaign.playerName = m_guiManager->AddEditBox("nameSelect", "Joueur");
+    m_guiManager->AddTextBox("")->Write("Pseudo");
+
+    m_controls.campaign.play = m_guiManager->AddButton("play", "Jouer");
 
     m_guiManager->AddLayoutStretchSpace();
     m_guiManager->EndLayout();
@@ -207,7 +229,7 @@ void AppManager::SetupMenuGui()
 
     // Menu Jouer
 
-    m_guiManager->SetSession(MENU_PLAY);
+    m_guiManager->SetSession(MENU_QUICKPLAY);
 
     m_guiManager->AddImage("", background)
             ->SetSize(screenSize);
@@ -271,10 +293,21 @@ void AppManager::SetupMenuGui()
 
     m_guiManager->SetSession(MENU_LOAD);
 
-    m_guiManager->AddImage("", background)
+    m_guiManager->AddImage("", BACKGROUND_LOAD)
             ->SetSize(screenSize);
 
-    m_guiManager->AddTextBox("load:stateText")->SetPos(10);
+    m_guiManager->AddLayout(Layout::Horizental, 0, 10);
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->AddLayout(Layout::Vertical, 10);
+    m_guiManager->AddLayoutStretchSpace();
+
+    m_guiManager->AddTextBox("load:stateText")
+            ->SetPencil(bigpen);
+
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->EndLayout();
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->EndLayout();
 
     // Menu Edition
 
@@ -480,10 +513,12 @@ void AppManager::SetupMenuGui()
     // Remplisage --------------------------------------------------------------
 
     #ifdef COMPILE_FOR_WINDOWS
-    DWORD bufSize = 255;
-    char userName[bufSize];
-    GetUserName(userName, &bufSize);
-    m_controls.playmenu.playerName->SetLabel(userName);
+    {
+        DWORD bufSize = 255;
+        char userName[bufSize];
+        GetUserName(userName, &bufSize);
+        m_controls.playmenu.playerName->SetLabel(userName);
+    }
     #endif
 
     // A propos
@@ -575,7 +610,22 @@ void AppManager::SetupMenuGui()
         m_controls.settings.screenSize->SetCurrent(curSizeIndex);
     }
 
-    // Menu de partie
+    // Menu campaign
+
+    #ifdef COMPILE_FOR_WINDOWS
+    {
+        DWORD bufSize = 255;
+        char userName[bufSize];
+        GetUserName(userName, &bufSize);
+        m_controls.campaign.playerName->SetLabel(userName);
+    }
+    #endif
+
+    for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
+        m_controls.campaign.playerSelect->Push(globalSettings.availablePlayer[i].name, i);
+
+    m_controls.campaign.playerSelect->SetCurrent(tools::rand(0, globalSettings.availablePlayer.size()));
+
 
     // Temps de la partie
     m_controls.playmenu.playerCount->SetValue(4);
@@ -602,6 +652,16 @@ void AppManager::SetupMenuGui()
 
 void AppManager::UpdateGuiContent()
 {
+    // Campaign
+
+    m_controls.campaign.levelSelect->DeleteAll();
+
+    for(unsigned i = 0; i <= globalSettings.campaign.index; i++)
+    {
+        string label = tools::numToStr(i + 1) + "# " + globalSettings.campaign.maps[i].playMap.name;
+        m_controls.campaign.levelSelect->Push(label, globalSettings.campaign.maps[i]);
+    }
+
     // Ball a jouer
 
     m_controls.playmenu.playerSelect->DeleteAll();
@@ -679,8 +739,11 @@ void AppManager::SetupBackgroundScene()
 
 void AppManager::ProcessMainMenuEvent()
 {
-    if(m_guiManager->GetControl("newgame")->IsActivate())
-        m_guiManager->SetSession(MENU_PLAY);
+    if(m_guiManager->GetControl("quickplay")->IsActivate())
+        m_guiManager->SetSession(MENU_QUICKPLAY);
+
+    else if(m_guiManager->GetControl("campaign")->IsActivate())
+        m_guiManager->SetSession(MENU_CAMPAIGN);
 
     else if(m_guiManager->GetControl("setting")->IsActivate())
         m_guiManager->SetSession(MENU_SETTING);
@@ -695,6 +758,28 @@ void AppManager::ProcessMainMenuEvent()
         m_guiManager->SetSession(MENU_SCORE);
 }
 
+void AppManager::ProcessCampaignMenuEvent()
+{
+    if(m_controls.campaign.play->IsActivate())
+    {
+        Settings::PartySetting party = m_controls.campaign.levelSelect->GetData()
+                .GetValue<Settings::PartySetting > ();
+
+        unsigned indexOfPlayer = m_controls.campaign.playerSelect->GetData().GetValue<unsigned>();
+
+        party.playerName = globalSettings.availablePlayer[indexOfPlayer];
+        party.playerName.nick = m_controls.campaign.playerName->GetLabel();
+
+        ExecuteCampaign(party);
+
+        SetupBackgroundScene();
+        m_guiManager->SetSession(MENU_CAMPAIGN);
+    }
+
+    else if(m_controls.campaign.ret->IsActivate())
+        m_guiManager->SetSession(MENU_MAIN);
+}
+
 void AppManager::ProcessPlayMenuEvent()
 {
     if(m_controls.playmenu.mapSelect->IsActivate());
@@ -706,19 +791,22 @@ void AppManager::ProcessPlayMenuEvent()
         unsigned indexOfLevel = m_controls.playmenu.mapSelect->GetData().GetValue<unsigned>();
         unsigned indexOfPlayer = m_controls.playmenu.playerSelect->GetData().GetValue<unsigned>();
 
-        PlaySetting playSetting;
+        Settings::PartySetting playSetting;
 
-        playSetting.playMap = globalSettings.availableMap[indexOfLevel].file;
-        playSetting.playerModel = globalSettings.availablePlayer[indexOfPlayer].file;
-        playSetting.playerName = m_controls.playmenu.playerName->GetLabel();
-        playSetting.playerCount = m_controls.playmenu.playerCount->GetValue();
+        playSetting.playMap = globalSettings.availableMap[indexOfLevel];
+
+        playSetting.playerName = globalSettings.availablePlayer[indexOfPlayer];
+        playSetting.playerName.nick = m_controls.playmenu.playerName->GetLabel();
+
         playSetting.playMod = m_controls.playmenu.modSelect->GetData().GetValue<unsigned>();
         playSetting.playTime = m_controls.playmenu.timeSelect->GetData().GetValue<unsigned>();
+
+        playSetting.playerCount = m_controls.playmenu.playerCount->GetValue();
 
         ExecuteGame(playSetting);
 
         SetupBackgroundScene();
-        m_guiManager->SetSession(MENU_PLAY);
+        m_guiManager->SetSession(MENU_QUICKPLAY);
     }
 
     else if(m_guiManager->GetControl("return")->IsActivate())
@@ -732,7 +820,7 @@ void AppManager::ProcessEditMenuEvent()
         unsigned index = m_controls.edit.mapSelect->GetData().GetValue<unsigned>();
         Settings::MapInfo& mi = globalSettings.availableMap[index];
 
-        EditSetting es;
+        Settings::EditSetting es;
         es.createNew = false;
         es.editMap = mi.file;
 
@@ -743,7 +831,7 @@ void AppManager::ProcessEditMenuEvent()
     }
     else if(m_controls.edit.newMap->IsActivate())
     {
-        EditSetting es;
+        Settings::EditSetting es;
         es.createNew = true;
 
         ExecuteEditor(es);
@@ -842,6 +930,10 @@ void AppManager::ExecuteMenu()
                         ProcessMainMenuEvent();
                     break;
 
+                case MENU_CAMPAIGN:
+                    ProcessCampaignMenuEvent();
+                    break;
+
                 case MENU_SCORE:
                     ProcessScoreMenuEvent();
                     break;
@@ -859,7 +951,7 @@ void AppManager::ExecuteMenu()
                         m_guiManager->SetSession(MENU_MAIN);
                     break;
 
-                case MENU_PLAY:
+                case MENU_QUICKPLAY:
                     ProcessPlayMenuEvent();
                     break;
 
@@ -897,15 +989,15 @@ void AppManager::ExecuteMenu()
     }
 }
 
-void AppManager::ExecuteGame(const PlaySetting& playSetting)
+void AppManager::ExecuteGame(const Settings::PartySetting& playSetting)
 {
     cout << "ExecuteGame :" << endl
-            << "playLevel = " << playSetting.playMap << endl
+            << "playLevel = " << playSetting.playMap.name << endl
             << "playMod = " << playSetting.playMod << endl
             << "playTime = " << playSetting.playTime << endl
             << "playerCount = " << playSetting.playerCount << endl
-            << "playerModel = " << playSetting.playerModel << endl
-            << "playerName = " << playSetting.playerName << endl;
+            << "playerModel = " << playSetting.playerName.file << endl
+            << "playerName = " << playSetting.playerName.name << endl;
 
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
@@ -988,7 +1080,137 @@ void AppManager::ExecuteGame(const PlaySetting& playSetting)
     #endif
 }
 
-void AppManager::ExecuteEditor(const EditSetting& editSetting)
+void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
+{
+    cout << "ExecuteCampaign :" << endl
+            << "playLevel = " << playSetting.playMap.name << endl
+            << "playMod = " << playSetting.playMod << endl
+            << "playTime = " << playSetting.playTime << endl
+            << "playerCount = " << playSetting.playerCount << endl
+            << "playerModel = " << playSetting.playerName.file << endl
+            << "playerName = " << playSetting.playerName.name << endl
+            << "winCond = " << playSetting.winCond << endl;
+
+    m_sceneManager->ClearAll();
+    m_ppeManager->ClearAll();
+
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
+    FMOD_Channel_Stop(m_mainMusicCh);
+    #endif
+
+    // Affichage de l'ecran de chargement --------------------------------------
+
+    m_guiManager->SetSession(MENU_LOAD);
+
+    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+            ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
+                              "Chargement en cours...", playSetting.winCond));
+
+    m_guiManager->UpdateLayout();
+
+    m_gameEngine->BeginScene();
+    m_guiManager->Render();
+    m_gameEngine->EndScene();
+
+    // Chargement de la carte --------------------------------------------------
+
+    PlayManager* gameManager;
+
+    switch(playSetting.playMod)
+    {
+        case FRAG: gameManager = new PlayFragManager(this);
+            break;
+        case ALONE: gameManager = new PlayAloneManager(this);
+            break;
+        case TEAM: gameManager = new PlayTeamManager(this);
+            break;
+        default:
+            throw Exception("AppManager::ExecuteGame; Unknown mode type (%d)", playSetting.playMod);
+    }
+
+    gameManager->SetupMap(playSetting);
+    gameManager->SetupGui();
+
+    // Attente de réponse ------------------------------------------------------
+
+    m_guiManager->SetSession(MENU_LOAD);
+
+    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+            ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
+                              "Appuyer sur \"Espace\" pour continuer...", playSetting.winCond));
+
+    m_eventMng->keyState[EventManager::KEY_SPACE] = false;
+
+    while(!m_eventMng->keyState[EventManager::KEY_SPACE])
+    {
+        m_gameEngine->PollEvent();
+        m_gameEngine->BeginScene();
+        m_guiManager->Render();
+        m_gameEngine->EndScene();
+    }
+
+    // Début du jeu ------------------------------------------------------------
+
+    cout << "Start game" << endl;
+
+    gameManager->OnStartGame();
+
+    while(gameManager->running)
+    {
+        if(m_fpsMng->DoARender())
+        {
+            gameManager->EventProcess();
+            gameManager->GameProcess();
+            gameManager->HudProcess();
+
+            gameManager->Render();
+        }
+
+        m_fpsMng->Update();
+    }
+
+    cout << "End game" << endl;
+
+    int score = gameManager->GetUserPlayer()->GetScore();
+
+    if(score >= (int)playSetting.winCond && playSetting.campPlay == globalSettings.campaign.index)
+    {
+        cout << "Next level available" << endl;
+
+        if(globalSettings.campaign.index < globalSettings.campaign.maps.size())
+            globalSettings.campaign.index++;
+
+        globalSettings.SaveCampaign();
+
+        UpdateGuiContent();
+
+        // ---------------------------------------------------------------------
+
+        m_guiManager->SetSession(MENU_LOAD);
+
+        m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+                ->Write(gui::Text("Nouveau niveau déploqué !\n"
+                                  "Appuyer sur \"Espace\" pour continuer...", playSetting.winCond));
+
+        m_eventMng->keyState[EventManager::KEY_SPACE] = false;
+
+        while(!m_eventMng->keyState[EventManager::KEY_SPACE])
+        {
+            m_gameEngine->PollEvent();
+            m_gameEngine->BeginScene();
+            m_guiManager->Render();
+            m_gameEngine->EndScene();
+        }
+    }
+
+    delete gameManager;
+
+    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
+    #endif
+}
+
+void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
 {
     cout << "ExecuteEditor" << endl;
 

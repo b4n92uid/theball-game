@@ -65,11 +65,13 @@ public:
 
     struct ScoreInfo
     {
+        ScoreInfo();
+
         std::string playerName;
         std::string playerModel;
         std::string levelPath;
         std::string levelName;
-        
+
         unsigned playMod;
         unsigned playersCount;
         unsigned playTime;
@@ -82,10 +84,41 @@ public:
         PlayerInfo();
         PlayerInfo(std::string path);
 
+        std::string nick;
         std::string name;
         std::string model;
         std::string file;
     };
+
+    struct PartySetting
+    {
+        PartySetting();
+
+        PlayerInfo playerName;
+
+        MapInfo playMap;
+
+        unsigned playMod;
+        unsigned playTime;
+
+        unsigned playerCount;
+
+        unsigned campPlay;
+        unsigned winCond;
+    };
+
+    struct EditSetting
+    {
+        MapInfo editMap;
+        bool createNew;
+    };
+
+    struct Campaign
+    {
+        unsigned index;
+        std::vector<PartySetting> maps;
+
+    } campaign;
 
     std::vector<MapInfo> availableMap;
     std::vector<ScoreInfo> availableScore;
@@ -97,6 +130,7 @@ public:
     void ReadSetting();
     void SaveSetting();
 
+    void ReadCampaign();
     void ReadVideo();
     void ReadControl();
     void ReadPhysics();
@@ -106,6 +140,7 @@ public:
 
     void SaveVideo();
     void SaveControl();
+    void SaveCampaign();
 };
 
 
