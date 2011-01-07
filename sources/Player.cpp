@@ -59,9 +59,6 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
 
 Player::~Player()
 {
-    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
-        delete m_weaponsPack[i];
-
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         delete m_checkMe[i];
 
