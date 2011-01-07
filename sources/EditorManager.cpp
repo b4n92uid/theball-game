@@ -84,7 +84,6 @@ void EditorManager::SetupMap(const Settings::EditSetting& editSetting)
         StaticObject* visualSpawn = new StaticObject(this, OBJ_SPAWN, map.spawnPoints[i]);
 
         m_visualSpawnPoints.push_back(visualSpawn);
-        manager.scene->GetRootNode()->AddChild(visualSpawn);
 
         NewEntity(visualSpawn);
     }
@@ -471,7 +470,7 @@ bool EditorManager::SettingFogEvent(tbe::EventManager* event)
     {
         m_fog->SetEnable(hud.fog.enable->GetCurrent());
 
-        manager.scene->SetZNear(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize());
+        manager.scene->SetZFar(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize());
         manager.scene->UpdateViewParameter();
     }
 
@@ -495,7 +494,7 @@ bool EditorManager::SettingFogEvent(tbe::EventManager* event)
 
         hud.fog.start->SetRange(range);
 
-        manager.scene->SetZNear(m_fog->GetEnd());
+        manager.scene->SetZFar(m_fog->GetEnd());
         manager.scene->UpdateViewParameter();
     }
 

@@ -117,7 +117,7 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
 
     namefile.close();
 
-    m_userPlayer = new Player(this, m_playSetting.playerName.name, m_playSetting.playerName.model);
+    m_userPlayer = new Player(this, m_playSetting.playerName.nick, m_playSetting.playerName.model);
     m_userPlayer->AttachController(new UserControl(this));
 
     manager.scene->GetRootNode()->AddChild(m_userPlayer);

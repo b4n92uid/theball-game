@@ -1226,6 +1226,8 @@ void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
     m_guiManager->SetSession(MENU_LOAD);
 
     m_guiManager->GetControl<gui::TextBox > ("load:stateText")->Write("Chargement en cours...");
+    
+    m_guiManager->UpdateLayout();
 
     m_gameEngine->BeginScene();
     m_guiManager->Render();
