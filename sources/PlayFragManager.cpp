@@ -41,6 +41,9 @@ void PlayFragManager::ModUpdateStateText(std::ostringstream& ss)
         ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
     else
         ss << "Temps : Infinie" << endl;
+
+    if(m_playSetting.winCond > 0)
+        ss << "Objectif : " << m_playSetting.winCond << endl;
 }
 
 void PlayFragManager::ModUpdateScoreListText(std::ostringstream& ss)
@@ -65,6 +68,16 @@ void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
 {
     using namespace gui;
 
+    if(m_playSetting.winCond > 0)
+    {
+        if(m_userPlayer->GetScore() >= m_playSetting.winCond)
+            ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
+        else
+            ss << "<< VOUS AVEZ PERDU !!! >>" << endl;
+
+        ss << endl;
+    }
+
     ss << "Carte : " << map.name << endl;
     ss << "Type : Frag" << endl;
 
@@ -77,6 +90,8 @@ void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     for(unsigned i = 0; i < m_players.size(); i++)
         ss << " [" << m_players[i]->GetScore() << "] " << m_players[i]->GetName() << endl;
+
+    ss << endl;
 
     ss << "Espace pour continuer..." << endl;
 }

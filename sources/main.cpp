@@ -35,15 +35,14 @@ int main(int argc, char** argv)
         {
             if(string(argv[1]) == "play")
             {
-                // NOTE play <name> <player> <level> <playerCount> <playMod> <playtime>
+                // NOTE play <player> <level> <playerCount> <playMod> <playtime>
 
-                AppManager::PlaySetting ps;
-                ps.playerName = argv[2];
-                ps.playerModel = argv[3];
-                ps.playMap = argv[4];
-                ps.playerCount = tools::StrToNum<unsigned>(argv[5]);
-                ps.playMod = tools::StrToNum<unsigned> (argv[6]);
-                ps.playTime = tools::StrToNum<int>(argv[7]);
+                Settings::PartySetting ps;
+                ps.playerName = Settings::PlayerInfo(argv[2]);
+                ps.playMap = Settings::MapInfo(argv[3]);
+                ps.playerCount = tools::StrToNum<unsigned>(argv[4]);
+                ps.playMod = tools::StrToNum<unsigned> (argv[5]);
+                ps.playTime = tools::StrToNum<int>(argv[6]);
 
                 theBall.ExecuteGame(ps);
             }
@@ -52,8 +51,8 @@ int main(int argc, char** argv)
             {
                 // NOTE edit <level>
 
-                AppManager::EditSetting es;
-                es.editMap = argv[2];
+                Settings::EditSetting es;
+                es.editMap = Settings::MapInfo(argv[2]);
                 es.createNew = false;
 
                 theBall.ExecuteEditor(es);

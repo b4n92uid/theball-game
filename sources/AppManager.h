@@ -28,23 +28,28 @@ public:
         FRAG, TEAM, ALONE
     };
 
+    static std::string UnsignedToPlayMod(unsigned pm)
+    {
+        switch(pm)
+        {
+            case AppManager::FRAG: return "Frag";
+            case AppManager::ALONE: return "Alone";
+            case AppManager::TEAM: return "Team";
+            default: return "Frag";
+        }
+    }
+
+    static unsigned PlayModToUnsigned(std::string str)
+    {
+        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+
+        if(str == "frag") return AppManager::FRAG;
+        if(str == "alone") return AppManager::ALONE;
+        if(str == "team") return AppManager::TEAM;
+        else return AppManager::FRAG;
+    }
+
     Settings globalSettings;
-
-    struct PlaySetting
-    {
-        std::string playerName;
-        std::string playerModel;
-        std::string playMap;
-        unsigned playMod;
-        unsigned playerCount;
-        unsigned playTime;
-    };
-
-    struct EditSetting
-    {
-        std::string editMap;
-        bool createNew;
-    };
 
     /// Constructeur
     AppManager();
@@ -56,10 +61,13 @@ public:
     void ExecuteMenu();
 
     /// Exécute l'éditeur de carte
-    void ExecuteEditor(const EditSetting& editSetting);
+    void ExecuteEditor(const Settings::EditSetting& editSetting);
 
     /// Exécute le jeu
-    void ExecuteGame(const PlaySetting& playSetting);
+    void ExecuteGame(const Settings::PartySetting& playSetting);
+
+    /// *
+    void ExecuteCampaign(const Settings::PartySetting& playSetting);
 
     tbe::EventManager* GetEventMng() const;
     tbe::ticks::FpsManager* GetFpsMng() const;
@@ -84,6 +92,7 @@ protected:
     void SetupSound();
 
     void ProcessMainMenuEvent();
+    void ProcessCampaignMenuEvent();
     void ProcessPlayMenuEvent();
     void ProcessEditMenuEvent();
     void ProcessSettingMenuEvent();
@@ -119,6 +128,16 @@ protected:
             tbe::gui::EditBox* playerName;
 
         } playmenu;
+
+        struct
+        {
+            tbe::gui::SwitchString* levelSelect;
+            tbe::gui::Button* play;
+            tbe::gui::Button* ret;
+            tbe::gui::SwitchString* playerSelect;
+            tbe::gui::EditBox* playerName;
+
+        } campaign;
 
         struct
         {

@@ -46,7 +46,7 @@ EditorManager::~EditorManager()
     manager.gui->DestroySession(EDITOR_GUI);
 }
 
-void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
+void EditorManager::SetupMap(const Settings::EditSetting& editSetting)
 {
     m_editSetting = editSetting;
 
@@ -61,7 +61,7 @@ void EditorManager::SetupMap(const AppManager::EditSetting& editSetting)
 
     else
     {
-        manager.level->LoadLevel(m_editSetting.editMap);
+        manager.level->LoadLevel(m_editSetting.editMap.file);
 
         parallelscene.newton->SetWorldSize(map.aabb);
 

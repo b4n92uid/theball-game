@@ -31,7 +31,7 @@ public:
     virtual ~PlayManager();
 
     /// Construit la map et les entités
-    void SetupMap(const AppManager::PlaySetting& playSetting);
+    void SetupMap(const Settings::PartySetting& playSetting);
 
     /// Construction de l'ETH
     void SetupGui();
@@ -118,7 +118,7 @@ protected:
 
     BulletTime* m_bullettime;
 
-    AppManager::PlaySetting m_playSetting;
+    Settings::PartySetting m_playSetting;
 
     tbe::ticks::Clock m_logClock;
     tbe::ticks::Clock m_newtonClock;

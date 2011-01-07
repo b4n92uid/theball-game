@@ -22,7 +22,7 @@ public:
     virtual ~EditorManager();
 
     /// Construit la map et les entités
-    void SetupMap(const AppManager::EditSetting& editSetting);
+    void SetupMap(const Settings::EditSetting& editSetting);
 
     /// Construction de l'ETH
     void SetupGui();
@@ -164,7 +164,7 @@ protected:
     tbe::scene::SkyBox* m_sky;
     tbe::scene::Fog* m_fog;
 
-    AppManager::EditSetting m_editSetting;
+    Settings::EditSetting m_editSetting;
 
     bool m_completeHelp;
 };

@@ -122,7 +122,7 @@ inline bool ScoreSort(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& 
 
 inline bool ScoreUnique(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& p2)
 {
-    return(p1.playerName == p2.playerName && p1.playMod == p2.playMod);
+    return (p1.playerName == p2.playerName && p1.playMod == p2.playMod);
 }
 
 void Settings::ReadScoreInfo()
@@ -185,6 +185,37 @@ void Settings::ReadPlayerInfo()
     }
 }
 
+void Settings::ReadCampaign()
+{
+    TiXmlDocument config("campaign.xml");
+
+    if(!config.LoadFile())
+        throw tbe::Exception("ReadCampaign; Open file error");
+
+    campaign.maps.clear();
+
+    TiXmlNode* root = config.FirstChildElement();
+
+    root->ToElement()->QueryValueAttribute<unsigned>("index", &campaign.index);
+
+    for(TiXmlElement* node = root->FirstChildElement(); node; node = node->NextSiblingElement())
+    {
+        PartySetting party;
+
+        party.playMap = MapInfo(node->Attribute("map"));
+        node->QueryValueAttribute<unsigned>("playerCount", &party.playerCount);
+        node->QueryValueAttribute<unsigned>("playTime", &party.playTime);
+        node->QueryValueAttribute<unsigned>("winCond", &party.winCond);
+
+        const char* playMode = node->Attribute("playMode");
+        party.playMod = AppManager::PlayModToUnsigned(playMode);
+
+        party.campPlay = campaign.maps.size();
+
+        campaign.maps.push_back(party);
+    }
+}
+
 void Settings::ReadMapInfo()
 {
     using namespace boost::filesystem;
@@ -209,6 +240,7 @@ void Settings::ReadMapInfo()
 
 void Settings::ReadSetting()
 {
+    ReadCampaign();
     ReadVideo();
     ReadControl();
     ReadPhysics();
@@ -291,6 +323,20 @@ void Settings::SaveControl()
             }
         }
     }
+
+    config.SaveFile();
+}
+
+void Settings::SaveCampaign()
+{
+    TiXmlDocument config("campaign.xml");
+
+    if(!config.LoadFile())
+        throw tbe::Exception("ReadMapInfo; Open file error");
+
+    TiXmlNode* root = config.FirstChildElement();
+
+    root->ToElement()->SetAttribute("index", campaign.index);
 
     config.SaveFile();
 }
@@ -414,5 +460,26 @@ Settings::PlayerInfo::PlayerInfo(std::string path)
     }
 
     this->name = attMap["name"];
+    this->nick = attMap["name"];
     this->model = attMap["model"];
+}
+
+Settings::PartySetting::PartySetting()
+{
+    playMod = 0;
+    playTime = 0;
+
+    playerCount = 0;
+
+    campPlay = 0;
+    winCond = 0;
+}
+
+Settings::ScoreInfo::ScoreInfo()
+{
+    playMod = 0;
+    playersCount = 0;
+    playTime = 0;
+    timestamp = 0;
+    score = 0;
 }

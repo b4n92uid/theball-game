@@ -59,10 +59,10 @@ PlayManager::~PlayManager()
         TiXmlElement* root = scoreDoc.RootElement();
 
         TiXmlElement party("party");
-        party.SetAttribute("playerName", m_playSetting.playerName);
-        party.SetAttribute("playerModel", m_playSetting.playerModel);
-        party.SetAttribute("levelPath", m_playSetting.playMap);
-        party.SetAttribute("levelName", map.name);
+        party.SetAttribute("playerName", m_playSetting.playerName.name);
+        party.SetAttribute("playerModel", m_playSetting.playerName.model);
+        party.SetAttribute("levelPath", m_playSetting.playMap.file);
+        party.SetAttribute("levelName", m_playSetting.playMap.name);
         party.SetAttribute("playMod", m_playSetting.playMod);
         party.SetAttribute("playersCount", m_playSetting.playerCount);
         party.SetAttribute("playTime", m_playTimeManager.startChrono);
@@ -82,7 +82,7 @@ PlayManager::~PlayManager()
     delete m_bullettime;
 }
 
-void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
+void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
 {
     m_playSetting = playSetting;
 
@@ -90,7 +90,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     // SCENE -------------------------------------------------------------------
 
-    manager.level->LoadLevel(m_playSetting.playMap);
+    manager.level->LoadLevel(m_playSetting.playMap.file);
 
     // Marge
     map.aabb.Add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
@@ -117,9 +117,7 @@ void PlayManager::SetupMap(const AppManager::PlaySetting& playSetting)
 
     namefile.close();
 
-    Settings::PlayerInfo upi(m_playSetting.playerModel);
-
-    m_userPlayer = new Player(this, m_playSetting.playerName, upi.model);
+    m_userPlayer = new Player(this, m_playSetting.playerName.name, m_playSetting.playerName.model);
     m_userPlayer->AttachController(new UserControl(this));
 
     manager.scene->GetRootNode()->AddChild(m_userPlayer);
@@ -751,7 +749,10 @@ const Player::Array& PlayManager::GetPlayers() const
 
 unsigned PlayManager::ModToFinalScore(unsigned score)
 {
-    return ceil(score / (m_playSetting.playTime / 60) * m_playSetting.playerCount);
+    if(m_playSetting.playerCount)
+        return ceil(score / (m_playSetting.playTime / 60.0f) * m_playSetting.playerCount);
+    else
+        return 0;
 }
 
 void PlayManager::SetGameOver()

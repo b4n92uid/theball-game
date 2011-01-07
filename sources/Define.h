@@ -9,6 +9,7 @@
 #define BACKGROUND_DAMMAGE      "data/gfxart/background/dammage.png"
 #define BACKGROUND_HUD          "data/gfxart/background/hud.png"
 #define BACKGROUND_PAUSE        "data/gfxart/background/pause.png"
+#define BACKGROUND_LOAD         "data/gfxart/background/pause.png"
 
 // GUI -------------------------------------------------------------------------
 #define GUI_TEXTBOX_V   "data/gfxart/gui/textboxv.png"
@@ -89,7 +90,8 @@ enum GuiSess
     MENU_ABOUT,
     MENU_SETTING,
     MENU_SCORE,
-    MENU_PLAY,
+    MENU_QUICKPLAY,
+    MENU_CAMPAIGN,
     MENU_SETTING_KEYS,
     MENU_LOAD,
     MENU_EDIT,

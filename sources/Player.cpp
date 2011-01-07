@@ -16,6 +16,9 @@ using namespace tbe::scene;
 
 Player::Player(PlayManager* playManager, std::string name, std::string model) : Object(playManager)
 {
+    // Rendue
+    Open(model);
+
     // Attributes
     m_name = name;
     m_playManager = playManager;
@@ -30,15 +33,12 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Effet explosion
     m_deadExplode = new ParticlesEmiter(playManager->parallelscene.particles);
     m_deadExplode->SetTexture(PARTICLE_EXPLODE);
-    m_deadExplode->SetLifeInit(0.5);
+    m_deadExplode->SetLifeInit(1.000);
     m_deadExplode->SetLifeDown(0.025);
-    m_deadExplode->SetFreeMove(0.075);
+    m_deadExplode->SetFreeMove(0.025);
     m_deadExplode->SetNumber(128);
     m_deadExplode->SetAutoRebuild(false);
     m_deadExplode->SetParent(this);
-
-    // Rendue
-    Open(model);
 
     m_checkMe.push_back(new StartProtection(this));
 
