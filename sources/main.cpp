@@ -40,16 +40,15 @@ int main(int argc, char** argv)
 
         AppManager theBall;
 
-        int index = isarg(argc, argv, "nomusic");
-        if(index != -1)
+        int index = -1;
+
+        if((index = isarg(argc, argv, "nomusic")) != -1)
             theBall.globalSettings.nomusic = true;
 
-        index = isarg(argc, argv, "noaudio");
-        if(index != -1)
+        if((index = isarg(argc, argv, "noaudio")) != -1)
             theBall.globalSettings.noaudio = true;
 
-        index = isarg(argc, argv, "play");
-        if(index != -1)
+        if((index = isarg(argc, argv, "play")) != -1)
         {
             // NOTE play <player> <level> <playerCount> <playMod> <playtime>
 
@@ -63,8 +62,7 @@ int main(int argc, char** argv)
             theBall.ExecuteGame(ps);
         }
 
-        index = isarg(argc, argv, "edit");
-        if(index != -1)
+        else if((index = isarg(argc, argv, "edit")) != -1)
         {
             // NOTE edit <level>
 

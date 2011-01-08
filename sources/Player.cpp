@@ -36,7 +36,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_deadExplode->SetLifeInit(1.000);
     m_deadExplode->SetLifeDown(0.025);
     m_deadExplode->SetFreeMove(0.025);
-    m_deadExplode->SetNumber(128);
+    m_deadExplode->SetNumber(64);
     m_deadExplode->SetAutoRebuild(false);
     m_deadExplode->SetParent(this);
 
