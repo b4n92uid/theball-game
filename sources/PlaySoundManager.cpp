@@ -19,8 +19,7 @@ PlaySoundManager::~PlaySoundManager()
 
 void PlaySoundManager::ProcessEffect(std::string soundName, FMOD_CHANNEL* channel)
 {
-    #ifndef THEBALL_NO_AUDIO
-    if(m_playManager->GetBullettime()->IsActive())
-        FMOD_Channel_SetFrequency(channel, 22050);
-    #endif
+    if(!m_gameManager->manager.app->globalSettings.noaudio)
+        if(m_playManager->GetBullettime()->IsActive())
+            FMOD_Channel_SetFrequency(channel, 22050);
 }

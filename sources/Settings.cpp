@@ -18,6 +18,8 @@ using namespace tbe::gui;
 
 Settings::Settings()
 {
+    noaudio = false;
+    nomusic = false;
 }
 
 Settings::~Settings()

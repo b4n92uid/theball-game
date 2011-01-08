@@ -120,6 +120,9 @@ public:
 
     } campaign;
 
+    bool noaudio;
+    bool nomusic;
+
     std::vector<MapInfo> availableMap;
     std::vector<ScoreInfo> availableScore;
     std::vector<PlayerInfo> availablePlayer;

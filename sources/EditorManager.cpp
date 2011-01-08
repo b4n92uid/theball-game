@@ -375,53 +375,54 @@ void EditorManager::SetupGui()
 
 bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 {
-    #ifndef THEBALL_NO_AUDIO
-    if(event->notify == EventManager::EVENT_KEY_DOWN)
+    if(!manager.app->globalSettings.noaudio)
     {
-        if(event->lastActiveKey.first == EventManager::KEY_DELETE)
+        if(event->notify == EventManager::EVENT_KEY_DOWN)
+        {
+            if(event->lastActiveKey.first == EventManager::KEY_DELETE)
+            {
+                if(map.musicStream)
+                    FMOD_Sound_Release(map.musicStream);
+
+                map.musicChannel = 0;
+                map.musicStream = NULL;
+
+                map.musicPath.clear();
+
+                hud.music.list->CancelSelection();
+            }
+
+            if(event->lastActiveKey.first == EventManager::KEY_SPACE)
+            {
+                FMOD_BOOL state = false;
+                FMOD_Channel_IsPlaying(map.musicChannel, &state);
+
+                if(state)
+                    FMOD_Channel_Stop(map.musicChannel);
+
+                else
+                    FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE,
+                                          map.musicStream, false, &map.musicChannel);
+            }
+        }
+
+        if(hud.music.list->IsActivate())
         {
             if(map.musicStream)
                 FMOD_Sound_Release(map.musicStream);
 
-            map.musicChannel = 0;
-            map.musicStream = NULL;
+            map.musicPath = hud.music.list->GetCurrentData().GetValue<string > ();
 
-            map.musicPath.clear();
+            FMOD_RESULT res = FMOD_System_CreateStream(manager.fmodsys, map.musicPath.c_str(),
+                                                       FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
+                                                       0, &map.musicStream);
 
-            hud.music.list->CancelSelection();
-        }
+            if(res == FMOD_OK)
+                FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
 
-        if(event->lastActiveKey.first == EventManager::KEY_SPACE)
-        {
-            FMOD_BOOL state = false;
-            FMOD_Channel_IsPlaying(map.musicChannel, &state);
-
-            if(state)
-                FMOD_Channel_Stop(map.musicChannel);
-
-            else
-                FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE,
-                                      map.musicStream, false, &map.musicChannel);
+            hud.music.list->SetActivate(false);
         }
     }
-
-    if(hud.music.list->IsActivate())
-    {
-        if(map.musicStream)
-            FMOD_Sound_Release(map.musicStream);
-
-        map.musicPath = hud.music.list->GetCurrentData().GetValue<string > ();
-
-        FMOD_RESULT res = FMOD_System_CreateStream(manager.fmodsys, map.musicPath.c_str(),
-                                                   FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
-                                                   0, &map.musicStream);
-
-        if(res == FMOD_OK)
-            FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
-
-        hud.music.list->SetActivate(false);
-    }
-    #endif
 
     return false;
 }

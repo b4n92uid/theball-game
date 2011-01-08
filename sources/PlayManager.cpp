@@ -308,20 +308,21 @@ void PlayManager::SetupGui()
 
 void PlayManager::OnStartGame()
 {
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    if(map.musicStream)
-        FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
+    if(!manager.app->globalSettings.noaudio && !manager.app->globalSettings.nomusic)
+    {
+        if(map.musicStream)
+            FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
 
-    FMOD_CHANNELGROUP* chgrp;
-    FMOD_System_GetMasterChannelGroup(manager.fmodsys, &chgrp);
+        FMOD_CHANNELGROUP* chgrp;
+        FMOD_System_GetMasterChannelGroup(manager.fmodsys, &chgrp);
 
-    FMOD_CHANNELGROUP* musicChGrp;
-    FMOD_System_CreateChannelGroup(manager.fmodsys, "musicChGrp", &musicChGrp);
-    FMOD_Channel_SetChannelGroup(map.musicChannel, musicChGrp);
+        FMOD_CHANNELGROUP* musicChGrp;
+        FMOD_System_CreateChannelGroup(manager.fmodsys, "musicChGrp", &musicChGrp);
+        FMOD_Channel_SetChannelGroup(map.musicChannel, musicChGrp);
 
-    FMOD_ChannelGroup_SetVolume(chgrp, 0.75);
-    FMOD_ChannelGroup_SetVolume(musicChGrp, 1.00);
-    #endif
+        FMOD_ChannelGroup_SetVolume(chgrp, 0.75);
+        FMOD_ChannelGroup_SetVolume(musicChGrp, 1.00);
+    }
 }
 
 void PlayManager::Log(std::string msg)
@@ -727,13 +728,14 @@ void PlayManager::Render()
 
     // Son 3D ------------------------------------------------------------------
 
-    #ifndef THEBALL_NO_AUDIO
-    FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)m_camera->GetPos(), 0,
-                                        (FMOD_VECTOR*)(float*)m_camera->GetTarget(),
-                                        (FMOD_VECTOR*)(float*)m_camera->GetUp());
+    if(!manager.app->globalSettings.noaudio)
+    {
+        FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)m_camera->GetPos(), 0,
+                                            (FMOD_VECTOR*)(float*)m_camera->GetTarget(),
+                                            (FMOD_VECTOR*)(float*)m_camera->GetUp());
 
-    FMOD_System_Update(manager.fmodsys);
-    #endif
+        FMOD_System_Update(manager.fmodsys);
+    }
 
     // Rendue ------------------------------------------------------------------
 

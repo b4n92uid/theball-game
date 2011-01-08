@@ -50,25 +50,26 @@ SoundManager::~SoundManager()
 
 void SoundManager::RegisterSound(std::string name, std::string filename)
 {
-    #ifndef THEBALL_NO_AUDIO
-    if(m_sounds.count(name))
+    if(!m_gameManager->manager.app->globalSettings.noaudio)
     {
-        cout << "Load Shared Sound : " << filename << endl;
-        return;
+        if(m_sounds.count(name))
+        {
+            cout << "Load Shared Sound : " << filename << endl;
+            return;
+        }
+
+        cout << "Load Sound : " << filename << endl;
+
+        FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, filename.c_str(),
+                                                  FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
+                                                  0, &m_sounds[name]);
+
+        if(res != FMOD_OK)
+            throw tbe::Exception("SoundManager::RegisterSound; %s (%s)",
+                                 FMOD_ErrorString(res), filename.c_str());
+        else
+            FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
     }
-
-    cout << "Load Sound : " << filename << endl;
-
-    FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, filename.c_str(),
-                                              FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
-                                              0, &m_sounds[name]);
-
-    if(res != FMOD_OK)
-        throw tbe::Exception("SoundManager::RegisterSound; %s (%s)",
-                             FMOD_ErrorString(res), filename.c_str());
-    else
-        FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
-    #endif
 }
 
 void SoundManager::Play(std::string soundName, Object* object)
