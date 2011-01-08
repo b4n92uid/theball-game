@@ -135,17 +135,19 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
 
         ppe.boost = new MotionBlurEffect;
         ppe.boost->SetEnable(false);
-        ppe.boost->SetRttFrameSize(manager.app->globalSettings.video.screenSize);
         ppe.boost->SetIntensity(0.75);
         manager.ppe->AddPostEffect("boostEffect", ppe.boost);
 
         ppe.bullettime = new ColorEffect;
+        ppe.bullettime->SetInternalPass(true);
+        ppe.bullettime->SetRttFrameSize(256);
         ppe.bullettime->SetFusionMode(ColorEffect::BLACK_WHITE);
         ppe.bullettime->SetColor(Vector4f(1, 1, 1, 1));
         ppe.bullettime->SetEnable(false);
         manager.ppe->AddPostEffect("blettimeEffect", ppe.bullettime);
 
         ppe.dammage = new ColorEffect;
+        ppe.dammage->SetInternalPass(true);
         ppe.dammage->SetFusionMode(ColorEffect::MULTIPLICATION_COLOR);
         ppe.dammage->SetColor(Vector4f(1, 0, 0, 1));
         ppe.dammage->SetEnable(false);
@@ -528,7 +530,7 @@ void PlayManager::GameProcess()
                 m_timeTo = TIME_TO_PLAY;
             }
 
-            if(player->clocks.readyToDelete.IsEsplanedTime(1000))
+            if(player->clocks.readyToDelete.IsEsplanedTime(2000))
             {
                 player->ReBorn();
 
