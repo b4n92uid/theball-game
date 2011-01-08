@@ -48,6 +48,8 @@ public:
         SetDrawNumber(show);
 
         EndParticlesPosProcess();
+
+        m_parallelScene->PushToDraw(this);
     }
 
 protected:
@@ -59,10 +61,12 @@ PlayTeamManager::PlayTeamManager(AppManager* appManager) : PlayManager(appManage
 {
     m_teamBleuIcon = new BillboardIcon(this, blueTeamPlayers);
     m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
+    m_teamBleuIcon->Build();
     manager.scene->GetRootNode()->AddChild(m_teamBleuIcon);
 
     m_teamRedIcon = new BillboardIcon(this, redTeamPlayers);
     m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
+    m_teamRedIcon->Build();
     manager.scene->GetRootNode()->AddChild(m_teamRedIcon);
 }
 
