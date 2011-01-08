@@ -275,16 +275,19 @@ void BldParser::OnLoadFog(AttribMap& att)
 
 void BldParser::OnLoadSkyBox(AttribMap& att)
 {
-    Texture skyTex[6] = {
-        att["front"],
-        att["back"],
-        att["top"],
-        att["bottom"],
-        att["left"],
-        att["right"]
+    string skyPath[6] = {
+        att["front"], att["back"],
+        att["top"], att["bottom"],
+        att["left"], att["right"]
     };
 
-    scene::SkyBox* sky = m_sceneManager->GetSkybox();
+    Texture skyTex[6];
+
+    for(unsigned i = 0; i < 6; i++)
+        if(!skyPath[i].empty())
+            skyTex[i] = skyPath[i];
+
+    scene::SkyBox * sky = m_sceneManager->GetSkybox();
     sky->SetTextures(skyTex);
     sky->SetEnable(true);
 }
