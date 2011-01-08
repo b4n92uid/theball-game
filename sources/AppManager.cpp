@@ -1013,6 +1013,8 @@ void AppManager::ExecuteGame(const Settings::PartySetting& playSetting)
     m_guiManager->GetControl<gui::TextBox > ("load:stateText")
             ->Write("Chargement en cours...");
 
+    m_guiManager->UpdateLayout();
+
     m_gameEngine->BeginScene();
     m_guiManager->Render();
     m_gameEngine->EndScene();
@@ -1042,6 +1044,8 @@ void AppManager::ExecuteGame(const Settings::PartySetting& playSetting)
 
     m_guiManager->GetControl<gui::TextBox > ("load:stateText")
             ->Write("Appuyer sur \"Espace\" pour continuer...");
+
+    m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
     while(!m_eventMng->keyState[EventManager::KEY_SPACE])
     {
@@ -1226,7 +1230,7 @@ void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
     m_guiManager->SetSession(MENU_LOAD);
 
     m_guiManager->GetControl<gui::TextBox > ("load:stateText")->Write("Chargement en cours...");
-    
+
     m_guiManager->UpdateLayout();
 
     m_gameEngine->BeginScene();
