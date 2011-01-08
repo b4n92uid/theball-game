@@ -1,0 +1,35 @@
+# Blender3D MTL File: brigd.blend
+# Material Count: 3
+newmtl Material_floor034.jpg
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd floor034.jpg
+
+
+newmtl Material_tiles_ctf02b.jpg
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd tiles_ctf02b.jpg
+
+
+newmtl Material_tiles_ctf02r.jpg
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd tiles_ctf02r.jpg
+
+
