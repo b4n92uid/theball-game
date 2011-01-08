@@ -532,7 +532,6 @@ void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
 
     BuildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
     NewtonBodySetForceAndTorqueCallback(m_body, NULL);
-    NewtonBodySetLinearDamping(m_body, 0);
     NewtonBodySetContinuousCollisionMode(m_body, true);
 
     m_playManager->manager.material->AddBullet(this);
