@@ -369,16 +369,21 @@ void Player::TakeDammage(Bullet* ammo)
         if(!m_checkMe[i]->OnTakeDammage(this, ammo))
             return;
 
-    Player* striker = ammo->GetWeapon()->GetShooter();
-
     m_life = max(m_life - ammo->GetDammage(), 0);
 
-    striker->m_score++;
 
-    if(m_life <= 0)
+    Weapon* wp = ammo->GetWeapon();
+
+    if(wp)
     {
-        striker->m_score += 10;
-        Kill();
+        Player* striker = wp->GetShooter();
+        striker->m_score++;
+
+        if(m_life <= 0)
+        {
+            striker->m_score += 10;
+            Kill();
+        }
     }
 
     if(m_playManager->GetUserPlayer() == this)
