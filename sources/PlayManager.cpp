@@ -145,6 +145,12 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
         ppe.bullettime->SetEnable(false);
         manager.ppe->AddPostEffect("blettimeEffect", ppe.bullettime);
 
+        ppe.dammage = new ColorEffect;
+        ppe.dammage->SetFusionMode(ColorEffect::MULTIPLICATION_COLOR);
+        ppe.dammage->SetColor(Vector4f(1, 0, 0, 1));
+        ppe.dammage->SetEnable(false);
+        manager.ppe->AddPostEffect("dammageEffect", ppe.dammage);
+
         ppe.gameover = new BlurEffect;
         ppe.gameover->SetPasse(2);
         ppe.gameover->SetEnable(false);
@@ -332,17 +338,24 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
-        if(event->keyState[EventManager::KEY_F5])
+        if(event->keyState[EventManager::KEY_F1])
+        {
+            Bullet b(this);
+            b.SetDammage(10);
+            m_userPlayer->TakeDammage(&b);
+        }
+
+        if(event->keyState[EventManager::KEY_F2])
             m_userPlayer->Kill();
 
-        if(event->keyState[EventManager::KEY_F6])
+        if(event->keyState[EventManager::KEY_F5])
         {
             for(unsigned i = 0; i < m_players.size(); i++)
                 if(m_players[i] != m_userPlayer)
                     UnRegisterPlayer(m_players[i]);
         }
 
-        if(event->keyState[EventManager::KEY_F7])
+        if(event->keyState[EventManager::KEY_F6])
         {
             unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
 
@@ -354,7 +367,7 @@ void PlayManager::ProcessDevelopperCodeEvent()
             manager.scene->GetRootNode()->AddChild(player);
         }
 
-        if(event->keyState[EventManager::KEY_F8])
+        if(event->keyState[EventManager::KEY_F7])
         {
             unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
 
@@ -619,14 +632,32 @@ void PlayManager::HudProcess()
 
             // Affichage de l'ecran de dommage si besoins
 
-            if(hud.background.dammage->IsEnable())
+            if(manager.app->globalSettings.video.usePpe)
             {
-                float opacity = hud.background.dammage->GetOpacity();
+                if(ppe.dammage->IsEnable())
+                {
+                    Vector4f color = ppe.dammage->GetColor();
 
-                if(opacity > 0)
-                    hud.background.dammage->SetOpacity(opacity - 0.01f);
-                else
-                    hud.background.dammage->SetEnable(false);
+                    if(color.w > 0)
+                    {
+                        color.w -= 0.01f;
+                        ppe.dammage->SetColor(color);
+                    }
+                    else
+                        ppe.dammage->SetEnable(false);
+                }
+            }
+            else
+            {
+                if(hud.background.dammage->IsEnable())
+                {
+                    float opacity = hud.background.dammage->GetOpacity();
+
+                    if(opacity > 0)
+                        hud.background.dammage->SetOpacity(opacity - 0.01f);
+                    else
+                        hud.background.dammage->SetEnable(false);
+                }
             }
         }
         else
@@ -826,10 +857,20 @@ void PlayManager::HudBoost(bool status)
 
 void PlayManager::HudDammage(bool status)
 {
-    hud.background.dammage->SetEnable(status);
+    if(manager.app->globalSettings.video.usePpe)
+    {
+        ppe.dammage->SetEnable(status);
 
-    if(status)
-        hud.background.dammage->SetOpacity(0.75);
+        if(status)
+            ppe.dammage->SetColor(Vector4f(1, 0, 0, 0.5));
+    }
+    else
+    {
+        hud.background.dammage->SetEnable(status);
+
+        if(status)
+            hud.background.dammage->SetOpacity(0.75);
+    }
 }
 
 BulletTime* PlayManager::GetBullettime() const

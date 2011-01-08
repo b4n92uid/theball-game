@@ -144,6 +144,7 @@ private:
         tbe::ppe::BloomEffect* bloom;
         tbe::ppe::BlurEffect* gameover;
         tbe::ppe::ColorEffect* bullettime;
+        tbe::ppe::ColorEffect* dammage;
         tbe::ppe::MotionBlurEffect* boost;
 
     } ppe;
