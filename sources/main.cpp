@@ -10,6 +10,15 @@
 using namespace std;
 using namespace tbe;
 
+inline int isarg(int argc, char** argv, const char* required)
+{
+    for(int i = 0; i < argc; i++)
+        if(strcmp(argv[i], required) == 0)
+            return i;
+
+    return -1;
+}
+
 int main(int argc, char** argv)
 {
     using namespace boost::posix_time;
@@ -31,32 +40,39 @@ int main(int argc, char** argv)
 
         AppManager theBall;
 
-        if(argc > 1)
+        int index = isarg(argc, argv, "nomusic");
+        if(index != -1)
+            theBall.globalSettings.nomusic = true;
+
+        index = isarg(argc, argv, "noaudio");
+        if(index != -1)
+            theBall.globalSettings.noaudio = true;
+
+        index = isarg(argc, argv, "play");
+        if(index != -1)
         {
-            if(string(argv[1]) == "play")
-            {
-                // NOTE play <player> <level> <playerCount> <playMod> <playtime>
+            // NOTE play <player> <level> <playerCount> <playMod> <playtime>
 
-                Settings::PartySetting ps;
-                ps.playerName = Settings::PlayerInfo(argv[2]);
-                ps.playMap = Settings::MapInfo(argv[3]);
-                ps.playerCount = tools::StrToNum<unsigned>(argv[4]);
-                ps.playMod = tools::StrToNum<unsigned> (argv[5]);
-                ps.playTime = tools::StrToNum<int>(argv[6]);
+            Settings::PartySetting ps;
+            ps.playerName = Settings::PlayerInfo(argv[index + 1]);
+            ps.playMap = Settings::MapInfo(argv[index + 2]);
+            ps.playerCount = tools::StrToNum<unsigned>(argv[index + 3]);
+            ps.playMod = tools::StrToNum<unsigned> (argv[index + 4]);
+            ps.playTime = tools::StrToNum<int>(argv[index + 5]);
 
-                theBall.ExecuteGame(ps);
-            }
+            theBall.ExecuteGame(ps);
+        }
 
-            else if(string(argv[1]) == "edit")
-            {
-                // NOTE edit <level>
+        index = isarg(argc, argv, "edit");
+        if(index != -1)
+        {
+            // NOTE edit <level>
 
-                Settings::EditSetting es;
-                es.editMap = Settings::MapInfo(argv[2]);
-                es.createNew = false;
+            Settings::EditSetting es;
+            es.editMap = Settings::MapInfo(argv[index + 1]);
+            es.createNew = false;
 
-                theBall.ExecuteEditor(es);
-            }
+            theBall.ExecuteEditor(es);
         }
 
         else

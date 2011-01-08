@@ -63,9 +63,8 @@ AppManager::AppManager()
 
 AppManager::~AppManager()
 {
-    #ifndef THEBALL_NO_AUDIO
-    FMOD_System_Release(m_fmodsys);
-    #endif
+    if(!globalSettings.noaudio)
+        FMOD_System_Release(m_fmodsys);
 
     delete m_gameEngine;
 }
@@ -118,20 +117,21 @@ void AppManager::SetupSound()
 {
     m_fmodsys = NULL;
 
-    #ifndef THEBALL_NO_AUDIO
-    FMOD_System_Create(&m_fmodsys);
-    FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
-    FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
+    if(!globalSettings.noaudio)
+    {
+        FMOD_System_Create(&m_fmodsys);
+        FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
+        FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
 
-    FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, SOUND_MAINTHEME,
-                                               FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
-                                               0, &m_mainMusic);
+        FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, SOUND_MAINTHEME,
+                                                   FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
+                                                   0, &m_mainMusic);
 
-    if(res != FMOD_OK)
-        throw tbe::Exception("AppManager::AppManager; %s (%s)",
-                             FMOD_ErrorString(res),
-                             SOUND_MAINTHEME);
-    #endif
+        if(res != FMOD_OK)
+            throw tbe::Exception("AppManager::AppManager; %s (%s)",
+                                 FMOD_ErrorString(res),
+                                 SOUND_MAINTHEME);
+    }
 }
 
 void AppManager::SetupMenuGui()
@@ -907,9 +907,8 @@ void AppManager::ExecuteMenu()
     using namespace tbe::gui;
     using namespace tbe::scene;
 
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
-    #endif
+    if(!globalSettings.noaudio && !globalSettings.nomusic)
+        FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 
     bool done = false;
     while(!done)
@@ -1002,9 +1001,8 @@ void AppManager::ExecuteGame(const Settings::PartySetting& playSetting)
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
 
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    FMOD_Channel_Stop(m_mainMusicCh);
-    #endif
+    if(!globalSettings.noaudio && !globalSettings.nomusic)
+        FMOD_Channel_Stop(m_mainMusicCh);
 
     // Affichage de l'ecran de chargement --------------------------------------
 
@@ -1079,9 +1077,8 @@ void AppManager::ExecuteGame(const Settings::PartySetting& playSetting)
 
     delete gameManager;
 
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
-    #endif
+    if(!globalSettings.noaudio && !globalSettings.nomusic)
+        FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 
 void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
@@ -1098,9 +1095,8 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
 
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    FMOD_Channel_Stop(m_mainMusicCh);
-    #endif
+    if(!globalSettings.noaudio && !globalSettings.nomusic)
+        FMOD_Channel_Stop(m_mainMusicCh);
 
     // Affichage de l'ecran de chargement --------------------------------------
 
@@ -1209,9 +1205,8 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
 
     delete gameManager;
 
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
-    #endif
+    if(!globalSettings.noaudio && !globalSettings.nomusic)
+        FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 
 void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
@@ -1221,9 +1216,8 @@ void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
 
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    FMOD_Channel_Stop(m_mainMusicCh);
-    #endif
+    if(!globalSettings.noaudio && !globalSettings.nomusic)
+        FMOD_Channel_Stop(m_mainMusicCh);
 
     // Affichage de l'ecran de chargement --------------------------------------
 
@@ -1275,9 +1269,8 @@ void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
 
     delete editorManager;
 
-    #if !defined(THEBALL_DISABLE_MUSIC) && !defined(THEBALL_NO_AUDIO)
-    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
-    #endif
+    if(!globalSettings.noaudio && !globalSettings.nomusic)
+        FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 
 tbe::EventManager* AppManager::GetEventMng() const
