@@ -1,6 +1,7 @@
 theBall est un jeu de shoot en arène,
 Opens-Sources sous licence GPL
 
+Programmation :
 BELDJOUHRI Abdelghani (b4n92uid)
 b4n92uid@live.fr
 
@@ -30,5 +31,8 @@ www.sourceforge.net/projects/tinyxml
 
 Echantillions sonore
 http://www.loopreman.com
+
+Skybox
+http://www.alusion-fr.com/
 
 Musique composer par b4n92uid
