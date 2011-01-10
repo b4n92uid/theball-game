@@ -153,13 +153,19 @@ void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
 
     unsigned bleuScore = 0, redScore = 0;
 
-    for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        bleuScore += blueTeamPlayers[i]->GetScore();
-    bleuScore /= blueTeamPlayers.size();
+    if(blueTeamPlayers.size())
+    {
+        for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
+            bleuScore += blueTeamPlayers[i]->GetScore();
+        bleuScore /= blueTeamPlayers.size();
+    }
 
-    for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        redScore += redTeamPlayers[i]->GetScore();
-    redScore /= redTeamPlayers.size();
+    if(redTeamPlayers.size())
+    {
+        for(unsigned i = 0; i < redTeamPlayers.size(); i++)
+            redScore += redTeamPlayers[i]->GetScore();
+        redScore /= redTeamPlayers.size();
+    }
 
     ss << "Carte : " << map.name << endl;
     ss << "Type : Team" << endl;
