@@ -106,6 +106,8 @@ public:
 
     bool IsEmpty();
 
+    unsigned GetSlot() const;
+
     typedef std::vector<Weapon*> Array;
 
 protected:
@@ -128,6 +130,7 @@ protected:
     unsigned m_maxAmmoCount;
     unsigned m_ammoCount;
 
+    unsigned m_slot;
     unsigned m_shootSize;
 
     float m_shootSpeed;

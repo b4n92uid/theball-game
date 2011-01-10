@@ -41,6 +41,17 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
     manager.scene->AddCamera(m_camera);
 
     delete manager.sound, manager.sound = new PlaySoundManager(this);
+
+    m_numslot[38] = 1;
+    m_numslot[233] = 2;
+    m_numslot[34] = 3;
+    m_numslot[39] = 4;
+    m_numslot[40] = 5;
+    m_numslot[45] = 6;
+    m_numslot[232] = 7;
+    m_numslot[95] = 8;
+    m_numslot[231] = 9;
+    m_numslot[224] = 0;
 }
 
 PlayManager::~PlayManager()
@@ -202,7 +213,10 @@ void PlayManager::SetupGui()
 
     manager.gui->SetSession(SCREEN_GAMEOVER);
 
-    hud.background.gameover = manager.gui->AddImage("hud.background.gameover", BACKGROUND_PAUSE);
+    Texture black;
+    black.Build(128, 0);
+
+    hud.background.gameover = manager.gui->AddImage("hud.background.gameover", black);
     hud.background.gameover->SetSize(screenSize);
     hud.background.gameover->SetOpacity(0.75);
     hud.background.gameover->SetEnable(false);
@@ -407,13 +421,19 @@ void PlayManager::EventProcess()
             manager.scene->GetCurCamera()->SetRelRotate(event->mousePosRel);
 
         // Affichage des scores
-        if(event->notify == EventManager::EVENT_KEY_DOWN
-           && event->lastActiveKey.first == EventManager::KEY_TAB)
+        if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
-            manager.gameEngine->SetMouseVisible(true);
+            if(m_numslot.count(event->lastActiveKey.first))
+                m_userPlayer->SlotWeapon(m_numslot[event->lastActiveKey.first]);
 
-            m_timeTo = TIME_TO_VIEWSCORE;
+            if(event->lastActiveKey.first == EventManager::KEY_TAB)
+            {
+                manager.gameEngine->SetMouseVisible(true);
+
+                m_timeTo = TIME_TO_VIEWSCORE;
+            }
         }
+
         if(event->notify == EventManager::EVENT_KEY_UP
            && event->lastActiveKey.first == EventManager::KEY_TAB)
         {
@@ -840,6 +860,7 @@ void PlayManager::HudBullettime(bool status)
     if(manager.app->globalSettings.video.usePpe)
     {
         ppe.bullettime->SetEnable(status);
+        ppe.bloom->SetEnable(!status);
     }
     else
     {

@@ -73,6 +73,7 @@ public:
     void SetRandomSpawnPos();
 
     /// Change l'arme courante
+    void SlotWeapon(unsigned slot);
     void SwitchUpWeapon();
     void SwitchDownWeapon();
 
@@ -185,6 +186,7 @@ protected:
         StartProtection(Player* player);
         bool OnTakeDammage(Player* player, Bullet* ammo);
         bool Shutdown(Player* player);
+        bool OnShoot(Player* player);
 
     private:
         tbe::ticks::Clock m_clock;

@@ -39,6 +39,8 @@ Weapon::Weapon(PlayManager* playManager) : ParticlesEmiter(playManager->parallel
     m_shootCadency = 0;
 
     m_mapAABB = m_playManager->map.aabb;
+
+    m_slot = 0;
 }
 
 void Weapon::SetShootSize(unsigned shootSize)
@@ -109,6 +111,11 @@ void Weapon::SetFireSound(std::string fireSound)
 bool Weapon::IsEmpty()
 {
     return (m_ammoCount == 0);
+}
+
+unsigned Weapon::GetSlot() const
+{
+    return m_slot;
 }
 
 void Weapon::SetShooter(Player* shooter)
@@ -265,6 +272,8 @@ WeaponBlaster::WeaponBlaster(PlayManager* playManager) : Weapon(playManager)
     Build();
 
     SetWeaponName("Blaster");
+
+    m_slot = 1;
 }
 
 void WeaponBlaster::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -298,6 +307,8 @@ WeaponShotgun::WeaponShotgun(PlayManager* playManager) : Weapon(playManager)
     Build();
 
     SetWeaponName("Shotgun");
+
+    m_slot = 2;
 }
 
 void WeaponShotgun::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -331,6 +342,8 @@ WeaponBomb::WeaponBomb(PlayManager* playManager) : Weapon(playManager)
     Build();
 
     SetWeaponName("Bomb");
+
+    m_slot = 4;
 }
 
 void WeaponBomb::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -366,6 +379,8 @@ WeaponFinder::WeaponFinder(PlayManager* playManager) : Weapon(playManager)
     Build();
 
     SetWeaponName("Finder");
+
+    m_slot = 3;
 }
 
 void WeaponFinder::Process()

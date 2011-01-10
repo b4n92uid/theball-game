@@ -207,9 +207,7 @@ void Player::AddWeapon(Weapon* weapon)
 
     if(select != m_weaponsPack.end())
     {
-        m_curWeapon = select;
-        (*m_curWeapon)->UpAmmoCount(weapon->GetAmmoCount());
-
+        (*select)->UpAmmoCount(weapon->GetAmmoCount());
         delete weapon;
     }
 
@@ -222,6 +220,16 @@ void Player::AddWeapon(Weapon* weapon)
 
         m_playManager->manager.scene->GetRootNode()->AddChild(weapon);
     }
+}
+
+void Player::SlotWeapon(unsigned slot)
+{
+    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
+        if(m_weaponsPack[i]->GetSlot() == slot)
+        {
+            m_curWeapon = m_weaponsPack.begin() + i;
+            break;
+        }
 }
 
 void Player::SwitchUpWeapon()
@@ -415,7 +423,12 @@ Player::StartProtection::StartProtection(Player* player)
         mats[i]->Enable(Material::BLEND_MOD);
 }
 
-bool Player::StartProtection::OnTakeDammage(Player* player, Bullet* ammo)
+bool Player::StartProtection::OnShoot(Player*)
+{
+    return false;
+}
+
+bool Player::StartProtection::OnTakeDammage(Player*, Bullet*)
 {
     return false;
 }

@@ -89,9 +89,9 @@ protected:
     static bool PlayerScoreSortProcess(Player* p1, Player* p2)
     {
         if(p1->GetScore() == p2->GetScore())
-            return(p1->GetName() > p2->GetName());
+            return (p1->GetName() > p2->GetName());
         else
-            return(p1->GetScore() > p2->GetScore());
+            return (p1->GetScore() > p2->GetScore());
     }
 
     enum TimtTo
@@ -138,6 +138,8 @@ protected:
     bool m_gameOver;
 
 private:
+
+    std::map<unsigned, unsigned> m_numslot;
 
     struct
     {
