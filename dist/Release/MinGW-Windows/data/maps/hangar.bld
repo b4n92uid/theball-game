@@ -1,14 +1,25 @@
 # Ball level descriptor
-# Generated 2011-Jan-07 23:46:10
+# Generated 2011-Jan-10 12:30:45
 
 .map
 name=Hangar
-ambient=0,0,0,1
+ambient=0.2,0,0,1
+
+.music
+filePath=data/music/player.ogg
 
 .fog
 color=0,0,0,1
 start=8
-end=24
+end=38
+
+.skybox
+front=data/gfxart/skybox/lnh-stars3c.jpg
+back=data/gfxart/skybox/lnh-stars3c.jpg
+top=data/gfxart/skybox/lnh-stars3c.jpg
+bottom=data/gfxart/skybox/lnh-stars3c.jpg
+left=data/gfxart/skybox/lnh-stars3c.jpg
+right=data/gfxart/skybox/lnh-stars3c.jpg
 
 # Light
 
@@ -16,7 +27,7 @@ end=24
 type=POINT
 pos=-1.14754,13.95,18.0645
 ambient=0,0,0,0
-diffuse=0.5,0,0,1
+diffuse=0.5,0.5,0.5,1
 specular=0,0,0,1
 radius=8
 
@@ -24,8 +35,8 @@ radius=8
 type=POINT
 pos=0.143608,13.95,-6.76689
 ambient=0,0,0,0
-diffuse=0.6,0,0,1
-specular=0.3,0.1,0.1,1
+diffuse=0.5,0.5,0.5,1
+specular=0.2,0.2,0.2,1
 radius=8
 
 # Static
