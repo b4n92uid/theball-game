@@ -60,7 +60,7 @@ PlayManager::~PlayManager()
     {
         using namespace ticks;
 
-        cout << "Saving Score" << endl << endl;
+        cout << "Saving Score" << endl;
 
         TiXmlDocument scoreDoc;
 
