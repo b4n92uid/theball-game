@@ -35,7 +35,7 @@ public:
     void AddWeapon(Weapon* weapon);
 
     /// Tire sur le vecteur targetpos
-    void Shoot(tbe::Vector3f targetpos);
+    bool Shoot(tbe::Vector3f targetpos);
 
     /**
      * Réunitilase les attribut de santé

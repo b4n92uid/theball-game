@@ -47,6 +47,7 @@
 #define PARTICLE_EXPLODE        "data/gfxart/particles/fire.bmp"
 #define PARTICLE_BLEUTEAM       "data/gfxart/particles/bleuteam.png"
 #define PARTICLE_REDTEAM        "data/gfxart/particles/redteam.png"
+#define PARTICLE_PLAYER         "data/gfxart/particles/player.png"
 
 // Dynamics --------------------------------------------------------------------
 #define OBJ_JUMPER      "data/models/dynamics/jumper.obj"
@@ -81,6 +82,8 @@
 #define AI_CRITICAL_LIFE_VALUE 25
 #define AI_CRITICAL_AMMO_VALUE 25
 #define AI_DYNAMIC_INTERACTION 4.0f
+#define AI_SHOOT_GUST_COUNT 6
+#define AI_SHOOT_GUST_TIME 1000
 
 // ENUM ------------------------------------------------------------------------
 

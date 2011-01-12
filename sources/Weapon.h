@@ -75,7 +75,7 @@ public:
 
     bool operator==(const Weapon& copy);
 
-    void Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
+    bool Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 
     void SetShooter(Player* shooter);
     Player* GetShooter() const;

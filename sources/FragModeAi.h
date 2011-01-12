@@ -17,8 +17,13 @@ class FragModeAi : public AIControl
 {
 public:
     FragModeAi(PlayManager* playManager);
-    void Process(Player* player);
     ~FragModeAi();
+
+    void Process(Player* player);
+
+private:
+    tbe::ticks::Clock m_gustClock;
+    unsigned m_gustCount;
 };
 
 #endif	/* _FRAGMODEAI_H */
