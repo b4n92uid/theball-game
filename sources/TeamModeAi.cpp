@@ -113,17 +113,24 @@ void TeamModeAi::Process(Player* player)
     // Routine d'attack
     if(m_targetPlayer && m_targetPos - playerPos < m_minDistToShoot)
     {
-        if(m_targetPlayer == m_playManager->GetUserPlayer() && m_playManager->GetBullettime()->IsActive())
+        Vector3f targetPos = m_targetPos;
+
+        if(m_targetPlayer == m_playManager->GetUserPlayer()
+           && m_playManager->GetBullettime()->IsActive())
         {
             Vector3f velocity;
             NewtonBodyGetVelocity(m_targetPlayer->GetPhysicBody()->GetBody(), velocity);
 
-            player->Shoot(m_targetPos - velocity);
+            targetPos = m_targetPos - velocity;
         }
-        else
+
+        if(m_gustCount < AI_SHOOT_GUST_COUNT)
         {
-            player->Shoot(m_targetPos);
+            if(player->Shoot(m_targetPos))
+                m_gustCount++;
         }
+        else if(m_gustClock.IsEsplanedTime(AI_SHOOT_GUST_TIME))
+            m_gustCount = 0;
     }
 
     // Changement d'arme

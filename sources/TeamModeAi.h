@@ -21,8 +21,10 @@ public:
     ~TeamModeAi();
     void Process(Player* player);
 
-protected:
+private:
     PlayTeamManager* m_playManager;
+    tbe::ticks::Clock m_gustClock;
+    unsigned m_gustCount;
 };
 
 #endif	/* _TEAMMODEAI_H */
