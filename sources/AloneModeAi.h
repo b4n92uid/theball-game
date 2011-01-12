@@ -17,8 +17,13 @@ class AloneModeAi : public AIControl
 {
 public:
     AloneModeAi(PlayManager* playManager);
-    void Process(Player* player);
     ~AloneModeAi();
+
+    void Process(Player* player);
+
+private:
+    tbe::ticks::Clock m_gustClock;
+    unsigned m_gustCount;
 };
 
 #endif	/* _ALONEMODEAI_H */
