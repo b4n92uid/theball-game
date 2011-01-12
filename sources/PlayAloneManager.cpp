@@ -13,8 +13,54 @@
 using namespace std;
 using namespace tbe;
 
+class AloneBillboardIcon : public tbe::scene::ParticlesEmiter
+{
+public:
+
+    AloneBillboardIcon(PlayManager* playManager)
+    : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles),
+    m_playManager(playManager)
+    {
+        SetBlendEq(ParticlesEmiter::MODULAR);
+        SetDepthTest(true);
+    }
+
+    void Build(tbe::scene::Particle& p)
+    {
+        p.color(1, 1, 1, 0.5);
+        p.life = 1.0f;
+    }
+
+    void Process()
+    {
+        const Player::Array& players = m_playManager->GetPlayers();
+
+        scene::Particle* particles = BeginParticlesPosProcess();
+
+        unsigned show = 0;
+        for(unsigned i = 0; i < players.size(); i++)
+            if(players[i] != m_playManager->GetUserPlayer()
+               && !players[i]->IsKilled())
+            {
+                particles[show].pos = players[i]->GetPos() + Vector3f(0, 1, 0);
+                show++;
+            }
+
+        SetDrawNumber(show);
+
+        EndParticlesPosProcess();
+    }
+
+protected:
+    PlayManager* m_playManager;
+};
+
 PlayAloneManager::PlayAloneManager(AppManager* appManager) : PlayManager(appManager)
 {
+    m_playersLabel = new AloneBillboardIcon(this);
+    m_playersLabel->SetTexture(Texture(PARTICLE_PLAYER, true));
+    m_playersLabel->Build();
+    manager.scene->GetRootNode()->AddChild(m_playersLabel);
 }
 
 PlayAloneManager::~PlayAloneManager()
@@ -76,6 +122,9 @@ void PlayAloneManager::ModSetupUser(Player* userPlayer)
 
 void PlayAloneManager::ModSetupAi(Player* player)
 {
+    m_playersLabel->SetNumber(m_players.size());
+    m_playersLabel->Build();
+
     player->AttachController(new AloneModeAi(this));
     player->AddCheckPoint(new AloneModeCheckPlayers(this));
     player->SetLife(1);

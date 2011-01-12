@@ -22,6 +22,8 @@ protected:
     void ModUpdateStateText(std::ostringstream& ss);
     void ModUpdateScoreListText(std::ostringstream& ss);
     void ModUpdateGameOverText(std::ostringstream& ss);
+
+    tbe::scene::ParticlesEmiter* m_playersLabel;
 };
 
 #endif	/* _PLAYALONEMANAGER_H */

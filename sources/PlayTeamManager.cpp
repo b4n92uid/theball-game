@@ -14,11 +14,11 @@
 using namespace std;
 using namespace tbe;
 
-class BillboardIcon : public tbe::scene::ParticlesEmiter
+class TeamBillboardIcon : public tbe::scene::ParticlesEmiter
 {
 public:
 
-    BillboardIcon(PlayManager* playManager, Player::Array& teamPlayers)
+    TeamBillboardIcon(PlayManager* playManager, Player::Array& teamPlayers)
     : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles)
     , m_playManager(playManager), m_teamPlayers(teamPlayers)
     {
@@ -48,8 +48,6 @@ public:
         SetDrawNumber(show);
 
         EndParticlesPosProcess();
-
-        m_parallelScene->PushToDraw(this);
     }
 
 protected:
@@ -59,12 +57,12 @@ protected:
 
 PlayTeamManager::PlayTeamManager(AppManager* appManager) : PlayManager(appManager)
 {
-    m_teamBleuIcon = new BillboardIcon(this, blueTeamPlayers);
+    m_teamBleuIcon = new TeamBillboardIcon(this, blueTeamPlayers);
     m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
     m_teamBleuIcon->Build();
     manager.scene->GetRootNode()->AddChild(m_teamBleuIcon);
 
-    m_teamRedIcon = new BillboardIcon(this, redTeamPlayers);
+    m_teamRedIcon = new TeamBillboardIcon(this, redTeamPlayers);
     m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
     m_teamRedIcon->Build();
     manager.scene->GetRootNode()->AddChild(m_teamRedIcon);
