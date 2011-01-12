@@ -13,8 +13,54 @@
 using namespace std;
 using namespace tbe;
 
+class FragBillboardIcon : public tbe::scene::ParticlesEmiter
+{
+public:
+
+    FragBillboardIcon(PlayManager* playManager)
+    : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles),
+    m_playManager(playManager)
+    {
+        SetBlendEq(ParticlesEmiter::MODULAR);
+        SetDepthTest(true);
+    }
+
+    void Build(tbe::scene::Particle& p)
+    {
+        p.color(1, 1, 1, 0.5);
+        p.life = 1.0f;
+    }
+
+    void Process()
+    {
+        const Player::Array& players = m_playManager->GetPlayers();
+
+        scene::Particle* particles = BeginParticlesPosProcess();
+
+        unsigned show = 0;
+        for(unsigned i = 0; i < players.size(); i++)
+            if(players[i] != m_playManager->GetUserPlayer()
+               && !players[i]->IsKilled())
+            {
+                particles[show].pos = players[i]->GetPos() + Vector3f(0, 1, 0);
+                show++;
+            }
+
+        SetDrawNumber(show);
+
+        EndParticlesPosProcess();
+    }
+
+protected:
+    PlayManager* m_playManager;
+};
+
 PlayFragManager::PlayFragManager(AppManager* appManager) : PlayManager(appManager)
 {
+    m_playersLabel = new FragBillboardIcon(this);
+    m_playersLabel->SetTexture(Texture(PARTICLE_PLAYER, true));
+    m_playersLabel->Build();
+    manager.scene->GetRootNode()->AddChild(m_playersLabel);
 }
 
 PlayFragManager::~PlayFragManager()
@@ -28,6 +74,9 @@ void PlayFragManager::ModSetupUser(Player* userPlayer)
 
 void PlayFragManager::ModSetupAi(Player* player)
 {
+    m_playersLabel->SetNumber(m_players.size());
+    m_playersLabel->Build();
+
     player->AttachController(new FragModeAi(this));
 }
 
