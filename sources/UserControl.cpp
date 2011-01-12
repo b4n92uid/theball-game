@@ -90,6 +90,18 @@ bool UserControl::IsActionStateDown(std::string name)
         return false;
 }
 
+inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
+{
+    Vector3f contact, normal, penetration;
+
+    int contactPoint = NewtonCollisionCollide(node1->GetParallelScene()->GetNewtonWorld(), 1,
+                                              NewtonBodyGetCollision(node1->GetBody()), node1->GetMatrix(),
+                                              NewtonBodyGetCollision(node2->GetBody()), node2->GetMatrix(),
+                                              contact, normal, penetration, 0);
+
+    return (contactPoint > 0 && Vector3f::Dot(normal, Vector3f(0, 1, 0)) > 0.25);
+}
+
 void UserControl::Process(Player* player)
 {
     scene::Camera* playerCam = m_playManager->manager.scene->GetCurCamera();
@@ -97,7 +109,7 @@ void UserControl::Process(Player* player)
     bool collideWithStatic = false;
 
     for(unsigned i = 0; i < m_playManager->map.staticObjects.size(); i++)
-        if(player->GetPhysicBody()->IsCollidWith(m_playManager->map.staticObjects[i]->GetPhysicBody()))
+        if(playerCanJump(player->GetPhysicBody(), m_playManager->map.staticObjects[i]->GetPhysicBody()))
         {
             collideWithStatic = true;
             break;
