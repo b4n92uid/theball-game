@@ -96,8 +96,6 @@ void Weapon::Process()
     m_bulletArray.erase(newend, m_bulletArray.end());
 
     SetDrawNumber(m_bulletArray.size());
-
-    m_parallelScene->PushToDraw(this);
 }
 
 void Weapon::SetFireSound(std::string fireSound)
@@ -138,7 +136,7 @@ void Weapon::SetWeaponName(std::string weaponName)
     this->m_weaponName = weaponName;
 }
 
-void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
+bool Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
 {
     // Controle des munitions
     if(m_ammoCount <= 0)
@@ -146,23 +144,25 @@ void Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
         if(m_shooter->clocks.shoot.IsEsplanedTime(1000))
             m_soundManager->Play("noAvailable", m_shooter);
 
-        return;
+        return false;
     }
 
     // Controle de la cadence de tire
     long shootCadency = m_playManager->GetBullettime()->IsActive() ? m_shootCadency * 4 : m_shootCadency;
 
     if(!m_shootCadencyClock.IsEsplanedTime(shootCadency))
-        return;
+        return false;
 
     if(m_bulletArray.size() > m_maxAmmoCount)
-        return;
+        return false;
 
     m_soundManager->Play(m_soundID, m_shooter);
 
     m_ammoCount--;
 
     ProcessShoot(startpos, targetpos);
+
+    return true;
 }
 
 void Weapon::SetShootCadency(unsigned shootCadency)
@@ -430,8 +430,6 @@ void WeaponFinder::Process()
     m_bulletArray.erase(newend, m_bulletArray.end());
 
     SetDrawNumber(m_bulletArray.size());
-
-    m_parallelScene->PushToDraw(this);
 }
 
 void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)

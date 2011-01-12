@@ -15,6 +15,7 @@ using namespace tbe;
 
 FragModeAi::FragModeAi(PlayManager* playManager) : AIControl(playManager)
 {
+    m_gustCount = 0;
 }
 
 FragModeAi::~FragModeAi()
@@ -148,7 +149,14 @@ void FragModeAi::Process(Player* player)
         }
         else
         {
-            player->Shoot(m_targetPos);
+            if(m_gustCount < AI_SHOOT_GUST_COUNT)
+            {
+                if(player->Shoot(m_targetPos))
+                    m_gustCount++;
+            }
+            else if(m_gustClock.IsEsplanedTime(AI_SHOOT_GUST_TIME))
+                m_gustCount = 0;
+
         }
     }
 

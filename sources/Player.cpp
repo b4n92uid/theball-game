@@ -150,13 +150,13 @@ void Player::Process()
     m_checkMe.erase(newEnd, m_checkMe.end());
 }
 
-void Player::Shoot(Vector3f targetpos)
+bool Player::Shoot(Vector3f targetpos)
 {
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         if(!m_checkMe[i]->OnShoot(this))
-            return;
+            return false;
 
-    (*m_curWeapon)->Shoot(m_matrix.GetPos(), targetpos);
+    return (*m_curWeapon)->Shoot(m_matrix.GetPos(), targetpos);
 }
 
 void Player::Jump()
