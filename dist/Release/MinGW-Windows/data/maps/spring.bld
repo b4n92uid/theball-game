@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2011-Jan-09 12:59:33
+# Generated 2011-Jan-10 22:04:08
 
 .map
 name=Spring
@@ -29,7 +29,7 @@ specular=1,1,1,1
 
 +node
 type=STATIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,-0,1
 modelPath=data/models/maps/spring.obj
 
 # Dynamic
@@ -93,42 +93,22 @@ add=BOMB
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,7,1,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,1,-4,1
 add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-7,7,1,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,-4,1
 add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,17,1,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-6.95634,17,0.995872,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-7,12,1,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-6,2,-4,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,12,1,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,2,1,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-7,2,1,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-6,2,-3,1
 add=AMMO
 
 # Spawn
@@ -151,5 +131,5 @@ pos=-8,6,-3
 
 +node
 type=SPAWN
-pos=-8,2,-3
+pos=-8,2,-1
 
