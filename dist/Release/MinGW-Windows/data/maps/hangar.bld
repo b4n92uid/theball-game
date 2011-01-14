@@ -1,12 +1,12 @@
 # Ball level descriptor
-# Generated 2011-Jan-10 12:30:45
+# Generated 2011-Jan-14 14:35:31
 
 .map
 name=Hangar
 ambient=0.2,0,0,1
 
 .music
-filePath=data/music/player.ogg
+filePath=data/music/sidebass.ogg
 
 .fog
 color=0,0,0,1
