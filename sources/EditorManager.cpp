@@ -608,9 +608,17 @@ void EditorManager::ViewEventPorcess(tbe::EventManager* event)
 
             case 'v':
                 if(m_camera == m_FFCamera)
+                {
+                    m_OCamera->SetCenter(m_FFCamera->GetTarget());
+                    m_OCamera->SetPos(m_FFCamera->GetPos());
                     m_camera = m_OCamera;
+                }
                 else
+                {
+                    m_FFCamera->SetPos(m_OCamera->GetPos());
+                    m_FFCamera->SetTarget(m_OCamera->GetCenter());
                     m_camera = m_FFCamera;
+                }
 
                 manager.scene->SetCurCamera(m_camera);
                 break;
