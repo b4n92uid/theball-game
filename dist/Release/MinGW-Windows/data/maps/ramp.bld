@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2011-Jan-08 15:33:07
+# Generated 2011-Jan-14 14:45:26
 
 .map
 name=Ramp
@@ -17,7 +17,7 @@ right=data/gfxart/skybox/lnh-stars3c.jpg
 
 +light
 type=DIRI
-pos=-0.629559,0.776667,0.147434
+pos=0.86278,0.885,0.381015
 ambient=0,0,0,0
 diffuse=1,1,1,1
 specular=0,0,0,0

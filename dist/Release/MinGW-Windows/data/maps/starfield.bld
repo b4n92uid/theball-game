@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2010-Nov-20 21:01:35
+# Generated 2011-Jan-12 22:57:02
 
 .map
 name=StarField
@@ -280,29 +280,69 @@ add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.932141,-2.95,13.9853,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,-5,9,1
 add=BOMB
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,12,-2.95,13,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-1,15,1
+add=SHOTGUN
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,22,-1,-1,1
+add=SHOTGUN
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-1,15,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,-1,-1,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,-5,5,1
 add=BOMB
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,12,-2.95,1,1
-add=BOMB
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,-3,-1,1
+add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.95,1,1
-add=BOMB
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-3,15,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-1,23,1
+add=SHOTGUN
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,-1,23,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,14.0997,-1,-9.0075,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-1,-9,1
+add=SHOTGUN
 
 # Spawn
 
 +node
 type=SPAWN
-pos=14,-2.75,-1
+pos=14,-2,-1
 
 +node
 type=SPAWN
@@ -310,7 +350,7 @@ pos=14,-2.75,15
 
 +node
 type=SPAWN
-pos=-2,-2.75,15
+pos=-2,-2,15
 
 +node
 type=SPAWN

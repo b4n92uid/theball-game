@@ -1,6 +1,6 @@
-# Blender3D MTL File: desert.blend
+# Blender3D MTL File: electro.blend
 # Material Count: 2
-newmtl Material.001_metal047.jpg
+newmtl Material_tron.jpg
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
@@ -8,17 +8,17 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd metal047.jpg
+map_Kd tron.jpg
 
 
-newmtl Material_sand022.jpg
+newmtl Material_tron-line.jpg
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
-Ks 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
-illum 1
-map_Kd sand017.jpg
+illum 2
+map_Kd tron-line.jpg
 
 
