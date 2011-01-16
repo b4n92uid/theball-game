@@ -30,7 +30,7 @@ specular=0,0,0,0
 +node
 type=STATIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,0,-0,1
-modelPath=data/models/maps/taravel.obj
+modelPath=data/models/maps/travel.obj
 
 # Dynamic
 

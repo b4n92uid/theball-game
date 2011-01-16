@@ -1,6 +1,6 @@
-# Blender3D v249 OBJ File: taravel.blend
+# Blender3D v249 OBJ File: travel.blend
 # www.blender3d.org
-mtllib taravel.mtl
+mtllib travel.mtl
 v 30.000004 4.500000 -7.499996
 v 29.999996 4.500000 7.500004
 v -30.000004 4.500000 7.499996
@@ -323,6 +323,7 @@ vn 0.196722 0.979736 0.036775
 vn 0.081027 0.875118 -0.477065
 vn -0.131870 0.894498 -0.427137
 vn -0.360576 0.927000 -0.103092
+g Cube_Cube_Material_Darkon_Tree02.jpg
 usemtl Material_Darkon_Tree02.jpg
 s off
 f 16/1/1 51/2/1 62/3/1
