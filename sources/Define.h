@@ -63,6 +63,7 @@
 
 // SOUND & MUSIC ---------------------------------------------------------------
 #define SOUND_MAINTHEME "data/music/research.ogg"
+#define SOUND_GONG      "data/sfxart/gong.ogg"
 
 #define SOUND_BLASTER   "data/sfxart/weapons/blaster.wav"
 #define SOUND_SHOTGUN   "data/sfxart/weapons/shotgun.wav"
@@ -76,14 +77,6 @@
 #define MUSIC_DIR           "data/music/"
 #define MODELS_MAPS_DIR     "data/models/maps/"
 #define MODELS_PLAYERS_DIR  "data/models/maps/"
-
-// AI --------------------------------------------------------------------------
-#define AI_SWITCH_TARGET_TIME 10000
-#define AI_CRITICAL_LIFE_VALUE 25
-#define AI_CRITICAL_AMMO_VALUE 25
-#define AI_DYNAMIC_INTERACTION 4.0f
-#define AI_SHOOT_GUST_COUNT 6
-#define AI_SHOOT_GUST_TIME 1000
 
 // ENUM ------------------------------------------------------------------------
 

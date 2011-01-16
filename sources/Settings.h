@@ -16,6 +16,17 @@ public:
     Settings();
     ~Settings();
 
+    struct Ai
+    {
+        unsigned switchTargetTime;
+        unsigned criticalLifeValue;
+        unsigned criticalAmmoValue;
+        unsigned shootGustCount;
+        unsigned shootGustTime;
+        float dynamicInteraction;
+
+    } ai;
+
     struct Physics
     {
         float gravity;
@@ -103,7 +114,7 @@ public:
 
         unsigned playerCount;
 
-        unsigned campPlay;
+        unsigned curLevel;
         unsigned winCond;
     };
 
@@ -133,6 +144,7 @@ public:
     void ReadSetting();
     void SaveSetting();
 
+    void ReadAi();
     void ReadCampaign();
     void ReadVideo();
     void ReadControl();

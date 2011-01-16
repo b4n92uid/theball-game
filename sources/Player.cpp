@@ -338,17 +338,17 @@ bool Player::IsBoostAvalaible() const
 
 void Player::UpScore(int value)
 {
-    m_score += max(value, 0);
+    m_score += m_playManager->ModulatScore(value);
 }
 
 void Player::SetScore(int frag)
 {
-    this->m_score = frag;
+    this->m_score = m_playManager->ModulatScore(frag);
 }
 
 int Player::GetScore() const
 {
-    return m_playManager->ModToFinalScore(m_score);
+    return m_score;
 }
 
 void Player::UpLife(int life)
@@ -385,12 +385,17 @@ void Player::TakeDammage(Bullet* ammo)
     if(wp)
     {
         Player* striker = wp->GetShooter();
-        striker->m_score++;
 
         if(m_life <= 0)
         {
-            striker->m_score += 10;
+            striker->UpScore(10);
+            UpScore(-5);
             Kill();
+        }
+        else
+        {
+            striker->UpScore(2);
+            UpScore(-1);
         }
     }
 

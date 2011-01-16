@@ -16,7 +16,8 @@ using namespace tbe::scene;
 
 // Item ------------------------------------------------------------------
 
-Item::Item(GameManager* gameManager, tbe::Matrix4f pos) : Object(gameManager)
+Item::Item(GameManager* gameManager, tbe::Matrix4f pos)
+: Object(gameManager), m_aiParams(gameManager->manager.app->globalSettings.ai)
 {
     m_taked = false;
     m_initialMatrix = pos;
@@ -78,7 +79,7 @@ bool Item::IsReadyToReborn()
 ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_AMMOPACK);
-    
+
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
 }
 
@@ -107,7 +108,7 @@ bool ItemAddAmmo::IsNeeded(Player* player)
     unsigned percent = player->GetCurWeapon()->GetAmmoCount()*100
             / player->GetCurWeapon()->GetMaxAmmoCount();
 
-    if(!IsTaked() && percent < AI_CRITICAL_AMMO_VALUE)
+    if(!IsTaked() && percent < m_aiParams.criticalAmmoValue)
         return true;
 
     return false;
@@ -156,7 +157,7 @@ void ItemAddLife::ModifPlayer(Player* player)
 
 bool ItemAddLife::IsNeeded(Player* player)
 {
-    if(!IsTaked() && player->GetLife() < AI_CRITICAL_LIFE_VALUE)
+    if(!IsTaked() && player->GetLife() < m_aiParams.criticalLifeValue)
         return true;
 
     return false;
@@ -181,7 +182,7 @@ ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos) : Item
     Open(ITEM_FATALSHOT);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    
+
     m_rebornTime = 16000;
 }
 
@@ -264,7 +265,7 @@ void ItemFatalShot::OutputConstruction(std::ofstream& file)
 ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
     Open(ITEM_SUPERLIFE);
-    
+
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
 
     m_rebornTime = 16000;

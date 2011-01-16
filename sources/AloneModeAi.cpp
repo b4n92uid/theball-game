@@ -70,7 +70,7 @@ void AloneModeAi::Process(Player* player)
 
     m_targetPos = m_targetPlayer->GetPos();
 
-    if(m_switchTarget.IsEsplanedTime(AI_SWITCH_TARGET_TIME)
+    if(m_switchTarget.IsEsplanedTime(m_aiParams.switchTargetTime)
        || m_strikePos - playerPos < m_minDistToSwith)
     {
         do
@@ -93,12 +93,12 @@ void AloneModeAi::Process(Player* player)
             targetPos = m_targetPos - velocity;
         }
 
-        if(m_gustCount < AI_SHOOT_GUST_COUNT)
+        if(m_gustCount < m_aiParams.shootGustCount)
         {
             if(player->Shoot(m_targetPos))
                 m_gustCount++;
         }
-        else if(m_gustClock.IsEsplanedTime(AI_SHOOT_GUST_TIME))
+        else if(m_gustClock.IsEsplanedTime(m_aiParams.shootGustTime))
             m_gustCount = 0;
     }
 

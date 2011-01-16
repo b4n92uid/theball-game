@@ -19,7 +19,8 @@ using namespace tbe::scene;
 
 // AIManager -------------------------------------------------------------------
 
-AIControl::AIControl(PlayManager* playManager) : Controller(playManager)
+AIControl::AIControl(PlayManager* playManager)
+: Controller(playManager), m_aiParams(playManager->manager.app->globalSettings.ai)
 {
     m_targetPlayer = NULL;
     m_targetOtp = NULL;

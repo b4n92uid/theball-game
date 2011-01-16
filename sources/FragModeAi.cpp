@@ -83,7 +83,7 @@ void FragModeAi::Process(Player* player)
 
     for(unsigned i = 0; i < dynamicObjects.size(); i++)
     {
-        if(dynamicObjects[i]->GetPos() - playerPos < AI_DYNAMIC_INTERACTION)
+        if(dynamicObjects[i]->GetPos() - playerPos < m_aiParams.dynamicInteraction)
             m_targetOtp = dynamicObjects[i];
     }
 
@@ -105,7 +105,7 @@ void FragModeAi::Process(Player* player)
         if(m_targetPlayer)
             m_targetPos = m_targetPlayer->GetPos();
 
-        if(m_switchTarget.IsEsplanedTime(AI_SWITCH_TARGET_TIME)
+        if(m_switchTarget.IsEsplanedTime(m_aiParams.switchTargetTime)
            || m_strikePos - playerPos < m_minDistToSwith
            || !m_targetPlayer
            || m_targetPlayer->IsKilled()
@@ -151,12 +151,12 @@ void FragModeAi::Process(Player* player)
             targetPos = m_targetPos - velocity;
         }
 
-        if(m_gustCount < AI_SHOOT_GUST_COUNT)
+        if(m_gustCount < m_aiParams.shootGustCount)
         {
             if(player->Shoot(m_targetPos))
                 m_gustCount++;
         }
-        else if(m_gustClock.IsEsplanedTime(AI_SHOOT_GUST_TIME))
+        else if(m_gustClock.IsEsplanedTime(m_aiParams.shootGustTime))
             m_gustCount = 0;
     }
 

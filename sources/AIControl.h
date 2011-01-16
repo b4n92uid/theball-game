@@ -41,6 +41,8 @@ protected:
     float m_minDistToShoot;
     float m_minDistToSwith;
     float m_strikPrimiter;
+
+    Settings::Ai& m_aiParams;
 };
 
 #endif	/* _AIMANAGER_H */

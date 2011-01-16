@@ -75,7 +75,7 @@ public:
 
     virtual const Player::Array GetTargetsOf(Player* player) const;
 
-    unsigned ModToFinalScore(unsigned score);
+    int ModulatScore(int score);
 
 protected:
 
