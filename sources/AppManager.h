@@ -110,9 +110,12 @@ protected:
     tbe::scene::Mesh* m_logo;
     tbe::scene::Camera* m_camera;
 
+    tbe::ticks::Clock m_screenWaitClock;
+
     FMOD_SYSTEM* m_fmodsys;
     FMOD_SOUND* m_mainMusic;
     FMOD_CHANNEL* m_mainMusicCh;
+    FMOD_SOUND* m_gongSound;
 
     struct
     {

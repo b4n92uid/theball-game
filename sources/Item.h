@@ -53,6 +53,7 @@ public:
 protected:
     tbe::Matrix4f m_initialMatrix;
     unsigned m_rebornTime;
+    Settings::Ai& m_aiParams;
 
 private:
     bool m_taked;

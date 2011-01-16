@@ -497,7 +497,7 @@ void PlayManager::EventProcess()
     else if(m_timeTo == TIME_TO_GAMEOVER)
     {
         if(event->keyState[EventManager::KEY_SPACE]
-           && m_validGameOver.IsEsplanedTime(3000))
+           && m_validGameOver.IsEsplanedTime(2000))
             running = false;
     }
 }
@@ -802,10 +802,14 @@ const Player::Array& PlayManager::GetPlayers() const
     return m_players;
 }
 
-unsigned PlayManager::ModToFinalScore(unsigned score)
+int PlayManager::ModulatScore(int score)
 {
     if(m_playSetting.playerCount)
-        return ceil(score / (m_playSetting.playTime / 60.0f) * m_playSetting.playerCount);
+    {
+        float timeFactor = 1.0f - (m_playSetting.playTime / 1200.0f) + 0.1f;
+        float countFactor = 1.0f - (m_playSetting.playerCount / 32.0f);
+        return ceil(score * timeFactor / countFactor);
+    }
     else
         return 0;
 }

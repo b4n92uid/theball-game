@@ -123,9 +123,18 @@ void AppManager::SetupSound()
         FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
         FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
 
-        FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, SOUND_MAINTHEME,
-                                                   FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
-                                                   0, &m_mainMusic);
+        FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, SOUND_GONG,
+                                                   FMOD_LOOP_OFF | FMOD_2D | FMOD_HARDWARE,
+                                                   0, &m_gongSound);
+
+        if(res != FMOD_OK)
+            throw tbe::Exception("AppManager::AppManager; %s (%s)",
+                                 FMOD_ErrorString(res),
+                                 SOUND_MAINTHEME);
+
+        res = FMOD_System_CreateStream(m_fmodsys, SOUND_MAINTHEME,
+                                       FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
+                                       0, &m_mainMusic);
 
         if(res != FMOD_OK)
             throw tbe::Exception("AppManager::AppManager; %s (%s)",
@@ -1083,114 +1092,67 @@ void AppManager::ExecuteGame(const Settings::PartySetting& playSetting)
 
 void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
 {
-    cout << "ExecuteCampaign :" << endl
-            << "playLevel = " << playSetting.playMap.name << endl
-            << "playMod = " << playSetting.playMod << endl
-            << "playTime = " << playSetting.playTime << endl
-            << "playerCount = " << playSetting.playerCount << endl
-            << "playerModel = " << playSetting.playerName.file << endl
-            << "playerName = " << playSetting.playerName.name << endl
-            << "winCond = " << playSetting.winCond << endl;
+    Settings::PartySetting curPlaySetting = playSetting;
 
-    m_sceneManager->ClearAll();
-    m_ppeManager->ClearAll();
+    bool done = false;
 
-    if(!globalSettings.noaudio && !globalSettings.nomusic)
-        FMOD_Channel_Stop(m_mainMusicCh);
-
-    // Affichage de l'ecran de chargement --------------------------------------
-
-    m_guiManager->SetSession(MENU_LOAD);
-
-    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-            ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
-                              "Chargement en cours...", playSetting.winCond));
-
-    m_guiManager->UpdateLayout();
-
-    m_gameEngine->BeginScene();
-    m_guiManager->Render();
-    m_gameEngine->EndScene();
-
-    // Chargement de la carte --------------------------------------------------
-
-    PlayManager* gameManager;
-
-    switch(playSetting.playMod)
+    do
     {
-        case FRAG: gameManager = new PlayFragManager(this);
-            break;
-        case ALONE: gameManager = new PlayAloneManager(this);
-            break;
-        case TEAM: gameManager = new PlayTeamManager(this);
-            break;
-        default:
-            throw Exception("AppManager::ExecuteGame; Unknown mode type (%d)", playSetting.playMod);
-    }
+        cout << "ExecuteCampaign :" << endl
+                << "playLevel = " << curPlaySetting.playMap.name << endl
+                << "playMod = " << curPlaySetting.playMod << endl
+                << "playTime = " << curPlaySetting.playTime << endl
+                << "playerCount = " << curPlaySetting.playerCount << endl
+                << "playerModel = " << curPlaySetting.playerName.file << endl
+                << "playerName = " << curPlaySetting.playerName.name << endl
+                << "winCond = " << curPlaySetting.winCond << endl;
 
-    gameManager->SetupMap(playSetting);
-    gameManager->SetupGui();
+        m_sceneManager->ClearAll();
+        m_ppeManager->ClearAll();
 
-    // Attente de réponse ------------------------------------------------------
+        if(!globalSettings.noaudio && !globalSettings.nomusic)
+            FMOD_Channel_Stop(m_mainMusicCh);
 
-    m_guiManager->SetSession(MENU_LOAD);
-
-    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-            ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
-                              "Appuyer sur \"Espace\" pour continuer...", playSetting.winCond));
-
-    m_eventMng->keyState[EventManager::KEY_SPACE] = false;
-
-    while(!m_eventMng->keyState[EventManager::KEY_SPACE])
-    {
-        m_gameEngine->PollEvent();
-        m_gameEngine->BeginScene();
-        m_guiManager->Render();
-        m_gameEngine->EndScene();
-    }
-
-    // Début du jeu ------------------------------------------------------------
-
-    cout << "Start game" << endl;
-
-    gameManager->OnStartGame();
-
-    while(gameManager->running)
-    {
-        if(m_fpsMng->DoARender())
-        {
-            gameManager->EventProcess();
-            gameManager->GameProcess();
-            gameManager->HudProcess();
-
-            gameManager->Render();
-        }
-
-        m_fpsMng->Update();
-    }
-
-    cout << "End game" << endl;
-
-    int score = gameManager->GetUserPlayer()->GetScore();
-
-    if(score >= (int)playSetting.winCond && playSetting.campPlay == globalSettings.campaign.index)
-    {
-        cout << "Next level available" << endl;
-
-        if(globalSettings.campaign.index < globalSettings.campaign.maps.size())
-            globalSettings.campaign.index++;
-
-        globalSettings.SaveCampaign();
-
-        UpdateGuiContent();
-
-        // ---------------------------------------------------------------------
+        // Affichage de l'ecran de chargement --------------------------------------
 
         m_guiManager->SetSession(MENU_LOAD);
 
         m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                ->Write(gui::Text("Nouveau niveau déploqué !\n"
-                                  "Appuyer sur \"Espace\" pour continuer...", playSetting.winCond));
+                ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
+                                  "Chargement en cours...", curPlaySetting.winCond));
+
+        m_guiManager->UpdateLayout();
+
+        m_gameEngine->BeginScene();
+        m_guiManager->Render();
+        m_gameEngine->EndScene();
+
+        // Chargement de la carte --------------------------------------------------
+
+        PlayManager* gameManager;
+
+        switch(curPlaySetting.playMod)
+        {
+            case FRAG: gameManager = new PlayFragManager(this);
+                break;
+            case ALONE: gameManager = new PlayAloneManager(this);
+                break;
+            case TEAM: gameManager = new PlayTeamManager(this);
+                break;
+            default:
+                throw Exception("AppManager::ExecuteGame; Unknown mode type (%d)", curPlaySetting.playMod);
+        }
+
+        gameManager->SetupMap(curPlaySetting);
+        gameManager->SetupGui();
+
+        // Attente de réponse ------------------------------------------------------
+
+        m_guiManager->SetSession(MENU_LOAD);
+
+        m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+                ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
+                                  "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
 
         m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
@@ -1201,9 +1163,106 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
             m_guiManager->Render();
             m_gameEngine->EndScene();
         }
-    }
 
-    delete gameManager;
+        // Début du jeu ------------------------------------------------------------
+
+        cout << "Start game" << endl;
+
+        gameManager->OnStartGame();
+
+        while(gameManager->running)
+        {
+            if(m_fpsMng->DoARender())
+            {
+                gameManager->EventProcess();
+                gameManager->GameProcess();
+                gameManager->HudProcess();
+
+                gameManager->Render();
+            }
+
+            m_fpsMng->Update();
+        }
+
+        cout << "End game" << endl;
+
+        int score = gameManager->GetUserPlayer()->GetScore();
+        done = !gameManager->IsGameOver();
+
+        delete gameManager;
+
+        if(!done && score >= (int)curPlaySetting.winCond
+           && curPlaySetting.curLevel == globalSettings.campaign.index)
+        {
+            cout << "Next level available" << endl;
+
+            if(globalSettings.campaign.index < globalSettings.campaign.maps.size())
+            {
+                globalSettings.campaign.index++;
+                curPlaySetting.curLevel = globalSettings.campaign.index;
+            }
+
+            globalSettings.SaveCampaign();
+
+            UpdateGuiContent();
+
+            Settings::PartySetting nextParty = m_controls.campaign.levelSelect->GetData()
+                    .GetValue<Settings::PartySetting > ();
+
+            curPlaySetting.playMap = nextParty.playMap;
+            curPlaySetting.playMod = nextParty.playMod;
+            curPlaySetting.playTime = nextParty.playTime;
+            curPlaySetting.playerCount = nextParty.playerCount;
+            curPlaySetting.winCond = nextParty.winCond;
+
+            // ---------------------------------------------------------------------
+
+            m_guiManager->SetSession(MENU_LOAD);
+
+            m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+                    ->Write(gui::Text("Nouveau niveau déploqué !\n"
+                                      "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+
+            if(!globalSettings.noaudio)
+                FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
+
+            m_screenWaitClock.SnapShoot();
+
+            m_eventMng->keyState[EventManager::KEY_SPACE] = false;
+            while(!m_eventMng->keyState[EventManager::KEY_SPACE]
+                  || !m_screenWaitClock.IsEsplanedTime(1000))
+            {
+                m_gameEngine->PollEvent();
+                m_gameEngine->BeginScene();
+                m_guiManager->Render();
+                m_gameEngine->EndScene();
+            }
+        }
+        else if(globalSettings.campaign.index >= globalSettings.campaign.maps.size() - 1)
+        {
+            m_guiManager->SetSession(MENU_LOAD);
+
+            m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+                    ->Write(gui::Text("FELECITATION JEU TERMINER !!!\n"
+                                      "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+
+            if(!globalSettings.noaudio)
+                FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
+
+            m_screenWaitClock.SnapShoot();
+
+            m_eventMng->keyState[EventManager::KEY_SPACE] = false;
+            while(!m_eventMng->keyState[EventManager::KEY_SPACE]
+                  || !m_screenWaitClock.IsEsplanedTime(1000))
+            {
+                m_gameEngine->PollEvent();
+                m_gameEngine->BeginScene();
+                m_guiManager->Render();
+                m_gameEngine->EndScene();
+            }
+        }
+    }
+    while(!done);
 
     if(!globalSettings.noaudio && !globalSettings.nomusic)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
@@ -1223,7 +1282,8 @@ void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
 
     m_guiManager->SetSession(MENU_LOAD);
 
-    m_guiManager->GetControl<gui::TextBox > ("load:stateText")->Write("Chargement en cours...");
+    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+            ->Write("Chargement en cours...");
 
     m_guiManager->UpdateLayout();
 
@@ -1242,7 +1302,8 @@ void AppManager::ExecuteEditor(const Settings::EditSetting& editSetting)
 
     m_guiManager->SetSession(MENU_LOAD);
 
-    m_guiManager->GetControl<gui::TextBox > ("load:stateText")->Write("Appuyer sur \"Espace\" pour continuer...");
+    m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+            ->Write("Appuyer sur \"Espace\" pour continuer...");
 
     while(!m_eventMng->keyState[EventManager::KEY_SPACE])
     {
