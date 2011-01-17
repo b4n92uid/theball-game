@@ -211,8 +211,6 @@ void Settings::ReadPlayerInfo()
         {
             Settings::PlayerInfo pi(filename.file_string());
 
-            cout << "Load player : " << pi.model << endl;
-
             availablePlayer.push_back(pi);
         }
     }
@@ -263,8 +261,6 @@ void Settings::ReadMapInfo()
         if(filename.extension() == ".bld")
         {
             Settings::MapInfo mi(filename.file_string());
-
-            cout << "Load map : " << mi.file << endl;
 
             availableMap.push_back(mi);
         }

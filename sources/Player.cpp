@@ -47,7 +47,6 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
 
     SetRandomSpawnPos();
 
-    NewtonBodySetContinuousCollisionMode(m_physicBody->GetBody(), true);
     NewtonBodySetLinearDamping(m_physicBody->GetBody(), m_worldSettings.playerLinearDamping);
     NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 

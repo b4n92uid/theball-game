@@ -33,10 +33,15 @@ int main(int argc, char** argv)
     try
     {
         cout
-                << "theBall (b4n92uid)" << endl
-                << "Start in " << second_clock::local_time() << endl
-                << "Build in " << __DATE__ << endl
-                << current_path() << endl;
+                #ifdef THEBALL_COMPILE_DEBUG
+                << "theBall (" << __DATE__ << ") Debug run" << endl
+                #else
+                << "theBall (" << __DATE__ << ") Release run" << endl
+                #endif
+                << endl
+                << second_clock::local_time() << endl
+                << current_path() << endl
+                << endl;
 
         AppManager theBall;
 
