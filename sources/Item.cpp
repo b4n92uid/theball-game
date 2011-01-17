@@ -114,15 +114,15 @@ bool ItemAddAmmo::IsNeeded(Player* player)
     return false;
 }
 
-void ItemAddAmmo::OutputConstruction(std::ofstream& file)
+void ItemAddAmmo::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=ITEM" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "add=AMMO" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=ITEM" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "add=AMMO" << endl;
+    stream << endl;
 }
 
 // ItemAddLife -----------------------------------------------------------------
@@ -163,15 +163,15 @@ bool ItemAddLife::IsNeeded(Player* player)
     return false;
 }
 
-void ItemAddLife::OutputConstruction(std::ofstream& file)
+void ItemAddLife::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=ITEM" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "add=LIFE" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=ITEM" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "add=LIFE" << endl;
+    stream << endl;
 }
 
 
@@ -249,15 +249,15 @@ bool ItemFatalShot::IsNeeded(Player* player)
     return false;
 }
 
-void ItemFatalShot::OutputConstruction(std::ofstream& file)
+void ItemFatalShot::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=ITEM" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "add=FATALSHOT" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=ITEM" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "add=FATALSHOT" << endl;
+    stream << endl;
 }
 
 // ItemSuperLife ---------------------------------------------------------------
@@ -334,15 +334,15 @@ bool ItemSuperLife::IsNeeded(Player* player)
     return false;
 }
 
-void ItemSuperLife::OutputConstruction(std::ofstream& file)
+void ItemSuperLife::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=ITEM" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "add=SUPERLIFE" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=ITEM" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "add=SUPERLIFE" << endl;
+    stream << endl;
 }
 
 // ItemAddFinder ---------------------------------------------------------------
@@ -384,15 +384,15 @@ bool ItemAddFinder::IsNeeded(Player* player)
     return false;
 }
 
-void ItemAddFinder::OutputConstruction(std::ofstream& file)
+void ItemAddFinder::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=ITEM" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "add=FINDER" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=ITEM" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "add=FINDER" << endl;
+    stream << endl;
 }
 
 // ItemAddBomb -----------------------------------------------------------------
@@ -434,15 +434,15 @@ bool ItemAddBomb::IsNeeded(Player* player)
     return false;
 }
 
-void ItemAddBomb::OutputConstruction(std::ofstream& file)
+void ItemAddBomb::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=ITEM" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "add=BOMB" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=ITEM" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "add=BOMB" << endl;
+    stream << endl;
 }
 
 // ItemAddShotgun --------------------------------------------------------------
@@ -484,13 +484,13 @@ bool ItemAddShotgun::IsNeeded(Player* player)
     return false;
 }
 
-void ItemAddShotgun::OutputConstruction(std::ofstream& file)
+void ItemAddShotgun::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=ITEM" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "add=SHOTGUN" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=ITEM" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "add=SHOTGUN" << endl;
+    stream << endl;
 }

@@ -96,6 +96,9 @@ protected:
             tbe::gui::Button* save;
             tbe::gui::Button* ret;
             tbe::gui::EditBox* name;
+            tbe::gui::TextBox* status;
+            tbe::ticks::Clock statusClock;
+            bool confirm;
 
         } pause;
 

@@ -46,7 +46,6 @@ void EditorManager::NewEntity(Object* ent)
     manager.scene->GetRootNode()->AddChild(ent);
 
     Vector3f pos = ent->GetPos();
-
     m_axes->SetPos(pos);
     m_OCamera->SetCenter(pos);
 }
@@ -252,7 +251,7 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
     Vector3f grid(1);
 
     float moveSpeed = 0.05;
-    float rotateSpeed = 45 * M_PI / 180;
+    float rotateSpeed = 15 * M_PI / 180;
 
     if(event->keyState[EventManager::KEY_LSHIFT])
     {
@@ -277,7 +276,6 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
             }
 
             transform += m_selectedNode->GetPos();
-
 
             m_selectedNode->GetPhysicBody()->SetPos(transform);
             m_axes->SetPos(transform);

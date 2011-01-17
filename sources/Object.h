@@ -29,7 +29,7 @@ public:
      * Ecris sur le flux les instruction de construction
      * pour les besoin de la class BldDParser
      */
-    virtual void OutputConstruction(std::ofstream& file) = 0;
+    virtual void OutputConstruction(std::iostream& stream) = 0;
 
     void SetPhysicBody(tbe::scene::NewtonNode* physicBody);
 

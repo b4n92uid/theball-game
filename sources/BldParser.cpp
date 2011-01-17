@@ -34,49 +34,62 @@ BldParser::~BldParser()
 {
 }
 
+inline std::string stripComments(std::string content)
+{
+    for(unsigned pos = 0; (pos = content.find('#', pos)) != string::npos;)
+        content.replace(pos, content.find('\n', pos) - pos + 1, "");
+
+    return content;
+}
+
+bool BldParser::IsChanged()
+{
+    std::stringstream newmap, oldmap;
+
+    std::ifstream file(m_openFileName.c_str());
+    oldmap << file.rdbuf();
+
+    WriteMap(newmap);
+
+    return stripComments(newmap.str()) != stripComments(oldmap.str());
+}
+
 void BldParser::SaveLevel()
 {
     SaveLevel(m_openFileName);
 }
 
-void BldParser::SaveLevel(const std::string& filepath)
+void BldParser::WriteMap(std::iostream& stream)
 {
     using namespace boost::posix_time;
 
-    ofstream file(filepath.c_str());
-
-    if(!file)
-        throw tbe::Exception("BldParser::SaveLevel; Open file error (%s)", filepath.c_str());
-
-    m_openFileName = filepath;
-
-    file << "# Ball level descriptor" << endl;
-    file << "# Generated " << second_clock::local_time() << endl;
-    file << endl;
+    stream << "# Ball level descriptor" << endl;
+    stream << "# Generated " << second_clock::local_time() << endl;
+    stream << endl;
 
 
-    file << ".map" << endl;
-    file << "name=" << m_gameManager->map.name << endl;
-    file << "ambient=" << m_sceneManager->GetAmbientLight() << endl;
-    file << endl;
+    stream << ".map" << endl;
+    stream << "name=" << m_gameManager->map.name << endl;
+    stream << "ambient=" << m_sceneManager->GetAmbientLight() << endl;
+    stream << endl;
 
 
     if(!m_gameManager->map.musicPath.empty())
     {
-        file << ".music" << endl;
-        file << "filePath=" << m_gameManager->map.musicPath << endl;
-        file << endl;
+        stream << ".music" << endl;
+        stream << "filePath=" << m_gameManager->map.musicPath << endl;
+        stream << endl;
     }
 
     Fog* fog = m_sceneManager->GetFog();
 
     if(fog->IsEnable())
     {
-        file << ".fog" << endl;
-        file << "color=" << fog->GetColor() << endl;
-        file << "start=" << fog->GetStart() << endl;
-        file << "end=" << fog->GetEnd() << endl;
-        file << endl;
+        stream << ".fog" << endl;
+        stream << "color=" << fog->GetColor() << endl;
+        stream << "start=" << fog->GetStart() << endl;
+        stream << "end=" << fog->GetEnd() << endl;
+        stream << endl;
     }
 
     SkyBox* sky = m_sceneManager->GetSkybox();
@@ -85,18 +98,18 @@ void BldParser::SaveLevel(const std::string& filepath)
     {
         Texture* skyTexs = sky->GetTextures();
 
-        file << ".skybox" << endl;
-        file << "front=" << skyTexs[0].GetFilename() << endl;
-        file << "back=" << skyTexs[1].GetFilename() << endl;
-        file << "top=" << skyTexs[2].GetFilename() << endl;
-        file << "bottom=" << skyTexs[3].GetFilename() << endl;
-        file << "left=" << skyTexs[4].GetFilename() << endl;
-        file << "right=" << skyTexs[5].GetFilename() << endl;
-        file << endl;
+        stream << ".skybox" << endl;
+        stream << "front=" << skyTexs[0].GetFilename() << endl;
+        stream << "back=" << skyTexs[1].GetFilename() << endl;
+        stream << "top=" << skyTexs[2].GetFilename() << endl;
+        stream << "bottom=" << skyTexs[3].GetFilename() << endl;
+        stream << "left=" << skyTexs[4].GetFilename() << endl;
+        stream << "right=" << skyTexs[5].GetFilename() << endl;
+        stream << endl;
     }
 
-    file << "# Light" << endl;
-    file << endl;
+    stream << "# Light" << endl;
+    stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.lights.size(); i++)
     {
@@ -104,45 +117,57 @@ void BldParser::SaveLevel(const std::string& filepath)
 
         bool pointType = (light->GetType() == Light::POINT);
 
-        file << "+light" << endl;
-        file << "type=" << (pointType ? "POINT" : "DIRI") << endl;
-        file << "pos=" << light->GetPos() << endl;
-        file << "ambient=" << light->GetAmbient() << endl;
-        file << "diffuse=" << light->GetDiffuse() << endl;
-        file << "specular=" << light->GetSpecular() << endl;
+        stream << "+light" << endl;
+        stream << "type=" << (pointType ? "POINT" : "DIRI") << endl;
+        stream << "pos=" << light->GetPos() << endl;
+        stream << "ambient=" << light->GetAmbient() << endl;
+        stream << "diffuse=" << light->GetDiffuse() << endl;
+        stream << "specular=" << light->GetSpecular() << endl;
         if(pointType)
-            file << "radius=" << light->GetRadius() << endl;
-        file << endl;
+            stream << "radius=" << light->GetRadius() << endl;
+        stream << endl;
     }
 
-    file << "# Static" << endl;
-    file << endl;
+    stream << "# Static" << endl;
+    stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.staticObjects.size(); i++)
-        m_gameManager->map.staticObjects[i]->OutputConstruction(file);
+        m_gameManager->map.staticObjects[i]->OutputConstruction(stream);
 
-    file << "# Dynamic" << endl;
-    file << endl;
+    stream << "# Dynamic" << endl;
+    stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.dynamicObjects.size(); i++)
-        m_gameManager->map.dynamicObjects[i]->OutputConstruction(file);
+        m_gameManager->map.dynamicObjects[i]->OutputConstruction(stream);
 
-    file << "# Item" << endl;
-    file << endl;
+    stream << "# Item" << endl;
+    stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.items.size(); i++)
-        m_gameManager->map.items[i]->OutputConstruction(file);
+        m_gameManager->map.items[i]->OutputConstruction(stream);
 
-    file << "# Spawn" << endl;
-    file << endl;
+    stream << "# Spawn" << endl;
+    stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.spawnPoints.size(); i++)
     {
-        file << "+node" << endl;
-        file << "type=SPAWN" << endl;
-        file << "pos=" << m_gameManager->map.spawnPoints[i] << endl;
-        file << endl;
+        stream << "+node" << endl;
+        stream << "type=SPAWN" << endl;
+        stream << "pos=" << m_gameManager->map.spawnPoints[i] << endl;
+        stream << endl;
     }
+}
+
+void BldParser::SaveLevel(const std::string& filepath)
+{
+    fstream file(filepath.c_str(), ios::out);
+
+    if(!file)
+        throw tbe::Exception("BldParser::SaveLevel; Open file error (%s)", filepath.c_str());
+
+    m_openFileName = filepath;
+
+    WriteMap(file);
 
     file.close();
 }

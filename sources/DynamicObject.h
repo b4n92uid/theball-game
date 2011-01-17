@@ -37,7 +37,7 @@ public:
     DYJumper(GameManager* gameManager, tbe::Matrix4f pos);
     ~DYJumper();
     Object* CloneToObject();
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
     void InteractWith(Player* player);
 
 
@@ -51,7 +51,7 @@ public:
     DYTeleporter(GameManager* gameManager, tbe::Matrix4f pos);
     ~DYTeleporter();
     Object* CloneToObject();
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
     void InteractWith(Player* player);
 
 protected:

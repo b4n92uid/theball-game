@@ -161,6 +161,7 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
             return true;
         }
     }
+
     else if(m_selectedLight->GetType() == scene::Light::POINT)
     {
         if(event->keyState[EventManager::KEY_LSHIFT])

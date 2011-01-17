@@ -18,7 +18,7 @@ public:
 
     Object* CloneToObject();
     
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 
     typedef std::map<std::string, StaticObject*> Map;
     typedef std::vector<StaticObject*> Array;
