@@ -97,7 +97,7 @@ public:
 
     PlayManager* GetPlayManager() const;
 
-    void OutputConstruction(std::ofstream& file)
+    void OutputConstruction(std::iostream& stream)
     {
     }
 

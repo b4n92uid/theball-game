@@ -69,7 +69,7 @@ public:
     Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 };
 
 // ItemAddLife -----------------------------------------------------------------
@@ -81,7 +81,7 @@ public:
     Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 };
 
 // ItemFatalShot ----------------------------------------------------------------
@@ -93,7 +93,7 @@ public:
     Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 };
 
 // ItemSuperLife ---------------------------------------------------------------
@@ -105,7 +105,7 @@ public:
     Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 };
 
 // ItemAddFinder ---------------------------------------------------------------
@@ -117,7 +117,7 @@ public:
     Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 };
 
 // ItemAddBomb -----------------------------------------------------------------
@@ -129,7 +129,7 @@ public:
     Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 };
 
 // ItemAddShotgun --------------------------------------------------------------
@@ -141,7 +141,7 @@ public:
     Object* CloneToObject();
     void ModifPlayer(Player* player);
     bool IsNeeded(Player* player);
-    void OutputConstruction(std::ofstream& file);
+    void OutputConstruction(std::iostream& stream);
 };
 
 #endif /* _ITEMENGINE_H */

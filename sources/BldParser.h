@@ -35,6 +35,8 @@ public:
     void SetOpenFileName(std::string openFileName);
     std::string GetOpenFileName() const;
 
+    bool IsChanged();
+
 protected:
     void OnLoadMap(AttribMap& att);
     void OnLoadMusic(AttribMap& att);
@@ -62,6 +64,8 @@ protected:
     tbe::scene::NewtonParallelScene* m_newtonScene;
 
 private:
+    void WriteMap(std::iostream& stream);
+
     static BldParser::AttribMap GetAttributs(std::ifstream& file);
 };
 

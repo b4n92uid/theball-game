@@ -59,15 +59,15 @@ Object* DYJumper::CloneToObject()
     return dj;
 }
 
-void DYJumper::OutputConstruction(std::ofstream& file)
+void DYJumper::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=DYNAMIC" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "action=JUMPER" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=DYNAMIC" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "action=JUMPER" << endl;
+    stream << endl;
 }
 
 void DYJumper::InteractWith(Player* player)
@@ -115,15 +115,15 @@ Object* DYTeleporter::CloneToObject()
     return dt;
 }
 
-void DYTeleporter::OutputConstruction(std::ofstream& file)
+void DYTeleporter::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=DYNAMIC" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "action=TELEPORTER" << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=DYNAMIC" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "action=TELEPORTER" << endl;
+    stream << endl;
 }
 
 void DYTeleporter::InteractWith(Player* player)

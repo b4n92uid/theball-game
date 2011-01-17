@@ -39,15 +39,15 @@ Object* StaticObject::CloneToObject()
     return so;
 }
 
-void StaticObject::OutputConstruction(std::ofstream& file)
+void StaticObject::OutputConstruction(std::iostream& stream)
 {
     using namespace std;
 
-    file << "+node" << endl;
-    file << "type=STATIC" << endl;
-    file << "matrix=" << m_matrix << endl;
-    file << "modelPath=" << m_filepath << endl;
-    file << endl;
+    stream << "+node" << endl;
+    stream << "type=STATIC" << endl;
+    stream << "matrix=" << m_matrix << endl;
+    stream << "modelPath=" << m_filepath << endl;
+    stream << endl;
 }
 
 StaticObject::~StaticObject()

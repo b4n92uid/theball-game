@@ -128,6 +128,8 @@ void EditorManager::SetupGui()
     const Vector2f& screenSize = manager.app->globalSettings.video.screenSize;
     const float& sizeFactor = manager.app->globalSettings.video.guiSizeFactor;
 
+    Pencil bigpen(GUI_FONT, int(sizeFactor * GUI_FONTSIZE * 1.5));
+
     // Entity
     manager.gui->SetSession(EDITOR_EDIT_ENTITY);
 
@@ -261,7 +263,6 @@ void EditorManager::SetupGui()
     manager.gui->EndLayout();
 
     manager.gui->SetSession(EDITOR_VIEW);
-    // Clear
 
     manager.gui->SetSession(EDITOR_GUI);
 
@@ -278,6 +279,12 @@ void EditorManager::SetupGui()
     hud.pause.name = manager.gui->AddEditBox("hud.pause.name", map.name);
     manager.gui->EndLayout();
     manager.gui->EndLayout();
+
+    hud.pause.status = manager.gui->AddTextBox("hud.pause.status");
+    hud.pause.status->SetPencil(bigpen);
+    hud.pause.status->SetPos(20);
+
+    hud.pause.confirm = false;
 
     // Remplisage --------------------------------------------------------------
 
@@ -637,12 +644,28 @@ void EditorManager::ViewEventPorcess(tbe::EventManager* event)
 
 void EditorManager::GuiEventPorcess(tbe::EventManager* event)
 {
+    if(hud.pause.status->IsEnable() && hud.pause.statusClock.IsEsplanedTime(4000))
+        hud.pause.status->SetEnable(false);
+
     if(hud.pause.quit->IsActivate())
     {
-        running = false;
+        hud.pause.quit->SetActivate(false);
+
+        if(manager.level->IsChanged() && !hud.pause.confirm)
+        {
+            hud.pause.status->SetEnable(true);
+            hud.pause.status->Write("La Carte a changer !\nEtes vous sure de quitter ?");
+            hud.pause.confirm = true;
+        }
+        else
+        {
+            running = false;
+        }
     }
     else if(hud.pause.save->IsActivate())
     {
+        hud.pause.save->SetActivate(false);
+
         map.name = hud.pause.name->GetLabel();
         string saveFileName = MAPS_DIR + tools::UnixName(map.name) + ".bld";
 
@@ -665,10 +688,11 @@ void EditorManager::GuiEventPorcess(tbe::EventManager* event)
                 std::rename(manager.level->GetOpenFileName().c_str(), saveFileName.c_str());
             }
 
-            hud.pause.save->SetActivate(false);
-
             manager.app->globalSettings.ReadMapInfo();
             manager.app->UpdateGuiContent();
+
+            hud.pause.status->SetEnable(true);
+            hud.pause.status->Write("Carte enregistrer !");
         }
 
     }
