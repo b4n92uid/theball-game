@@ -250,6 +250,7 @@ MaterialManager::MaterialManager(GameManager * playManager)
 
     NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_dynamicGroupe, m_gameManager, 0, BulletOnMapContactsProcess);
     NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_staticGroupe, m_gameManager, 0, BulletOnMapContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_itemGroupe, m_gameManager, 0, BulletOnMapContactsProcess);
     NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_bulletGroupe, m_gameManager, BulletOnPlayerAABBOverlape, 0);
     NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, m_gameManager, BulletOnPlayerAABBOverlape, 0);
 
