@@ -665,7 +665,8 @@ void AppManager::UpdateGuiContent()
 
     m_controls.campaign.levelSelect->DeleteAll();
 
-    for(unsigned i = 0; i <= globalSettings.campaign.index; i++)
+    unsigned campMapSize = min(globalSettings.campaign.maps.size(), globalSettings.campaign.index);
+    for(unsigned i = 0; i <= campMapSize; i++)
     {
         string label = tools::numToStr(i + 1) + "# " + globalSettings.campaign.maps[i].playMap.name;
         m_controls.campaign.levelSelect->Push(label, globalSettings.campaign.maps[i]);
@@ -1238,7 +1239,7 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
                 m_gameEngine->EndScene();
             }
         }
-        else if(globalSettings.campaign.index >= globalSettings.campaign.maps.size() - 1)
+        else if(globalSettings.campaign.index >= globalSettings.campaign.maps.size())
         {
             m_guiManager->SetSession(MENU_LOAD);
 
