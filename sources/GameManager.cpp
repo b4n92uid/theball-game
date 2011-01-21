@@ -36,6 +36,8 @@ GameManager::GameManager(AppManager* appManager)
 
     parallelscene.newton = new scene::NewtonParallelScene;
     parallelscene.newton->SetGravity(worldSettings.gravity);
+    NewtonSetSolverModel(parallelscene.newton->GetNewtonWorld(), 8);
+    NewtonSetFrictionModel(parallelscene.newton->GetNewtonWorld(), 1);
     manager.scene->AddParallelScene(parallelscene.newton);
 
     parallelscene.particles = new scene::ParticlesParallelScene;
