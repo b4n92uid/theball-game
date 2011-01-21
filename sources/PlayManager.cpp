@@ -806,8 +806,8 @@ int PlayManager::ModulatScore(int score)
 {
     if(m_playSetting.playerCount)
     {
-        float timeFactor = 1.0f - (m_playSetting.playTime / 1200.0f) + 0.1f;
-        float countFactor = 1.0f - (m_playSetting.playerCount / 32.0f);
+        float timeFactor = tools::clamp(1.0f - (m_playSetting.playTime / 1200.0f), 0.1f, 1.0f);
+        float countFactor = tools::clamp(1.0f - (m_playSetting.playerCount / 32.0f), 0.1f, 1.0f);
         return ceil(score * timeFactor / countFactor);
     }
     else

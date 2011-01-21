@@ -87,7 +87,7 @@ public:
 
     /// Score
     void UpScore(int value = 1);
-    void SetScore(int frag);
+    void SetScore(int value);
     int GetScore() const;
 
     /// Santé
