@@ -1,19 +1,29 @@
 # Ball level descriptor
-# Generated 2011-Jan-17 22:02:41
+# Generated 2011-Jan-21 00:12:16
 
 .map
 name=Tris
 ambient=0.2,0.2,0.2,1
 
+.music
+filePath=data/music/player.ogg
+
+.skybox
+front=data/gfxart/skybox/faesky04f.jpg
+back=data/gfxart/skybox/faesky04b.jpg
+top=data/gfxart/skybox/faesky04u.jpg
+bottom=data/gfxart/skybox/faesky04d.jpg
+left=data/gfxart/skybox/faesky04l.jpg
+right=data/gfxart/skybox/faesky04r.jpg
+
 # Light
 
 +light
-type=POINT
-pos=0.118205,9.59667,6.98321
+type=DIRI
+pos=-0.0892012,0.678333,-0.861033
 ambient=0,0,0,0
 diffuse=1,1,1,1
-specular=0.2,0.2,0.2,1
-radius=35
+specular=0,0,0,1
 
 # Static
 
@@ -26,22 +36,22 @@ modelPath=data/models/maps/tris.obj
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0.750648,1,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,0.74707,2,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-5,0.736337,5,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,0.732759,6,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0.714871,11,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0.718449,10,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,5,0.732759,6,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,0.732759,6,1
 action=JUMPER
 
 +node

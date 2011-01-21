@@ -1,12 +1,12 @@
 # Ball level descriptor
-# Generated 2011-Jan-14 14:36:11
+# Generated 2011-Jan-19 12:48:07
 
 .map
 name=Electro
 ambient=0.4,0.4,0.3,1
 
 .music
-filePath=data/music/sidebass.ogg
+filePath=data/music/zipzap.ogg
 
 .fog
 color=0.9,1,1,1

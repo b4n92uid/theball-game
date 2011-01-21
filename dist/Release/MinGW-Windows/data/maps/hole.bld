@@ -1,9 +1,12 @@
 # Ball level descriptor
-# Generated 2011-Jan-13 23:39:22
+# Generated 2011-Jan-20 22:05:50
 
 .map
 name=Hole
 ambient=0,0,0,1
+
+.music
+filePath=data/music/triggered.ogg
 
 # Light
 
@@ -139,7 +142,7 @@ pos=0,-2,0
 
 +node
 type=SPAWN
-pos=-0,2,-12
+pos=0,2,-12
 
 +node
 type=SPAWN
@@ -147,7 +150,7 @@ pos=0,2,13
 
 +node
 type=SPAWN
-pos=13,2,-0
+pos=13,2,0
 
 +node
 type=SPAWN

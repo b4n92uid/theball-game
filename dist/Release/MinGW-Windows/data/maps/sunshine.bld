@@ -1,9 +1,9 @@
 # Ball level descriptor
-# Generated 2010-Nov-20 21:02:09
+# Generated 2011-Jan-20 19:25:47
 
 .map
 name=SunShine
-ambient=0,0,0,1
+ambient=0.1,0,0,1
 
 .music
 filePath=data/music/stuff.ogg
@@ -20,10 +20,10 @@ right=data/gfxart/skybox/early_morning_RT.jpg
 
 +light
 type=DIRI
-pos=-0.183376,0.511667,-0.983024
+pos=-0.126331,0.426667,-0.98516
 ambient=0,0,0,0
 diffuse=1,0.8,0.8,1
-specular=1,1,1,1
+specular=0.5,0.5,0.6,1
 
 # Static
 
@@ -36,126 +36,78 @@ modelPath=data/models/maps/sunshine.obj
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.66599,0,1
+matrix=-2.87868e-008,0,1,0,0,1,0,0,-1,0,-2.87868e-008,0,-18.2065,2.7,10.6518,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=-2.87868e-008,0,1,0,0,1,0,0,-1,0,-2.87868e-008,0,-17.9153,2.7,-0.551143,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=-2.87868e-008,0,1,0,0,1,0,0,-1,0,-2.87868e-008,0,-17.797,2.7,-11.3026,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,6.73809,2.57482,-5.97494,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=0.707107,0,0.707107,0,0,1,0,0,-0.707107,0,0.707107,0,-7,-2.45,7,1
-action=TELEPORTER
-
-+node
-type=DYNAMIC
-matrix=-0.707107,0,0.707107,0,0,1,0,0,-0.707107,0,-0.707107,0,-7,-2.58099,-7,1
-action=TELEPORTER
-
-+node
-type=DYNAMIC
-matrix=0.707107,0,-0.707107,0,0,1,0,0,0.707107,0,0.707107,0,9,-2.4,6,1
-action=TELEPORTER
-
-+node
-type=DYNAMIC
-matrix=0.707107,0,0.707107,0,0,1,0,0,-0.707107,0,0.707107,0,8.0418,-2.7,-6.55908,1
-action=TELEPORTER
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,6.6396,2.64057,6.95721,1
+action=JUMPER
 
 # Item
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3.00366,-2.41599,0.0498657,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.41599,-3,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2.41599,0,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.41599,3,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.0250477,-2.66599,-6.99882,1
-add=SHOTGUN
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-2.66599,7,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18,2,7,1
 add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,7,-2.66599,0,1
-add=FATALSHOT
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18,2,5,1
+add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,-2.66599,0,1
-add=SUPERLIFE
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18,2,3,1
+add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.80197,-2.41599,-2.94061,1
-add=LIFE
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18,2,-4,1
+add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2.41599,3,1
-add=LIFE
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18,2,-6,1
+add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2.41599,-3,1
-add=LIFE
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-18,2,-8,1
+add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.95846,-2.41599,2.65157,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3,-2,-5,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,3,-16,1
 add=BOMB
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,-5,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-3,-2,5,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,3.00168,-2,4.97326,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,2.95,16,1
 add=BOMB
 
 # Spawn
 
 +node
 type=SPAWN
-pos=9,-2,0
+pos=19,16,16
 
 +node
 type=SPAWN
-pos=-10,-2,0
-
-+node
-type=SPAWN
-pos=0.000411115,-2,8.03365
-
-+node
-type=SPAWN
-pos=0,-2,-8
+pos=18,15,-17
 

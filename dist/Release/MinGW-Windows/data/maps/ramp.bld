@@ -1,9 +1,12 @@
 # Ball level descriptor
-# Generated 2011-Jan-14 14:45:26
+# Generated 2011-Jan-20 18:13:53
 
 .map
 name=Ramp
 ambient=0.1,0.1,0.1,0.1
+
+.music
+filePath=data/music/hyperdrop.ogg
 
 .skybox
 front=data/gfxart/skybox/lnh-stars3c.jpg
