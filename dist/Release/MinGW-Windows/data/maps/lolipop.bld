@@ -1,15 +1,26 @@
 # Ball level descriptor
-# Generated 2011-Jan-08 15:40:39
+# Generated 2011-Jan-20 19:50:37
 
 .map
 name=LoliPop
 ambient=0,0,0,1
 
+.music
+filePath=data/music/method.ogg
+
+.skybox
+front=data/gfxart/skybox/color_front.jpg
+back=data/gfxart/skybox/color_back.jpg
+top=data/gfxart/skybox/color_top.jpg
+bottom=data/gfxart/skybox/color_down.jpg
+left=data/gfxart/skybox/color_left.jpg
+right=data/gfxart/skybox/color_right.jpg
+
 # Light
 
 +light
 type=DIRI
-pos=0.708217,0.655,0.701355
+pos=-0.0960837,0.858333,-0.991554
 ambient=0,0,0,0
 diffuse=1,1,1,1
 specular=0,0,0,0

@@ -1,9 +1,20 @@
 # Ball level descriptor
-# Generated 2011-Jan-08 14:50:12
+# Generated 2011-Jan-20 18:13:07
 
 .map
 name=Brigd
 ambient=0.1,0.1,0.1,0.1
+
+.music
+filePath=data/music/empty.ogg
+
+.skybox
+front=data/gfxart/skybox/purplenebula_ft.tga
+back=data/gfxart/skybox/purplenebula_bk.tga
+top=data/gfxart/skybox/purplenebula_up.tga
+bottom=data/gfxart/skybox/purplenebula_dn.tga
+left=data/gfxart/skybox/purplenebula_lf.tga
+right=data/gfxart/skybox/purplenebula_rt.tga
 
 # Light
 
