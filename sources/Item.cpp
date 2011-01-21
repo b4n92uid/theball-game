@@ -81,6 +81,7 @@ ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4f pos) : Item(gam
     Open(ITEM_AMMOPACK);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 }
 
 Object* ItemAddAmmo::CloneToObject()
@@ -132,6 +133,7 @@ ItemAddLife::ItemAddLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gam
     Open(ITEM_MEDPACK);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 }
 
 Object* ItemAddLife::CloneToObject()
@@ -182,6 +184,7 @@ ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos) : Item
     Open(ITEM_FATALSHOT);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 
     m_rebornTime = 16000;
 }
@@ -267,6 +270,7 @@ ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos) : Item
     Open(ITEM_SUPERLIFE);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 
     m_rebornTime = 16000;
 }
@@ -352,6 +356,7 @@ ItemAddFinder::ItemAddFinder(GameManager* gameManager, tbe::Matrix4f pos) : Item
     Open(ITEM_ADDFINDER);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 }
 
 Object* ItemAddFinder::CloneToObject()
@@ -402,6 +407,7 @@ ItemAddBomb::ItemAddBomb(GameManager* gameManager, tbe::Matrix4f pos) : Item(gam
     Open(ITEM_ADDBOMB);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 }
 
 Object* ItemAddBomb::CloneToObject()
@@ -452,6 +458,7 @@ ItemAddShotgun::ItemAddShotgun(GameManager* gameManager, tbe::Matrix4f pos) : It
     Open(ITEM_ADDSHOTGUN);
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
 }
 
 Object* ItemAddShotgun::CloneToObject()
