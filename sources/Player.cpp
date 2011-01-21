@@ -337,12 +337,12 @@ bool Player::IsBoostAvalaible() const
 
 void Player::UpScore(int value)
 {
-    m_score += m_playManager->ModulatScore(value);
+    m_score = max(m_score + m_playManager->ModulatScore(value), 0);
 }
 
-void Player::SetScore(int frag)
+void Player::SetScore(int value)
 {
-    this->m_score = m_playManager->ModulatScore(frag);
+    this->m_score = max(m_playManager->ModulatScore(value), 0);
 }
 
 int Player::GetScore() const
