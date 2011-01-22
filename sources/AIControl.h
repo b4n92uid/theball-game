@@ -43,6 +43,9 @@ protected:
     float m_strikPrimiter;
 
     Settings::Ai& m_aiParams;
+
+    tbe::Vector3f m_lastPos;
+    tbe::ticks::Clock m_lastPosClock;
 };
 
 #endif	/* _AIMANAGER_H */
