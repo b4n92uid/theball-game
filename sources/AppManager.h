@@ -32,20 +32,20 @@ public:
     {
         switch(pm)
         {
-            case AppManager::FRAG: return "Frag";
-            case AppManager::ALONE: return "Alone";
-            case AppManager::TEAM: return "Team";
-            default: return "Frag";
+            case AppManager::FRAG: return "FRAG";
+            case AppManager::ALONE: return "ALONE";
+            case AppManager::TEAM: return "TEAM";
+            default: return "FRAG";
         }
     }
 
     static unsigned PlayModToUnsigned(std::string str)
     {
-        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 
-        if(str == "frag") return AppManager::FRAG;
-        if(str == "alone") return AppManager::ALONE;
-        if(str == "team") return AppManager::TEAM;
+        if(str == "FRAG") return AppManager::FRAG;
+        if(str == "ALONE") return AppManager::ALONE;
+        if(str == "TEAM") return AppManager::TEAM;
         else return AppManager::FRAG;
     }
 
