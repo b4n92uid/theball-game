@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Settings.h
  * Author: b4n92uid
  *
@@ -80,13 +80,17 @@ public:
 
         std::string playerName;
         std::string playerModel;
-        std::string levelPath;
+
         std::string levelName;
+        std::string levelPath;
 
         unsigned playMod;
-        unsigned playersCount;
         unsigned playTime;
+
+        unsigned playersCount;
+
         unsigned timestamp;
+
         unsigned score;
     };
 

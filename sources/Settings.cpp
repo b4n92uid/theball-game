@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   Settings.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 16 avril 2010, 19:06
  */
 
@@ -181,13 +181,17 @@ void Settings::ReadScoreInfo()
 
         node->QueryValueAttribute<string > ("playerName", &entry.playerName);
         node->QueryValueAttribute<string > ("playerModel", &entry.playerModel);
-        node->QueryValueAttribute<string > ("levelPath", &entry.levelPath);
+
         node->QueryValueAttribute<string > ("levelName", &entry.levelName);
+        node->QueryValueAttribute<string > ("levelPath", &entry.levelPath);
 
         node->QueryValueAttribute<unsigned>("playMod", &entry.playMod);
-        node->QueryValueAttribute<unsigned>("playersCount", &entry.playersCount);
         node->QueryValueAttribute<unsigned>("playTime", &entry.playTime);
+
+        node->QueryValueAttribute<unsigned>("playersCount", &entry.playersCount);
+
         node->QueryValueAttribute<unsigned>("timestamp", &entry.timestamp);
+
         node->QueryValueAttribute<unsigned>("score", &entry.score);
 
         availableScore.push_back(entry);
@@ -234,12 +238,13 @@ void Settings::ReadCampaign()
         PartySetting party;
 
         party.playMap = MapInfo(node->Attribute("map"));
-        node->QueryValueAttribute<unsigned>("playerCount", &party.playerCount);
+        
+        node->QueryValueAttribute<unsigned>("playMode", &party.playMod);
         node->QueryValueAttribute<unsigned>("playTime", &party.playTime);
+        
+        node->QueryValueAttribute<unsigned>("playerCount", &party.playerCount);
+        
         node->QueryValueAttribute<unsigned>("winCond", &party.winCond);
-
-        const char* playMode = node->Attribute("playMode");
-        party.playMod = AppManager::PlayModToUnsigned(playMode);
 
         party.curLevel = campaign.maps.size();
 
