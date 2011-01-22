@@ -131,80 +131,48 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 
     // Mouvement
 
-    if(m_selectedLight->GetType() == scene::Light::DIRI)
+
+    if(event->keyState[EventManager::KEY_LSHIFT])
     {
-        if(event->keyState[EventManager::KEY_LSHIFT])
+        manager.gameEngine->SetMouseVisible(false);
+        manager.gameEngine->SetGrabInput(true);
+
+        if(event->notify == EventManager::EVENT_MOUSE_MOVE)
         {
+            float moveSpeed = 0.05;
+
             Vector3f curPos = m_selectedLight->GetPos();
-            Vector3f setPos;
 
-            if(event->notify == EventManager::EVENT_MOUSE_MOVE)
+            Vector3f transform;
+            Vector3f target = m_camera->GetTarget();
+            Vector3f left = m_camera->GetLeft();
+
+            if(event->keyState[EventManager::KEY_LALT])
             {
-                if(event->keyState[EventManager::KEY_LALT])
-                {
-                    setPos.x = curPos.x;
-
-                    setPos.y = (event->mousePos.y - event->mousePos.y / 2.0f)
-                            / manager.app->globalSettings.video.screenSize.y * 2.0f;
-
-                    setPos.z = curPos.z;
-                }
-                else
-                {
-                    setPos = Vector3f::Normalize(m_3dSelect);
-                    setPos.y = curPos.y;
-                }
-
-                m_selectedLight->SetPos(setPos);
+                transform.y = event->mousePosRel.y * moveSpeed;
+            }
+            else
+            {
+                transform = left * (float)event->mousePosRel.x * moveSpeed;
+                transform += target * (float)event->mousePosRel.y * moveSpeed;
+                transform.y = 0;
             }
 
-            return true;
-        }
-    }
+            Vector3f setPos = curPos + transform;
 
-    else if(m_selectedLight->GetType() == scene::Light::POINT)
+            m_selectedLight->SetPos(setPos);
+
+            m_axes->SetPos(setPos);
+        }
+
+        return true;
+    }
+    else
     {
-        if(event->keyState[EventManager::KEY_LSHIFT])
-        {
-            manager.gameEngine->SetMouseVisible(false);
-            manager.gameEngine->SetGrabInput(true);
-
-            if(event->notify == EventManager::EVENT_MOUSE_MOVE)
-            {
-                float moveSpeed = 0.05;
-
-                Vector3f curPos = m_selectedLight->GetPos();
-
-                Vector3f transform;
-                Vector3f target = m_camera->GetTarget();
-                Vector3f left = m_camera->GetLeft();
-
-                if(event->keyState[EventManager::KEY_LALT])
-                {
-                    transform.y = event->mousePosRel.y * moveSpeed;
-                }
-                else
-                {
-                    transform = left * (float)event->mousePosRel.x * moveSpeed;
-                    transform += target * (float)event->mousePosRel.y * moveSpeed;
-                    transform.y = 0;
-                }
-
-                Vector3f setPos = curPos + transform;
-
-                m_selectedLight->SetPos(setPos);
-
-                m_axes->SetPos(setPos);
-            }
-
-            return true;
-        }
-        else
-        {
-            manager.gameEngine->SetMouseVisible(true);
-            manager.gameEngine->SetGrabInput(false);
-        }
+        manager.gameEngine->SetMouseVisible(true);
+        manager.gameEngine->SetGrabInput(false);
     }
+
 
     return false;
 }
