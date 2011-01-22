@@ -403,23 +403,23 @@ void WeaponFinder::Process()
 
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
-            const Player::Array& players = m_playManager->GetTargetsOf(m_shooter);
+            const Player::Array& targets = m_playManager->GetTargetsOf(m_shooter);
 
-            for(unsigned j = 0; j < players.size(); j++)
+            for(unsigned j = 0; j < targets.size(); j++)
             {
                 Vector3f ammodiri = m_bulletArray[i]->GetVelocity().Normalize();
-                Vector3f playerdiri = (players[j]->GetPos() - m_bulletArray[i]->GetPos()).Normalize();
+                Vector3f targetdiri = (targets[j]->GetPos() - m_bulletArray[i]->GetPos()).Normalize();
 
-                if(Vector3f::Dot(playerdiri, ammodiri) > 0.9f)
+                if(Vector3f::Dot(targetdiri, ammodiri) > 0.5f)
                 {
-                    minDist = min(players[j]->GetPos() - m_bulletArray[i]->GetPos(), minDist);
+                    minDist = min(targets[j]->GetPos() - m_bulletArray[i]->GetPos(), minDist);
                     targetLocked = true;
                 }
             }
 
             if(targetLocked)
             {
-                m_bulletArray[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed);
+                m_bulletArray[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed / 2.0f);
             }
         }
     }
@@ -544,10 +544,11 @@ void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
     Settings::Physics& worldSettings = m_playManager->manager.app->globalSettings.physics;
 
     BuildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
-    NewtonBodySetForceAndTorqueCallback(m_body, NULL);
     NewtonBodySetContinuousCollisionMode(m_body, true);
-
+    
+    m_applyGravity = false;
+    
     m_playManager->manager.material->AddBullet(this);
 
-    NewtonBodyAddImpulse(m_body, m_shootDiri*m_shootSpeed, m_startPos);
+    NewtonBodyAddImpulse(m_body, m_shootDiri * m_shootSpeed, m_startPos);
 }
