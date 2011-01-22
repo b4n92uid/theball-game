@@ -33,18 +33,19 @@ inline string WriteScore(vector<Settings::ScoreInfo>& scores)
     stringstream text;
 
     text << "Les Scores enregistrer" << endl;
-    text << "Nom : Date : Type : Carte : Temps : Score" << endl;
+    text << "Nom | Date | Type | Carte | Temps | Score" << endl;
     text << endl;
 
     for(unsigned i = 0; i < scores.size(); i++)
     {
         Settings::ScoreInfo& si = scores[i];
 
-        text << si.playerName << " : "
-                << from_time_t(si.timestamp) << " : "
-                << AppManager::UnsignedToPlayMod(si.playMod) << " : "
-                << si.levelName << " : "
-                << si.playTime << " sec : "
+        text 
+                << si.playerName << " | "
+                << from_time_t(si.timestamp) << " | "
+                << AppManager::UnsignedToPlayMod(si.playMod) << " | "
+                << si.levelName << " | "
+                << si.playTime << " sec | "
                 << si.score << " point(s)" << endl;
     }
 
@@ -1119,8 +1120,13 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->SetSession(MENU_LOAD);
 
         m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
-                                  "Chargement en cours...", curPlaySetting.winCond));
+                ->Write(gui::Text("%s en mode %s\n"
+                                  "Marquer %d points en %d sec pour passer au niveau suivant !\n"
+                                  "Chargement en cours...", 
+                                  curPlaySetting.playMap.name.c_str(), 
+                                  UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
+                                  curPlaySetting.playTime, 
+                                  curPlaySetting.winCond));
 
         m_guiManager->UpdateLayout();
 
@@ -1152,8 +1158,13 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->SetSession(MENU_LOAD);
 
         m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                ->Write(gui::Text("Marquer %d points pour passer au niveau suivant !\n"
-                                  "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+                ->Write(gui::Text("%s en mode %s\n"
+                                  "Marquer %d points en %d sec pour passer au niveau suivant !\n"
+                                  "Appuyer sur \"Espace\" pour continuer...", 
+                                  curPlaySetting.playMap.name.c_str(), 
+                                  UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
+                                  curPlaySetting.playTime, 
+                                  curPlaySetting.winCond));
 
         m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
