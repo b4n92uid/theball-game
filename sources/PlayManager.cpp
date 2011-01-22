@@ -70,14 +70,20 @@ PlayManager::~PlayManager()
         TiXmlElement* root = scoreDoc.RootElement();
 
         TiXmlElement party("party");
+
         party.SetAttribute("playerName", m_playSetting.playerName.name);
         party.SetAttribute("playerModel", m_playSetting.playerName.model);
-        party.SetAttribute("levelPath", m_playSetting.playMap.file);
+
         party.SetAttribute("levelName", m_playSetting.playMap.name);
+        party.SetAttribute("levelPath", m_playSetting.playMap.file);
+
         party.SetAttribute("playMod", m_playSetting.playMod);
+        party.SetAttribute("playTime", m_playSetting.playTime);
+
         party.SetAttribute("playersCount", m_playSetting.playerCount);
-        party.SetAttribute("playTime", m_playTimeManager.startChrono);
+
         party.SetAttribute("timestamp", m_playTimeManager.startTimestamp);
+
         party.SetAttribute("score", m_userPlayer->GetScore());
 
         root->InsertEndChild(party);
@@ -367,9 +373,16 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
         if(event->keyState[EventManager::KEY_F5])
         {
-            for(unsigned i = 0; i < m_players.size(); i++)
-                if(m_players[i] != m_userPlayer)
-                    UnRegisterPlayer(m_players[i]);
+            Player::Array copy = m_players;
+
+            for(unsigned i = 0; i < copy.size(); i++)
+                if(copy[i] != m_userPlayer)
+                {
+                    UnRegisterPlayer(copy[i]);
+                    delete copy[i];
+                }
+
+            m_players.clear();
         }
 
         if(event->keyState[EventManager::KEY_F6])
@@ -380,6 +393,9 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
             Player* player = new Player(this, "TEST_BOT", pi.model);
             RegisterPlayer(player);
+            ModSetupAi(player);
+
+            player->AttachController(NULL);
 
             manager.scene->GetRootNode()->AddChild(player);
         }
@@ -391,9 +407,9 @@ void PlayManager::ProcessDevelopperCodeEvent()
             Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
 
             Player* player = new Player(this, "TEST_BOT_AI", pi.model);
-            player->AttachController(new FragModeAi(this));
 
             RegisterPlayer(player);
+            ModSetupAi(player);
 
             manager.scene->GetRootNode()->AddChild(player);
         }
@@ -587,7 +603,7 @@ void PlayManager::GameProcess()
             item->ResetPosition();
     }
 
-    // Gestion du temps de jeu 
+    // Gestion du temps de jeu
     if(m_playSetting.playTime > 0)
     {
         if(m_playTimeManager.curChrono == 0 && !m_gameOver)
