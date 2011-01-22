@@ -96,15 +96,18 @@ void TeamModeAi::Process(Player* player)
                     }
                 }
 
-            m_targetPos = m_targetPlayer->GetPos();
+            if(m_targetPlayer)
+            {
+                m_targetPos = m_targetPlayer->GetPos();
 
-            // Recherche d'une position d'attack
-            do
-                m_strikePos = tools::rand(m_targetPos - m_strikPrimiter,
-                                          m_targetPos + m_strikPrimiter);
-            while(!m_mapAABB.IsInner(m_strikePos));
+                // Recherche d'une position d'attack
+                do
+                    m_strikePos = tools::rand(m_targetPos - m_strikPrimiter,
+                                              m_targetPos + m_strikPrimiter);
+                while(!m_mapAABB.IsInner(m_strikePos));
 
-            m_strikePos.y = 0;
+                m_strikePos.y = 0;
+            }
         }
 
         addForce = m_strikePos;
@@ -132,6 +135,22 @@ void TeamModeAi::Process(Player* player)
         else if(m_gustClock.IsEsplanedTime(m_aiParams.shootGustTime))
             m_gustCount = 0;
     }
+
+    if((AABB(-1, 1) + m_lastPos).IsInner(player)
+       && m_lastPosClock.IsEsplanedTime(2000))
+    {
+        do
+        {
+            m_strikePos = tools::rand(m_playManager->map.aabb);
+            m_strikePos.y = 1;
+            m_strikePos = m_playManager->parallelscene.newton->FindFloor(m_strikePos);
+        }
+        while(m_strikePos.y < m_playManager->map.aabb.min.y);
+
+        addForce = m_strikePos;
+    }
+    else
+        m_lastPos = playerPos;
 
     // Changement d'arme
     if(player->GetCurWeapon()->IsEmpty())

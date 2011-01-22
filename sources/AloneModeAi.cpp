@@ -102,6 +102,22 @@ void AloneModeAi::Process(Player* player)
             m_gustCount = 0;
     }
 
+    if((AABB(-1, 1) + m_lastPos).IsInner(player)
+       && m_lastPosClock.IsEsplanedTime(2000))
+    {
+        do
+        {
+            m_strikePos = tools::rand(m_playManager->map.aabb);
+            m_strikePos.y = 1;
+            m_strikePos = m_playManager->parallelscene.newton->FindFloor(m_strikePos);
+        }
+        while(m_strikePos.y < m_playManager->map.aabb.min.y);
+
+        addForce = m_strikePos;
+    }
+    else
+        m_lastPos = playerPos;
+
     if(player->GetCurWeapon()->IsEmpty())
         player->SwitchUpWeapon();
 
