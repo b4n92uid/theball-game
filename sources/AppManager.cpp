@@ -26,7 +26,21 @@ inline bool ScoreSortByValue(const Settings::ScoreInfo& p1, const Settings::Scor
         return p1.playerName > p2.playerName;
 }
 
-inline string WriteScore(vector<Settings::ScoreInfo>& scores)
+inline void WriteCampaignDescription(gui::TextBox* text, Settings::PartySetting& party)
+{
+    text->Write(gui::Text("Carte:       %s\n"
+                          "Mode:        %s\n"
+                          "Temps:       %d\n"
+                          "Joueurs:     %d\n"
+                          "Objectif:    %d point(s)",
+                          party.playMap.name.c_str(),
+                          AppManager::UnsignedToPlayMod(party.playMod).c_str(),
+                          party.playTime,
+                          party.playerCount,
+                          party.winCond));
+}
+
+inline void WriteScore(gui::TextBox* textbox, vector<Settings::ScoreInfo>& scores)
 {
     using namespace boost::posix_time;
 
@@ -40,7 +54,7 @@ inline string WriteScore(vector<Settings::ScoreInfo>& scores)
     {
         Settings::ScoreInfo& si = scores[i];
 
-        text 
+        text
                 << si.playerName << " | "
                 << from_time_t(si.timestamp) << " | "
                 << AppManager::UnsignedToPlayMod(si.playMod) << " | "
@@ -49,7 +63,7 @@ inline string WriteScore(vector<Settings::ScoreInfo>& scores)
                 << si.score << " point(s)" << endl;
     }
 
-    return text.str();
+    textbox->Write(text.str());
 }
 
 AppManager::AppManager()
@@ -216,13 +230,26 @@ void AppManager::SetupMenuGui()
 
     m_guiManager->AddLayout(Layout::Horizental, 10, 10);
     m_guiManager->AddLayoutStretchSpace();
+
+    // -------- Collone 1
     m_guiManager->AddLayout(Layout::Vertical, 10);
+    //    m_guiManager->AddLayoutSpace(screenSize.y / 4);
     m_guiManager->AddLayoutStretchSpace();
 
     m_controls.campaign.ret = m_guiManager->AddButton("ret", "Retour");
 
-    m_controls.campaign.levelSelect = m_guiManager->AddSwitchString("level_select");
-    m_guiManager->AddTextBox("")->Write("Niveau");
+    m_controls.campaign.play = m_guiManager->AddButton("play", "Jouer");
+
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->EndLayout();
+    // -------- Collone 1
+
+    m_guiManager->AddLayoutStretchSpace();
+
+    // -------- Collone 2
+    m_guiManager->AddLayout(Layout::Vertical, 10);
+    //    m_guiManager->AddLayoutSpace(screenSize.y / 4);
+    m_guiManager->AddLayoutStretchSpace();
 
     m_controls.campaign.playerSelect = m_guiManager->AddSwitchString("playerSelect");
     m_guiManager->AddTextBox("")->Write("Personnage");
@@ -230,10 +257,28 @@ void AppManager::SetupMenuGui()
     m_controls.campaign.playerName = m_guiManager->AddEditBox("nameSelect", "Joueur");
     m_guiManager->AddTextBox("")->Write("Pseudo");
 
-    m_controls.campaign.play = m_guiManager->AddButton("play", "Jouer");
+    m_guiManager->AddLayoutStretchSpace();
+    m_guiManager->EndLayout();
+    // -------- Collone 2
+
+    m_guiManager->AddLayoutStretchSpace();
+
+    // -------- Collone 3
+    m_guiManager->AddLayout(Layout::Vertical, 10);
+    //    m_guiManager->AddLayoutSpace(screenSize.y / 4);
+    m_guiManager->AddLayoutStretchSpace();
+
+    m_controls.campaign.description = m_guiManager->AddTextBox("description");
+    m_controls.campaign.description->SetBackground(GUI_TEXTBOX_H);
+    m_controls.campaign.description->SetBackgroundPadding(16);
+
+    m_controls.campaign.levelSelect = m_guiManager->AddSwitchString("level_select");
+    m_guiManager->AddTextBox("")->Write("Niveau");
 
     m_guiManager->AddLayoutStretchSpace();
     m_guiManager->EndLayout();
+    // -------- Collone 3
+
     m_guiManager->AddLayoutStretchSpace();
     m_guiManager->EndLayout();
 
@@ -550,9 +595,7 @@ void AppManager::SetupMenuGui()
              globalSettings.availableScore.end(),
              ScoreSortByValue);
 
-        string txt = WriteScore(globalSettings.availableScore);
-
-        m_controls.score.scoreText->Write(txt);
+        WriteScore(m_controls.score.scoreText, globalSettings.availableScore);
 
         m_controls.score.sortType
                 ->Push("Tri par date", 1)
@@ -669,8 +712,14 @@ void AppManager::UpdateGuiContent()
     unsigned campMapSize = min(globalSettings.campaign.maps.size(), globalSettings.campaign.index);
     for(unsigned i = 0; i <= campMapSize; i++)
     {
-        string label = tools::numToStr(i + 1) + "# " + globalSettings.campaign.maps[i].playMap.name;
+        string label = "Niveau " + tools::numToStr(i + 1);
         m_controls.campaign.levelSelect->Push(label, globalSettings.campaign.maps[i]);
+    }
+
+    {
+        Settings::PartySetting& party = globalSettings.campaign.maps[campMapSize];
+
+        WriteCampaignDescription(m_controls.campaign.description, party);
     }
 
     // Ball a jouer
@@ -771,7 +820,14 @@ void AppManager::ProcessMainMenuEvent()
 
 void AppManager::ProcessCampaignMenuEvent()
 {
-    if(m_controls.campaign.play->IsActivate())
+    if(m_controls.campaign.levelSelect->IsActivate())
+    {
+        Settings::PartySetting party = m_controls.campaign.levelSelect->GetData()
+                .GetValue<Settings::PartySetting > ();
+
+        WriteCampaignDescription(m_controls.campaign.description, party);
+    }
+    else if(m_controls.campaign.play->IsActivate())
     {
         Settings::PartySetting party = m_controls.campaign.levelSelect->GetData()
                 .GetValue<Settings::PartySetting > ();
@@ -908,8 +964,7 @@ void AppManager::ProcessScoreMenuEvent()
                 break;
         }
 
-        const string& txt = WriteScore(globalSettings.availableScore);
-        m_controls.score.scoreText->Write(txt);
+        WriteScore(m_controls.score.scoreText, globalSettings.availableScore);
     }
 }
 
@@ -1122,10 +1177,10 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->GetControl<gui::TextBox > ("load:stateText")
                 ->Write(gui::Text("%s en mode %s\n"
                                   "Marquer %d points en %d sec pour passer au niveau suivant !\n"
-                                  "Chargement en cours...", 
-                                  curPlaySetting.playMap.name.c_str(), 
+                                  "Chargement en cours...",
+                                  curPlaySetting.playMap.name.c_str(),
                                   UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                  curPlaySetting.playTime, 
+                                  curPlaySetting.playTime,
                                   curPlaySetting.winCond));
 
         m_guiManager->UpdateLayout();
@@ -1160,10 +1215,10 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->GetControl<gui::TextBox > ("load:stateText")
                 ->Write(gui::Text("%s en mode %s\n"
                                   "Marquer %d points en %d sec pour passer au niveau suivant !\n"
-                                  "Appuyer sur \"Espace\" pour continuer...", 
-                                  curPlaySetting.playMap.name.c_str(), 
+                                  "Appuyer sur \"Espace\" pour continuer...",
+                                  curPlaySetting.playMap.name.c_str(),
                                   UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                  curPlaySetting.playTime, 
+                                  curPlaySetting.playTime,
                                   curPlaySetting.winCond));
 
         m_eventMng->keyState[EventManager::KEY_SPACE] = false;
