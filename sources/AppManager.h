@@ -139,6 +139,7 @@ protected:
             tbe::gui::Button* ret;
             tbe::gui::SwitchString* playerSelect;
             tbe::gui::EditBox* playerName;
+            tbe::gui::TextBox* description;
 
         } campaign;
 
