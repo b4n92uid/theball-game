@@ -1,22 +1,29 @@
 # Ball level descriptor
-# Generated 2011-Jan-20 22:05:50
+# Generated 2011-Jan-22 13:46:29
 
 .map
 name=Hole
-ambient=0,0,0,1
+ambient=0.2,0.2,0,1
 
 .music
 filePath=data/music/triggered.ogg
 
+.skybox
+front=data/gfxart/skybox/hs-front.png
+back=data/gfxart/skybox/hs-back.png
+top=data/gfxart/skybox/hs-top.png
+bottom=data/gfxart/skybox/hs-bottom.png
+left=data/gfxart/skybox/hs-right.png
+right=data/gfxart/skybox/hs-left.png
+
 # Light
 
 +light
-type=POINT
-pos=0.757735,10.6,-0.22286
+type=DIRI
+pos=-0.337502,8.45,17.563
 ambient=0,0,0,0
-diffuse=1,1,1,1
-specular=0,0,0,0
-radius=16
+diffuse=1,0.6,0.6,1
+specular=1,0.5,0.5,1
 
 # Static
 
@@ -29,130 +36,130 @@ modelPath=data/models/maps/hole.obj
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,-4,0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,5,-15,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=-2.87868e-008,0,1,0,0,1,0,0,-1,0,-2.87868e-008,0,15,5,0,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=-2.87868e-008,0,1,0,0,1,0,0,-1,0,-2.87868e-008,0,-15,5,0,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,5,15,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,0,2,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,-4,0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.05013,0,1.96313,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-4,-0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,0,-2,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-4,2,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,0,-2,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.00416261,-4,2.0624,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,1.9727,-4,2.04189,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,-4,-2,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,-4,-2,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,-4,-2,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
 action=JUMPER
 
 # Item
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,1,-14,1
-add=SHOTGUN
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,-14,1
-add=SHOTGUN
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,14,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,11,5,-2,1
 add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,1,14,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,10.9941,5,0.099824,1
 add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,14.0224,1,3.00117,1
-add=BOMB
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,11,5,2,1
+add=FINDER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,1,-3,1
-add=BOMB
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,5,-12,1
+add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,2,-13,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.0999781,5,-12.0021,1
+add=SHOTGUN
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,5,-12,1
+add=SHOTGUN
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-12,5,-2,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-14,2,-0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-12.0043,5,-0.0295065,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,2,14,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-12,5,2,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,14,2,-0,1
-add=AMMO
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,5,13,1
+add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,11,3,12,1
-add=SUPERLIFE
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,5,13,1
+add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-11,3,-12,1
-add=FATALSHOT
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,5,13,1
+add=LIFE
 
 # Spawn
 
 +node
 type=SPAWN
-pos=0,-2,0
+pos=0,1,0
 
 +node
 type=SPAWN
-pos=0,2,-12
+pos=-12,14,-12
 
 +node
 type=SPAWN
-pos=0,2,13
+pos=12,14,12
 
 +node
 type=SPAWN
-pos=13,2,0
+pos=-13,14,12
 
 +node
 type=SPAWN
-pos=-13,2,0
+pos=12,14,-12
 
