@@ -1,20 +1,20 @@
 # Ball level descriptor
-# Generated 2011-Jan-20 18:13:53
+# Generated 2011-Jan-22 13:53:08
 
 .map
 name=Ramp
-ambient=0.1,0.1,0.1,0.1
+ambient=0.1,0.1,0.2,1
 
 .music
 filePath=data/music/hyperdrop.ogg
 
 .skybox
-front=data/gfxart/skybox/lnh-stars3c.jpg
-back=data/gfxart/skybox/lnh-stars3c.jpg
-top=data/gfxart/skybox/lnh-stars3c.jpg
-bottom=data/gfxart/skybox/lnh-stars3c.jpg
-left=data/gfxart/skybox/lnh-stars3c.jpg
-right=data/gfxart/skybox/lnh-stars3c.jpg
+front=data/gfxart/skybox/ap-front.png
+back=data/gfxart/skybox/ap-back.png
+top=data/gfxart/skybox/ap-top.png
+bottom=data/gfxart/skybox/ap-bottom.png
+left=data/gfxart/skybox/ap-left.png
+right=data/gfxart/skybox/ap-right.png
 
 # Light
 
@@ -23,7 +23,7 @@ type=DIRI
 pos=0.86278,0.885,0.381015
 ambient=0,0,0,0
 diffuse=1,1,1,1
-specular=0,0,0,0
+specular=0.5,0.5,1,1
 
 # Static
 
@@ -170,17 +170,33 @@ add=BOMB
 
 +node
 type=SPAWN
-pos=6,3,-9
+pos=8,4,-9
 
 +node
 type=SPAWN
-pos=-5,3,-9
+pos=-7,4,-9
 
 +node
 type=SPAWN
-pos=-6,3,11
+pos=-7,4,11
 
 +node
 type=SPAWN
-pos=5.02118,3,10.9978
+pos=7,4,11
+
++node
+type=SPAWN
+pos=22,11,11
+
++node
+type=SPAWN
+pos=22,11,-11
+
++node
+type=SPAWN
+pos=-22,11,-12
+
++node
+type=SPAWN
+pos=-22,11,13
 

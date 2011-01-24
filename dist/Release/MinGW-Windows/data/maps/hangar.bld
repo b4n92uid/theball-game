@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2011-Jan-14 14:35:31
+# Generated 2011-Jan-22 12:35:33
 
 .map
 name=Hangar
@@ -43,7 +43,7 @@ radius=8
 
 +node
 type=STATIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,0,0,1
 modelPath=data/models/maps/hangar.obj
 
 # Dynamic
@@ -72,84 +72,103 @@ action=TELEPORTER
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,4,-9,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,4,-9,1
-add=AMMO
-
-+node
-type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,1,4,-9,1
+add=SHOTGUN
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-7,6,4,1
+add=FATALSHOT
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,10,4,6,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,4,5,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,1,4,-7,1
 add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,4,3,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,4,-9,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,4,-7,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,10,4,4,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,9.99922,4,1.96565,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,10,4,-0,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,4,6,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,4,4,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,4,2,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-10,4,0,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,4,-7,1
 add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4,4,1,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,4,-9,1
 add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,4,1,1
-add=FINDER
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,4,3,1
-add=FINDER
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,4,4,5,1
-add=FINDER
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,4,10,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2.05,4,9.9993,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,4,-7,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,7,6,3,1
 add=SUPERLIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,4,13,1
-add=FATALSHOT
 
 # Spawn
 
 +node
 type=SPAWN
-pos=-8,4,13
+pos=0,13,-9
 
 +node
 type=SPAWN
-pos=8,4,13
+pos=-7,4,-8
 
 +node
 type=SPAWN
-pos=5,4,-7
+pos=7,4,-8
 
 +node
 type=SPAWN
-pos=-4.95003,4,-6.99834
+pos=4,4,16
+
++node
+type=SPAWN
+pos=-4,4,16
 
