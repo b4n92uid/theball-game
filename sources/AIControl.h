@@ -46,6 +46,9 @@ protected:
 
     tbe::Vector3f m_lastPos;
     tbe::ticks::Clock m_lastPosClock;
+
+    tbe::ticks::Clock m_gustClock;
+    unsigned m_gustCount;
 };
 
 #endif	/* _AIMANAGER_H */

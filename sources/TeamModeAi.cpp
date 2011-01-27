@@ -34,11 +34,11 @@ void TeamModeAi::Process(Player* player)
 
     // Test de collision avec la map
 
-    bool isCollidWithMap = false;
-
-    for(unsigned i = 0; i < staticObjects.size(); i++)
-        if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
-            break;
+    //    bool isCollidWithMap = false;
+    //
+    //    for(unsigned i = 0; i < staticObjects.size(); i++)
+    //        if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
+    //            break;
 
     // Recherche d'item
 

@@ -20,10 +20,6 @@ public:
     ~AloneModeAi();
 
     void Process(Player* player);
-
-private:
-    tbe::ticks::Clock m_gustClock;
-    unsigned m_gustCount;
 };
 
 #endif	/* _ALONEMODEAI_H */
