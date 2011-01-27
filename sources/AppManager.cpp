@@ -28,16 +28,16 @@ inline bool ScoreSortByValue(const Settings::ScoreInfo& p1, const Settings::Scor
 
 inline void WriteCampaignDescription(gui::TextBox* text, Settings::PartySetting& party)
 {
-    text->Write(gui::Text("Carte:       %s\n"
-                          "Mode:        %s\n"
-                          "Temps:       %d\n"
-                          "Joueurs:     %d\n"
-                          "Objectif:    %d point(s)",
-                          party.playMap.name.c_str(),
-                          AppManager::UnsignedToPlayMod(party.playMod).c_str(),
-                          party.playTime,
-                          party.playerCount,
-                          party.winCond));
+    text->Write(gui::GuiString("Carte:       %s\n"
+                               "Mode:        %s\n"
+                               "Temps:       %d\n"
+                               "Joueurs:     %d\n"
+                               "Objectif:    %d point(s)",
+                               party.playMap.name.c_str(),
+                               AppManager::UnsignedToPlayMod(party.playMod).c_str(),
+                               party.playTime,
+                               party.playerCount,
+                               party.winCond));
 }
 
 inline void WriteScore(gui::TextBox* textbox, vector<Settings::ScoreInfo>& scores)
@@ -1175,13 +1175,13 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->SetSession(MENU_LOAD);
 
         m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                ->Write(gui::Text("%s en mode %s\n"
-                                  "Marquer %d points en %d sec pour passer au niveau suivant !\n"
-                                  "Chargement en cours...",
-                                  curPlaySetting.playMap.name.c_str(),
-                                  UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                  curPlaySetting.playTime,
-                                  curPlaySetting.winCond));
+                ->Write(gui::GuiString("%s en mode %s\n"
+                                       "Marquer %d points en %d sec pour passer au niveau suivant !\n"
+                                       "Chargement en cours...",
+                                       curPlaySetting.playMap.name.c_str(),
+                                       UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
+                                       curPlaySetting.playTime,
+                                       curPlaySetting.winCond));
 
         m_guiManager->UpdateLayout();
 
@@ -1213,13 +1213,13 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->SetSession(MENU_LOAD);
 
         m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                ->Write(gui::Text("%s en mode %s\n"
-                                  "Marquer %d points en %d sec pour passer au niveau suivant !\n"
-                                  "Appuyer sur \"Espace\" pour continuer...",
-                                  curPlaySetting.playMap.name.c_str(),
-                                  UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                  curPlaySetting.playTime,
-                                  curPlaySetting.winCond));
+                ->Write(gui::GuiString("%s en mode %s\n"
+                                       "Marquer %d points en %d sec pour passer au niveau suivant !\n"
+                                       "Appuyer sur \"Espace\" pour continuer...",
+                                       curPlaySetting.playMap.name.c_str(),
+                                       UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
+                                       curPlaySetting.playTime,
+                                       curPlaySetting.winCond));
 
         m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
@@ -1287,8 +1287,8 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
             m_guiManager->SetSession(MENU_LOAD);
 
             m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                    ->Write(gui::Text("Nouveau niveau déploqué !\n"
-                                      "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+                    ->Write(gui::GuiString("Nouveau niveau déploqué !\n"
+                                           "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
 
             if(!globalSettings.noaudio)
                 FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
@@ -1310,8 +1310,8 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
             m_guiManager->SetSession(MENU_LOAD);
 
             m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                    ->Write(gui::Text("FELECITATION JEU TERMINER !!!\n"
-                                      "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+                    ->Write(gui::GuiString("FELECITATION JEU TERMINER !!!\n"
+                                           "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
 
             if(!globalSettings.noaudio)
                 FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
