@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2011-Jan-14 14:37:24
+# Generated 2011-Jan-26 18:23:38
 
 .map
 name=Greek
@@ -174,26 +174,6 @@ add=SHOTGUN
 type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,7,1,10,1
 add=SHOTGUN
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,5,1,4,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,5,1,-5,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-5.9,1,-5.0007,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-6,1,4,1
-add=BOMB
 
 +node
 type=ITEM
