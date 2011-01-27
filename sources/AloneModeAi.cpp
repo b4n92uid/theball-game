@@ -60,11 +60,11 @@ void AloneModeAi::Process(Player* player)
 
     // -------------------------------------------------------------------------
 
-    bool isCollidWithMap = false;
-
-    for(unsigned i = 0; i < staticObjects.size(); i++)
-        if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
-            break;
+    //    bool isCollidWithMap = false;
+    //
+    //    for(unsigned i = 0; i < staticObjects.size(); i++)
+    //        if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
+    //            break;
 
     // -------------------------------------------------------------------------
 

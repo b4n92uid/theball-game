@@ -319,12 +319,17 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
             // In the floor
             if(event->keyState['F'])
             {
-                if(event->keyState[EventManager::KEY_LALT])
-                    pos.y = -m_selectedNode->GetAabb().min.y;
-                else
-                    pos.y = 0;
+                Vector3f start = pos;
+                start.y += m_selectedNode->GetAabb().max.y;
 
-                pos = parallelscene.newton->FindFloor(pos);
+                Vector3f end = map.aabb.min;
+                end.x = pos.x;
+                end.z = pos.z;
+
+                pos = parallelscene.newton->FindZeroMassBody(start, end);
+
+                if(event->keyState[EventManager::KEY_LALT])
+                    pos.y += -m_selectedNode->GetAabb().min.y;
             }
 
             // In the gride
