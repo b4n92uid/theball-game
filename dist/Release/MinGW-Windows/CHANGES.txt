@@ -1,18 +1,38 @@
 theBall 1.2
 ===========
 * Portabilité sur linux
-* Mise a jour du moteur audio FmodEX
-* Plusieur améliorations sur les cartes (audio, models...)
-* Ajout d'un nouveau modele de ball : Void
-* Effet ralentie des sons en bullettime
-* Amélioration sur l'ETH
-* Immunuté de départ (pour éviter les embuscade :p)
-* Modularité des score par le nombre des joueurs et la durée de la  partie
-* Ré-apparition sur les cartes par point définé
-* Apparition des joueurs différé
+* Mise à jour du moteur audio FmodEX
+* Plusieurs améliorations sur les cartes (audio, modèles...)
+* Ajout d'un nouveau modèle de balle : Void
+* Effet ralenti des sons en bullettime
+* Amélioration sur l'ETH (HUD)
+* Immunité de départ (pour éviter les embuscades :p)
+* Modularité des scores par le nombre des joueurs et la durée de la partie
+* Ré-apparition sur les cartes par point défini
+* Apparition des joueurs différés
 * Nommage des bots par des noms défini
-* Changement sur les models des objets dynamiques
+* Changement sur les modèles des objets dynamiques
 * Corrections sur les particules
+* Paramètre de lancement "noaudio" pour désactiver le support audio
+* Icone d'affichage au-dessus des joueurs
+* Comportement Bomb par 8 tires omnidirectionnelles
+* Réduction des textures pleinsécrans
+* Mode campaign avec 16 cartes en continu (+ Musiques)
+* Support du skybox moin de 6 textures
+* Effet plein-écran par PPE (si disponible)
+* Amélioration SFX
+* Réduction de la qualité des PPE
+* Choix des armes par numéros
+* AI : Tire en rafale
+* Correction sur le saut par pente trop raide
+* AI : paramètres depuis un fichier
+* Ajout d'un nouveau modèle de balle : Orb
+* Amélioration de la recherche du Finder
+* Diminution du score lors d'un dommage
+* Éditeur : confirmation de fermeture & notification enregistrement
+* Déplacement de lumière directionnelle par axe
+* AI : Correction de blocage sur la carte
+* Éditeur : Mise au sol relatif à l'objet
 
 theBall 1.1
 ===========
