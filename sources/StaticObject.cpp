@@ -34,7 +34,7 @@ StaticObject::StaticObject(GameManager* gameManager, std::string path,
 
 Object* StaticObject::CloneToObject()
 {
-    StaticObject* so = new StaticObject(m_gameManager, m_filepath, m_matrix);
+    StaticObject* so = new StaticObject(m_gameManager, m_filename, m_matrix);
     m_gameManager->RegisterStatic(so);
     return so;
 }
@@ -46,7 +46,7 @@ void StaticObject::OutputConstruction(std::iostream& stream)
     stream << "+node" << endl;
     stream << "type=STATIC" << endl;
     stream << "matrix=" << m_matrix << endl;
-    stream << "modelPath=" << m_filepath << endl;
+    stream << "modelPath=" << m_filename << endl;
     stream << endl;
 }
 
