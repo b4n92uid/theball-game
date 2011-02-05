@@ -146,39 +146,42 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
 
     // PPE ---------------------------------------------------------------------
 
-    if(manager.app->globalSettings.video.usePpe)
+    const Settings::Video& vidSets = manager.app->globalSettings.video;
+
+    if(vidSets.usePpe)
     {
         using namespace tbe::ppe;
 
         ppe.boost = new MotionBlurEffect;
         ppe.boost->SetEnable(false);
-        ppe.boost->SetIntensity(0.75);
+        ppe.boost->SetIntensity(vidSets.ppe.boostIntensity);
         manager.ppe->AddPostEffect("boostEffect", ppe.boost);
 
         ppe.bullettime = new ColorEffect;
         ppe.bullettime->SetInternalPass(true);
-        ppe.bullettime->SetRttFrameSize(256);
+        ppe.bullettime->SetRttFrameSize(vidSets.ppe.bullettimeSize);
         ppe.bullettime->SetFusionMode(ColorEffect::BLACK_WHITE);
-        ppe.bullettime->SetColor(Vector4f(1, 1, 1, 1));
+        ppe.bullettime->SetColor(vidSets.ppe.bullettimeColor);
         ppe.bullettime->SetEnable(false);
         manager.ppe->AddPostEffect("blettimeEffect", ppe.bullettime);
 
         ppe.dammage = new ColorEffect;
         ppe.dammage->SetInternalPass(true);
         ppe.dammage->SetFusionMode(ColorEffect::MULTIPLICATION_COLOR);
-        ppe.dammage->SetColor(Vector4f(1, 0, 0, 1));
+        ppe.dammage->SetColor(vidSets.ppe.dammageColor);
         ppe.dammage->SetEnable(false);
         manager.ppe->AddPostEffect("dammageEffect", ppe.dammage);
 
         ppe.gameover = new BlurEffect;
-        ppe.gameover->SetPasse(2);
+        ppe.gameover->SetPasse(vidSets.ppe.gameoverPass);
         ppe.gameover->SetEnable(false);
-        manager.ppe->AddPostEffect("blur", ppe.gameover);
+        manager.ppe->AddPostEffect("gameoverEffect", ppe.gameover);
 
         ppe.bloom = new BloomEffect;
-        ppe.bloom->SetThreshold(0.5);
-        ppe.bloom->SetIntensity(0.75);
-        ppe.bloom->SetBlurPass(10);
+        ppe.bloom->SetRttFrameSize(vidSets.ppe.worldSize);
+        ppe.bloom->SetIntensity(vidSets.ppe.worldIntensity);
+        ppe.bloom->SetThreshold(vidSets.ppe.worldThershold);
+        ppe.bloom->SetBlurPass(vidSets.ppe.worldBlurPass);
         manager.ppe->AddPostEffect("worldEffect", ppe.bloom);
     }
 }

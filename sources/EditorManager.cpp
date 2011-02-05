@@ -90,20 +90,18 @@ void EditorManager::SetupMap(const Settings::EditSetting& editSetting)
 
     // PPE ---------------------------------------------------------------------
 
+    const Settings::Video& vidSets = manager.app->globalSettings.video;
+
     if(manager.app->globalSettings.video.usePpe)
     {
         using namespace tbe::ppe;
 
         ppe.bloom = new BloomEffect;
-        ppe.bloom->SetThreshold(0.5);
-        ppe.bloom->SetIntensity(0.75);
-        ppe.bloom->SetBlurPass(10);
+        ppe.bloom->SetRttFrameSize(vidSets.ppe.worldSize);
+        ppe.bloom->SetIntensity(vidSets.ppe.worldIntensity);
+        ppe.bloom->SetThreshold(vidSets.ppe.worldThershold);
+        ppe.bloom->SetBlurPass(vidSets.ppe.worldBlurPass);
         manager.ppe->AddPostEffect("worldEffect", ppe.bloom);
-
-        //        ppe.blur = new BlurEffect;
-        //        ppe.blur->SetPasse(5);
-        //        ppe.blur->SetEnable(false);
-        //        manager.ppe->AddPostEffect("blur", ppe.blur);
     }
 }
 
