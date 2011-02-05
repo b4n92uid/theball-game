@@ -114,7 +114,8 @@ void FragModeAi::Process(Player* player)
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
             for(unsigned i = 0; i < players.size(); i++)
-                if(!players[i]->IsKilled() && m_mapAABB.IsInner(players[i]))
+                if(!players[i]->IsKilled() && m_mapAABB.IsInner(players[i])
+                   && players[i]->IsVisibleFromIA())
                 {
                     Vector3f testedDist = players[i]->GetPos() - playerPos;
 

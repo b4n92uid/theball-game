@@ -152,11 +152,18 @@ public:
             return true;
         }
 
+        virtual bool IsInvisible(Player* player)
+        {
+            return false;
+        }
+
         typedef std::vector<CheckMe*> Array;
     };
 
 
     void AddCheckPoint(CheckMe* cm);
+    void SetVisibleFromIA(bool visibleFromIA);
+    bool IsVisibleFromIA() const;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;
@@ -166,6 +173,7 @@ protected:
     int m_score;
     bool m_killed;
     bool m_boostAvalaible;
+    bool m_visibleFromIA;
 
     CheckMe::Array m_checkMe;
 
