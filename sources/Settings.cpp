@@ -47,7 +47,24 @@ void Settings::ReadVideo()
         if(name == "bits") video.bits = *reinterpret_cast<unsigned*>(&value);
         if(name == "antialiasing") video.antialiasing = *reinterpret_cast<unsigned*>(&value);
         if(name == "fullscreen") video.fullScreen = value;
-        if(name == "useppe") video.usePpe = value;
+        if(name == "useppe")
+        {
+            video.usePpe = value;
+
+            node2->QueryValueAttribute("boostIntensity", &video.ppe.boostIntensity);
+
+            node2->QueryValueAttribute("dammageColor", &video.ppe.dammageColor);
+
+            node2->QueryValueAttribute("gameoverPass", &video.ppe.gameoverPass);
+
+            node2->QueryValueAttribute("bullettimeColor", &video.ppe.bullettimeColor);
+            node2->QueryValueAttribute("bullettimeSize", &video.ppe.bullettimeSize);
+
+            node2->QueryValueAttribute("worldSize", &video.ppe.worldSize);
+            node2->QueryValueAttribute("worldThershold", &video.ppe.worldThershold);
+            node2->QueryValueAttribute("worldIntensity", &video.ppe.worldIntensity);
+            node2->QueryValueAttribute("worldBlurPass", &video.ppe.worldBlurPass);
+        }
     }
 }
 
@@ -238,12 +255,12 @@ void Settings::ReadCampaign()
         PartySetting party;
 
         party.playMap = MapInfo(node->Attribute("map"));
-        
+
         node->QueryValueAttribute<unsigned>("playMode", &party.playMod);
         node->QueryValueAttribute<unsigned>("playTime", &party.playTime);
-        
+
         node->QueryValueAttribute<unsigned>("playerCount", &party.playerCount);
-        
+
         node->QueryValueAttribute<unsigned>("winCond", &party.winCond);
 
         party.curLevel = campaign.maps.size();

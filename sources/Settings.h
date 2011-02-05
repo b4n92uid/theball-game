@@ -56,6 +56,25 @@ public:
         unsigned lod;
 
         float guiSizeFactor;
+
+        struct Ppe
+        {
+            float boostIntensity;
+
+            tbe::Vector2f bullettimeSize;
+            tbe::Vector4f bullettimeColor;
+
+            tbe::Vector4f dammageColor;
+
+            int gameoverPass;
+
+            tbe::Vector2f worldSize;
+            float worldThershold;
+            float worldIntensity;
+            float worldBlurPass;
+
+        } ppe;
+
     } video;
 
     struct Control
