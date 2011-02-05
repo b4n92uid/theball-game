@@ -25,6 +25,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_curWeapon = m_weaponsPack.end();
     m_killed = false;
     m_boostAvalaible = true;
+    m_visibleFromIA = true;
     m_score = 0;
     m_life = 100;
     m_attachedCotroller = NULL;
@@ -370,6 +371,16 @@ void Player::AddCheckPoint(CheckMe* cm)
     m_checkMe.push_back(cm);
 }
 
+void Player::SetVisibleFromIA(bool visibleFromIA)
+{
+    this->m_visibleFromIA = visibleFromIA;
+}
+
+bool Player::IsVisibleFromIA() const
+{
+    return m_visibleFromIA;
+}
+
 void Player::TakeDammage(Bullet* ammo)
 {
     for(unsigned i = 0; i < m_checkMe.size(); i++)
@@ -425,6 +436,8 @@ Player::StartProtection::StartProtection(Player* player)
 
     for(unsigned i = 0; i < mats.size(); i++)
         mats[i]->Enable(Material::BLEND_MOD);
+
+    player->SetVisibleFromIA(false);
 }
 
 bool Player::StartProtection::OnShoot(Player*)
@@ -455,6 +468,8 @@ bool Player::StartProtection::Shutdown(Player* player)
 
         for(unsigned i = 0; i < mats.size(); i++)
             mats[i]->Disable(Material::BLEND_MOD);
+
+        player->SetVisibleFromIA(true);
 
         return true;
     }

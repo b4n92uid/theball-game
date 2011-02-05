@@ -84,17 +84,18 @@ void TeamModeAi::Process(Player* player)
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
             for(unsigned i = 0; i < players.size(); i++)
-                if(players[i] != player && !players[i]->IsKilled()
-                   && m_mapAABB.IsInner(players[i]))
-                {
-                    Vector3f testedDist = players[i]->GetPos() - playerPos;
 
-                    if(testedDist < minDist)
+                if(!players[i]->IsKilled() && m_mapAABB.IsInner(players[i])
+                   && players[i]->IsVisibleFromIA())
                     {
-                        minDist = testedDist;
-                        m_targetPlayer = players[i];
+                        Vector3f testedDist = players[i]->GetPos() - playerPos;
+
+                        if(testedDist < minDist)
+                        {
+                            minDist = testedDist;
+                            m_targetPlayer = players[i];
+                        }
                     }
-                }
 
             if(m_targetPlayer)
             {
