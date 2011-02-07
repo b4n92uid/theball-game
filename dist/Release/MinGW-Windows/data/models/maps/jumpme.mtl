@@ -1,13 +1,13 @@
 # Blender3D MTL File: jumpme.blend
 # Material Count: 1
-newmtl Material_brick005.jpg.001
+newmtl Material_glassblock05.jpg
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
-Ks 0.000000 0.000000 0.000000
+Ks 1.000000 1.000000 1.000000
 Ni 1.000000
 d 1.000000
-illum 1
-map_Kd brick005.jpg
+illum 2
+map_Kd glassblock05.jpg
 
 
