@@ -205,9 +205,7 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     if(m_playSetting.winCond > 0)
     {
-        if(m_userBleuTeam && blueScore >= m_playSetting.winCond && blueScore > redScore)
-            ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
-        else if(!m_userBleuTeam && redScore >= m_playSetting.winCond && redScore > blueScore)
+        if(m_userPlayer->GetScore() >= m_playSetting.winCond)
             ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
         else
             ss << "<< VOUS AVEZ PERDU !!! >>" << endl;
