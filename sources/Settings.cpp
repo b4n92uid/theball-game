@@ -237,6 +237,50 @@ void Settings::ReadPlayerInfo()
     }
 }
 
+void Settings::ReadProfiles()
+{
+    TiXmlDocument profilesDoc("profiles.xml");
+
+    if(profilesDoc.LoadFile())
+    {
+        TiXmlElement* root = profilesDoc.FirstChildElement();
+
+        TiXmlElement* defprofil = root->FirstChildElement();
+        profile.name = defprofil->Attribute("name");
+        defprofil->QueryValueAttribute<unsigned>("index", &profile.index);
+    }
+    else
+    {
+        TiXmlElement root("root");
+
+        TiXmlElement defprofile("profile");
+
+        string name = "Joueur";
+
+        #ifdef COMPILE_FOR_WINDOWS
+        {
+            DWORD bufSize = 255;
+            char userName[bufSize];
+            GetUserName(userName, &bufSize);
+            name = userName;
+        }
+        #endif
+
+        defprofile.SetAttribute("name", name);
+        defprofile.SetAttribute("index", 0);
+
+        profile.name = name;
+        profile.index = 0;
+
+        root.InsertEndChild(defprofile);
+
+        TiXmlDeclaration dec("1.0", "ISO-8859-1", "");
+        profilesDoc.InsertEndChild(dec);
+        profilesDoc.InsertEndChild(root);
+        profilesDoc.SaveFile();
+    }
+}
+
 void Settings::ReadCampaign()
 {
     TiXmlDocument config("campaign.xml");
@@ -247,8 +291,6 @@ void Settings::ReadCampaign()
     campaign.maps.clear();
 
     TiXmlNode* root = config.FirstChildElement();
-
-    root->ToElement()->QueryValueAttribute<unsigned>("index", &campaign.index);
 
     for(TiXmlElement* node = root->FirstChildElement(); node; node = node->NextSiblingElement())
     {
@@ -293,6 +335,7 @@ void Settings::ReadSetting()
 {
     ReadAi();
     ReadCampaign();
+    ReadProfiles();
     ReadVideo();
     ReadControl();
     ReadPhysics();
@@ -379,24 +422,27 @@ void Settings::SaveControl()
     config.SaveFile();
 }
 
-void Settings::SaveCampaign()
+void Settings::SaveProfiles()
 {
-    TiXmlDocument config("campaign.xml");
+    TiXmlDocument profilesDoc("profiles.xml");
 
-    if(!config.LoadFile())
-        throw tbe::Exception("ReadMapInfo; Open file error");
+    if(!profilesDoc.LoadFile())
+        throw tbe::Exception("Settings::SaveProfiles; Open file error");
 
-    TiXmlNode* root = config.FirstChildElement();
+    TiXmlElement* root = profilesDoc.FirstChildElement();
+    TiXmlElement* defprofil = root->FirstChildElement();
 
-    root->ToElement()->SetAttribute("index", campaign.index);
+    defprofil->SetAttribute("name", profile.name);
+    defprofil->SetAttribute("index", profile.index);
 
-    config.SaveFile();
+    profilesDoc.SaveFile();
 }
 
 void Settings::SaveSetting()
 {
     SaveVideo();
     SaveControl();
+    SaveProfiles();
 }
 
 void Settings::FillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager)
