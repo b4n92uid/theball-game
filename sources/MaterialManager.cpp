@@ -44,8 +44,8 @@ void PlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, 
         return;
 
     NewtonWorld* nWorld = NewtonBodyGetWorld(body0);
-    PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
-    int playerGroup = playManager->manager.material->GetPlayersGroupe();
+    GameManager* gameManager = static_cast<GameManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
+    int playerGroup = gameManager->manager.material->GetPlayersGroupe();
 
     Player* player = NULL;
     NewtonNode* obj = NULL;
@@ -75,8 +75,8 @@ void PlayerOnDynamicContactsProcess(const NewtonJoint* contact, dFloat, int)
         return;
 
     NewtonWorld* nWorld = NewtonBodyGetWorld(body0);
-    PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
-    int playerGroup = playManager->manager.material->GetPlayersGroupe();
+    GameManager* gameManager = static_cast<GameManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
+    int playerGroup = gameManager->manager.material->GetPlayersGroupe();
 
     Player* player = NULL;
     DynamicObject* obj = NULL;
@@ -108,8 +108,8 @@ int PlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* 
     Item* item = NULL;
 
     NewtonWorld* nWorld = NewtonBodyGetWorld(body0);
-    PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
-    int itemGroup = playManager->manager.material->GetItemGroupe();
+    GameManager* gameManager = static_cast<GameManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
+    int itemGroup = gameManager->manager.material->GetItemGroupe();
 
     if(group0 == itemGroup)
     {
@@ -140,8 +140,8 @@ void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int)
         return;
 
     NewtonWorld* nWorld = NewtonBodyGetWorld(body0);
-    PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
-    int weaponGroup = playManager->manager.material->GetWeaponsGroupe();
+    GameManager* gameManager = static_cast<GameManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
+    int weaponGroup = gameManager->manager.material->GetWeaponsGroupe();
 
     Bullet* bullet = NULL;
 
@@ -170,8 +170,8 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
     Bullet* bullet = NULL;
 
     NewtonWorld* nWorld = NewtonBodyGetWorld(body0);
-    PlayManager* playManager = static_cast<PlayManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
-    int weaponGroup = playManager->manager.material->GetWeaponsGroupe();
+    GameManager* gameManager = static_cast<GameManager*>(NewtonMaterialGetUserData(nWorld, group0, group1));
+    int weaponGroup = gameManager->manager.material->GetWeaponsGroupe();
 
     if(group0 == weaponGroup)
     {
@@ -186,6 +186,7 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
     }
 
     striker = bullet->GetWeapon()->GetShooter();
+    PlayManager* playManager = striker->GetPlayManager();
 
     if(striked == striker)
         return 0;
@@ -228,9 +229,9 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
     return 0;
 }
 
-MaterialManager::MaterialManager(GameManager * playManager)
+MaterialManager::MaterialManager(GameManager * gameManager)
 {
-    m_gameManager = playManager;
+    m_gameManager = gameManager;
 
     m_world = m_gameManager->parallelscene.newton->GetNewtonWorld();
 

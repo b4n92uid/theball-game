@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2011-Feb-07 12:14:13
+# Generated 2011-Feb-13 02:35:43
 
 .map
 name=FIlluminati
@@ -56,26 +56,6 @@ action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2.01473,23,-8.94501,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-9,23,-2,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,23,9,1
-action=JUMPER
-
-+node
-type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,9,23,2,1
-action=JUMPER
-
-+node
-type=DYNAMIC
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,17,3,0,1
 action=TELEPORTER
 
@@ -85,11 +65,6 @@ matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,3,-0,1
 action=TELEPORTER
 
 # Item
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,24,-0,1
-add=FATALSHOT
 
 +node
 type=ITEM
@@ -171,23 +146,27 @@ type=ITEM
 matrix=1,0,0,0,0,1,0,0,0,0,1,0,0.0504098,3,21.9531,1
 add=AMMO
 
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-23,3,-1,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-23,3,1,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,23,3,1,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,23,3,-1,1
+add=AMMO
+
 # Spawn
-
-+node
-type=SPAWN
-pos=-12,23,-7
-
-+node
-type=SPAWN
-pos=7,23,-13
-
-+node
-type=SPAWN
-pos=12,23,6
-
-+node
-type=SPAWN
-pos=-7,23,12
 
 +node
 type=SPAWN
