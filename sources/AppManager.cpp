@@ -78,6 +78,8 @@ AppManager::AppManager()
 
 AppManager::~AppManager()
 {
+    globalSettings.SaveSetting();
+
     if(!globalSettings.noaudio)
         FMOD_System_Release(m_fmodsys);
 
@@ -567,14 +569,7 @@ void AppManager::SetupMenuGui()
 
     // Remplisage --------------------------------------------------------------
 
-    #ifdef COMPILE_FOR_WINDOWS
-    {
-        DWORD bufSize = 255;
-        char userName[bufSize];
-        GetUserName(userName, &bufSize);
-        m_controls.playmenu.playerName->SetLabel(userName);
-    }
-    #endif
+    m_controls.playmenu.playerName->SetLabel(globalSettings.profile.name);
 
     // A propos
     {
@@ -665,14 +660,7 @@ void AppManager::SetupMenuGui()
 
     // Menu campaign
 
-    #ifdef COMPILE_FOR_WINDOWS
-    {
-        DWORD bufSize = 255;
-        char userName[bufSize];
-        GetUserName(userName, &bufSize);
-        m_controls.campaign.playerName->SetLabel(userName);
-    }
-    #endif
+    m_controls.campaign.playerName->SetLabel(globalSettings.profile.name);
 
     for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
         m_controls.campaign.playerSelect->Push(globalSettings.availablePlayer[i].name, i);
@@ -709,7 +697,7 @@ void AppManager::UpdateGuiContent()
 
     m_controls.campaign.levelSelect->DeleteAll();
 
-    unsigned campMapSize = min(globalSettings.campaign.maps.size(), globalSettings.campaign.index);
+    unsigned campMapSize = min(globalSettings.campaign.maps.size(), globalSettings.profile.index);
     for(unsigned i = 0; i <= campMapSize; i++)
     {
         string label = "Niveau " + tools::numToStr(i + 1);
@@ -843,6 +831,9 @@ void AppManager::ProcessCampaignMenuEvent()
         m_guiManager->SetSession(MENU_CAMPAIGN);
     }
 
+    else if(m_controls.campaign.playerName->IsActivate())
+        globalSettings.profile.name = m_controls.campaign.playerName->GetLabel();
+
     else if(m_controls.campaign.ret->IsActivate())
         m_guiManager->SetSession(MENU_MAIN);
 }
@@ -875,6 +866,9 @@ void AppManager::ProcessPlayMenuEvent()
         SetupBackgroundScene();
         m_guiManager->SetSession(MENU_QUICKPLAY);
     }
+
+    else if(m_controls.playmenu.playerName->IsActivate())
+        globalSettings.profile.name = m_controls.playmenu.playerName->GetLabel();
 
     else if(m_guiManager->GetControl("return")->IsActivate())
         m_guiManager->SetSession(MENU_MAIN);
@@ -1259,17 +1253,17 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
         delete gameManager;
 
         if(!done && score >= (int)curPlaySetting.winCond
-           && curPlaySetting.curLevel == globalSettings.campaign.index)
+           && curPlaySetting.curLevel == globalSettings.profile.index)
         {
             cout << "Next level available" << endl;
 
-            if(globalSettings.campaign.index < globalSettings.campaign.maps.size())
+            if(globalSettings.profile.index < globalSettings.campaign.maps.size())
             {
-                globalSettings.campaign.index++;
-                curPlaySetting.curLevel = globalSettings.campaign.index;
+                globalSettings.profile.index++;
+                curPlaySetting.curLevel = globalSettings.profile.index;
             }
 
-            globalSettings.SaveCampaign();
+            globalSettings.SaveProfiles();
 
             UpdateGuiContent();
 
@@ -1305,7 +1299,7 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
                 m_gameEngine->EndScene();
             }
         }
-        else if(globalSettings.campaign.index >= globalSettings.campaign.maps.size())
+        else if(globalSettings.profile.index >= globalSettings.campaign.maps.size())
         {
             m_guiManager->SetSession(MENU_LOAD);
 

@@ -147,9 +147,15 @@ public:
         bool createNew;
     };
 
+    struct Profile
+    {
+        std::string name;
+        unsigned index;
+
+    } profile;
+
     struct Campaign
     {
-        unsigned index;
         std::vector<PartySetting> maps;
 
     } campaign;
@@ -168,6 +174,7 @@ public:
     void SaveSetting();
 
     void ReadAi();
+    void ReadProfiles();
     void ReadCampaign();
     void ReadVideo();
     void ReadControl();
@@ -178,7 +185,7 @@ public:
 
     void SaveVideo();
     void SaveControl();
-    void SaveCampaign();
+    void SaveProfiles();
 };
 
 

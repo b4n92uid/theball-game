@@ -53,13 +53,13 @@ void AloneModeAi::Process(Player* player)
     if(!m_targetPlayer)
         m_targetPlayer = m_playManager->GetUserPlayer();
 
-    StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
-
     Vector3f addForce;
     Vector3f playerPos = player->GetPos();
 
     // -------------------------------------------------------------------------
 
+    //    StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
+    //
     //    bool isCollidWithMap = false;
     //
     //    for(unsigned i = 0; i < staticObjects.size(); i++)

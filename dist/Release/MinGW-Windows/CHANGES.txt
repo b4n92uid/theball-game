@@ -1,5 +1,16 @@
 theBall 1.2
 ===========
+* Atténuation des effets après-traitement
+* Les bot ignore les joueurs immunisé
+* Changement sur la carte JumpMe
+* Ajout de la cart fIlluminati
+* Corréction d'un bug sur le message du gameover mode Team
+* Changement sur la carte Slide
+* Corréction d'un bug de segfault
+* Campaign par profile
+
+theBall 1.2 bêta
+================
 * Portabilité sur linux
 * Mise à jour du moteur audio FmodEX
 * Plusieurs améliorations sur les cartes (audio, modèles...)

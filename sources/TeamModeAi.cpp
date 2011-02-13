@@ -26,7 +26,6 @@ void TeamModeAi::Process(Player* player)
 {
     const Player::Array players = m_playManager->GetTargetsOf(player);
     const Item::Array& items = m_playManager->map.items;
-    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
     const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
@@ -34,6 +33,8 @@ void TeamModeAi::Process(Player* player)
 
     // Test de collision avec la map
 
+    //    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
+    //
     //    bool isCollidWithMap = false;
     //
     //    for(unsigned i = 0; i < staticObjects.size(); i++)
@@ -87,15 +88,15 @@ void TeamModeAi::Process(Player* player)
 
                 if(!players[i]->IsKilled() && m_mapAABB.IsInner(players[i])
                    && players[i]->IsVisibleFromIA())
-                    {
-                        Vector3f testedDist = players[i]->GetPos() - playerPos;
+                {
+                    Vector3f testedDist = players[i]->GetPos() - playerPos;
 
-                        if(testedDist < minDist)
-                        {
-                            minDist = testedDist;
-                            m_targetPlayer = players[i];
-                        }
+                    if(testedDist < minDist)
+                    {
+                        minDist = testedDist;
+                        m_targetPlayer = players[i];
                     }
+                }
 
             if(m_targetPlayer)
             {
