@@ -110,6 +110,7 @@ void Settings::ReadAi()
     unsbinder["SHOOT_GUST_TIME"] = &ai.shootGustTime;
 
     fltbinder["DYNAMIC_INTERACTION"] = &ai.dynamicInteraction;
+    fltbinder["SHOOT_ACCURACY"] = &ai.shootAccuracy;
 
     TiXmlDocument config("ai.xml");
 

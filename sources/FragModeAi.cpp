@@ -63,7 +63,7 @@ void FragModeAi::Process(Player* player)
     const Player::Array& players = m_playManager->GetTargetsOf(player);
 
     const Item::Array& items = m_playManager->map.items;
-    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
+    //    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
     const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
@@ -157,7 +157,8 @@ void FragModeAi::Process(Player* player)
 
         if(m_gustCount < m_aiParams.shootGustCount)
         {
-            if(player->Shoot(m_targetPos))
+            Vector3f margin = tools::rand(AABB(m_aiParams.shootAccuracy));
+            if(player->Shoot(m_targetPos + margin))
                 m_gustCount++;
         }
         else if(m_gustClock.IsEsplanedTime(m_aiParams.shootGustTime))

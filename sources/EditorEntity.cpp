@@ -224,7 +224,7 @@ bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
 
         for(unsigned i = 0; i < m_allEntity.size(); i++)
         {
-            if(m_allEntity[i]->GetAbsolutAabb().Add(0.5).IsInner(m_3dSelect))
+            if(m_allEntity[i]->GetAbsolutAabb().Add(AABB(0.5f)).IsInner(m_3dSelect))
             {
                 m_selectedNode = m_allEntity[i];
                 break;

@@ -131,7 +131,8 @@ void TeamModeAi::Process(Player* player)
 
         if(m_gustCount < m_aiParams.shootGustCount)
         {
-            if(player->Shoot(m_targetPos))
+            Vector3f margin = tools::rand(AABB(m_aiParams.shootAccuracy));
+            if(player->Shoot(m_targetPos + margin))
                 m_gustCount++;
         }
         else if(m_gustClock.IsEsplanedTime(m_aiParams.shootGustTime))

@@ -24,6 +24,7 @@ public:
         unsigned shootGustCount;
         unsigned shootGustTime;
         float dynamicInteraction;
+        float shootAccuracy;
 
     } ai;
 
