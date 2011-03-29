@@ -41,6 +41,15 @@ Weapon::Weapon(PlayManager* playManager) : ParticlesEmiter(playManager->parallel
     m_mapAABB = m_playManager->map.aabb;
 
     m_slot = 0;
+
+    m_name = "Weapon";
+}
+
+void Weapon::SetupBullet(Particle& p)
+{
+    p = Particle();
+    p.life = 1;
+    p.color = 1;
 }
 
 void Weapon::SetShootSize(unsigned shootSize)
@@ -254,6 +263,11 @@ Weapon & Weapon::operator=(const Weapon& copy)
     m_shootCadency = copy.m_shootCadency;
 
     return *this;
+}
+
+Node* Weapon::Clone()
+{
+    return NULL;
 }
 
 // WeaponBlaster ---------------------------------------------------------------
@@ -545,9 +559,9 @@ void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
 
     BuildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
     NewtonBodySetContinuousCollisionMode(m_body, true);
-    
+
     m_applyGravity = false;
-    
+
     m_playManager->manager.material->AddBullet(this);
 
     NewtonBodyAddImpulse(m_body, m_shootDiri * m_shootSpeed, m_startPos);

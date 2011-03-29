@@ -108,6 +108,10 @@ public:
 
     unsigned GetSlot() const;
 
+    void SetupBullet(tbe::scene::Particle& p);
+
+    tbe::scene::Node* Clone();
+
     typedef std::vector<Weapon*> Array;
 
 protected:

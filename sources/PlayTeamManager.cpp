@@ -26,7 +26,12 @@ public:
         SetDepthTest(true);
     }
 
-    void Build(tbe::scene::Particle& p)
+    tbe::scene::Node* Clone()
+    {
+        return new TeamBillboardIcon(*this);
+    }
+
+    void SetupBullet(tbe::scene::Particle& p)
     {
         p.color(1, 1, 1, 0.5);
         p.life = 1.0f;
@@ -205,7 +210,7 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     if(m_playSetting.winCond > 0)
     {
-        if(m_userPlayer->GetScore() >= m_playSetting.winCond)
+        if(m_userPlayer->GetScore() >= (int)m_playSetting.winCond)
             ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
         else
             ss << "<< VOUS AVEZ PERDU !!! >>" << endl;

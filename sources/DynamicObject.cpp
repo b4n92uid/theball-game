@@ -21,6 +21,7 @@ using namespace tbe::scene;
 DynamicObject::DynamicObject(GameManager* gameManager, tbe::Matrix4f matrix) : Object(gameManager)
 {
     m_matrix = matrix;
+    m_name = "DynamicObject";
 }
 
 DynamicObject::~DynamicObject()
@@ -33,7 +34,7 @@ DYJumper::DYJumper(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObje
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
 
-    m_particles = new ParticlesEmiter(gameManager->parallelscene.particles);
+    m_particles = new BurningEmitter(gameManager->parallelscene.particles);
     m_particles->SetPos(m_aabb.min * 0.75f);
     m_particles->SetEndPos(m_aabb.max * 1.25f);
     m_particles->SetGravity(Vector3f(0, 0.001, 0));
@@ -90,7 +91,7 @@ DYTeleporter::DYTeleporter(GameManager* gameManager, tbe::Matrix4f matrix) : Dyn
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
 
-    m_particles = new ParticlesEmiter(gameManager->parallelscene.particles);
+    m_particles = new BurningEmitter(gameManager->parallelscene.particles);
     m_particles->SetPos(m_aabb.min * 0.75f);
     m_particles->SetEndPos(m_aabb.max * 1.25f);
     m_particles->SetFreeMove(0);

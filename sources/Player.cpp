@@ -32,7 +32,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_soundManager = playManager->manager.sound;
 
     // Effet explosion
-    m_deadExplode = new ParticlesEmiter(playManager->parallelscene.particles);
+    m_deadExplode = new BurningEmitter(playManager->parallelscene.particles);
     m_deadExplode->SetTexture(PARTICLE_EXPLODE);
     m_deadExplode->SetLifeInit(1.000);
     m_deadExplode->SetLifeDown(0.025);

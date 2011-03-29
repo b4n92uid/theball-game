@@ -42,7 +42,7 @@ public:
 
 
 protected:
-    tbe::scene::ParticlesEmiter* m_particles;
+    tbe::scene::BurningEmitter* m_particles;
 };
 
 class DYTeleporter : public DynamicObject
@@ -55,7 +55,7 @@ public:
     void InteractWith(Player* player);
 
 protected:
-    tbe::scene::ParticlesEmiter* m_particles;
+    tbe::scene::BurningEmitter* m_particles;
 };
 
 #endif	/* _DYNAMICOBJECT_H */
