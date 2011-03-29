@@ -25,7 +25,12 @@ public:
         SetDepthTest(true);
     }
 
-    void Build(tbe::scene::Particle& p)
+    tbe::scene::Node* Clone()
+    {
+        return new AloneBillboardIcon(*this);
+    }
+
+    void SetupBullet(tbe::scene::Particle& p)
     {
         p.color(1, 1, 1, 0.5);
         p.life = 1.0f;
