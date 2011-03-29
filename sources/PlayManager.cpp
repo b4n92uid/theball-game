@@ -113,7 +113,7 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
     map.aabb.Add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
 
     AABB newtonWordSize = map.aabb;
-    newtonWordSize.Add(32);
+    newtonWordSize.Add(Vector3f(32.0f));
     parallelscene.newton->SetWorldSize(newtonWordSize);
 
     m_playTimeManager.startChrono = m_playTimeManager.curChrono = m_playSetting.playTime;
