@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<video>
+    <set name="width" value="800" />
+    <set name="height" value="600" />
+    <set name="bits" value="32" />
+    <set name="fullscreen" value="0" />
+    <set name="antialiasing" value="2" />
+    <set name="useppe" value="0" boostIntensity="0.75" dammageColor="1,0,0,1" gameoverPass="2" bullettimeColor="1,1,1,1" bullettimeSize="256,256" worldSize="128,128" worldThershold="0.25" worldIntensity="0.75" worldBlurPass="10" />
+</video>

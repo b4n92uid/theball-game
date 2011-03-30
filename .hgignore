@@ -11,7 +11,9 @@ Makefile
 syntax: glob
 dist/*/**.pdf
 dist/*/**.log
-dist/*/**.xml
+
+score.xml
+profiles.xml
 
 syntax: regexp
 .*(\.exe)$
