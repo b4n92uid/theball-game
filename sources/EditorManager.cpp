@@ -19,6 +19,7 @@ EditorManager::EditorManager(AppManager* appManager) : GameManager(appManager)
     m_selectedNode = NULL;
 
     m_FFCamera = new scene::FreeFlyCamera;
+    m_FFCamera->SetSpeed(1);
     manager.scene->AddCamera(m_FFCamera);
 
     m_OCamera = new scene::OrbitalCamera;
@@ -628,11 +629,6 @@ void EditorManager::ViewEventPorcess(tbe::EventManager* event)
         }
 
     }
-
-    if(event->keyState[EventManager::KEY_LSHIFT])
-        m_FFCamera->SetSpeed(1);
-    else
-        m_FFCamera->SetSpeed(0.25);
 
     m_OCamera->SetCenter(m_axes->GetPos());
     m_camera->OnEvent(event);
