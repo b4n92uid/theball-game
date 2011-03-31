@@ -25,6 +25,7 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_curWeapon = m_weaponsPack.end();
     m_killed = false;
     m_boostAvalaible = true;
+    m_boostStopped = false;
     m_visibleFromIA = true;
     m_score = 0;
     m_life = 100;
@@ -166,10 +167,7 @@ void Player::Jump()
 
 void Player::Boost()
 {
-    if(m_physicBody->GetApplyForce() == 0.0f)
-        return;
-
-    if(m_boostAvalaible)
+    if(m_boostAvalaible && !m_physicBody->GetApplyForce().IsNull())
     {
         m_boostAvalaible = false;
 
@@ -182,16 +180,27 @@ void Player::Boost()
 
         m_soundManager->Play("boost", this);
 
-        clocks.boostAvailableSound.SnapShoot();
+        clocks.boostStop.SnapShoot();
         clocks.boostAvailable.SnapShoot();
 
         clocks.boostDisableBlur.SnapShoot();
         m_playManager->HudBoost(true);
+
+        m_boostStopped = false;
     }
 
-    else if(clocks.boostAvailableSound.IsEsplanedTime(800))
+    else
     {
-        m_soundManager->Play("noAvailable", this);
+        long estime = clocks.boostStop.GetEsplanedTime(false);
+
+        if(estime > 200 && estime < 3000 && !m_boostStopped)
+        {
+            m_boostStopped = true;
+            m_physicBody->SetVelocity(0);
+            clocks.boostStop.SnapShoot();
+
+            m_soundManager->Play("stop", this);
+        }
     }
 }
 

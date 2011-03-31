@@ -55,11 +55,11 @@ int main(int argc, char** argv)
 
         if((index = isarg(argc, argv, "play")) != -1)
         {
-            // NOTE play <player> <level> <playerCount> <playMod> <playtime>
+            // NOTE play <level> <player> <playerCount> <playMod> <playtime>
 
             Settings::PartySetting ps;
-            ps.playerName = Settings::PlayerInfo(argv[index + 1]);
-            ps.playMap = Settings::MapInfo(argv[index + 2]);
+            ps.playMap = Settings::MapInfo(argv[index + 1]);
+            ps.playerName = Settings::PlayerInfo(argv[index + 2]);
             ps.playerCount = tools::StrToNum<unsigned>(argv[index + 3]);
             ps.playMod = tools::StrToNum<unsigned> (argv[index + 4]);
             ps.playTime = tools::StrToNum<int>(argv[index + 5]);
