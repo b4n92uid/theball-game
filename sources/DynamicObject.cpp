@@ -35,15 +35,19 @@ DYJumper::DYJumper(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObje
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
 
     m_particles = new BurningEmitter(gameManager->parallelscene.particles);
+
     m_particles->SetPos(m_aabb.min * 0.75f);
     m_particles->SetBoxSize(m_aabb.max * 1.25f);
-    m_particles->SetGravity(Vector3f(0, 0.001, 0));
-    m_particles->SetFreeMove(0);
     m_particles->SetTexture(PARTICLE_JUMPER);
-    m_particles->SetLifeInit(2);
-    m_particles->SetLifeDown(0.05);
-    m_particles->SetNumber(64);
+    m_particles->SetFreeMove(0);
+
+    m_particles->SetGravity(m_worldSettings.jumperGravity);
+    m_particles->SetLifeInit(m_worldSettings.jumperLifeInit);
+    m_particles->SetLifeDown(m_worldSettings.jumperLifeDown);
+    m_particles->SetNumber(m_worldSettings.jumperNumber);
+
     m_particles->SetContinousMode(true);
+
     m_particles->Build();
 
     m_particles->SetParent(this);
@@ -94,12 +98,16 @@ DYTeleporter::DYTeleporter(GameManager* gameManager, tbe::Matrix4f matrix) : Dyn
     m_particles = new BurningEmitter(gameManager->parallelscene.particles);
     m_particles->SetPos(m_aabb.min * 0.75f);
     m_particles->SetBoxSize(m_aabb.max * 1.25f);
-    m_particles->SetFreeMove(0);
     m_particles->SetTexture(PARTICLE_TELEPORTER);
-    m_particles->SetLifeInit(2);
-    m_particles->SetLifeDown(0.05);
-    m_particles->SetNumber(64);
+    m_particles->SetFreeMove(0);
+
+    m_particles->SetLifeInit(m_worldSettings.teleporterLifeInit);
+    m_particles->SetLifeDown(m_worldSettings.teleporterLifeDown);
+    m_particles->SetNumber(m_worldSettings.teleporterNumber);
+    m_particles->SetGravity(m_worldSettings.teleporterGravity);
+
     m_particles->SetContinousMode(true);
+
     m_particles->Build();
 
     m_particles->SetParent(this);

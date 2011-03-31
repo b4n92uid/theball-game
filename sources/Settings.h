@@ -28,9 +28,12 @@ public:
 
     } ai;
 
-    struct Physics
+    struct World
     {
         float gravity;
+
+        float staticFriction;
+        float keniticFriction;
 
         float playerMoveSpeed;
         float playerBoostSpeed;
@@ -38,14 +41,34 @@ public:
         float playerSize;
         float playerMasse;
         float playerLinearDamping;
+        long playerStartImmunity;
+        long playerBoostReload;
+
+        float playerExplodeLifeInit;
+        float playerExplodeLifeDown;
+        float playerExplodeFreeMove;
+        long playerExplodeNumber;
+
+        float bullettimeDown;
+        float bullettimeUp;
+        float bullettimeFactor;
 
         float weaponSize;
         float weaponMasse;
 
-        float staticFriction;
-        float keniticFriction;
+        float jumperLifeInit;
+        float jumperLifeDown;
+        long jumperNumber;
+        tbe::Vector3f jumperGravity;
 
-    } physics;
+        float teleporterLifeInit;
+        float teleporterLifeDown;
+        long teleporterNumber;
+        tbe::Vector3f teleporterGravity;
+
+        long itemRespawnTime;
+
+    } world;
 
     struct Video
     {

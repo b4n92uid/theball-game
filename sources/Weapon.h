@@ -124,7 +124,7 @@ protected:
 
     Player* m_shooter;
 
-    Settings::Physics m_worldSettings;
+    Settings::World m_worldSettings;
 
     Bullet::Array m_bulletArray;
 

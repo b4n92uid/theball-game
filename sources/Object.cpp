@@ -12,7 +12,7 @@ Object::Object(GameManager* gameManager) : OBJMesh(gameManager->parallelscene.me
 {
     m_gameManager = gameManager;
     m_soundManager = m_gameManager->manager.sound;
-    m_worldSettings = m_gameManager->manager.app->globalSettings.physics;
+    m_worldSettings = m_gameManager->manager.app->globalSettings.world;
 
     m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
     m_physicBody->SetUpdatedMatrix(&m_matrix);

@@ -132,24 +132,49 @@ void Settings::ReadAi()
 
 void Settings::ReadPhysics()
 {
-    map<string, float*> binder;
+    map<string, float*> floatbinder;
+    map<string, Vector3f*> vec3fbinder;
+    map<string, long*> longbinder;
 
-    binder["GRAVITY"] = &physics.gravity;
+    floatbinder["World.Gravity"] = &world.gravity;
 
-    binder["PLAYER_MOVESPEED"] = &physics.playerMoveSpeed;
-    binder["PLAYER_BOOSTSPEED"] = &physics.playerBoostSpeed;
-    binder["PLAYER_JUMPFORCE"] = &physics.playerJumpForce;
-    binder["PLAYER_SIZE"] = &physics.playerSize;
-    binder["PLAYER_MASS"] = &physics.playerMasse;
-    binder["PLAYER_LDAMPING"] = &physics.playerLinearDamping;
+    floatbinder["Friction.Static"] = &world.staticFriction;
+    floatbinder["Friction.Kenitic"] = &world.keniticFriction;
 
-    binder["WEAPON_SIZE"] = &physics.weaponSize;
-    binder["WEAPON_MASS"] = &physics.weaponMasse;
+    floatbinder["Player.MoveSpeed"] = &world.playerMoveSpeed;
+    floatbinder["Player.BoostSpeed"] = &world.playerBoostSpeed;
+    floatbinder["Player.JumpForce"] = &world.playerJumpForce;
+    floatbinder["Player.Size"] = &world.playerSize;
+    floatbinder["Player.Masse"] = &world.playerMasse;
+    floatbinder["Player.LinearDamping"] = &world.playerLinearDamping;
+    longbinder["Player.BoostReload"] = &world.playerBoostReload;
+    longbinder["Player.StartImmunity"] = &world.playerStartImmunity;
 
-    binder["STATIC_FRICTION"] = &physics.staticFriction;
-    binder["KENITIC_FRICTION"] = &physics.keniticFriction;
+    floatbinder["Player.Explode.LifeInit"] = &world.playerExplodeLifeInit;
+    floatbinder["Player.Explode.LifeDown"] = &world.playerExplodeLifeDown;
+    floatbinder["Player.Explode.FreeMove"] = &world.playerExplodeFreeMove;
+    longbinder["Player.Explode.Number"] = &world.playerExplodeNumber;
 
-    TiXmlDocument config("physics.xml");
+    floatbinder["Bullettime.Down"] = &world.bullettimeDown;
+    floatbinder["Bullettime.Up"] = &world.bullettimeUp;
+    floatbinder["Bullettime.Factor"] = &world.bullettimeFactor;
+
+    floatbinder["Weapon.Size"] = &world.weaponSize;
+    floatbinder["Weapon.Masse"] = &world.weaponMasse;
+
+    floatbinder["Jumper.LifeInit"] = &world.jumperLifeInit;
+    floatbinder["Jumper.LifeDown"] = &world.jumperLifeDown;
+    longbinder["Jumper.Number"] = &world.jumperNumber;
+    vec3fbinder["Jumper.Gravity"] = &world.jumperGravity;
+
+    floatbinder["Teleporter.LifeInit"] = &world.teleporterLifeInit;
+    floatbinder["Teleporter.LifeDown"] = &world.teleporterLifeDown;
+    longbinder["Teleporter.Number"] = &world.teleporterNumber;
+    vec3fbinder["Teleporter.Gravity"] = &world.teleporterGravity;
+
+    longbinder["Item.RespawnTime"] = &world.itemRespawnTime;
+
+    TiXmlDocument config("world.xml");
 
     if(!config.LoadFile())
         throw tbe::Exception("ReadPhysic; Open file error");
@@ -159,7 +184,15 @@ void Settings::ReadPhysics()
     for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
     {
         const char* name = node2->Attribute("name");
-        node2->QueryFloatAttribute("value", binder[name]);
+
+        if(floatbinder.count(name))
+            node2->QueryFloatAttribute("value", floatbinder[name]);
+
+        else if(vec3fbinder.count(name))
+            node2->QueryValueAttribute<Vector3f > ("value", vec3fbinder[name]);
+
+        else if(longbinder.count(name))
+            node2->QueryValueAttribute<long>("value", longbinder[name]);
     }
 }
 

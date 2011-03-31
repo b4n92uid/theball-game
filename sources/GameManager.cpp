@@ -15,7 +15,7 @@ GameManager::GameManager(AppManager* appManager)
 
     manager.app = appManager;
 
-    worldSettings = manager.app->globalSettings.physics;
+    worldSettings = manager.app->globalSettings.world;
 
     running = true;
 

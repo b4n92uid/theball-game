@@ -12,7 +12,7 @@
 Controller::Controller(PlayManager* playManager)
 {
     m_playManager = playManager;
-    m_worldSettings = playManager->manager.app->globalSettings.physics;
+    m_worldSettings = playManager->manager.app->globalSettings.world;
 }
 
 Controller::~Controller()
