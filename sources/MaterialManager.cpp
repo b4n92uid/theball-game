@@ -235,7 +235,7 @@ MaterialManager::MaterialManager(GameManager * gameManager)
 
     m_world = m_gameManager->parallelscene.newton->GetNewtonWorld();
 
-    Settings::Physics& worldSettings = m_gameManager->worldSettings;
+    Settings::World& worldSettings = m_gameManager->worldSettings;
 
     m_bulletGroupe = NewtonMaterialCreateGroupID(m_world);
     m_playersGroupe = NewtonMaterialCreateGroupID(m_world);

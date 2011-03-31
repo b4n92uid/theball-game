@@ -23,7 +23,7 @@ using namespace tbe::scene;
 Weapon::Weapon(PlayManager* playManager) : ParticlesEmiter(playManager->parallelscene.particles)
 {
     m_playManager = playManager;
-    m_worldSettings = m_playManager->manager.app->globalSettings.physics;
+    m_worldSettings = m_playManager->manager.app->globalSettings.world;
     m_soundManager = m_playManager->manager.sound;
 
     m_shooter = NULL;
@@ -555,7 +555,7 @@ void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
 
     SetUpdatedMatrix(&m_matrix);
 
-    Settings::Physics& worldSettings = m_playManager->manager.app->globalSettings.physics;
+    Settings::World& worldSettings = m_playManager->manager.app->globalSettings.world;
 
     BuildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
     NewtonBodySetContinuousCollisionMode(m_body, true);

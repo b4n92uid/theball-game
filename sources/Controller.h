@@ -26,7 +26,7 @@ public:
 
 protected:
     PlayManager* m_playManager;
-    Settings::Physics m_worldSettings;
+    Settings::World m_worldSettings;
 };
 
 #endif	/* _CONTROLLER_H */

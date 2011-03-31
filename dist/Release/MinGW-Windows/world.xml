@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<world>
+    <set name="World.Gravity" value="2" />
+
+    <set name="Friction.Static" value="512" />
+    <set name="Friction.Kenitic" value="256" />
+
+    <set name="Player.MoveSpeed" value="64" />
+    <set name="Player.BoostSpeed" value="64" />
+    <set name="Player.JumpForce" value="8" />
+    <set name="Player.Size" value="0.25" />
+    <set name="Player.Masse" value="4" />
+    <set name="Player.LinearDamping" value="2" />
+    <set name="Player.BoostReload" value="3000" />
+    <set name="Player.StartImmunity" value="2000" />
+    
+    <set name="Player.Explode.LifeInit" value="1.0" />
+    <set name="Player.Explode.LifeDown" value="0.025" />
+    <set name="Player.Explode.FreeMove" value="0.025" />
+    <set name="Player.Explode.Number" value="64" />
+    
+    <set name="Bullettime.Down" value="0.006" />
+    <set name="Bullettime.Up" value="0.004" />
+    <set name="Bullettime.Factor" value="512" />
+
+    <set name="Weapon.Size" value="0.08" />
+    <set name="Weapon.Masse" value="0.08" />
+
+    <set name="Jumper.LifeInit" value="1" />
+    <set name="Jumper.LifeDown" value="0.2" />
+    <set name="Jumper.Number" value="64" />
+    <set name="Jumper.Gravity" value="0, 0.01, 0" />
+    
+    <set name="Teleporter.LifeInit" value="1" />
+    <set name="Teleporter.LifeDown" value="0.2" />
+    <set name="Teleporter.Number" value="64" />
+    <set name="Teleporter.Gravity" value="0, 0.01, 0" />
+    
+    <set name="Item.RespawnTime" value="8000" />
+</world>

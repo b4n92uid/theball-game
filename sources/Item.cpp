@@ -22,7 +22,7 @@ Item::Item(GameManager* gameManager, tbe::Matrix4f pos)
     m_taked = false;
     m_initialMatrix = pos;
     m_matrix = m_initialMatrix;
-    m_rebornTime = 8000;
+    m_respawnTime = m_worldSettings.itemRespawnTime;
     m_name = "Item";
 }
 
@@ -30,14 +30,14 @@ Item::~Item()
 {
 }
 
-void Item::SetRebornTime(unsigned rebornTime)
+void Item::SetRespawnTime(unsigned respawnTime)
 {
-    this->m_rebornTime = rebornTime;
+    this->m_respawnTime = respawnTime;
 }
 
-unsigned Item::GetRebornTime() const
+unsigned Item::GetRespawnTime() const
 {
-    return m_rebornTime;
+    return m_respawnTime;
 }
 
 void Item::ResetPosition()
@@ -72,7 +72,7 @@ bool Item::IsTaked() const
 
 bool Item::IsReadyToReborn()
 {
-    return m_rebornClock.IsEsplanedTime(m_rebornTime);
+    return m_rebornClock.IsEsplanedTime(m_respawnTime);
 }
 
 // ItemAddAmmo -----------------------------------------------------------------
@@ -186,8 +186,6 @@ ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos) : Item
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
-
-    m_rebornTime = 16000;
 }
 
 Object* ItemFatalShot::CloneToObject()
@@ -272,8 +270,6 @@ ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos) : Item
 
     m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
-
-    m_rebornTime = 16000;
 }
 
 Object* ItemSuperLife::CloneToObject()

@@ -34,10 +34,10 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     // Effet explosion
     m_deadExplode = new BurningEmitter(playManager->parallelscene.particles);
     m_deadExplode->SetTexture(PARTICLE_EXPLODE);
-    m_deadExplode->SetLifeInit(1.000);
-    m_deadExplode->SetLifeDown(0.025);
-    m_deadExplode->SetFreeMove(0.025);
-    m_deadExplode->SetNumber(64);
+    m_deadExplode->SetLifeInit(m_worldSettings.playerExplodeLifeInit);
+    m_deadExplode->SetLifeDown(m_worldSettings.playerExplodeLifeDown);
+    m_deadExplode->SetFreeMove(m_worldSettings.playerExplodeFreeMove);
+    m_deadExplode->SetNumber(m_worldSettings.playerExplodeNumber);
     m_deadExplode->SetAutoRebuild(false);
     m_deadExplode->SetParent(this);
 
@@ -135,7 +135,7 @@ void Player::Process()
         if(clocks.boostDisableBlur.IsEsplanedTime(1000))
             m_playManager->HudBoost(false);
 
-        if(clocks.boostAvailable.IsEsplanedTime(3000))
+        if(clocks.boostAvailable.IsEsplanedTime(m_worldSettings.playerBoostReload))
             m_boostAvalaible = true;
     }
 
@@ -455,7 +455,7 @@ bool Player::StartProtection::Shutdown(Player* player)
     using namespace tbe;
     using namespace tbe::scene;
 
-    if(m_clock.IsEsplanedTime(2000))
+    if(m_clock.IsEsplanedTime(player->m_playManager->worldSettings.playerStartImmunity))
     {
         HardwareBuffer& hb = player->GetHardwareBuffer();
 

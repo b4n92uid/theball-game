@@ -37,8 +37,8 @@ void BulletTime::Process()
     {
         if(m_value > 0.0f)
         {
-            m_value -= 0.006;
-            newton->SetWorldTimestep(newton->GetWorldTimestep() / 512.0f);
+            m_value -= m_playManager->worldSettings.bullettimeDown;
+            newton->SetWorldTimestep(newton->GetWorldTimestep() / m_playManager->worldSettings.bullettimeFactor);
         }
 
         else
@@ -48,7 +48,7 @@ void BulletTime::Process()
     else
     {
         if(m_value < 1.0f)
-            m_value += 0.004;
+            m_value += m_playManager->worldSettings.bullettimeUp;
     }
 }
 

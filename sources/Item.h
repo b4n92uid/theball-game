@@ -44,15 +44,15 @@ public:
     bool IsTaked() const;
 
     /// Spéicifier le temp de réaparition de l'item
-    void SetRebornTime(unsigned rebornTime);
-    unsigned GetRebornTime() const;
+    void SetRespawnTime(unsigned respawnTime);
+    unsigned GetRespawnTime() const;
 
     typedef std::map<std::string, Item*> Map;
     typedef std::vector<Item*> Array;
 
 protected:
     tbe::Matrix4f m_initialMatrix;
-    unsigned m_rebornTime;
+    unsigned m_respawnTime;
     Settings::Ai& m_aiParams;
 
 private:

@@ -85,7 +85,7 @@ public:
 
     } parallelscene;
 
-    Settings::Physics worldSettings;
+    Settings::World worldSettings;
 
     bool running;
 };
