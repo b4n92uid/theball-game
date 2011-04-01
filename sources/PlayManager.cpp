@@ -60,7 +60,7 @@ PlayManager::~PlayManager()
     {
         using namespace ticks;
 
-        cout << "Saving Score" << endl;
+        cout << "--- Saving Score" << endl;
 
         TiXmlDocument scoreDoc;
 
@@ -103,7 +103,7 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
 {
     m_playSetting = playSetting;
 
-    cout << "Loading level" << endl;
+    cout << "--- Loading level" << endl;
 
     // SCENE -------------------------------------------------------------------
 
@@ -190,7 +190,7 @@ void PlayManager::SetupGui()
 {
     using namespace tbe::gui;
 
-    cout << "Loading GUI" << endl;
+    cout << "--- Loading GUI" << endl;
 
     Vector2f screenSize = manager.app->globalSettings.video.screenSize;
 

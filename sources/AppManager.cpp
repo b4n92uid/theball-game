@@ -1050,13 +1050,13 @@ void AppManager::ExecuteMenu()
 
 void AppManager::ExecuteGame(const Settings::PartySetting& playSetting)
 {
-    cout << "ExecuteGame :" << endl
-            << "playLevel = " << playSetting.playMap.name << endl
-            << "playMod = " << playSetting.playMod << endl
-            << "playTime = " << playSetting.playTime << endl
-            << "playerCount = " << playSetting.playerCount << endl
-            << "playerModel = " << playSetting.playerName.file << endl
-            << "playerName = " << playSetting.playerName.name << endl;
+    cout << "--- ExecuteGame :" << endl
+            << "  playLevel = " << playSetting.playMap.name << endl
+            << "  playMod = " << playSetting.playMod << endl
+            << "  playTime = " << playSetting.playTime << endl
+            << "  playerCount = " << playSetting.playerCount << endl
+            << "  playerModel = " << playSetting.playerName.file << endl
+            << "  playerName = " << playSetting.playerName.name << endl;
 
     m_sceneManager->ClearAll();
     m_ppeManager->ClearAll();
