@@ -11,7 +11,7 @@ GameManager::GameManager(AppManager* appManager)
 {
     using namespace scene;
 
-    cout << "Initing game manager" << endl;
+    cout << "--- Initing game manager" << endl;
 
     manager.app = appManager;
 
@@ -58,7 +58,7 @@ GameManager::GameManager(AppManager* appManager)
 
 GameManager::~GameManager()
 {
-    cout << "Cleaning game manager" << endl;
+    cout << "--- Cleaning game manager" << endl;
 
     manager.gui->SetSession(MENU_QUICKPLAY);
 

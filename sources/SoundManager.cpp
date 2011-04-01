@@ -55,11 +55,11 @@ void SoundManager::RegisterSound(std::string name, std::string filename)
     {
         if(m_sounds.count(name))
         {
-            cout << "Load Shared Sound : " << filename << endl;
+            cout << "Load shared sound : " << filename << endl;
             return;
         }
 
-        cout << "Load Sound : " << filename << endl;
+        cout << "Load sound : " << filename << endl;
 
         FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, filename.c_str(),
                                                   FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
