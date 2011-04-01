@@ -76,7 +76,7 @@
 #define SKYBOX_DIR          "data/gfxart/skybox/"
 #define MUSIC_DIR           "data/music/"
 #define MODELS_MAPS_DIR     "data/models/maps/"
-#define MODELS_PLAYERS_DIR  "data/models/maps/"
+#define MODELS_PLAYERS_DIR  "data/models/players/"
 
 // ENUM ------------------------------------------------------------------------
 
