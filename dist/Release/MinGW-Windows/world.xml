@@ -37,4 +37,15 @@
     <set name="Teleporter.Gravity" value="0, 0.01, 0" />
     
     <set name="Item.RespawnTime" value="8000" />
+    
+    <set name="PPE.BoostIntensity" value="0.75" />
+    <set name="PPE.DammageColor" value="1,0,0,1" />
+    <set name="PPE.GameoverPass" value="2" />
+    <set name="PPE.BullettimeColor" value="1,1,1,1" />
+    <set name="PPE.BullettimeSize" value="256,256" />
+    <set name="PPE.WorldSize" value="128,128" />
+    <set name="PPE.WorldThershold" value="0.25" />
+    <set name="PPE.WorldIntensity" value="0.75" />
+    <set name="PPE.WorldBlurPass" value="10" />
+    
 </world>

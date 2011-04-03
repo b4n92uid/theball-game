@@ -47,24 +47,7 @@ void Settings::ReadVideo()
         if(name == "bits") video.bits = *reinterpret_cast<unsigned*>(&value);
         if(name == "antialiasing") video.antialiasing = *reinterpret_cast<unsigned*>(&value);
         if(name == "fullscreen") video.fullScreen = value;
-        if(name == "useppe")
-        {
-            video.usePpe = value;
-
-            node2->QueryValueAttribute("boostIntensity", &video.ppe.boostIntensity);
-
-            node2->QueryValueAttribute("dammageColor", &video.ppe.dammageColor);
-
-            node2->QueryValueAttribute("gameoverPass", &video.ppe.gameoverPass);
-
-            node2->QueryValueAttribute("bullettimeColor", &video.ppe.bullettimeColor);
-            node2->QueryValueAttribute("bullettimeSize", &video.ppe.bullettimeSize);
-
-            node2->QueryValueAttribute("worldSize", &video.ppe.worldSize);
-            node2->QueryValueAttribute("worldThershold", &video.ppe.worldThershold);
-            node2->QueryValueAttribute("worldIntensity", &video.ppe.worldIntensity);
-            node2->QueryValueAttribute("worldBlurPass", &video.ppe.worldBlurPass);
-        }
+        if(name == "useppe") video.usePpe = value;
     }
 }
 
@@ -130,11 +113,14 @@ void Settings::ReadAi()
     }
 }
 
-void Settings::ReadPhysics()
+void Settings::ReadWorld()
 {
     map<string, float*> floatbinder;
+    map<string, Vector2f*> vec2fbinder;
     map<string, Vector3f*> vec3fbinder;
+    map<string, Vector4f*> vec4fbinder;
     map<string, long*> longbinder;
+    map<string, int*> intbinder;
 
     floatbinder["World.Gravity"] = &world.gravity;
 
@@ -174,6 +160,20 @@ void Settings::ReadPhysics()
 
     longbinder["Item.RespawnTime"] = &world.itemRespawnTime;
 
+    floatbinder["PPE.BoostIntensity"] = &video.ppe.boostIntensity;
+
+    vec4fbinder["PPE.DammageColor"] = &video.ppe.dammageColor;
+
+    intbinder["PPE.GameoverPass"] = &video.ppe.gameoverPass;
+
+    vec4fbinder["PPE.BullettimeColor"] = &video.ppe.bullettimeColor;
+    vec2fbinder["PPE.BullettimeSize"] = &video.ppe.bullettimeSize;
+
+    vec2fbinder["PPE.WorldSize"] = &video.ppe.worldSize;
+    floatbinder["PPE.WorldThershold"] = &video.ppe.worldThershold;
+    floatbinder["PPE.WorldIntensity"] = &video.ppe.worldIntensity;
+    floatbinder["PPE.WorldBlurPass"] = &video.ppe.worldBlurPass;
+
     TiXmlDocument config("world.xml");
 
     if(!config.LoadFile())
@@ -188,11 +188,20 @@ void Settings::ReadPhysics()
         if(floatbinder.count(name))
             node2->QueryFloatAttribute("value", floatbinder[name]);
 
+        else if(vec2fbinder.count(name))
+            node2->QueryValueAttribute<Vector2f > ("value", vec2fbinder[name]);
+
         else if(vec3fbinder.count(name))
             node2->QueryValueAttribute<Vector3f > ("value", vec3fbinder[name]);
 
+        else if(vec4fbinder.count(name))
+            node2->QueryValueAttribute<Vector4f > ("value", vec4fbinder[name]);
+
         else if(longbinder.count(name))
             node2->QueryValueAttribute<long>("value", longbinder[name]);
+
+        else if(intbinder.count(name))
+            node2->QueryValueAttribute<int>("value", intbinder[name]);
     }
 }
 
@@ -372,7 +381,7 @@ void Settings::ReadSetting()
     ReadProfiles();
     ReadVideo();
     ReadControl();
-    ReadPhysics();
+    ReadWorld();
 
     ReadMapInfo();
     ReadPlayerInfo();
