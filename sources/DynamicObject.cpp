@@ -21,7 +21,6 @@ using namespace tbe::scene;
 DynamicObject::DynamicObject(GameManager* gameManager, tbe::Matrix4f matrix) : Object(gameManager)
 {
     m_matrix = matrix;
-    m_name = "DynamicObject";
 }
 
 DynamicObject::~DynamicObject()

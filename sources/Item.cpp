@@ -23,7 +23,6 @@ Item::Item(GameManager* gameManager, tbe::Matrix4f pos)
     m_initialMatrix = pos;
     m_matrix = m_initialMatrix;
     m_respawnTime = m_worldSettings.itemRespawnTime;
-    m_name = "Item";
 }
 
 Item::~Item()
