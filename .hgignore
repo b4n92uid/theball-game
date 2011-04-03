@@ -1,22 +1,19 @@
 build
-doc/html
 ignore
 sourcesold
 nbproject
-dist/Debug
+debug
+
+syntax: glob
+**.exe
+**.dll
+**.lnk
+**.bat
+**.pdf
+**.log
 
 .dep.inc
 Makefile
 
-syntax: glob
-dist/*/**.pdf
-dist/*/**.log
-
 score.xml
 profiles.xml
-
-syntax: regexp
-.*(\.exe)$
-.*(\.dll)$
-.*(\.lnk)$
-.*(\.bat)$
