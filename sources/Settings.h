@@ -202,7 +202,7 @@ public:
     void ReadCampaign();
     void ReadVideo();
     void ReadControl();
-    void ReadPhysics();
+    void ReadWorld();
     void ReadMapInfo();
     void ReadScoreInfo();
     void ReadPlayerInfo();
