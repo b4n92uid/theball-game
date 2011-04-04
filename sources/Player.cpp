@@ -317,6 +317,7 @@ void Player::Kill()
 
     SetVisible(false);
 
+    m_physicBody->SetOmega(0);
     m_physicBody->SetFreeze(true);
 
     m_soundManager->Play("kill", this);
