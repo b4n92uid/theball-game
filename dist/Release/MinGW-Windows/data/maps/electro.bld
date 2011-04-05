@@ -1,5 +1,5 @@
 # Ball level descriptor
-# Generated 2011-Apr-02 21:39:06
+# Generated 2011-Apr-05 21:11:37
 
 .map
 name=Electro
@@ -26,111 +26,81 @@ specular=0,0,0,0
 
 +node
 type=STATIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,0,-0,1
 modelPath=data/models/maps/electro.obj
 
 # Dynamic
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,1,9,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2.01454,1,21.9522,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,1,-9,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,1,-22,1
 action=JUMPER
 
 +node
 type=DYNAMIC
-matrix=0.707107,0,-0.707107,0,0,1,0,0,0.707107,0,0.707107,0,6,1,17,1
+matrix=9.22641e-009,0,-1,0,0,1,0,0,1,0,9.22641e-009,0,8,1,22,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=0.707107,0,0.707107,0,0,1,0,0,-0.707107,0,0.707107,0,-8,1,17,1
+matrix=0.0170371,0.183013,0.982963,0,0.183013,0.965926,-0.183013,0,-0.982963,0.183013,-0.0170371,0,-10.0475,1,21.9843,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=-0.707107,0,0.707107,0,0,1,0,0,-0.707107,0,-0.707107,0,-8,1,-16,1
+matrix=-1.12932e-008,3.39735e-009,1,0,0,1,0,0,-1,-3.39735e-009,-1.12932e-008,0,-10,1,-22,1
 action=TELEPORTER
 
 +node
 type=DYNAMIC
-matrix=-0.707107,0,-0.707107,0,0,1,0,0,0.707107,0,-0.707107,0,7,1,-16,1
+matrix=-9.22641e-009,0,-1,0,0,1,0,0,1,0,-9.22641e-009,0,8,1,-22,1
 action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=-1.12932e-008,3.39735e-009,1,0,0,1,0,0,-1,-3.39735e-009,-1.12932e-008,0,-5,3,0,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=-1.12932e-008,3.39735e-009,1,0,0,1,0,0,-1,-3.39735e-009,-1.12932e-008,0,3,3,0,1
+action=TELEPORTER
+
++node
+type=DYNAMIC
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,1,7,1
+action=JUMPER
+
++node
+type=DYNAMIC
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,1,-7,1
+action=JUMPER
 
 # Item
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,2,1,-4,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,4,1
 add=SHOTGUN
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-4.00113,1,3.95001,1
-add=SHOTGUN
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-1,1,-24,1
-add=FINDER
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0.96908,1,24.032,1
-add=BOMB
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,2,-7,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,2,-16,1
 add=AMMO
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,2,-4,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,2,-1,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,2,2,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-17,2,6,1
-add=AMMO
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,2,5,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,1,4,1
 add=LIFE
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,2,2,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,2,-1,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,2,-4,1
-add=LIFE
-
-+node
-type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,15,2,-7,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,1,4,1
 add=LIFE
 
 +node
@@ -140,20 +110,65 @@ add=FATALSHOT
 
 +node
 type=ITEM
-matrix=1,0,0,0,0,1,0,0,0,0,1,0,-12,2,0,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,4,18,1
 add=SUPERLIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-0,1,4,1
+add=SHOTGUN
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,6,1,-4,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-8,1,-4,1
+add=LIFE
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,4,-18,1
+add=FATALSHOT
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,1,-4,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,1,-4,1
+add=FINDER
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,2,-16,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-2,2,16,1
+add=AMMO
+
++node
+type=ITEM
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,2,16,1
+add=AMMO
 
 # Spawn
 
 +node
 type=SPAWN
-pos=-25,2,0
+pos=-2,2,22
 
 +node
 type=SPAWN
-pos=23,2,0
+pos=0,2,-22
 
 +node
 type=SPAWN
-pos=-1,2,0
+pos=-1,4,0
 
