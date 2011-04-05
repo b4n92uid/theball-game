@@ -86,11 +86,6 @@ public:
         return false;
     }
 
-    void AfterReborn(Player* player)
-    {
-        player->SetLife(1);
-    }
-
 private:
     PlayAloneManager* m_playManager;
 };
