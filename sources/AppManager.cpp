@@ -697,7 +697,7 @@ void AppManager::UpdateGuiContent()
 
     m_controls.campaign.levelSelect->DeleteAll();
 
-    unsigned campMapSize = min(globalSettings.campaign.maps.size(), globalSettings.profile.index);
+    unsigned campMapSize = min(globalSettings.campaign.maps.size() - 1, globalSettings.profile.index);
     for(unsigned i = 0; i <= campMapSize; i++)
     {
         string label = "Niveau " + tools::numToStr(i + 1);
@@ -1252,76 +1252,90 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
 
         delete gameManager;
 
-        if(!done && score >= (int)curPlaySetting.winCond
-           && curPlaySetting.curLevel == globalSettings.profile.index)
-        {
-            cout << "Next level available" << endl;
+        if(done)
+            continue;
 
-            if(globalSettings.profile.index < globalSettings.campaign.maps.size())
+        if(score >= (int)curPlaySetting.winCond)
+        {
+            if(curPlaySetting.curLevel + 1 < globalSettings.campaign.maps.size())
             {
-                globalSettings.profile.index++;
-                curPlaySetting.curLevel = globalSettings.profile.index;
+                // *** Pre-Load next level
+
+                cout << "Next level available" << endl;
+
+                if(curPlaySetting.curLevel > globalSettings.profile.index)
+                {
+                    globalSettings.profile.index++;
+                    curPlaySetting.curLevel = globalSettings.profile.index;
+                }
+                else
+                    curPlaySetting.curLevel++;
+
+                Settings::PartySetting nextParty = m_controls.campaign.levelSelect->GetData(curPlaySetting.curLevel)
+                        .GetValue<Settings::PartySetting > ();
+
+                curPlaySetting.playMap = nextParty.playMap;
+                curPlaySetting.playMod = nextParty.playMod;
+                curPlaySetting.playTime = nextParty.playTime;
+                curPlaySetting.playerCount = nextParty.playerCount;
+                curPlaySetting.winCond = nextParty.winCond;
+
+                m_guiManager->SetSession(MENU_LOAD);
+
+                m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+                        ->Write(gui::GuiString("Nouveau niveau déploqué !\n"
+                                               "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+
+                if(!globalSettings.noaudio)
+                    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
+
+                m_screenWaitClock.SnapShoot();
+
+                m_eventMng->keyState[EventManager::KEY_SPACE] = false;
+                while(!m_eventMng->keyState[EventManager::KEY_SPACE]
+                      || !m_screenWaitClock.IsEsplanedTime(1000))
+                {
+                    m_gameEngine->PollEvent();
+                    m_gameEngine->BeginScene();
+                    m_guiManager->Render();
+                    m_gameEngine->EndScene();
+                }
             }
 
-            globalSettings.SaveProfiles();
-
-            UpdateGuiContent();
-
-            Settings::PartySetting nextParty = m_controls.campaign.levelSelect->GetData()
-                    .GetValue<Settings::PartySetting > ();
-
-            curPlaySetting.playMap = nextParty.playMap;
-            curPlaySetting.playMod = nextParty.playMod;
-            curPlaySetting.playTime = nextParty.playTime;
-            curPlaySetting.playerCount = nextParty.playerCount;
-            curPlaySetting.winCond = nextParty.winCond;
-
-            // ---------------------------------------------------------------------
-
-            m_guiManager->SetSession(MENU_LOAD);
-
-            m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                    ->Write(gui::GuiString("Nouveau niveau déploqué !\n"
-                                           "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
-
-            if(!globalSettings.noaudio)
-                FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
-
-            m_screenWaitClock.SnapShoot();
-
-            m_eventMng->keyState[EventManager::KEY_SPACE] = false;
-            while(!m_eventMng->keyState[EventManager::KEY_SPACE]
-                  || !m_screenWaitClock.IsEsplanedTime(1000))
+            else
             {
-                m_gameEngine->PollEvent();
-                m_gameEngine->BeginScene();
-                m_guiManager->Render();
-                m_gameEngine->EndScene();
+                // *** Game complete !!!
+
+                cout << "Game complete !!!" << endl;
+
+                m_guiManager->SetSession(MENU_LOAD);
+
+                m_guiManager->GetControl<gui::TextBox > ("load:stateText")
+                        ->Write(gui::GuiString("FELECITATION JEU TERMINER !!!\n"
+                                               "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+
+                if(!globalSettings.noaudio)
+                    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
+
+                m_screenWaitClock.SnapShoot();
+
+                m_eventMng->keyState[EventManager::KEY_SPACE] = false;
+                while(!m_eventMng->keyState[EventManager::KEY_SPACE]
+                      || !m_screenWaitClock.IsEsplanedTime(1000))
+                {
+                    m_gameEngine->PollEvent();
+                    m_gameEngine->BeginScene();
+                    m_guiManager->Render();
+                    m_gameEngine->EndScene();
+                }
+
+                done = true;
             }
         }
-        else if(globalSettings.profile.index >= globalSettings.campaign.maps.size())
-        {
-            m_guiManager->SetSession(MENU_LOAD);
 
-            m_guiManager->GetControl<gui::TextBox > ("load:stateText")
-                    ->Write(gui::GuiString("FELECITATION JEU TERMINER !!!\n"
-                                           "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+        globalSettings.SaveProfiles();
 
-            if(!globalSettings.noaudio)
-                FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
-
-            m_screenWaitClock.SnapShoot();
-
-            m_eventMng->keyState[EventManager::KEY_SPACE] = false;
-            while(!m_eventMng->keyState[EventManager::KEY_SPACE]
-                  || !m_screenWaitClock.IsEsplanedTime(1000))
-            {
-                m_gameEngine->PollEvent();
-                m_gameEngine->BeginScene();
-                m_guiManager->Render();
-                m_gameEngine->EndScene();
-            }
-        }
+        UpdateGuiContent();
     }
     while(!done);
 
