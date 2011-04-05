@@ -393,12 +393,18 @@ bool Player::IsVisibleFromIA() const
 
 void Player::TakeDammage(Bullet* ammo)
 {
+    if(m_killed)
+        return;
+
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         if(!m_checkMe[i]->OnTakeDammage(this, ammo))
             return;
 
-    m_life = max(m_life - ammo->GetDammage(), 0);
+    int dammage = ammo->GetDammage();
 
+    int scoremod = dammage > m_life ? m_life : dammage;
+
+    m_life = max(m_life - dammage, 0);
 
     Weapon* wp = ammo->GetWeapon();
 
@@ -408,14 +414,15 @@ void Player::TakeDammage(Bullet* ammo)
 
         if(m_life <= 0)
         {
-            striker->UpScore(10);
-            UpScore(-10);
+            striker->UpScore(scoremod * 8);
+            UpScore(scoremod * -8);
+
             Kill();
         }
         else
         {
-            striker->UpScore(2);
-            UpScore(-2);
+            striker->UpScore(scoremod);
+            UpScore(-scoremod);
         }
     }
 
