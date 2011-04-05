@@ -1212,8 +1212,7 @@ void AppManager::ExecuteCampaign(const Settings::PartySetting& playSetting)
                                        "Appuyer sur \"Espace\" pour continuer...",
                                        curPlaySetting.playMap.name.c_str(),
                                        UnsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                       curPlaySetting.playTime,
-                                       curPlaySetting.winCond));
+                                       curPlaySetting.winCond,curPlaySetting.playTime));
 
         m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
