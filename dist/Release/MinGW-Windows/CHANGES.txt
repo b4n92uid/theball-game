@@ -1,13 +1,17 @@
 theBall 1.3
 ===========
-* Améliorer la visibilité de l'icone
-* IA Moin précise
+* Améliorer la visibilité de l'icône
+* IA Moins précise
 * Configuration des propriété environnementale depuis fichier
 * Compatibilité hardware particules (OpenGL 1.4)
 * Mouvement stop-boost
 * Réglage PPE sur le fichier "world.xml"
-* Correction sur les shaders
+* Correction sur les Shaders
 * Correction sur les haute résolution des FBO
+* Correction crash segfault
+* Augmenter le score des frags
+* Changements dans la Campagne du jeu
+* Les ennemies du mode Alone sont plus résistants
 
 theBall 1.2
 ===========
