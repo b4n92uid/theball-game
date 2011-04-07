@@ -483,6 +483,8 @@ void AppManager::SetupMenuGui()
     m_guiManager->AddLayoutStretchSpace();
     m_guiManager->AddKeyConfig("boost");
     m_guiManager->AddTextBox("")->Write("Boost");
+    m_guiManager->AddKeyConfig("brake");
+    m_guiManager->AddTextBox("")->Write("Brake");
     m_guiManager->AddKeyConfig("shoot");
     m_guiManager->AddTextBox("")->Write("Tirer");
     m_guiManager->AddKeyConfig("bullettime");

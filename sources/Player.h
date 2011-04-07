@@ -49,6 +49,9 @@ public:
     /// Accéleration
     void Boost();
 
+    /// Freinage
+    void Brake();
+
     /// Assigne les dommages et augemente le score
     void TakeDammage(Bullet* ammo);
 
@@ -61,6 +64,8 @@ public:
     /// Mort :)
     void Kill();
     bool IsKilled() const;
+
+    void MakeTransparent(bool enable, float alpha = 0.25);
 
     /// Attache un élément au joueur
     void AttachItem(Item* item);
@@ -105,7 +110,7 @@ public:
     {
         tbe::ticks::Clock boostDisableBlur;
         tbe::ticks::Clock boostAvailable;
-        tbe::ticks::Clock boostStop;
+        tbe::ticks::Clock boostBrake;
         tbe::ticks::Clock shoot;
         tbe::ticks::Clock readyToDelete;
 
@@ -173,7 +178,6 @@ protected:
     int m_score;
     bool m_killed;
     bool m_boostAvalaible;
-    bool m_boostStopped;
     bool m_visibleFromIA;
 
     CheckMe::Array m_checkMe;
