@@ -126,6 +126,8 @@ protected:
     tbe::ticks::Clock m_spawnPlayer;
 
     tbe::scene::Camera* m_camera;
+    tbe::scene::NewtonNode* m_cameraBody;
+    tbe::Matrix4f m_cameratMat;
 
     tbe::Vector3f m_shootTarget;
 

@@ -23,8 +23,8 @@
     <set name="Bullettime.Up" value="0.004" />
     <set name="Bullettime.Factor" value="512" />
 
-    <set name="Weapon.Size" value="0.08" />
-    <set name="Weapon.Masse" value="0.08" />
+    <set name="Weapon.Size" value="0.001" />
+    <set name="Weapon.Masse" value="0.1" />
 
     <set name="Jumper.LifeInit" value="1" />
     <set name="Jumper.LifeDown" value="0.4" />

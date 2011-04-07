@@ -17,11 +17,20 @@ public:
     ~StaticObject();
 
     Object* CloneToObject();
-    
+
     void OutputConstruction(std::iostream& stream);
 
     typedef std::map<std::string, StaticObject*> Map;
     typedef std::vector<StaticObject*> Array;
+
+    static bool IsCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects)
+    {
+        for(unsigned i = 0; i < staticObjects.size(); i++)
+            if(body->IsCollidWith(staticObjects[i]->GetPhysicBody()))
+                return true;
+
+        return false;
+    }
 };
 
 #endif	/* _STATICOBJECT_H */
