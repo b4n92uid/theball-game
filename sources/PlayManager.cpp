@@ -37,6 +37,8 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
 
     m_gameOver = false;
 
+    m_cursorOnPlayer = false;
+
     m_camera = new scene::Camera(scene::Camera::TARGET_RELATIVE);
     manager.scene->AddCamera(m_camera);
 
@@ -765,7 +767,7 @@ float rayFilter(const NewtonBody* body, const float*, int, void* userData, float
 
 void PlayManager::Render()
 {
-    Vector2i& screenSize = manager.app->globalSettings.video.screenSize;
+    //    Vector2i& screenSize = manager.app->globalSettings.video.screenSize;
 
     // Positionement camera ----------------------------------------------------
 
@@ -823,14 +825,44 @@ void PlayManager::Render()
         manager.scene->Render();
         rtt->Use(false);
 
-        m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2, rtt);
+        // m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2, rtt);
 
         manager.ppe->Render();
     }
     else
     {
         manager.scene->Render();
-        m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2);
+
+        // m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2);
+    }
+
+    m_shootTarget = parallelscene.newton->FindAnyBody(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget() * map.aabb.GetSize());
+
+    AABB useraabb = m_userPlayer->GetAbsolutAabb().Add(Vector3f(0.1f));
+
+    if(useraabb.IsInner(m_camera->GetPos()))
+    {
+        m_shootTarget = parallelscene.newton->FindZeroMassBody(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget() * map.aabb.GetSize());
+
+        m_cursorOnPlayer = true;
+
+        m_userPlayer->MakeTransparent(true, 0.1);
+    }
+
+    else if(useraabb.IsInner(m_shootTarget))
+    {
+        m_shootTarget = parallelscene.newton->FindZeroMassBody(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget() * map.aabb.GetSize());
+
+        m_cursorOnPlayer = true;
+
+        m_userPlayer->MakeTransparent(true, 0.5);
+    }
+
+    else if(m_cursorOnPlayer)
+    {
+        m_cursorOnPlayer = false;
+
+        m_userPlayer->MakeTransparent(false);
     }
 
     manager.gui->Render();

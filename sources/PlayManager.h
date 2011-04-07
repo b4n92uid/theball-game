@@ -130,6 +130,7 @@ protected:
     tbe::Matrix4f m_cameratMat;
 
     tbe::Vector3f m_shootTarget;
+    bool m_cursorOnPlayer;
 
     std::list<tbe::Vector3f> m_playerPosRec;
 
