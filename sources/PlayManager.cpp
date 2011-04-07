@@ -40,6 +40,10 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
     m_camera = new scene::Camera(scene::Camera::TARGET_RELATIVE);
     manager.scene->AddCamera(m_camera);
 
+    m_cameraBody = new scene::NewtonNode(parallelscene.newton, &m_cameratMat);
+    m_cameraBody->BuildSphereNode(0.1, 0.1);
+    NewtonBodySetForceAndTorqueCallback(m_cameraBody->GetBody(), NULL);
+
     delete manager.sound, manager.sound = new PlaySoundManager(this);
 
     m_numslot[38] = 1;
@@ -743,6 +747,22 @@ void PlayManager::HudProcess()
     }
 }
 
+float rayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
+{
+    float inertia[3], masse;
+    NewtonBodyGetMassMatrix(body, &masse, &inertia[0], &inertia[1], &inertia[2]);
+
+    float& hit = *static_cast<float*>(userData);
+
+    if(!(masse > 0.0f))
+    {
+        hit = intersectParam;
+        return 0.0;
+    }
+
+    return intersectParam;
+}
+
 void PlayManager::Render()
 {
     Vector2i& screenSize = manager.app->globalSettings.video.screenSize;
@@ -756,7 +776,19 @@ void PlayManager::Render()
 
     m_playerPosRec.push_back(setPos);
 
-    m_camera->SetPos(m_playerPosRec.front() + Vector3f(0, worldSettings.playerSize * 2, 0) - m_camera->GetTarget() * 2.5f);
+    float cameraback = 2.5f;
+
+    Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.playerSize * 2, 0);
+    Vector3f camendpos = camzeropos + (-m_camera->GetTarget()) * (cameraback + 1.5f);
+
+    float hit = 1;
+    NewtonWorldRayCast(parallelscene.newton->GetNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
+
+    hit = hit * cameraback / 1.0f;
+
+    Vector3f campos = camzeropos - m_camera->GetTarget() * min(hit, cameraback);
+
+    m_camera->SetPos(campos);
 
     if(m_playerPosRec.size() > 2)
         m_playerPosRec.pop_front();
