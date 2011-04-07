@@ -25,7 +25,6 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_curWeapon = m_weaponsPack.end();
     m_killed = false;
     m_boostAvalaible = true;
-    m_boostStopped = false;
     m_visibleFromIA = true;
     m_score = 0;
     m_life = 100;
@@ -165,43 +164,35 @@ void Player::Jump()
     NewtonBodyAddImpulse(m_physicBody->GetBody(), Vector3f(0, m_worldSettings.playerJumpForce, 0), m_matrix.GetPos());
 }
 
+void Player::Brake()
+{
+    if(!clocks.boostBrake.IsEsplanedTime(500))
+        return;
+
+    m_physicBody->SetVelocity(0);
+    m_soundManager->Play("stop", this);
+}
+
 void Player::Boost()
 {
-    if(m_boostAvalaible && !m_physicBody->GetApplyForce().IsNull())
-    {
-        m_boostAvalaible = false;
+    if(!m_boostAvalaible || m_physicBody->GetApplyForce().IsNull())
+        return;
 
-        Vector3f impulseDeri = m_physicBody->GetApplyForce().Normalize()
-                * m_worldSettings.playerBoostSpeed;
+    m_boostAvalaible = false;
 
-        impulseDeri.y = 0;
+    Vector3f impulseDeri = m_physicBody->GetApplyForce().Normalize()
+            * m_worldSettings.playerBoostSpeed;
 
-        NewtonBodyAddImpulse(m_physicBody->GetBody(), impulseDeri, m_matrix.GetPos());
+    impulseDeri.y = 0;
 
-        m_soundManager->Play("boost", this);
+    NewtonBodyAddImpulse(m_physicBody->GetBody(), impulseDeri, m_matrix.GetPos());
 
-        clocks.boostStop.SnapShoot();
-        clocks.boostAvailable.SnapShoot();
+    m_soundManager->Play("boost", this);
 
-        clocks.boostDisableBlur.SnapShoot();
-        m_playManager->HudBoost(true);
+    clocks.boostAvailable.SnapShoot();
 
-        m_boostStopped = false;
-    }
-
-    else
-    {
-        long estime = clocks.boostStop.GetEsplanedTime(false);
-
-        if(estime > 200 && estime < 3000 && !m_boostStopped)
-        {
-            m_boostStopped = true;
-            m_physicBody->SetVelocity(0);
-            clocks.boostStop.SnapShoot();
-
-            m_soundManager->Play("stop", this);
-        }
-    }
+    clocks.boostDisableBlur.SnapShoot();
+    m_playManager->HudBoost(true);
 }
 
 inline bool IsWeaponSameName(Weapon* w1, Weapon* w2)
@@ -437,22 +428,35 @@ PlayManager* Player::GetPlayManager() const
     return m_playManager;
 }
 
+void Player::MakeTransparent(bool enable, float alpha)
+{
+    Vertex* vs = m_hardwareBuffer.Lock();
+
+    if(enable)
+        for(unsigned i = 0; i < m_hardwareBuffer.GetVertexCount(); i++)
+            vs[i].color.w = alpha;
+    else
+        for(unsigned i = 0; i < m_hardwareBuffer.GetVertexCount(); i++)
+            vs[i].color.w = 1;
+
+    m_hardwareBuffer.UnLock();
+
+    Material::Array mats = GetAllMaterial();
+
+    if(enable)
+        for(unsigned i = 0; i < mats.size(); i++)
+            mats[i]->Enable(Material::BLEND_MOD);
+    else
+        for(unsigned i = 0; i < mats.size(); i++)
+            mats[i]->Disable(Material::BLEND_MOD);
+}
+
 Player::StartProtection::StartProtection(Player* player)
 {
     using namespace tbe;
     using namespace tbe::scene;
 
-    HardwareBuffer& hb = player->GetHardwareBuffer();
-
-    Vertex* vs = hb.Lock();
-    for(unsigned i = 0; i < hb.GetVertexCount(); i++)
-        vs[i].color.w = 0.25;
-    hb.UnLock();
-
-    Material::Array mats = player->GetAllMaterial();
-
-    for(unsigned i = 0; i < mats.size(); i++)
-        mats[i]->Enable(Material::BLEND_MOD);
+    player->MakeTransparent(true);
 
     player->SetVisibleFromIA(false);
 }
@@ -474,17 +478,7 @@ bool Player::StartProtection::Shutdown(Player* player)
 
     if(m_clock.IsEsplanedTime(player->m_playManager->worldSettings.playerStartImmunity))
     {
-        HardwareBuffer& hb = player->GetHardwareBuffer();
-
-        Vertex* vs = hb.Lock();
-        for(unsigned i = 0; i < hb.GetVertexCount(); i++)
-            vs[i].color.w = 1;
-        hb.UnLock();
-
-        Material::Array mats = player->GetAllMaterial();
-
-        for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->Disable(Material::BLEND_MOD);
+        player->MakeTransparent(false);
 
         player->SetVisibleFromIA(true);
 

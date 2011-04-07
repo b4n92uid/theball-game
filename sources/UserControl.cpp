@@ -140,6 +140,9 @@ void UserControl::Process(Player* player)
     if(IsActionStateDown("boost"))
         player->Boost();
 
+    if(IsActionStateDown("brake"))
+        player->Brake();
+
     // Change weapons
     if(IsActionStateDown("switchUpWeapon"))
         player->SwitchUpWeapon();
