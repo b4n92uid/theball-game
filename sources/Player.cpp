@@ -175,7 +175,7 @@ void Player::Brake()
 
 void Player::Boost()
 {
-    if(!m_boostAvalaible || m_physicBody->GetApplyForce().IsNull())
+    if(!m_boostAvalaible || !m_physicBody->GetApplyForce())
         return;
 
     m_boostAvalaible = false;
