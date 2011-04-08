@@ -405,8 +405,8 @@ void Player::TakeDammage(Bullet* ammo)
 
         if(m_life <= 0)
         {
-            striker->UpScore(scoremod * 8);
-            UpScore(scoremod * -8);
+            striker->UpScore(500);
+            UpScore(-500);
 
             Kill();
         }
