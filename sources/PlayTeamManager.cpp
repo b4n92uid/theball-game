@@ -202,11 +202,11 @@ void PlayTeamManager::modUpdateGameOverText(std::ostringstream& ss)
 
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
         blueScore += blueTeamPlayers[i]->getScore();
-    blueScore /= blueTeamPlayers.size();
+    blueScore /= blueTeamPlayers.size() ? blueTeamPlayers.size() : 1;
 
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
         redScore += redTeamPlayers[i]->getScore();
-    redScore /= redTeamPlayers.size();
+    redScore /= redTeamPlayers.size() ? redTeamPlayers.size() : 1;
 
     if(m_playSetting.winCond > 0)
     {

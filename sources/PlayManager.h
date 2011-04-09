@@ -187,7 +187,7 @@ private:
 
     } hud;
 
-    void ProcessDevelopperCodeEvent();
+    void processDevelopperCodeEvent();
 };
 
 #endif	/* _PLAYMODEMANAGER_H */

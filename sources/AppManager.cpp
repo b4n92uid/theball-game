@@ -1176,8 +1176,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
                                        "Chargement en cours...",
                                        curPlaySetting.playMap.name.c_str(),
                                        unsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                       curPlaySetting.playTime,
-                                       curPlaySetting.winCond));
+                                       curPlaySetting.winCond, curPlaySetting.playTime));
 
         m_guiManager->updateLayout();
 
@@ -1214,7 +1213,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
                                        "Appuyer sur \"Espace\" pour continuer...",
                                        curPlaySetting.playMap.name.c_str(),
                                        unsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                       curPlaySetting.winCond,curPlaySetting.playTime));
+                                       curPlaySetting.winCond, curPlaySetting.playTime));
 
         m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
@@ -1264,7 +1263,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
                 cout << "Next level available" << endl;
 
-                if(curPlaySetting.curLevel > globalSettings.profile.index)
+                if(curPlaySetting.curLevel >= globalSettings.profile.index)
                 {
                     globalSettings.profile.index++;
                     curPlaySetting.curLevel = globalSettings.profile.index;
@@ -1272,8 +1271,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
                 else
                     curPlaySetting.curLevel++;
 
-                Settings::PartySetting nextParty = m_controls.campaign.levelSelect->getData(curPlaySetting.curLevel)
-                        .getValue<Settings::PartySetting > ();
+                Settings::PartySetting nextParty = globalSettings.campaign.maps[curPlaySetting.curLevel];
 
                 curPlaySetting.playMap = nextParty.playMap;
                 curPlaySetting.playMod = nextParty.playMod;
@@ -1285,7 +1283,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
                 m_guiManager->getControl<gui::TextBox > ("load:stateText")
                         ->write(gui::GuiString("Nouveau niveau déploqué !\n"
-                                               "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+                                               "Appuyer sur \"Espace\" pour continuer..."));
 
                 if(!globalSettings.noaudio)
                     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
@@ -1313,7 +1311,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
                 m_guiManager->getControl<gui::TextBox > ("load:stateText")
                         ->write(gui::GuiString("FELECITATION JEU TERMINER !!!\n"
-                                               "Appuyer sur \"Espace\" pour continuer...", curPlaySetting.winCond));
+                                               "Appuyer sur \"Espace\" pour continuer..."));
 
                 if(!globalSettings.noaudio)
                     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
