@@ -1,3 +1,13 @@
+theBall 1.4
+===========
+* La camera ne passe pas deriere les murs
+* Le vecteur de visé ignore le joueur
+* Le joueur joueur devier trasparent pour une meilleure vue
+* Convention de nommage en lowerCamelCase
+* Nouveau mouvement : Freinage avec la touche CTRL
+* Un frag vaut maintenant 500 pts
+* Correction sur passage des niveaux dans la campagne
+
 theBall 1.3
 ===========
 * Améliorer la visibilité de l'icône
