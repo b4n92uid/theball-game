@@ -42,14 +42,14 @@ SoundManager::SoundManager(GameManager* gameManager)
     soundPaths["teleport"] = "data/sfxart/teleport.wav";
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
-        RegisterSound(it->first, it->second);
+        registerSound(it->first, it->second);
 }
 
 SoundManager::~SoundManager()
 {
 }
 
-void SoundManager::RegisterSound(std::string name, std::string filename)
+void SoundManager::registerSound(std::string name, std::string filename)
 {
     if(!m_gameManager->manager.app->globalSettings.noaudio)
     {
@@ -73,7 +73,7 @@ void SoundManager::RegisterSound(std::string name, std::string filename)
     }
 }
 
-void SoundManager::Play(std::string soundName, Object* object)
+void SoundManager::play(std::string soundName, Object* object)
 {
     #if !defined(THEBALL_DISABLE_SOUND) && !defined(THEBALL_NO_AUDIO)
     FMOD_CHANNEL* channel;
@@ -81,16 +81,16 @@ void SoundManager::Play(std::string soundName, Object* object)
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
 
     FMOD_Channel_Set3DAttributes(channel,
-                                 (FMOD_VECTOR*)(float*)object->GetPos(),
-                                 (FMOD_VECTOR*)(float*)object->GetPhysicBody()->GetVelocity());
+                                 (FMOD_VECTOR*)(float*)object->getPos(),
+                                 (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
 
-    ProcessEffect(soundName, channel);
+    processEffect(soundName, channel);
 
     FMOD_Channel_SetPaused(channel, false);
     #endif
 }
 
-void SoundManager::ProcessEffect(std::string soundName, FMOD_CHANNEL* channel)
+void SoundManager::processEffect(std::string soundName, FMOD_CHANNEL* channel)
 {
 
 }

@@ -19,7 +19,7 @@ public:
     FragModeAi(PlayManager* playManager);
     ~FragModeAi();
 
-    void Process(Player* player);
+    void process(Player* player);
 };
 
 #endif	/* _FRAGMODEAI_H */

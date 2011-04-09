@@ -26,83 +26,83 @@ public:
     /// Destructeur
     ~Player();
 
-    Object* CloneToObject();
+    Object* cloneToObject();
 
     /** 
      * Ajoute une arme au joueur
      * si l'arme existe déja on ajouter les munitions puis on la supprime
      */
-    void AddWeapon(Weapon* weapon);
+    void addWeapon(Weapon* weapon);
 
     /// Tire sur le vecteur targetpos
-    bool Shoot(tbe::Vector3f targetpos);
+    bool shoot(tbe::Vector3f targetpos);
 
     /**
      * Réunitilase les attribut de santé
      * l'état physique, les armes et la position
      */
-    void ReBorn();
+    void reBorn();
 
     /// Saut
-    void Jump();
+    void jump();
 
     /// Accéleration
-    void Boost();
+    void boost();
 
     /// Freinage
-    void Brake();
+    void brake();
 
     /// Assigne les dommages et augemente le score
-    void TakeDammage(Bullet* ammo);
+    void takeDammage(Bullet* ammo);
 
     /** 
      * Routine de traitement pour
      * le boost et les items
      */
-    void Process();
+    void process();
 
     /// Mort :)
-    void Kill();
-    bool IsKilled() const;
+    void kill();
+    bool isKilled() const;
 
-    void MakeTransparent(bool enable, float alpha = 0.25);
+    void makeTransparent(bool enable, float alpha = 0.25);
 
     /// Attache un élément au joueur
-    void AttachItem(Item* item);
+    void attachItem(Item* item);
 
     /// Attache une source de controlle au joueurs
-    void AttachController(Controller* controller);
-    Controller* GetAttachedCotroller() const;
+    void attachController(Controller* controller);
+    Controller* getAttachedCotroller() const;
 
     /// Assigne une position alétoire au sol
-    void SetRandomSpawnPos();
+    void toNextSpawnPos();
 
     /// Change l'arme courante
-    void SlotWeapon(unsigned slot);
-    void SwitchUpWeapon();
-    void SwitchDownWeapon();
+    void slotWeapon(unsigned slot);
+    void switchUpWeapon();
+    void switchDownWeapon();
 
     /// Armes
-    void SetCurWeapon(unsigned slot);
-    Weapon* GetCurWeapon() const;
+    void setCurWeapon(unsigned slot);
+    Weapon* getCurWeapon() const;
 
     /// Boost
-    void SetBoostAvalaible(bool boost);
-    bool IsBoostAvalaible() const;
+    void setBoostAvalaible(bool boost);
+    bool isBoostAvalaible() const;
 
     /// Score
-    void UpScore(int value = 1);
-    void SetScore(int value);
-    int GetScore() const;
+    void upScore(int value = 1);
+    void setScore(int value);
+    int getScore() const;
 
     /// Santé
-    void UpLife(int life);
-    void SetLife(int life);
-    int GetLife() const;
+    void upLife(int life);
+    void setLife(int life);
+    int getLife() const;
 
-    PlayManager* GetPlayManager() const;
+    PlayManager* getPlayManager() const;
 
-    void OutputConstruction(std::iostream& stream)
+    void outputConstruction(std::iostream& stream)
     {
     }
 
@@ -128,36 +128,36 @@ public:
         {
         }
 
-        virtual bool Shutdown(Player* player)
+        virtual void afterReborn(Player* player)
+        {
+        }
+
+        virtual bool shutdown(Player* player)
         {
             return false;
         }
 
-        virtual bool OnTakeDammage(Player* player, Bullet* ammo)
+        virtual bool onTakeDammage(Player* player, Bullet* ammo)
         {
             return true;
         }
 
-        virtual bool OnShoot(Player* player)
+        virtual bool onShoot(Player* player)
         {
             return true;
         }
 
-        virtual bool OnKilled(Player* player)
+        virtual bool onKilled(Player* player)
         {
             return true;
         }
 
-        virtual void AfterReborn(Player* player)
-        {
-        }
-
-        virtual bool OnTakeItems(Player* player, Item* item)
+        virtual bool onTakeItems(Player* player, Item* item)
         {
             return true;
         }
 
-        virtual bool IsInvisible(Player* player)
+        virtual bool isInvisible(Player* player)
         {
             return false;
         }
@@ -166,9 +166,10 @@ public:
     };
 
 
-    void AddCheckPoint(CheckMe* cm);
-    void SetVisibleFromIA(bool visibleFromIA);
-    bool IsVisibleFromIA() const;
+    void addCheckMe(CheckMe* cm);
+
+    void setVisibleFromIA(bool visibleFromIA);
+    bool isVisibleFromIA() const;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;
@@ -195,11 +196,10 @@ protected:
     class StartProtection : public CheckMe
     {
     public:
-
         StartProtection(Player* player);
-        bool OnTakeDammage(Player* player, Bullet* ammo);
-        bool Shutdown(Player* player);
-        bool OnShoot(Player* player);
+        bool onTakeDammage(Player* player, Bullet* ammo);
+        bool shutdown(Player* player);
+        bool onShoot(Player* player);
 
     private:
         tbe::ticks::Clock m_clock;

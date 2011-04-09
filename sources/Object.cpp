@@ -15,21 +15,21 @@ Object::Object(GameManager* gameManager) : OBJMesh(gameManager->parallelscene.me
     m_worldSettings = m_gameManager->manager.app->globalSettings.world;
 
     m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
-    m_physicBody->SetUpdatedMatrix(&m_matrix);
+    m_physicBody->setUpdatedMatrix(&m_matrix);
 
-    m_physicBody->SetParent(this);
+    m_physicBody->setParent(this);
 }
 
 Object::~Object()
 {
 }
 
-void Object::SetPhysicBody(tbe::scene::NewtonNode* physicBody)
+void Object::setPhysicBody(tbe::scene::NewtonNode* physicBody)
 {
     this->m_physicBody = physicBody;
 }
 
-tbe::scene::NewtonNode* Object::GetPhysicBody() const
+tbe::scene::NewtonNode* Object::getPhysicBody() const
 {
     return m_physicBody;
 }

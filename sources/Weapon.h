@@ -26,30 +26,30 @@ public:
 
     Bullet(PlayManager* playManager);
 
-    void Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy = 0);
+    void shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy = 0);
 
-    bool IsDeadAmmo();
+    bool isDeadAmmo();
 
-    void SetLife(int life);
-    int GetLife() const;
+    void setLife(int life);
+    int getLife() const;
 
-    void SetWeapon(Weapon* weapon);
-    Weapon* GetWeapon() const;
+    void setWeapon(Weapon* weapon);
+    Weapon* getWeapon() const;
 
-    void SetShootSpeed(float shootSpeed);
-    float GetShootSpeed() const;
+    void setShootSpeed(float shootSpeed);
+    float getShootSpeed() const;
 
-    void SetDammage(int dammage);
-    int GetDammage() const;
+    void setDammage(int dammage);
+    int getDammage() const;
 
-    void SetShootDiri(tbe::Vector3f shootDiri);
-    tbe::Vector3f GetShootDiri() const;
+    void setShootDiri(tbe::Vector3f shootDiri);
+    tbe::Vector3f getShootDiri() const;
 
-    void SetTargetPos(tbe::Vector3f targetPos);
-    tbe::Vector3f GetTargetPos() const;
+    void setTargetPos(tbe::Vector3f targetPos);
+    tbe::Vector3f getTargetPos() const;
 
-    void SetStartPos(tbe::Vector3f startPos);
-    tbe::Vector3f GetStartPos() const;
+    void setStartPos(tbe::Vector3f startPos);
+    tbe::Vector3f getStartPos() const;
 
     typedef std::vector<Bullet*> Array;
 
@@ -75,48 +75,48 @@ public:
 
     bool operator==(const Weapon& copy);
 
-    bool Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
+    bool shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 
-    void SetShooter(Player* shooter);
-    Player* GetShooter() const;
+    void setShooter(Player* shooter);
+    Player* getShooter() const;
 
-    void SetShootCadency(unsigned shootCadency);
-    unsigned GetShootCadency() const;
+    void setShootCadency(unsigned shootCadency);
+    unsigned getShootCadency() const;
 
     bool UpAmmoCount(int ammoCount);
-    void SetAmmoCount(unsigned ammoCount);
-    unsigned GetAmmoCount() const;
+    void setAmmoCount(unsigned ammoCount);
+    unsigned getAmmoCount() const;
 
-    void SetMaxAmmoCount(unsigned maxAmmoCount);
-    unsigned GetMaxAmmoCount() const;
+    void setMaxAmmoCount(unsigned maxAmmoCount);
+    unsigned getMaxAmmoCount() const;
 
-    void SetShootSize(unsigned shootSize);
-    unsigned GetShootSize() const;
+    void setShootSize(unsigned shootSize);
+    unsigned getShootSize() const;
 
-    void SetMaxAmmoDammage(unsigned maxAmmoDammage);
-    unsigned GetMaxAmmoDammage() const;
+    void setMaxAmmoDammage(unsigned maxAmmoDammage);
+    unsigned getMaxAmmoDammage() const;
 
-    void SetShootSpeed(float shootSpeed);
-    float GetShootSpeed() const;
+    void setShootSpeed(float shootSpeed);
+    float getShootSpeed() const;
 
-    void SetFireSound(std::string fireSound);
+    void setFireSound(std::string fireSound);
 
-    std::string GetWeaponName() const;
-    void SetWeaponName(std::string weaponName);
+    std::string getWeaponName() const;
+    void setWeaponName(std::string weaponName);
 
-    bool IsEmpty();
+    bool isEmpty();
 
-    unsigned GetSlot() const;
+    unsigned getSlot() const;
 
-    void SetupBullet(tbe::scene::Particle& p);
+    void setupBullet(tbe::scene::Particle& p);
 
-    tbe::scene::Node* Clone();
+    tbe::scene::Node* clone();
 
     typedef std::vector<Weapon*> Array;
 
 protected:
-    virtual void ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos) = 0;
-    virtual void Process();
+    virtual void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos) = 0;
+    virtual void process();
 
 protected:
     PlayManager* m_playManager;
@@ -153,7 +153,7 @@ public:
     WeaponBlaster(PlayManager* playManager);
 
 protected:
-    void ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
+    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };
 
 class WeaponShotgun : public Weapon
@@ -161,7 +161,7 @@ class WeaponShotgun : public Weapon
 public:
     WeaponShotgun(PlayManager* playManager);
 protected:
-    void ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
+    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };
 
 class WeaponFinder : public Weapon
@@ -169,8 +169,8 @@ class WeaponFinder : public Weapon
 public:
     WeaponFinder(PlayManager* playManager);
 protected:
-    void Process();
-    void ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
+    void process();
+    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };
 
 class WeaponBomb : public Weapon
@@ -178,8 +178,7 @@ class WeaponBomb : public Weapon
 public:
     WeaponBomb(PlayManager* playManager);
 protected:
-    void ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
+    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };
 
 #endif	/* _WEAPONENGINE_H */
-

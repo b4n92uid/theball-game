@@ -22,24 +22,24 @@ StaticObject::StaticObject(GameManager* gameManager, std::string path,
 {
     m_matrix = matrix;
 
-    Open(path);
+    open(path);
 
-    Material::Array materials = GetAllMaterial();
+    Material::Array materials = getAllMaterial();
 
     for(unsigned i = 0; i < materials.size(); i++)
-        materials[i]->Enable(Material::BACKFACE_CULL);
+        materials[i]->enable(Material::BACKFACE_CULL);
 
-    m_physicBody->BuildTreeNode(m_hardwareBuffer.GetAllFace());
+    m_physicBody->buildTreeNode(m_hardwareBuffer.getAllFace());
 }
 
-Object* StaticObject::CloneToObject()
+Object* StaticObject::cloneToObject()
 {
     StaticObject* so = new StaticObject(m_gameManager, m_filename, m_matrix);
-    m_gameManager->RegisterStatic(so);
+    m_gameManager->registerStatic(so);
     return so;
 }
 
-void StaticObject::OutputConstruction(std::iostream& stream)
+void StaticObject::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 

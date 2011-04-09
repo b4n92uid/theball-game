@@ -23,17 +23,17 @@ public:
     ~Object();
 
     /// Clone l'objet dériver de cette class
-    virtual Object* CloneToObject() = 0;
+    virtual Object* cloneToObject() = 0;
 
     /**
      * Ecris sur le flux les instruction de construction
      * pour les besoin de la class BldDParser
      */
-    virtual void OutputConstruction(std::iostream& stream) = 0;
+    virtual void outputConstruction(std::iostream& stream) = 0;
 
-    void SetPhysicBody(tbe::scene::NewtonNode* physicBody);
+    void setPhysicBody(tbe::scene::NewtonNode* physicBody);
 
-    tbe::scene::NewtonNode* GetPhysicBody() const;
+    tbe::scene::NewtonNode* getPhysicBody() const;
 
     typedef std::map<std::string, Object*> Map;
     typedef std::vector<Object*> Array;

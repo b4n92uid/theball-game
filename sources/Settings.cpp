@@ -26,7 +26,7 @@ Settings::~Settings()
 {
 }
 
-void Settings::ReadVideo()
+void Settings::readVideo()
 {
     TiXmlDocument config("video.xml");
 
@@ -51,7 +51,7 @@ void Settings::ReadVideo()
     }
 }
 
-void Settings::ReadControl()
+void Settings::readControl()
 {
     control.keyboard.clear();
     control.mouse.clear();
@@ -81,7 +81,7 @@ void Settings::ReadControl()
     }
 }
 
-void Settings::ReadAi()
+void Settings::readAi()
 {
     map<string, float*> fltbinder;
     map<string, unsigned*> unsbinder;
@@ -113,7 +113,7 @@ void Settings::ReadAi()
     }
 }
 
-void Settings::ReadWorld()
+void Settings::readWorld()
 {
     map<string, float*> floatbinder;
     map<string, Vector2f*> vec2fbinder;
@@ -218,7 +218,7 @@ inline bool ScoreUnique(const Settings::ScoreInfo& p1, const Settings::ScoreInfo
     return (p1.playerName == p2.playerName && p1.playMod == p2.playMod);
 }
 
-void Settings::ReadScoreInfo()
+void Settings::readScoreInfo()
 {
     availableScore.clear();
 
@@ -260,7 +260,7 @@ void Settings::ReadScoreInfo()
     sort(availableScore.begin(), availableScore.end(), ScoreSort);
 }
 
-void Settings::ReadPlayerInfo()
+void Settings::readPlayerInfo()
 {
     using namespace boost::filesystem;
 
@@ -280,7 +280,7 @@ void Settings::ReadPlayerInfo()
     }
 }
 
-void Settings::ReadProfiles()
+void Settings::readProfiles()
 {
     TiXmlDocument profilesDoc("profiles.xml");
 
@@ -324,7 +324,7 @@ void Settings::ReadProfiles()
     }
 }
 
-void Settings::ReadCampaign()
+void Settings::readCampaign()
 {
     TiXmlDocument config("campaign.xml");
 
@@ -354,7 +354,7 @@ void Settings::ReadCampaign()
     }
 }
 
-void Settings::ReadMapInfo()
+void Settings::readMapInfo()
 {
     using namespace boost::filesystem;
 
@@ -374,21 +374,21 @@ void Settings::ReadMapInfo()
     }
 }
 
-void Settings::ReadSetting()
+void Settings::readSetting()
 {
-    ReadAi();
-    ReadCampaign();
-    ReadProfiles();
-    ReadVideo();
-    ReadControl();
-    ReadWorld();
+    readAi();
+    readCampaign();
+    readProfiles();
+    readVideo();
+    readControl();
+    readWorld();
 
-    ReadMapInfo();
-    ReadPlayerInfo();
-    ReadScoreInfo();
+    readMapInfo();
+    readPlayerInfo();
+    readScoreInfo();
 }
 
-void Settings::SaveVideo()
+void Settings::saveVideo()
 {
     TiXmlDocument config("video.xml");
 
@@ -413,7 +413,7 @@ void Settings::SaveVideo()
     config.SaveFile();
 }
 
-void Settings::SaveControl()
+void Settings::saveControl()
 {
     TiXmlDocument config("control.xml");
 
@@ -466,7 +466,7 @@ void Settings::SaveControl()
     config.SaveFile();
 }
 
-void Settings::SaveProfiles()
+void Settings::saveProfiles()
 {
     TiXmlDocument profilesDoc("profiles.xml");
 
@@ -482,26 +482,26 @@ void Settings::SaveProfiles()
     profilesDoc.SaveFile();
 }
 
-void Settings::SaveSetting()
+void Settings::saveSetting()
 {
-    SaveVideo();
-    SaveControl();
-    SaveProfiles();
+    saveVideo();
+    saveControl();
+    saveProfiles();
 }
 
-void Settings::FillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager)
+void Settings::fillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager)
 {
     char sep;
 
-    istringstream exp(guiManager->GetControl("screenSize")->GetLabel());
+    istringstream exp(guiManager->getControl("screenSize")->getLabel());
     exp >> video.screenSize.x >> sep >> video.screenSize.y >> sep >> video.bits;
 
-    video.usePpe = guiManager->GetControl<SwitchString > ("usePpe")->GetData().GetValue<bool>();
-    video.fullScreen = guiManager->GetControl<SwitchString > ("fullScreen")->GetData().GetValue<bool>();
-    video.antialiasing = guiManager->GetControl<SwitchString > ("antiAliasing")->GetData().GetValue<unsigned >();
+    video.usePpe = guiManager->getControl<SwitchString > ("usePpe")->getData().getValue<bool>();
+    video.fullScreen = guiManager->getControl<SwitchString > ("fullScreen")->getData().getValue<bool>();
+    video.antialiasing = guiManager->getControl<SwitchString > ("antiAliasing")->getData().getValue<unsigned >();
 }
 
-void Settings::FillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
+void Settings::fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
 {
     control.keyboard.clear();
     control.mouse.clear();
@@ -522,8 +522,8 @@ void Settings::FillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
 
     for(unsigned i = 0; i < actions.size(); i++)
     {
-        int key = guiManager->GetControl<KeyConfig > (actions[i])->GetKeyCode(),
-                mouse = guiManager->GetControl<KeyConfig > (actions[i])->GetMouseCode();
+        int key = guiManager->getControl<KeyConfig > (actions[i])->getKeyCode(),
+                mouse = guiManager->getControl<KeyConfig > (actions[i])->getMouseCode();
 
         if(key != -1)
             control.keyboard[actions[i]] = key;

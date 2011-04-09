@@ -2,7 +2,7 @@
  * File:   BldParser.cpp
  * Author: b4n92uid
  * 
- * Created on 2 décembre 2009, 21:46
+ * created on 2 décembre 2009, 21:46
  */
 
 #include "BldParser.h"
@@ -42,24 +42,24 @@ inline std::string stripComments(std::string content)
     return content;
 }
 
-bool BldParser::IsChanged()
+bool BldParser::isChanged()
 {
     std::stringstream newmap, oldmap;
 
     std::ifstream file(m_openFileName.c_str());
     oldmap << file.rdbuf();
 
-    WriteMap(newmap);
+    writeMap(newmap);
 
     return stripComments(newmap.str()) != stripComments(oldmap.str());
 }
 
-void BldParser::SaveLevel()
+void BldParser::saveLevel()
 {
-    SaveLevel(m_openFileName);
+    saveLevel(m_openFileName);
 }
 
-void BldParser::WriteMap(std::iostream& stream)
+void BldParser::writeMap(std::iostream& stream)
 {
     using namespace boost::posix_time;
 
@@ -70,7 +70,7 @@ void BldParser::WriteMap(std::iostream& stream)
 
     stream << ".map" << endl;
     stream << "name=" << m_gameManager->map.name << endl;
-    stream << "ambient=" << m_sceneManager->GetAmbientLight() << endl;
+    stream << "ambient=" << m_sceneManager->getAmbientLight() << endl;
     stream << endl;
 
 
@@ -81,30 +81,30 @@ void BldParser::WriteMap(std::iostream& stream)
         stream << endl;
     }
 
-    Fog* fog = m_sceneManager->GetFog();
+    Fog* fog = m_sceneManager->getFog();
 
-    if(fog->IsEnable())
+    if(fog->isEnable())
     {
         stream << ".fog" << endl;
-        stream << "color=" << fog->GetColor() << endl;
-        stream << "start=" << fog->GetStart() << endl;
-        stream << "end=" << fog->GetEnd() << endl;
+        stream << "color=" << fog->getColor() << endl;
+        stream << "start=" << fog->getStart() << endl;
+        stream << "end=" << fog->getEnd() << endl;
         stream << endl;
     }
 
-    SkyBox* sky = m_sceneManager->GetSkybox();
+    SkyBox* sky = m_sceneManager->getSkybox();
 
-    if(sky->IsEnable())
+    if(sky->isEnable())
     {
-        Texture* skyTexs = sky->GetTextures();
+        Texture* skyTexs = sky->getTextures();
 
         stream << ".skybox" << endl;
-        stream << "front=" << skyTexs[0].GetFilename() << endl;
-        stream << "back=" << skyTexs[1].GetFilename() << endl;
-        stream << "top=" << skyTexs[2].GetFilename() << endl;
-        stream << "bottom=" << skyTexs[3].GetFilename() << endl;
-        stream << "left=" << skyTexs[4].GetFilename() << endl;
-        stream << "right=" << skyTexs[5].GetFilename() << endl;
+        stream << "front=" << skyTexs[0].getFilename() << endl;
+        stream << "back=" << skyTexs[1].getFilename() << endl;
+        stream << "top=" << skyTexs[2].getFilename() << endl;
+        stream << "bottom=" << skyTexs[3].getFilename() << endl;
+        stream << "left=" << skyTexs[4].getFilename() << endl;
+        stream << "right=" << skyTexs[5].getFilename() << endl;
         stream << endl;
     }
 
@@ -115,16 +115,16 @@ void BldParser::WriteMap(std::iostream& stream)
     {
         Light* light = m_gameManager->map.lights[i];
 
-        bool pointType = (light->GetType() == Light::POINT);
+        bool pointType = (light->getType() == Light::POINT);
 
         stream << "+light" << endl;
         stream << "type=" << (pointType ? "POINT" : "DIRI") << endl;
-        stream << "pos=" << light->GetPos() << endl;
-        stream << "ambient=" << light->GetAmbient() << endl;
-        stream << "diffuse=" << light->GetDiffuse() << endl;
-        stream << "specular=" << light->GetSpecular() << endl;
+        stream << "pos=" << light->getPos() << endl;
+        stream << "ambient=" << light->getAmbient() << endl;
+        stream << "diffuse=" << light->getDiffuse() << endl;
+        stream << "specular=" << light->getSpecular() << endl;
         if(pointType)
-            stream << "radius=" << light->GetRadius() << endl;
+            stream << "radius=" << light->getRadius() << endl;
         stream << endl;
     }
 
@@ -132,19 +132,19 @@ void BldParser::WriteMap(std::iostream& stream)
     stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.staticObjects.size(); i++)
-        m_gameManager->map.staticObjects[i]->OutputConstruction(stream);
+        m_gameManager->map.staticObjects[i]->outputConstruction(stream);
 
     stream << "# Dynamic" << endl;
     stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.dynamicObjects.size(); i++)
-        m_gameManager->map.dynamicObjects[i]->OutputConstruction(stream);
+        m_gameManager->map.dynamicObjects[i]->outputConstruction(stream);
 
     stream << "# Item" << endl;
     stream << endl;
 
     for(unsigned i = 0; i < m_gameManager->map.items.size(); i++)
-        m_gameManager->map.items[i]->OutputConstruction(stream);
+        m_gameManager->map.items[i]->outputConstruction(stream);
 
     stream << "# Spawn" << endl;
     stream << endl;
@@ -158,7 +158,7 @@ void BldParser::WriteMap(std::iostream& stream)
     }
 }
 
-void BldParser::SaveLevel(const std::string& filepath)
+void BldParser::saveLevel(const std::string& filepath)
 {
     fstream file(filepath.c_str(), ios::out);
 
@@ -167,12 +167,12 @@ void BldParser::SaveLevel(const std::string& filepath)
 
     m_openFileName = filepath;
 
-    WriteMap(file);
+    writeMap(file);
 
     file.close();
 }
 
-void BldParser::LoadLevel(const std::string& filepath)
+void BldParser::loadLevel(const std::string& filepath)
 {
     ifstream file(filepath.c_str());
 
@@ -189,39 +189,39 @@ void BldParser::LoadLevel(const std::string& filepath)
 
         if(buffer == ".map")
         {
-            AttribMap att = GetAttributs(file);
-            OnLoadMap(att);
+            AttribMap att = getAttributs(file);
+            onLoadMap(att);
         }
 
         else if(buffer == ".music")
         {
-            AttribMap att = GetAttributs(file);
-            OnLoadMusic(att);
+            AttribMap att = getAttributs(file);
+            onLoadMusic(att);
         }
 
         else if(buffer == ".fog")
         {
-            AttribMap att = GetAttributs(file);
-            OnLoadFog(att);
+            AttribMap att = getAttributs(file);
+            onLoadFog(att);
         }
 
 
         else if(buffer == ".skybox")
         {
-            AttribMap att = GetAttributs(file);
-            OnLoadSkyBox(att);
+            AttribMap att = getAttributs(file);
+            onLoadSkyBox(att);
         }
 
         else if(buffer == "+node")
         {
-            AttribMap att = GetAttributs(file);
-            OnLoadNode(att);
+            AttribMap att = getAttributs(file);
+            onLoadNode(att);
         }
 
         else if(buffer == "+light")
         {
-            AttribMap att = GetAttributs(file);
-            OnLoadLight(att);
+            AttribMap att = getAttributs(file);
+            onLoadLight(att);
         }
 
         else
@@ -231,17 +231,17 @@ void BldParser::LoadLevel(const std::string& filepath)
     file.close();
 }
 
-void BldParser::SetOpenFileName(std::string openFileName)
+void BldParser::setOpenFileName(std::string openFileName)
 {
     this->m_openFileName = openFileName;
 }
 
-std::string BldParser::GetOpenFileName() const
+std::string BldParser::getOpenFileName() const
 {
     return m_openFileName;
 }
 
-BldParser::AttribMap BldParser::GetAttributs(std::ifstream& file)
+BldParser::AttribMap BldParser::getAttributs(std::ifstream& file)
 {
     BldParser::AttribMap fileMap;
     string buffer;
@@ -263,13 +263,13 @@ BldParser::AttribMap BldParser::GetAttributs(std::ifstream& file)
     return fileMap;
 }
 
-void BldParser::OnLoadMap(AttribMap& att)
+void BldParser::onLoadMap(AttribMap& att)
 {
     m_gameManager->map.name = att["name"];
-    m_sceneManager->SetAmbientLight(tools::StrToVec4<float>(att["ambient"], true));
+    m_sceneManager->setAmbientLight(tools::strToVec4<float>(att["ambient"], true));
 }
 
-void BldParser::OnLoadMusic(AttribMap& att)
+void BldParser::onLoadMusic(AttribMap& att)
 {
     string& filePath = att["filePath"];
     m_gameManager->map.musicPath = filePath;
@@ -282,25 +282,25 @@ void BldParser::OnLoadMusic(AttribMap& att)
                                                    0, &m_gameManager->map.musicStream);
 
         if(res != FMOD_OK)
-            throw Exception("BldParser::OnLoadMusic; %s (%s)",
+            throw Exception("BldParser::onLoadMusic; %s (%s)",
                             FMOD_ErrorString(res), filePath.c_str());
     }
 }
 
-void BldParser::OnLoadFog(AttribMap& att)
+void BldParser::onLoadFog(AttribMap& att)
 {
-    Vector4f color = tools::StrToVec4<float>(att["color"], true);
-    float start = tools::StrToNum<float>(att["start"]);
-    float end = tools::StrToNum<float>(att["end"]);
+    Vector4f color = tools::strToVec4<float>(att["color"], true);
+    float start = tools::strToNum<float>(att["start"]);
+    float end = tools::strToNum<float>(att["end"]);
 
-    scene::Fog* fog = m_sceneManager->GetFog();
-    fog->SetColor(color);
-    fog->SetStart(start);
-    fog->SetEnd(end);
-    fog->SetEnable(true);
+    scene::Fog* fog = m_sceneManager->getFog();
+    fog->setColor(color);
+    fog->setStart(start);
+    fog->setEnd(end);
+    fog->setEnable(true);
 }
 
-void BldParser::OnLoadSkyBox(AttribMap& att)
+void BldParser::onLoadSkyBox(AttribMap& att)
 {
     string skyPath[6] = {
         att["front"], att["back"],
@@ -314,35 +314,35 @@ void BldParser::OnLoadSkyBox(AttribMap& att)
         if(!skyPath[i].empty())
             skyTex[i] = skyPath[i];
 
-    scene::SkyBox * sky = m_sceneManager->GetSkybox();
-    sky->SetTextures(skyTex);
-    sky->SetEnable(true);
+    scene::SkyBox * sky = m_sceneManager->getSkybox();
+    sky->setTextures(skyTex);
+    sky->setEnable(true);
 }
 
-void BldParser::OnLoadNode(AttribMap& att)
+void BldParser::onLoadNode(AttribMap& att)
 {
     Node* node = 0;
 
     if(att["type"] == "ITEM")
-        node = CreateItem(att["add"], att["matrix"]);
+        node = createItem(att["add"], att["matrix"]);
 
     else if(att["type"] == "DYNAMIC")
-        node = CreateDynamic(att["action"], att["matrix"]);
+        node = createDynamic(att["action"], att["matrix"]);
 
     else if(att["type"] == "STATIC")
-        node = CreateStatic(att["modelPath"], att["matrix"]);
+        node = createStatic(att["modelPath"], att["matrix"]);
 
     else if(att["type"] == "SPAWN")
-        m_gameManager->map.spawnPoints.push_back(tools::StrToVec3<float>(att["pos"], true));
+        m_gameManager->map.spawnPoints.push_back(tools::strToVec3<float>(att["pos"], true));
 
     else
-        throw tbe::Exception("BldParser::OnLoadNode; Unknown node type (%s)", att["type"].c_str());
+        throw tbe::Exception("BldParser::onLoadNode; Unknown node type (%s)", att["type"].c_str());
 
     if(node)
-        m_gameManager->manager.scene->GetRootNode()->AddChild(node);
+        m_gameManager->manager.scene->getRootNode()->addChild(node);
 }
 
-void BldParser::OnLoadLight(AttribMap& att)
+void BldParser::onLoadLight(AttribMap& att)
 {
     Light* light = NULL;
 
@@ -353,26 +353,26 @@ void BldParser::OnLoadLight(AttribMap& att)
 
     else if(att["type"] == "POINT")
     {
-        float radius = tools::StrToNum<float>(att["radius"]);
+        float radius = tools::strToNum<float>(att["radius"]);
 
         light = new PointLight(m_lightScene);
-        light->SetRadius(radius);
+        light->setRadius(radius);
     }
 
     else
         throw tbe::Exception("BldParser::LoadScene; Unknown light type (%s)", att["type"].c_str());
 
-    light->SetPos(tools::StrToVec3<float>(att["pos"], true));
+    light->setPos(tools::strToVec3<float>(att["pos"], true));
 
-    light->SetAmbient(tools::StrToVec4<float>(att["ambient"], true));
-    light->SetDiffuse(tools::StrToVec4<float>(att["diffuse"], true));
-    light->SetSpecular(tools::StrToVec4<float>(att["specular"], true));
+    light->setAmbient(tools::strToVec4<float>(att["ambient"], true));
+    light->setDiffuse(tools::strToVec4<float>(att["diffuse"], true));
+    light->setSpecular(tools::strToVec4<float>(att["specular"], true));
 
-    m_gameManager->manager.scene->GetRootNode()->AddChild(light);
+    m_gameManager->manager.scene->getRootNode()->addChild(light);
     m_gameManager->map.lights.push_back(light);
 }
 
-Item* BldParser::CreateItem(std::string add, tbe::Matrix4f pos)
+Item* BldParser::createItem(std::string add, tbe::Matrix4f pos)
 {
     Item* item;
 
@@ -398,14 +398,14 @@ Item* BldParser::CreateItem(std::string add, tbe::Matrix4f pos)
         item = new ItemAddShotgun(m_gameManager, pos);
 
     else
-        throw tbe::Exception("LevelLoader::OnLoadNode; Unknown item add (%s)", add.c_str());
+        throw tbe::Exception("LevelLoader::onLoadNode; Unknown item add (%s)", add.c_str());
 
-    m_gameManager->RegisterItem(item);
+    m_gameManager->registerItem(item);
 
     return item;
 }
 
-DynamicObject* BldParser::CreateDynamic(std::string action, tbe::Matrix4f pos)
+DynamicObject* BldParser::createDynamic(std::string action, tbe::Matrix4f pos)
 {
     DynamicObject* dyo;
 
@@ -416,18 +416,18 @@ DynamicObject* BldParser::CreateDynamic(std::string action, tbe::Matrix4f pos)
         dyo = new DYTeleporter(m_gameManager, pos);
 
     else
-        throw tbe::Exception("LevelLoader::OnLoadNode; Unknown dynamic action (%s)", action.c_str());
+        throw tbe::Exception("LevelLoader::onLoadNode; Unknown dynamic action (%s)", action.c_str());
 
-    m_gameManager->RegisterDynamic(dyo);
+    m_gameManager->registerDynamic(dyo);
 
     return dyo;
 }
 
-StaticObject* BldParser::CreateStatic(std::string modelPath, tbe::Matrix4f pos)
+StaticObject* BldParser::createStatic(std::string modelPath, tbe::Matrix4f pos)
 {
     StaticObject* node = new StaticObject(m_gameManager, modelPath, pos);
 
-    m_gameManager->RegisterStatic(node);
+    m_gameManager->registerStatic(node);
 
     return node;
 }

@@ -29,41 +29,41 @@ DynamicObject::~DynamicObject()
 
 DYJumper::DYJumper(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObject(gameManager, matrix)
 {
-    Open(OBJ_JUMPER);
+    open(OBJ_JUMPER);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 0);
 
     m_particles = new BurningEmitter(gameManager->parallelscene.particles);
 
-    m_particles->SetPos(m_aabb.min * 0.75f);
-    m_particles->SetBoxSize(m_aabb.max * 1.25f);
-    m_particles->SetTexture(PARTICLE_JUMPER);
-    m_particles->SetFreeMove(0);
+    m_particles->setPos(m_aabb.min * 0.75f);
+    m_particles->setBoxSize(m_aabb.max * 1.25f);
+    m_particles->setTexture(PARTICLE_JUMPER);
+    m_particles->setFreeMove(0);
 
-    m_particles->SetGravity(m_worldSettings.jumperGravity);
-    m_particles->SetLifeInit(m_worldSettings.jumperLifeInit);
-    m_particles->SetLifeDown(m_worldSettings.jumperLifeDown);
-    m_particles->SetNumber(m_worldSettings.jumperNumber);
+    m_particles->setGravity(m_worldSettings.jumperGravity);
+    m_particles->setLifeInit(m_worldSettings.jumperLifeInit);
+    m_particles->setLifeDown(m_worldSettings.jumperLifeDown);
+    m_particles->setNumber(m_worldSettings.jumperNumber);
 
-    m_particles->SetContinousMode(true);
+    m_particles->setContinousMode(true);
 
-    m_particles->Build();
+    m_particles->build();
 
-    m_particles->SetParent(this);
+    m_particles->setParent(this);
 }
 
 DYJumper::~DYJumper()
 {
 }
 
-Object* DYJumper::CloneToObject()
+Object* DYJumper::cloneToObject()
 {
     DYJumper* dj = new DYJumper(m_gameManager, m_matrix);
-    m_gameManager->RegisterDynamic(dj);
+    m_gameManager->registerDynamic(dj);
     return dj;
 }
 
-void DYJumper::OutputConstruction(std::iostream& stream)
+void DYJumper::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -74,56 +74,56 @@ void DYJumper::OutputConstruction(std::iostream& stream)
     stream << endl;
 }
 
-void DYJumper::InteractWith(Player* player)
+void DYJumper::interactWith(Player* player)
 {
-    Vector3f velocity = player->GetPhysicBody()->GetVelocity();
+    Vector3f velocity = player->getPhysicBody()->getVelocity();
 
     velocity.y = 0;
 
-    player->GetPhysicBody()->SetVelocity(velocity);
+    player->getPhysicBody()->setVelocity(velocity);
 
-    NewtonBodyAddImpulse(player->GetPhysicBody()->GetBody(),
-                         Vector3f(0, 32, 0), player->GetPos());
+    NewtonBodyAddImpulse(player->getPhysicBody()->getBody(),
+                         Vector3f(0, 32, 0), player->getPos());
 
-    m_soundManager->Play("jumper", player);
+    m_soundManager->play("jumper", player);
 }
 
 DYTeleporter::DYTeleporter(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObject(gameManager, matrix)
 {
-    Open(OBJ_TELEPORTER);
+    open(OBJ_TELEPORTER);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 0);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 0);
 
     m_particles = new BurningEmitter(gameManager->parallelscene.particles);
-    m_particles->SetPos(m_aabb.min * 0.75f);
-    m_particles->SetBoxSize(m_aabb.max * 1.25f);
-    m_particles->SetTexture(PARTICLE_TELEPORTER);
-    m_particles->SetFreeMove(0);
+    m_particles->setPos(m_aabb.min * 0.75f);
+    m_particles->setBoxSize(m_aabb.max * 1.25f);
+    m_particles->setTexture(PARTICLE_TELEPORTER);
+    m_particles->setFreeMove(0);
 
-    m_particles->SetLifeInit(m_worldSettings.teleporterLifeInit);
-    m_particles->SetLifeDown(m_worldSettings.teleporterLifeDown);
-    m_particles->SetNumber(m_worldSettings.teleporterNumber);
-    m_particles->SetGravity(m_worldSettings.teleporterGravity);
+    m_particles->setLifeInit(m_worldSettings.teleporterLifeInit);
+    m_particles->setLifeDown(m_worldSettings.teleporterLifeDown);
+    m_particles->setNumber(m_worldSettings.teleporterNumber);
+    m_particles->setGravity(m_worldSettings.teleporterGravity);
 
-    m_particles->SetContinousMode(true);
+    m_particles->setContinousMode(true);
 
-    m_particles->Build();
+    m_particles->build();
 
-    m_particles->SetParent(this);
+    m_particles->setParent(this);
 }
 
 DYTeleporter::~DYTeleporter()
 {
 }
 
-Object* DYTeleporter::CloneToObject()
+Object* DYTeleporter::cloneToObject()
 {
     DYTeleporter* dt = new DYTeleporter(m_gameManager, m_matrix);
-    m_gameManager->RegisterDynamic(dt);
+    m_gameManager->registerDynamic(dt);
     return dt;
 }
 
-void DYTeleporter::OutputConstruction(std::iostream& stream)
+void DYTeleporter::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -134,8 +134,8 @@ void DYTeleporter::OutputConstruction(std::iostream& stream)
     stream << endl;
 }
 
-void DYTeleporter::InteractWith(Player* player)
+void DYTeleporter::interactWith(Player* player)
 {
-    player->SetRandomSpawnPos();
-    m_soundManager->Play("teleport", player);
+    player->toNextSpawnPos();
+    m_soundManager->play("teleport", player);
 }

@@ -19,34 +19,34 @@ GameManager::GameManager(AppManager* appManager)
 
     running = true;
 
-    manager.gameEngine = manager.app->GetGameEngine();
-    manager.gameEngine->SetGrabInput(true);
-    manager.gameEngine->SetMouseVisible(false);
+    manager.gameEngine = manager.app->getGameEngine();
+    manager.gameEngine->setGrabInput(true);
+    manager.gameEngine->setMouseVisible(false);
 
-    manager.fps = manager.gameEngine->GetFpsManager();
-    manager.gui = manager.gameEngine->GetGuiManager();
-    manager.scene = manager.gameEngine->GetSceneManager();
-    manager.ppe = manager.gameEngine->GetPostProcessManager();
+    manager.fps = manager.gameEngine->getFpsManager();
+    manager.gui = manager.gameEngine->getGuiManager();
+    manager.scene = manager.gameEngine->getSceneManager();
+    manager.ppe = manager.gameEngine->getPostProcessManager();
 
     parallelscene.light = new scene::LightParallelScene;
-    manager.scene->AddParallelScene(parallelscene.light);
+    manager.scene->addParallelScene(parallelscene.light);
 
     parallelscene.meshs = new scene::MeshParallelScene;
-    manager.scene->AddParallelScene(parallelscene.meshs);
+    manager.scene->addParallelScene(parallelscene.meshs);
 
     parallelscene.newton = new scene::NewtonParallelScene;
-    parallelscene.newton->SetGravity(worldSettings.gravity);
-    NewtonSetSolverModel(parallelscene.newton->GetNewtonWorld(), 8);
-    NewtonSetFrictionModel(parallelscene.newton->GetNewtonWorld(), 1);
-    manager.scene->AddParallelScene(parallelscene.newton);
+    parallelscene.newton->setGravity(worldSettings.gravity);
+    NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
+    NewtonSetFrictionModel(parallelscene.newton->getNewtonWorld(), 1);
+    manager.scene->addParallelScene(parallelscene.newton);
 
     parallelscene.particles = new scene::ParticlesParallelScene;
-    manager.scene->AddParallelScene(parallelscene.particles);
+    manager.scene->addParallelScene(parallelscene.particles);
 
     if(manager.app->globalSettings.noaudio)
         manager.fmodsys = NULL;
     else
-        manager.fmodsys = appManager->GetFmodSystem();
+        manager.fmodsys = appManager->getFmodSystem();
 
     manager.material = new MaterialManager(this);
     manager.sound = new SoundManager(this);
@@ -60,10 +60,10 @@ GameManager::~GameManager()
 {
     cout << "--- Cleaning game manager" << endl;
 
-    manager.gui->SetSession(MENU_QUICKPLAY);
+    manager.gui->setSession(MENU_QUICKPLAY);
 
-    manager.gameEngine->SetGrabInput(false);
-    manager.gameEngine->SetMouseVisible(true);
+    manager.gameEngine->setGrabInput(false);
+    manager.gameEngine->setMouseVisible(true);
 
     if(!manager.app->globalSettings.noaudio && !manager.app->globalSettings.nomusic)
         FMOD_Sound_Release(map.musicStream);
@@ -72,29 +72,29 @@ GameManager::~GameManager()
     delete manager.material;
     delete manager.level;
 
-    manager.scene->ClearAll();
+    manager.scene->clearAll();
 }
 
-void GameManager::RegisterItem(Item* item)
+void GameManager::registerItem(Item* item)
 {
-    manager.material->AddItem(item);
+    manager.material->addItem(item);
     map.items.push_back(item);
 }
 
-void GameManager::RegisterStatic(StaticObject* staticObject)
+void GameManager::registerStatic(StaticObject* staticObject)
 {
-    manager.material->AddStatic(staticObject);
+    manager.material->addStatic(staticObject);
     map.staticObjects.push_back(staticObject);
-    map.aabb.Count(staticObject);
+    map.aabb.count(staticObject);
 }
 
-void GameManager::RegisterDynamic(DynamicObject* dynamicObject)
+void GameManager::registerDynamic(DynamicObject* dynamicObject)
 {
-    manager.material->AddDynamic(dynamicObject);
+    manager.material->addDynamic(dynamicObject);
     map.dynamicObjects.push_back(dynamicObject);
 }
 
-void GameManager::UnRegisterItem(Item* item)
+void GameManager::unregisterItem(Item* item)
 {
     Item::Array::iterator it = find(map.items.begin(),
                                     map.items.end(), item);
@@ -102,7 +102,7 @@ void GameManager::UnRegisterItem(Item* item)
     map.items.erase(it);
 }
 
-void GameManager::UnRegisterStatic(StaticObject* staticObject)
+void GameManager::unregisterStatic(StaticObject* staticObject)
 {
     StaticObject::Array::iterator it = find(map.staticObjects.begin(),
                                             map.staticObjects.end(), staticObject);
@@ -110,7 +110,7 @@ void GameManager::UnRegisterStatic(StaticObject* staticObject)
     map.staticObjects.erase(it);
 }
 
-void GameManager::UnRegisterDynamic(DynamicObject* dynamicObject)
+void GameManager::unregisterDynamic(DynamicObject* dynamicObject)
 {
     DynamicObject::Array::iterator it = find(map.dynamicObjects.begin(),
                                              map.dynamicObjects.end(), dynamicObject);

@@ -21,39 +21,39 @@ public:
     : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles),
     m_playManager(playManager)
     {
-        SetBlendEq(ParticlesEmiter::MODULAR);
-        SetDepthTest(true);
+        setBlendEq(ParticlesEmiter::MODULAR);
+        setDepthTest(true);
     }
 
-    tbe::scene::Node* Clone()
+    tbe::scene::Node* clone()
     {
         return new FragBillboardIcon(*this);
     }
 
-    void SetupBullet(tbe::scene::Particle& p)
+    void setupBullet(tbe::scene::Particle& p)
     {
         p.color(1, 1, 1, 0.5);
         p.life = 1.0f;
     }
 
-    void Process()
+    void process()
     {
-        const Player::Array& players = m_playManager->GetPlayers();
+        const Player::Array& players = m_playManager->getPlayers();
 
-        scene::Particle* particles = BeginParticlesPosProcess();
+        scene::Particle* particles = beginParticlesPosProcess();
 
         unsigned show = 0;
         for(unsigned i = 0; i < players.size(); i++)
-            if(players[i] != m_playManager->GetUserPlayer()
-               && !players[i]->IsKilled())
+            if(players[i] != m_playManager->getUserPlayer()
+               && !players[i]->isKilled())
             {
-                particles[show].pos = players[i]->GetPos() + Vector3f(0, 1, 0);
+                particles[show].pos = players[i]->getPos() + Vector3f(0, 1, 0);
                 show++;
             }
 
-        SetDrawNumber(show);
+        setDrawNumber(show);
 
-        EndParticlesPosProcess();
+        endParticlesPosProcess();
     }
 
 protected:
@@ -63,33 +63,33 @@ protected:
 PlayFragManager::PlayFragManager(AppManager* appManager) : PlayManager(appManager)
 {
     m_playersLabel = new FragBillboardIcon(this);
-    m_playersLabel->SetTexture(Texture(PARTICLE_PLAYER, true));
-    m_playersLabel->Build();
-    manager.scene->GetRootNode()->AddChild(m_playersLabel);
+    m_playersLabel->setTexture(Texture(PARTICLE_PLAYER, true));
+    m_playersLabel->build();
+    manager.scene->getRootNode()->addChild(m_playersLabel);
 }
 
 PlayFragManager::~PlayFragManager()
 {
 }
 
-void PlayFragManager::ModSetupUser(Player* userPlayer)
+void PlayFragManager::modSetupUser(Player* userPlayer)
 {
 
 }
 
-void PlayFragManager::ModSetupAi(Player* player)
+void PlayFragManager::modSetupAi(Player* player)
 {
-    m_playersLabel->SetNumber(m_players.size());
-    m_playersLabel->Build();
+    m_playersLabel->setNumber(m_players.size());
+    m_playersLabel->build();
 
-    player->AttachController(new FragModeAi(this));
+    player->attachController(new FragModeAi(this));
 }
 
-void PlayFragManager::ModUpdateStateText(std::ostringstream& ss)
+void PlayFragManager::modUpdateStateText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    ss << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
+    ss << "Score : " << m_userPlayer->getScore() << " Point(s)" << endl;
 
     if(m_playTimeManager.startChrono > 0)
         ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
@@ -100,7 +100,7 @@ void PlayFragManager::ModUpdateStateText(std::ostringstream& ss)
         ss << "Objectif : " << m_playSetting.winCond << endl;
 }
 
-void PlayFragManager::ModUpdateScoreListText(std::ostringstream& ss)
+void PlayFragManager::modUpdateScoreListText(std::ostringstream& ss)
 {
     using namespace gui;
 
@@ -115,16 +115,16 @@ void PlayFragManager::ModUpdateScoreListText(std::ostringstream& ss)
     ss << endl;
 
     for(unsigned i = 0; i < m_players.size(); i++)
-        ss << " [" << m_players[i]->GetScore() << "] " << m_players[i]->GetName() << endl;
+        ss << " [" << m_players[i]->getScore() << "] " << m_players[i]->getName() << endl;
 }
 
-void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
+void PlayFragManager::modUpdateGameOverText(std::ostringstream& ss)
 {
     using namespace gui;
 
     if(m_playSetting.winCond > 0)
     {
-        if(m_userPlayer->GetScore() >= m_playSetting.winCond)
+        if(m_userPlayer->getScore() >= (int)m_playSetting.winCond)
             ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
         else
             ss << "<< VOUS AVEZ PERDU !!! >>" << endl;
@@ -143,7 +143,7 @@ void PlayFragManager::ModUpdateGameOverText(std::ostringstream& ss)
     ss << endl;
 
     for(unsigned i = 0; i < m_players.size(); i++)
-        ss << " [" << m_players[i]->GetScore() << "] " << m_players[i]->GetName() << endl;
+        ss << " [" << m_players[i]->getScore() << "] " << m_players[i]->getName() << endl;
 
     ss << endl;
 

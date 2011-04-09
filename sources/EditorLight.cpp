@@ -7,34 +7,34 @@
 using namespace std;
 using namespace tbe;
 
-void EditorManager::NewLight(tbe::scene::Light* light)
+void EditorManager::newLight(tbe::scene::Light* light)
 {
     unsigned index = map.lights.size();
 
-    hud.light.slector->Push("Light #" + tools::numToStr(index), index);
+    hud.light.slector->push("Light #" + tools::numToStr(index), index);
 
     map.lights.push_back(light);
 
-    manager.scene->GetRootNode()->AddChild(light);
+    manager.scene->getRootNode()->addChild(light);
 
     m_selectedLight = light;
 
-    SelectLight(index);
+    selectLight(index);
 }
 
-void EditorManager::DeleteLight(unsigned index)
+void EditorManager::deleteLight(unsigned index)
 {
-    hud.light.slector->Delete(index);
+    hud.light.slector->deleteOn(index);
 
     map.lights.erase(map.lights.begin() + index);
 
     delete m_selectedLight, m_selectedLight = NULL;
 
     if(!map.lights.empty())
-        SelectLight(index - 1);
+        selectLight(index - 1);
 }
 
-void EditorManager::SelectLight(unsigned index)
+void EditorManager::selectLight(unsigned index)
 {
     if(map.lights.empty())
     {
@@ -44,30 +44,30 @@ void EditorManager::SelectLight(unsigned index)
 
     m_selectedLight = map.lights[index];
 
-    hud.light.slector->SetCurrent(index);
-    hud.light.type->SetCurrent(m_selectedLight->GetType());
-    hud.light.diffuse->SetValue(vec43(m_selectedLight->GetDiffuse()));
-    hud.light.specular->SetValue(vec43(m_selectedLight->GetSpecular()));
-    hud.light.radius->SetValue(m_selectedLight->GetRadius());
+    hud.light.slector->setCurrent(index);
+    hud.light.type->setCurrent(m_selectedLight->getType());
+    hud.light.diffuse->setValue(vec43(m_selectedLight->getDiffuse()));
+    hud.light.specular->setValue(vec43(m_selectedLight->getSpecular()));
+    hud.light.radius->setValue(m_selectedLight->getRadius());
 
-    m_axes->SetPos(m_selectedLight->GetPos());
+    m_axes->setPos(m_selectedLight->getPos());
 }
 
-bool EditorManager::DeleteLightEvent(tbe::EventManager* event)
+bool EditorManager::deleteLightEvent(tbe::EventManager* event)
 {
     if(!m_selectedLight || event->notify != EventManager::EVENT_KEY_DOWN)
         return false;
 
     if(event->lastActiveKey.first == EventManager::KEY_DELETE)
     {
-        DeleteLight(hud.light.slector->GetData().GetValue<unsigned>());
+        deleteLight(hud.light.slector->getData().getValue<unsigned>());
         return true;
     }
 
     return false;
 }
 
-bool EditorManager::AllocLightEvent(tbe::EventManager* event)
+bool EditorManager::allocLightEvent(tbe::EventManager* event)
 {
     using namespace scene;
 
@@ -76,76 +76,76 @@ bool EditorManager::AllocLightEvent(tbe::EventManager* event)
 
     int c = event->lastActiveKey.first;
 
-    Light* newLight = NULL;
+    Light* light = NULL;
 
     switch(c)
     {
         case 'p':
-            newLight = new PointLight(parallelscene.light);
-            newLight->SetPos(m_axes->GetPos());
+            light = new PointLight(parallelscene.light);
+            light->setPos(m_axes->getPos());
             break;
         case 'd':
-            newLight = new DiriLight(parallelscene.light);
+            light = new DiriLight(parallelscene.light);
             break;
     }
 
-    if(newLight)
+    if(light)
     {
-        NewLight(newLight);
+        newLight(light);
         return true;
     }
 
     return false;
 }
 
-bool EditorManager::SettingLightEvent(tbe::EventManager* event)
+bool EditorManager::settingLightEvent(tbe::EventManager* event)
 {
     if(!m_selectedLight)
         return false;
 
     // Séléction
 
-    if(hud.light.slector->IsActivate())
+    if(hud.light.slector->isActivate())
     {
-        unsigned index = hud.light.slector->GetData().GetValue<unsigned>();
+        unsigned index = hud.light.slector->getData().getValue<unsigned>();
 
-        SelectLight(index);
+        selectLight(index);
     }
 
     // Attributes
 
-    if(hud.light.type->IsActivate())
-        m_selectedLight->SetType((scene::Light::Type)hud.light.type->GetCurrent());
+    if(hud.light.type->isActivate())
+        m_selectedLight->setType((scene::Light::Type)hud.light.type->getCurrent());
 
-    else if(hud.light.amibent->IsActivate())
-        manager.scene->SetAmbientLight(vec34(hud.light.amibent->GetValue()));
+    else if(hud.light.amibent->isActivate())
+        manager.scene->setAmbientLight(vec34(hud.light.amibent->getValue()));
 
-    else if(hud.light.diffuse->IsActivate())
-        m_selectedLight->SetDiffuse(vec34(hud.light.diffuse->GetValue()));
+    else if(hud.light.diffuse->isActivate())
+        m_selectedLight->setDiffuse(vec34(hud.light.diffuse->getValue()));
 
-    else if(hud.light.specular->IsActivate())
-        m_selectedLight->SetSpecular(vec34(hud.light.specular->GetValue()));
+    else if(hud.light.specular->isActivate())
+        m_selectedLight->setSpecular(vec34(hud.light.specular->getValue()));
 
-    else if(hud.light.radius->IsActivate())
-        m_selectedLight->SetRadius(hud.light.radius->GetValue());
+    else if(hud.light.radius->isActivate())
+        m_selectedLight->setRadius(hud.light.radius->getValue());
 
     // Mouvement
 
 
     if(event->keyState[EventManager::KEY_LSHIFT])
     {
-        manager.gameEngine->SetMouseVisible(false);
-        manager.gameEngine->SetGrabInput(true);
+        manager.gameEngine->setMouseVisible(false);
+        manager.gameEngine->setGrabInput(true);
 
         if(event->notify == EventManager::EVENT_MOUSE_MOVE)
         {
             float moveSpeed = 0.05;
 
-            Vector3f curPos = m_selectedLight->GetPos();
+            Vector3f curPos = m_selectedLight->getPos();
 
             Vector3f transform;
-            Vector3f target = m_camera->GetTarget();
-            Vector3f left = m_camera->GetLeft();
+            Vector3f target = m_camera->getTarget();
+            Vector3f left = m_camera->getLeft();
 
             if(event->keyState[EventManager::KEY_LALT])
             {
@@ -160,17 +160,17 @@ bool EditorManager::SettingLightEvent(tbe::EventManager* event)
 
             Vector3f setPos = curPos + transform;
 
-            m_selectedLight->SetPos(setPos);
+            m_selectedLight->setPos(setPos);
 
-            m_axes->SetPos(setPos);
+            m_axes->setPos(setPos);
         }
 
         return true;
     }
     else
     {
-        manager.gameEngine->SetMouseVisible(true);
-        manager.gameEngine->SetGrabInput(false);
+        manager.gameEngine->setMouseVisible(true);
+        manager.gameEngine->setGrabInput(false);
     }
 
 

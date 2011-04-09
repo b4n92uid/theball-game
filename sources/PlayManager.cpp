@@ -40,11 +40,11 @@ PlayManager::PlayManager(AppManager* appManager) : GameManager(appManager)
     m_cursorOnPlayer = false;
 
     m_camera = new scene::Camera(scene::Camera::TARGET_RELATIVE);
-    manager.scene->AddCamera(m_camera);
+    manager.scene->addCamera(m_camera);
 
     m_cameraBody = new scene::NewtonNode(parallelscene.newton, &m_cameratMat);
-    m_cameraBody->BuildSphereNode(0.1, 0.1);
-    NewtonBodySetForceAndTorqueCallback(m_cameraBody->GetBody(), NULL);
+    m_cameraBody->buildSphereNode(0.1, 0.1);
+    NewtonBodySetForceAndTorqueCallback(m_cameraBody->getBody(), NULL);
 
     delete manager.sound, manager.sound = new PlaySoundManager(this);
 
@@ -90,22 +90,22 @@ PlayManager::~PlayManager()
 
         party.SetAttribute("timestamp", m_playTimeManager.startTimestamp);
 
-        party.SetAttribute("score", m_userPlayer->GetScore());
+        party.SetAttribute("score", m_userPlayer->getScore());
 
         root->InsertEndChild(party);
 
         scoreDoc.SaveFile();
     }
 
-    manager.gui->DestroySession(SCREEN_GAMEOVER);
-    manager.gui->DestroySession(SCREEN_PAUSEMENU);
-    manager.gui->DestroySession(SCREEN_HUD);
-    manager.gui->DestroySession(SCREEN_PLAYERSLIST);
+    manager.gui->destroySession(SCREEN_GAMEOVER);
+    manager.gui->destroySession(SCREEN_PAUSEMENU);
+    manager.gui->destroySession(SCREEN_HUD);
+    manager.gui->destroySession(SCREEN_PLAYERSLIST);
 
     delete m_bullettime;
 }
 
-void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
+void PlayManager::setupMap(const Settings::PartySetting& playSetting)
 {
     m_playSetting = playSetting;
 
@@ -113,21 +113,21 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
 
     // SCENE -------------------------------------------------------------------
 
-    manager.level->LoadLevel(m_playSetting.playMap.file);
+    manager.level->loadLevel(m_playSetting.playMap.file);
 
     // Marge
-    map.aabb.Add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
+    map.aabb.add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
 
     AABB newtonWordSize = map.aabb;
-    newtonWordSize.Add(Vector3f(32.0f));
-    parallelscene.newton->SetWorldSize(newtonWordSize);
+    newtonWordSize.add(Vector3f(32.0f));
+    parallelscene.newton->setWorldSize(newtonWordSize);
 
     m_playTimeManager.startChrono = m_playTimeManager.curChrono = m_playSetting.playTime;
 
-    scene::Fog* fog = manager.scene->GetFog();
+    scene::Fog* fog = manager.scene->getFog();
 
-    manager.scene->SetZFar(fog->IsEnable() ? fog->GetEnd() : map.aabb.GetSize() * 2);
-    manager.scene->UpdateViewParameter();
+    manager.scene->setZFar(fog->isEnable() ? fog->getEnd() : map.aabb.getSize() * 2);
+    manager.scene->updateViewParameter();
 
     // PLAYERS -----------------------------------------------------------------
 
@@ -141,12 +141,12 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
     namefile.close();
 
     m_userPlayer = new Player(this, m_playSetting.playerName.nick, m_playSetting.playerName.model);
-    m_userPlayer->AttachController(new UserControl(this));
+    m_userPlayer->attachController(new UserControl(this));
 
-    manager.scene->GetRootNode()->AddChild(m_userPlayer);
+    manager.scene->getRootNode()->addChild(m_userPlayer);
 
-    RegisterPlayer(m_userPlayer);
-    ModSetupUser(m_userPlayer);
+    registerPlayer(m_userPlayer);
+    modSetupUser(m_userPlayer);
 
     m_bullettime = new BulletTime(this);
 
@@ -159,40 +159,40 @@ void PlayManager::SetupMap(const Settings::PartySetting& playSetting)
         using namespace tbe::ppe;
 
         ppe.boost = new MotionBlurEffect;
-        ppe.boost->SetEnable(false);
-        ppe.boost->SetIntensity(vidSets.ppe.boostIntensity);
-        manager.ppe->AddPostEffect("boostEffect", ppe.boost);
+        ppe.boost->setEnable(false);
+        ppe.boost->setIntensity(vidSets.ppe.boostIntensity);
+        manager.ppe->addPostEffect("boostEffect", ppe.boost);
 
         ppe.bullettime = new ColorEffect;
-        ppe.bullettime->SetInternalPass(true);
-        ppe.bullettime->SetRttFrameSize(vidSets.ppe.bullettimeSize);
-        ppe.bullettime->SetFusionMode(ColorEffect::BLACK_WHITE);
-        ppe.bullettime->SetColor(vidSets.ppe.bullettimeColor);
-        ppe.bullettime->SetEnable(false);
-        manager.ppe->AddPostEffect("blettimeEffect", ppe.bullettime);
+        ppe.bullettime->setInternalPass(true);
+        ppe.bullettime->setRttFrameSize(vidSets.ppe.bullettimeSize);
+        ppe.bullettime->setFusionMode(ColorEffect::BLACK_WHITE);
+        ppe.bullettime->setColor(vidSets.ppe.bullettimeColor);
+        ppe.bullettime->setEnable(false);
+        manager.ppe->addPostEffect("blettimeEffect", ppe.bullettime);
 
         ppe.dammage = new ColorEffect;
-        ppe.dammage->SetInternalPass(true);
-        ppe.dammage->SetFusionMode(ColorEffect::MULTIPLICATION_COLOR);
-        ppe.dammage->SetColor(vidSets.ppe.dammageColor);
-        ppe.dammage->SetEnable(false);
-        manager.ppe->AddPostEffect("dammageEffect", ppe.dammage);
+        ppe.dammage->setInternalPass(true);
+        ppe.dammage->setFusionMode(ColorEffect::MULTIPLICATION_COLOR);
+        ppe.dammage->setColor(vidSets.ppe.dammageColor);
+        ppe.dammage->setEnable(false);
+        manager.ppe->addPostEffect("dammageEffect", ppe.dammage);
 
         ppe.gameover = new BlurEffect;
-        ppe.gameover->SetPasse(vidSets.ppe.gameoverPass);
-        ppe.gameover->SetEnable(false);
-        manager.ppe->AddPostEffect("gameoverEffect", ppe.gameover);
+        ppe.gameover->setPasse(vidSets.ppe.gameoverPass);
+        ppe.gameover->setEnable(false);
+        manager.ppe->addPostEffect("gameoverEffect", ppe.gameover);
 
         ppe.bloom = new BloomEffect;
-        ppe.bloom->SetRttFrameSize(vidSets.ppe.worldSize);
-        ppe.bloom->SetIntensity(vidSets.ppe.worldIntensity);
-        ppe.bloom->SetThreshold(vidSets.ppe.worldThershold);
-        ppe.bloom->SetBlurPass(vidSets.ppe.worldBlurPass);
-        manager.ppe->AddPostEffect("worldEffect", ppe.bloom);
+        ppe.bloom->setRttFrameSize(vidSets.ppe.worldSize);
+        ppe.bloom->setIntensity(vidSets.ppe.worldIntensity);
+        ppe.bloom->setThreshold(vidSets.ppe.worldThershold);
+        ppe.bloom->setBlurPass(vidSets.ppe.worldBlurPass);
+        manager.ppe->addPostEffect("worldEffect", ppe.bloom);
     }
 }
 
-void PlayManager::SetupGui()
+void PlayManager::setupGui()
 {
     using namespace tbe::gui;
 
@@ -204,140 +204,140 @@ void PlayManager::SetupGui()
 
     // Tabaleau des joueur ------------------------------------------------------
 
-    manager.gui->SetSession(SCREEN_PLAYERSLIST);
+    manager.gui->setSession(SCREEN_PLAYERSLIST);
 
-    manager.gui->AddLayout(Layout::Vertical);
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->AddLayout(Layout::Horizental);
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Vertical);
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Horizental);
+    manager.gui->addLayoutStretchSpace();
 
-    hud.scorelist = manager.gui->AddTextBox("hud.scorelist");
-    hud.scorelist->SetPencil(bigPen);
-    hud.scorelist->SetSize(screenSize * Vector2f(0.75, 0.75));
-    hud.scorelist->SetDefinedSize(true);
-    hud.scorelist->SetBackground(GUI_SCORE);
-    hud.scorelist->SetTextAlign(TextBox::LEFT);
-    hud.scorelist->SetBackgroundPadding(Vector2f(16, 8));
+    hud.scorelist = manager.gui->addTextBox("hud.scorelist");
+    hud.scorelist->setPencil(bigPen);
+    hud.scorelist->setSize(screenSize * Vector2f(0.75, 0.75));
+    hud.scorelist->setDefinedSize(true);
+    hud.scorelist->setBackground(GUI_SCORE);
+    hud.scorelist->setTextAlign(TextBox::LEFT);
+    hud.scorelist->setBackgroundPadding(Vector2f(16, 8));
 
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->EndLayout();
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->EndLayout();
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
 
     // GameOver ----------------------------------------------------------------
 
-    manager.gui->SetSession(SCREEN_GAMEOVER);
+    manager.gui->setSession(SCREEN_GAMEOVER);
 
     Texture black;
-    black.Build(128, 0);
+    black.build(128, 0);
 
-    hud.background.gameover = manager.gui->AddImage("hud.background.gameover", black);
-    hud.background.gameover->SetSize(screenSize);
-    hud.background.gameover->SetOpacity(0.75);
-    hud.background.gameover->SetEnable(false);
+    hud.background.gameover = manager.gui->addImage("hud.background.gameover", black);
+    hud.background.gameover->setSize(screenSize);
+    hud.background.gameover->setOpacity(0.75);
+    hud.background.gameover->setEnable(false);
 
-    manager.gui->AddLayout(Layout::Vertical, 10, 10);
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->AddLayout(Layout::Horizental, 10, 10);
-    manager.gui->AddLayoutStretchSpace();
-    hud.gameover = manager.gui->AddTextBox("hud.gameover");
-    hud.gameover->SetSize(screenSize * Vector2f(0.75, 0.75));
-    hud.gameover->SetDefinedSize(true);
-    hud.gameover->SetPencil(bigPen);
-    hud.gameover->SetBackground(GUI_SCORE);
-    hud.gameover->SetBackgroundPadding(8);
-    hud.gameover->SetTextAlign(TextBox::LEFT);
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->EndLayout();
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 10, 10);
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Horizental, 10, 10);
+    manager.gui->addLayoutStretchSpace();
+    hud.gameover = manager.gui->addTextBox("hud.gameover");
+    hud.gameover->setSize(screenSize * Vector2f(0.75, 0.75));
+    hud.gameover->setDefinedSize(true);
+    hud.gameover->setPencil(bigPen);
+    hud.gameover->setBackground(GUI_SCORE);
+    hud.gameover->setBackgroundPadding(8);
+    hud.gameover->setTextAlign(TextBox::LEFT);
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
 
     // Pause Menu --------------------------------------------------------------
 
-    manager.gui->SetSession(SCREEN_PAUSEMENU);
+    manager.gui->setSession(SCREEN_PAUSEMENU);
 
-    Image* backPause = manager.gui->AddImage("00:background", BACKGROUND_PAUSE);
-    backPause->SetSize(screenSize);
+    Image* backPause = manager.gui->addImage("00:background", BACKGROUND_PAUSE);
+    backPause->setSize(screenSize);
 
-    manager.gui->AddLayout(Layout::Vertical, 0, 10);
+    manager.gui->addLayout(Layout::Vertical, 0, 10);
 
-    manager.gui->AddLayout(Layout::Horizental, 10);
-    hud.playmenu.ret = manager.gui->AddButton("hud.playmenu.ret", "Retour");
-    hud.playmenu.quit = manager.gui->AddButton("hud.playmenu.quit", "Quitter");
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Horizental, 10);
+    hud.playmenu.ret = manager.gui->addButton("hud.playmenu.ret", "Retour");
+    hud.playmenu.quit = manager.gui->addButton("hud.playmenu.quit", "Quitter");
+    manager.gui->endLayout();
 
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
 
-    TextBox* pauseLabel = manager.gui->AddTextBox("hud.pauseLabel");
-    pauseLabel->SetPencil(bigPen);
-    pauseLabel->Write("Menu Pause !");
+    TextBox* pauseLabel = manager.gui->addTextBox("hud.pauseLabel");
+    pauseLabel->setPencil(bigPen);
+    pauseLabel->write("Menu Pause !");
 
-    manager.gui->EndLayout();
+    manager.gui->endLayout();
 
     // HUD ---------------------------------------------------------------------
 
-    manager.gui->SetSession(SCREEN_HUD);
+    manager.gui->setSession(SCREEN_HUD);
 
-    hud.background.dammage = manager.gui->AddImage("0:hud.background.dammage", BACKGROUND_DAMMAGE);
-    hud.background.dammage->SetSize(screenSize);
-    hud.background.dammage->SetEnable(false);
+    hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", BACKGROUND_DAMMAGE);
+    hud.background.dammage->setSize(screenSize);
+    hud.background.dammage->setEnable(false);
 
-    hud.background.bullettime = manager.gui->AddImage("1:hud.background.bullettime", BACKGROUND_BULLETTIME);
-    hud.background.bullettime->SetOpacity(0.5);
-    hud.background.bullettime->SetSize(screenSize);
-    hud.background.bullettime->SetEnable(false);
+    hud.background.bullettime = manager.gui->addImage("1:hud.background.bullettime", BACKGROUND_BULLETTIME);
+    hud.background.bullettime->setOpacity(0.5);
+    hud.background.bullettime->setSize(screenSize);
+    hud.background.bullettime->setEnable(false);
 
-    manager.gui->AddImage("2:background", BACKGROUND_HUD)->SetSize(screenSize);
+    manager.gui->addImage("2:background", BACKGROUND_HUD)->setSize(screenSize);
 
-    Image* croshair = manager.gui->AddImage("01:croshair", GUI_CROSHAIR);
-    croshair->SetPos(Vector2f(manager.app->globalSettings.video.screenSize) / 2.0f - croshair->GetSize() / 2.0f);
+    Image* croshair = manager.gui->addImage("01:croshair", GUI_CROSHAIR);
+    croshair->setPos(Vector2f(manager.app->globalSettings.video.screenSize) / 2.0f - croshair->getSize() / 2.0f);
 
-    manager.gui->AddLayout(Layout::Vertical, 10, 10);
+    manager.gui->addLayout(Layout::Vertical, 10, 10);
 
     // -------- Barre des gauges
-    manager.gui->AddLayout(Layout::Horizental, 10);
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Horizental, 10);
+    manager.gui->addLayoutStretchSpace();
 
-    hud.item = manager.gui->AddStateShow("hud.item", GUI_ITEM, 2);
-    hud.life = manager.gui->AddGauge("hud.life", "Vie");
-    hud.life->SetSmooth(true, 1);
-    hud.ammo = manager.gui->AddGauge("hud.ammo", "Munition");
-    hud.ammo->SetSmooth(true, 1);
-    hud.bullettime = manager.gui->AddGauge("hud.bullettime", "Bulettime");
-    hud.bullettime->SetSmooth(true, 1);
-    hud.boost = manager.gui->AddStateShow("hud.boost", GUI_BOOST, 2);
+    hud.item = manager.gui->addStateShow("hud.item", GUI_ITEM, 2);
+    hud.life = manager.gui->addGauge("hud.life", "Vie");
+    hud.life->setSmooth(true, 1);
+    hud.ammo = manager.gui->addGauge("hud.ammo", "Munition");
+    hud.ammo->setSmooth(true, 1);
+    hud.bullettime = manager.gui->addGauge("hud.bullettime", "Bulettime");
+    hud.bullettime->setSmooth(true, 1);
+    hud.boost = manager.gui->addStateShow("hud.boost", GUI_BOOST, 2);
 
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->EndLayout();
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
     // --------
 
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
 
     // -------- Log
-    manager.gui->AddLayout(Layout::Horizental);
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Horizental);
+    manager.gui->addLayoutStretchSpace();
 
-    hud.log = manager.gui->AddTextBox("hud.log");
-    hud.log->SetPencil(bigPen);
-    hud.log->SetBackground(GUI_NOTIFY);
-    hud.log->SetBackgroundPadding(Vector2f(32, 16));
-    hud.log->SetEnable(false);
+    hud.log = manager.gui->addTextBox("hud.log");
+    hud.log->setPencil(bigPen);
+    hud.log->setBackground(GUI_NOTIFY);
+    hud.log->setBackgroundPadding(Vector2f(32, 16));
+    hud.log->setEnable(false);
 
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->EndLayout();
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
     // --------
 
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
 
     // -------- State
-    hud.state = manager.gui->AddTextBox("hud.state");
+    hud.state = manager.gui->addTextBox("hud.state");
     // --------
 
-    manager.gui->EndLayout();
+    manager.gui->endLayout();
 }
 
-void PlayManager::OnStartGame()
+void PlayManager::onStartGame()
 {
     if(!manager.app->globalSettings.noaudio && !manager.app->globalSettings.nomusic)
     {
@@ -356,29 +356,29 @@ void PlayManager::OnStartGame()
     }
 }
 
-void PlayManager::Log(std::string msg)
+void PlayManager::log(std::string msg)
 {
-    hud.log->Write(msg);
-    hud.log->SetEnable(true);
+    hud.log->write(msg);
+    hud.log->setEnable(true);
 
-    m_logClock.SnapShoot();
+    m_logClock.snapShoot();
 }
 
 void PlayManager::ProcessDevelopperCodeEvent()
 {
-    EventManager* event = manager.gameEngine->GetEventManager();
+    EventManager* event = manager.gameEngine->getEventManager();
 
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
         if(event->keyState[EventManager::KEY_F1])
         {
             Bullet b(this);
-            b.SetDammage(10);
-            m_userPlayer->TakeDammage(&b);
+            b.setDammage(10);
+            m_userPlayer->takeDammage(&b);
         }
 
         if(event->keyState[EventManager::KEY_F2])
-            m_userPlayer->Kill();
+            m_userPlayer->kill();
 
         if(event->keyState[EventManager::KEY_F5])
         {
@@ -387,7 +387,7 @@ void PlayManager::ProcessDevelopperCodeEvent()
             for(unsigned i = 0; i < copy.size(); i++)
                 if(copy[i] != m_userPlayer)
                 {
-                    UnRegisterPlayer(copy[i]);
+                    unregisterPlayer(copy[i]);
                     delete copy[i];
                 }
 
@@ -401,12 +401,12 @@ void PlayManager::ProcessDevelopperCodeEvent()
             Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
 
             Player* player = new Player(this, "TEST_BOT", pi.model);
-            RegisterPlayer(player);
-            ModSetupAi(player);
+            registerPlayer(player);
+            modSetupAi(player);
 
-            player->AttachController(NULL);
+            player->attachController(NULL);
 
-            manager.scene->GetRootNode()->AddChild(player);
+            manager.scene->getRootNode()->addChild(player);
         }
 
         if(event->keyState[EventManager::KEY_F7])
@@ -417,43 +417,43 @@ void PlayManager::ProcessDevelopperCodeEvent()
 
             Player* player = new Player(this, "TEST_BOT_AI", pi.model);
 
-            RegisterPlayer(player);
-            ModSetupAi(player);
+            registerPlayer(player);
+            modSetupAi(player);
 
-            manager.scene->GetRootNode()->AddChild(player);
+            manager.scene->getRootNode()->addChild(player);
         }
     }
 }
 
-void PlayManager::EventProcess()
+void PlayManager::eventProcess()
 {
     using namespace tbe::scene;
 
-    manager.gameEngine->PollEvent();
+    manager.gameEngine->pollEvent();
 
-    EventManager* event = manager.gameEngine->GetEventManager();
+    EventManager* event = manager.gameEngine->getEventManager();
 
     // Session de jeu
     if(m_timeTo == TIME_TO_PLAY || m_timeTo == TIME_TO_VIEWSCORE)
     {
-        manager.gui->SetSession(SCREEN_HUD);
+        manager.gui->setSession(SCREEN_HUD);
 
-        if(m_userPlayer->IsKilled())
+        if(m_userPlayer->isKilled())
             return;
 
         // Vue
         if(event->notify == EventManager::EVENT_MOUSE_MOVE)
-            manager.scene->GetCurCamera()->SetRelRotate(event->mousePosRel);
+            manager.scene->getCurCamera()->rotate(event->mousePosRel);
 
         // Affichage des scores
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
             if(m_numslot.count(event->lastActiveKey.first))
-                m_userPlayer->SlotWeapon(m_numslot[event->lastActiveKey.first]);
+                m_userPlayer->slotWeapon(m_numslot[event->lastActiveKey.first]);
 
             if(event->lastActiveKey.first == EventManager::KEY_TAB)
             {
-                manager.gameEngine->SetMouseVisible(true);
+                manager.gameEngine->setMouseVisible(true);
 
                 m_timeTo = TIME_TO_VIEWSCORE;
             }
@@ -462,7 +462,7 @@ void PlayManager::EventProcess()
         if(event->notify == EventManager::EVENT_KEY_UP
            && event->lastActiveKey.first == EventManager::KEY_TAB)
         {
-            manager.gameEngine->SetMouseVisible(false);
+            manager.gameEngine->setMouseVisible(false);
 
             m_timeTo = TIME_TO_PLAY;
         }
@@ -470,11 +470,11 @@ void PlayManager::EventProcess()
         // Touche de pause (Esc)
         if(event->keyState[EventManager::KEY_ESCAPE])
         {
-            manager.gameEngine->SetGrabInput(false);
-            manager.gameEngine->SetMouseVisible(true);
+            manager.gameEngine->setGrabInput(false);
+            manager.gameEngine->setMouseVisible(true);
 
             for(unsigned i = 0; i < m_players.size(); i++)
-                m_bullettime->SetActive(false);
+                m_bullettime->setActive(false);
 
             m_timeTo = TIME_TO_PAUSE;
         }
@@ -488,46 +488,46 @@ void PlayManager::EventProcess()
         // Session de pause
     else if(m_timeTo == TIME_TO_PAUSE)
     {
-        manager.gui->SetSession(SCREEN_PAUSEMENU);
+        manager.gui->setSession(SCREEN_PAUSEMENU);
 
         bool done = false;
         while(!done)
         {
-            manager.gameEngine->PollEvent();
+            manager.gameEngine->pollEvent();
 
-            if(hud.playmenu.ret->IsActivate())
+            if(hud.playmenu.ret->isActivate())
             {
-                manager.gameEngine->SetGrabInput(true);
-                manager.gameEngine->SetMouseVisible(false);
+                manager.gameEngine->setGrabInput(true);
+                manager.gameEngine->setMouseVisible(false);
 
                 done = true;
                 m_timeTo = TIME_TO_PLAY;
             }
 
-            else if(hud.playmenu.quit->IsActivate())
+            else if(hud.playmenu.quit->isActivate())
             {
-                manager.gameEngine->SetGrabInput(true);
-                manager.gameEngine->SetMouseVisible(false);
+                manager.gameEngine->setGrabInput(true);
+                manager.gameEngine->setMouseVisible(false);
 
                 running = false;
                 done = true;
             }
 
-            manager.gameEngine->BeginScene();
-            manager.gui->Render();
-            manager.gameEngine->EndScene();
+            manager.gameEngine->beginScene();
+            manager.gui->render();
+            manager.gameEngine->endScene();
         }
     }
 
     else if(m_timeTo == TIME_TO_GAMEOVER)
     {
         if(event->keyState[EventManager::KEY_SPACE]
-           && m_validGameOver.IsEsplanedTime(2000))
+           && m_validGameOver.isEsplanedTime(2000))
             running = false;
     }
 }
 
-void PlayManager::GameProcess()
+void PlayManager::gameProcess()
 {
     using namespace tbe;
     using namespace tbe::scene;
@@ -536,7 +536,7 @@ void PlayManager::GameProcess()
         return;
 
     for(unsigned i = m_players.size(); i < m_playSetting.playerCount; i++)
-        if(m_spawnPlayer.IsEsplanedTime(4000))
+        if(m_spawnPlayer.isEsplanedTime(4000))
         {
             unsigned selectPlayer = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
 
@@ -545,13 +545,13 @@ void PlayManager::GameProcess()
             unsigned selectName = tools::rand(0, m_botNames.size());
 
             Player* player = new Player(this, m_botNames[selectName], pi.model);
-            RegisterPlayer(player);
+            registerPlayer(player);
 
-            manager.scene->GetRootNode()->AddChild(player);
+            manager.scene->getRootNode()->addChild(player);
 
-            ModSetupAi(player);
+            modSetupAi(player);
 
-            manager.sound->Play("respawn", player);
+            manager.sound->play("respawn", player);
 
             break;
         }
@@ -566,29 +566,29 @@ void PlayManager::GameProcess()
     {
         Player* player = m_players[i];
 
-        if(player->IsKilled())
+        if(player->isKilled())
         {
             if(player == m_userPlayer)
             {
-                manager.gameEngine->SetMouseVisible(false);
+                manager.gameEngine->setMouseVisible(false);
 
                 m_timeTo = TIME_TO_PLAY;
             }
 
-            if(player->clocks.readyToDelete.IsEsplanedTime(2000))
+            if(player->clocks.readyToDelete.isEsplanedTime(2000))
             {
-                player->ReBorn();
+                player->reBorn();
 
-                manager.sound->Play("respawn", player);
+                manager.sound->play("respawn", player);
             }
         }
 
         else
         {
 
-            if(!map.aabb.IsInner(player))
+            if(!map.aabb.isInner(player))
             {
-                player->SetRandomSpawnPos();
+                player->toNextSpawnPos();
             }
         }
     }
@@ -602,14 +602,14 @@ void PlayManager::GameProcess()
     {
         Item*& item = map.items[i];
 
-        if(item->IsTaked())
+        if(item->isTaked())
         {
-            if(item->IsReadyToReborn())
-                item->Reborn();
+            if(item->isReadyToReborn())
+                item->reborn();
         }
 
-        else if(!map.aabb.IsInner(item))
-            item->ResetPosition();
+        else if(!map.aabb.isInner(item))
+            item->resetPosition();
     }
 
     // Gestion du temps de jeu
@@ -617,135 +617,135 @@ void PlayManager::GameProcess()
     {
         if(m_playTimeManager.curChrono == 0 && !m_gameOver)
         {
-            SetGameOver();
+            setGameOver();
         }
 
-        else if(m_playTimeManager.clock.IsEsplanedTime(1000))
+        else if(m_playTimeManager.clock.isEsplanedTime(1000))
         {
             m_playTimeManager.curChrono--;
 
             if(m_playTimeManager.curChrono <= 10)
-                manager.sound->Play("notime", m_userPlayer);
+                manager.sound->play("notime", m_userPlayer);
         }
     }
 
-    if(hud.log->IsEnable() && m_logClock.IsEsplanedTime(3000))
-        hud.log->SetEnable(false);
+    if(hud.log->isEnable() && m_logClock.isEsplanedTime(3000))
+        hud.log->setEnable(false);
 }
 
-void PlayManager::HudProcess()
+void PlayManager::hudProcess()
 {
     using namespace tbe::gui;
 
     // Gestion de l'ETH en jeu -------------------------------------------------
 
-    sort(m_players.begin(), m_players.end(), PlayerScoreSortProcess);
+    sort(m_players.begin(), m_players.end(), playerScoreSortProcess);
 
     if(m_timeTo == TIME_TO_PLAY)
     {
         using boost::format;
 
-        manager.gui->SetSession(SCREEN_HUD);
+        manager.gui->setSession(SCREEN_HUD);
 
-        const Weapon* curWeapon = m_userPlayer->GetCurWeapon();
+        const Weapon* curWeapon = m_userPlayer->getCurWeapon();
 
-        const int &ammoCount = curWeapon->GetAmmoCount(),
-                &ammoCountMax = curWeapon->GetMaxAmmoCount(),
-                &life = m_userPlayer->GetLife(),
-                &bullettime = static_cast<int>(m_bullettime->GetValue() * 100);
+        const int &ammoCount = curWeapon->getAmmoCount(),
+                &ammoCountMax = curWeapon->getMaxAmmoCount(),
+                &life = m_userPlayer->getLife(),
+                &bullettime = static_cast<int>(m_bullettime->getValue() * 100);
 
-        if(!m_userPlayer->IsKilled())
+        if(!m_userPlayer->isKilled())
         {
             // Mise a jour des bar de progression (Vie, Muinition, Bullettime, Boost)
 
-            hud.ammo->SetLabel((format("%1% %2%/%3%")
-                               % curWeapon->GetWeaponName() % ammoCount % ammoCountMax).str());
+            hud.ammo->setLabel((format("%1% %2%/%3%")
+                               % curWeapon->getWeaponName() % ammoCount % ammoCountMax).str());
 
-            hud.ammo->SetValue(ammoCount * 100 / ammoCountMax);
+            hud.ammo->setValue(ammoCount * 100 / ammoCountMax);
 
-            hud.life->SetLabel((format("Santé %1%/100") % life).str());
+            hud.life->setLabel((format("Santé %1%/100") % life).str());
 
-            hud.life->SetValue(life);
+            hud.life->setValue(life);
 
-            hud.bullettime->SetLabel((format("Bullettilme %1%/100") % bullettime).str());
+            hud.bullettime->setLabel((format("Bullettilme %1%/100") % bullettime).str());
 
-            hud.bullettime->SetValue(bullettime);
+            hud.bullettime->setValue(bullettime);
 
-            hud.boost->SetCurState(m_userPlayer->IsBoostAvalaible());
+            hud.boost->setCurState(m_userPlayer->isBoostAvalaible());
 
             ostringstream ss;
-            ModUpdateStateText(ss);
+            modUpdateStateText(ss);
 
-            hud.state->Write(ss.str());
+            hud.state->write(ss.str());
 
             // Affichage de l'ecran de dommage si besoins
 
             if(manager.app->globalSettings.video.usePpe)
             {
-                if(ppe.dammage->IsEnable())
+                if(ppe.dammage->isEnable())
                 {
-                    Vector4f color = ppe.dammage->GetColor();
+                    Vector4f color = ppe.dammage->getColor();
 
                     if(color.w > 0)
                     {
                         color.w -= 0.01f;
-                        ppe.dammage->SetColor(color);
+                        ppe.dammage->setColor(color);
                     }
                     else
-                        ppe.dammage->SetEnable(false);
+                        ppe.dammage->setEnable(false);
                 }
             }
             else
             {
-                if(hud.background.dammage->IsEnable())
+                if(hud.background.dammage->isEnable())
                 {
-                    float opacity = hud.background.dammage->GetOpacity();
+                    float opacity = hud.background.dammage->getOpacity();
 
                     if(opacity > 0)
-                        hud.background.dammage->SetOpacity(opacity - 0.01f);
+                        hud.background.dammage->setOpacity(opacity - 0.01f);
                     else
-                        hud.background.dammage->SetEnable(false);
+                        hud.background.dammage->setEnable(false);
                 }
             }
         }
         else
         {
-            hud.life->SetLabel("Mort !");
-            hud.life->SetValue(0);
+            hud.life->setLabel("Mort !");
+            hud.life->setValue(0);
         }
     }
 
     // Gestion de l'ETH en affichage des scores --------------------------------
 
-    if(m_timeTo == TIME_TO_VIEWSCORE && !m_userPlayer->IsKilled())
+    if(m_timeTo == TIME_TO_VIEWSCORE && !m_userPlayer->isKilled())
     {
-        manager.gui->SetSession(SCREEN_PLAYERSLIST);
+        manager.gui->setSession(SCREEN_PLAYERSLIST);
 
         ostringstream ss;
-        ModUpdateScoreListText(ss);
+        modUpdateScoreListText(ss);
 
-        hud.scorelist->Write(ss.str());
+        hud.scorelist->write(ss.str());
     }
 
     // Gestion de l'ETH en gameover --------------------------------------------
 
     if(m_timeTo == TIME_TO_GAMEOVER)
     {
-        manager.gui->SetSession(SCREEN_GAMEOVER);
+        manager.gui->setSession(SCREEN_GAMEOVER);
 
         ostringstream ss;
-        ModUpdateGameOverText(ss);
+        modUpdateGameOverText(ss);
 
-        hud.gameover->Write(ss.str());
+        hud.gameover->write(ss.str());
 
         // Affichage de l'ecran gameover si besoin
 
-        float opacity = hud.background.gameover->GetOpacity();
+        float opacity = hud.background.gameover->getOpacity();
 
         if(opacity < 0.5)
             opacity += 0.01;
 
-        hud.background.gameover->SetOpacity(opacity);
+        hud.background.gameover->setOpacity(opacity);
     }
 }
 
@@ -765,13 +765,13 @@ float rayFilter(const NewtonBody* body, const float*, int, void* userData, float
     return intersectParam;
 }
 
-void PlayManager::Render()
+void PlayManager::render()
 {
     //    Vector2i& screenSize = manager.app->globalSettings.video.screenSize;
 
     // Positionement camera ----------------------------------------------------
 
-    Vector3f setPos = m_userPlayer->GetPos();
+    Vector3f setPos = m_userPlayer->getPos();
 
     if(!m_playerPosRec.empty())
         setPos.y -= (setPos.y - m_playerPosRec.back().y) / 3 * 2;
@@ -781,111 +781,111 @@ void PlayManager::Render()
     float cameraback = 2.5f;
 
     Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.playerSize * 2, 0);
-    Vector3f camendpos = camzeropos + (-m_camera->GetTarget()) * (cameraback + 1.5f);
+    Vector3f camendpos = camzeropos + (-m_camera->getTarget()) * (cameraback + 1.5f);
 
     float hit = 1;
-    NewtonWorldRayCast(parallelscene.newton->GetNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
+    NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
 
     hit = hit * cameraback / 1.0f;
 
-    Vector3f campos = camzeropos - m_camera->GetTarget() * min(hit, cameraback);
+    Vector3f campos = camzeropos - m_camera->getTarget() * min(hit, cameraback);
 
-    m_camera->SetPos(campos);
+    m_camera->setPos(campos);
 
     if(m_playerPosRec.size() > 2)
         m_playerPosRec.pop_front();
 
     // Physique ----------------------------------------------------------------
 
-    parallelscene.newton->SetWorldTimestep(1.0f / m_newtonClock.GetEsplanedTime());
+    parallelscene.newton->setWorldTimestep(1.0f / m_newtonClock.getEsplanedTime());
 
-    m_bullettime->Process();
+    m_bullettime->process();
 
     // Son 3D ------------------------------------------------------------------
 
     if(!manager.app->globalSettings.noaudio)
     {
-        FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)m_camera->GetPos(), 0,
-                                            (FMOD_VECTOR*)(float*)m_camera->GetTarget(),
-                                            (FMOD_VECTOR*)(float*)m_camera->GetUp());
+        FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)m_camera->getPos(), 0,
+                                            (FMOD_VECTOR*)(float*)m_camera->getTarget(),
+                                            (FMOD_VECTOR*)(float*)m_camera->getUp());
 
         FMOD_System_Update(manager.fmodsys);
     }
 
     // Rendue ------------------------------------------------------------------
 
-    manager.gameEngine->BeginScene();
+    manager.gameEngine->beginScene();
 
     if(manager.app->globalSettings.video.usePpe)
     {
-        Rtt* rtt = manager.ppe->GetRtt();
+        Rtt* rtt = manager.ppe->getRtt();
 
-        rtt->Use(true);
-        rtt->Clear();
-        manager.scene->Render();
-        rtt->Use(false);
+        rtt->use(true);
+        rtt->clear();
+        manager.scene->render();
+        rtt->use(false);
 
         // m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2, rtt);
 
-        manager.ppe->Render();
+        manager.ppe->render();
     }
     else
     {
-        manager.scene->Render();
+        manager.scene->render();
 
         // m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2);
     }
 
-    m_shootTarget = parallelscene.newton->FindAnyBody(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget() * map.aabb.GetSize());
+    m_shootTarget = parallelscene.newton->findAnyBody(m_camera->getPos(), m_camera->getPos() + m_camera->getTarget() * map.aabb.getSize());
 
-    AABB useraabb = m_userPlayer->GetAbsolutAabb().Add(Vector3f(0.1f));
+    AABB useraabb = m_userPlayer->getAbsolutAabb().add(Vector3f(0.1f));
 
-    if(useraabb.IsInner(m_camera->GetPos()))
+    if(useraabb.isInner(m_camera->getPos()))
     {
-        m_shootTarget = parallelscene.newton->FindZeroMassBody(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget() * map.aabb.GetSize());
+        m_shootTarget = parallelscene.newton->findZeroMassBody(m_camera->getPos(), m_camera->getPos() + m_camera->getTarget() * map.aabb.getSize());
 
         m_cursorOnPlayer = true;
 
-        m_userPlayer->MakeTransparent(true, 0.1);
+        m_userPlayer->makeTransparent(true, 0.1);
     }
 
-    else if(useraabb.IsInner(m_shootTarget))
+    else if(useraabb.isInner(m_shootTarget))
     {
-        m_shootTarget = parallelscene.newton->FindZeroMassBody(m_camera->GetPos(), m_camera->GetPos() + m_camera->GetTarget() * map.aabb.GetSize());
+        m_shootTarget = parallelscene.newton->findZeroMassBody(m_camera->getPos(), m_camera->getPos() + m_camera->getTarget() * map.aabb.getSize());
 
         m_cursorOnPlayer = true;
 
-        m_userPlayer->MakeTransparent(true, 0.5);
+        m_userPlayer->makeTransparent(true, 0.5);
     }
 
     else if(m_cursorOnPlayer)
     {
         m_cursorOnPlayer = false;
 
-        m_userPlayer->MakeTransparent(false);
+        m_userPlayer->makeTransparent(false);
     }
 
-    manager.gui->Render();
+    manager.gui->render();
 
-    manager.gameEngine->EndScene();
+    manager.gameEngine->endScene();
 }
 
-tbe::Vector3f PlayManager::GetShootTarget() const
+tbe::Vector3f PlayManager::getShootTarget() const
 {
     return m_shootTarget;
 }
 
-Player* PlayManager::GetUserPlayer() const
+Player* PlayManager::getUserPlayer() const
 {
     return m_userPlayer;
 }
 
-const Player::Array& PlayManager::GetPlayers() const
+const Player::Array& PlayManager::getPlayers() const
 {
     return m_players;
 }
 
-int PlayManager::ModulatScore(int score)
+int PlayManager::modulatScore(int score)
 {
     if(m_playSetting.playerCount)
     {
@@ -897,69 +897,69 @@ int PlayManager::ModulatScore(int score)
         return 0;
 }
 
-void PlayManager::SetGameOver()
+void PlayManager::setGameOver()
 {
     m_gameOver = true;
     m_timeTo = TIME_TO_GAMEOVER;
 
     for(unsigned i = 0; i < m_players.size(); i++)
-        NewtonBodySetFreezeState(m_players[i]->GetPhysicBody()->GetBody(), true);
+        NewtonBodySetFreezeState(m_players[i]->getPhysicBody()->getBody(), true);
 
-    manager.gameEngine->SetMouseVisible(true);
+    manager.gameEngine->setMouseVisible(true);
 
-    hud.background.gameover->SetEnable(true);
+    hud.background.gameover->setEnable(true);
 
     if(manager.app->globalSettings.video.usePpe)
-        ppe.gameover->SetEnable(true);
+        ppe.gameover->setEnable(true);
 
     ostringstream ss;
-    ModUpdateScoreListText(ss);
+    modUpdateScoreListText(ss);
 
-    hud.scorelist->Write(ss.str());
+    hud.scorelist->write(ss.str());
 }
 
-bool PlayManager::IsGameOver() const
+bool PlayManager::isGameOver() const
 {
     return m_gameOver;
 }
 
-void PlayManager::RegisterPlayer(Player* player)
+void PlayManager::registerPlayer(Player* player)
 {
-    manager.material->AddPlayer(player);
+    manager.material->addPlayer(player);
 
     m_players.push_back(player);
 }
 
-void PlayManager::UnRegisterPlayer(Player* player)
+void PlayManager::unregisterPlayer(Player* player)
 {
     Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
 
     m_players.erase(it);
 }
 
-void PlayManager::HudItem(bool status)
+void PlayManager::hudItem(bool status)
 {
-    hud.item->SetCurState(status);
+    hud.item->setCurState(status);
 }
 
-void PlayManager::HudBullettime(bool status)
+void PlayManager::hudBullettime(bool status)
 {
     if(manager.app->globalSettings.video.usePpe)
     {
-        ppe.bullettime->SetEnable(status);
-        ppe.bloom->SetEnable(!status);
+        ppe.bullettime->setEnable(status);
+        ppe.bloom->setEnable(!status);
     }
     else
     {
-        hud.background.bullettime->SetEnable(status);
+        hud.background.bullettime->setEnable(status);
     }
 }
 
-void PlayManager::HudBoost(bool status)
+void PlayManager::hudBoost(bool status)
 {
     if(manager.app->globalSettings.video.usePpe)
     {
-        ppe.boost->SetEnable(status);
+        ppe.boost->setEnable(status);
     }
     else
     {
@@ -967,30 +967,30 @@ void PlayManager::HudBoost(bool status)
     }
 }
 
-void PlayManager::HudDammage(bool status)
+void PlayManager::hudDammage(bool status)
 {
     if(manager.app->globalSettings.video.usePpe)
     {
-        ppe.dammage->SetEnable(status);
+        ppe.dammage->setEnable(status);
 
         if(status)
-            ppe.dammage->SetColor(Vector4f(1, 0, 0, 0.5));
+            ppe.dammage->setColor(Vector4f(1, 0, 0, 0.5));
     }
     else
     {
-        hud.background.dammage->SetEnable(status);
+        hud.background.dammage->setEnable(status);
 
         if(status)
-            hud.background.dammage->SetOpacity(0.75);
+            hud.background.dammage->setOpacity(0.75);
     }
 }
 
-BulletTime* PlayManager::GetBullettime() const
+BulletTime* PlayManager::getBullettime() const
 {
     return m_bullettime;
 }
 
-const Player::Array PlayManager::GetTargetsOf(Player* player) const
+const Player::Array PlayManager::getTargetsOf(Player* player) const
 {
     Player::Array array(m_players);
     array.erase(find(array.begin(), array.end(), player));

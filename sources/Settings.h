@@ -16,6 +16,26 @@ public:
     Settings();
     ~Settings();
 
+    void readSetting();
+    void saveSetting();
+
+    void readAi();
+    void readProfiles();
+    void readCampaign();
+    void readVideo();
+    void readControl();
+    void readWorld();
+    void readMapInfo();
+    void readScoreInfo();
+    void readPlayerInfo();
+
+    void saveVideo();
+    void saveControl();
+    void saveProfiles();
+
+    void fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager);
+    void fillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager);
+
     struct Ai
     {
         unsigned switchTargetTime;
@@ -190,26 +210,6 @@ public:
     std::vector<MapInfo> availableMap;
     std::vector<ScoreInfo> availableScore;
     std::vector<PlayerInfo> availablePlayer;
-
-    void FillControlSettingsFromGui(tbe::gui::GuiManager* guiManager);
-    void FillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager);
-
-    void ReadSetting();
-    void SaveSetting();
-
-    void ReadAi();
-    void ReadProfiles();
-    void ReadCampaign();
-    void ReadVideo();
-    void ReadControl();
-    void ReadWorld();
-    void ReadMapInfo();
-    void ReadScoreInfo();
-    void ReadPlayerInfo();
-
-    void SaveVideo();
-    void SaveControl();
-    void SaveProfiles();
 };
 
 

@@ -21,21 +21,18 @@ class GameManager
 {
 public:
 
-    /// Ctor
     GameManager(AppManager* appManager);
-
-    /// Dtor
     virtual ~GameManager();
 
-    // Accés -------------------------------------------------------------------
+    // Enregistrement des entités ----------------------------------------------
 
-    virtual void RegisterItem(Item* item);
-    virtual void RegisterStatic(StaticObject* staticObject);
-    virtual void RegisterDynamic(DynamicObject* dynamicObject);
+    virtual void registerItem(Item* item);
+    virtual void registerStatic(StaticObject* staticObject);
+    virtual void registerDynamic(DynamicObject* dynamicObject);
 
-    virtual void UnRegisterItem(Item* item);
-    virtual void UnRegisterStatic(StaticObject* staticObject);
-    virtual void UnRegisterDynamic(DynamicObject* dynamicObject);
+    virtual void unregisterItem(Item* item);
+    virtual void unregisterStatic(StaticObject* staticObject);
+    virtual void unregisterDynamic(DynamicObject* dynamicObject);
 
     // Accés -------------------------------------------------------------------
 
@@ -46,7 +43,7 @@ public:
         FMOD_SOUND* musicStream;
         FMOD_CHANNEL* musicChannel;
         std::string musicPath;
-        
+
         Item::Array items;
         StaticObject::Array staticObjects;
         DynamicObject::Array dynamicObjects;

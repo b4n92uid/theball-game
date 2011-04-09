@@ -7,7 +7,7 @@
 using namespace std;
 using namespace tbe;
 
-bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
+bool EditorManager::deleteEntityEvent(tbe::EventManager* event)
 {
     if(!m_selectedNode)
         return false;
@@ -18,13 +18,13 @@ bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
     if(event->lastActiveKey.first == EventManager::KEY_DELETE)
     {
         if(tools::find(map.staticObjects, m_selectedNode))
-            UnRegisterStatic(dynamic_cast<StaticObject*>(m_selectedNode));
+            unregisterStatic(dynamic_cast<StaticObject*>(m_selectedNode));
 
         if(tools::find(map.dynamicObjects, m_selectedNode))
-            UnRegisterDynamic(dynamic_cast<DynamicObject*>(m_selectedNode));
+            unregisterDynamic(dynamic_cast<DynamicObject*>(m_selectedNode));
 
         if(tools::find(map.items, m_selectedNode))
-            UnRegisterItem(dynamic_cast<Item*>(m_selectedNode));
+            unregisterItem(dynamic_cast<Item*>(m_selectedNode));
 
         if(tools::find(m_visualSpawnPoints, m_selectedNode))
             tools::erase(m_visualSpawnPoints, m_selectedNode);
@@ -39,18 +39,18 @@ bool EditorManager::DeleteEntityEvent(tbe::EventManager* event)
     return false;
 }
 
-void EditorManager::NewEntity(Object* ent)
+void EditorManager::newEntity(Object* ent)
 {
     m_allEntity.push_back(ent);
 
-    manager.scene->GetRootNode()->AddChild(ent);
+    manager.scene->getRootNode()->addChild(ent);
 
-    Vector3f pos = ent->GetPos();
-    m_axes->SetPos(pos);
-    m_OCamera->SetCenter(pos);
+    Vector3f pos = ent->getPos();
+    m_axes->setPos(pos);
+    m_OCamera->setCenter(pos);
 }
 
-bool EditorManager::AllocEntityEvent(EventManager* event)
+bool EditorManager::allocEntityEvent(EventManager* event)
 {
     Object* newObj = NULL;
 
@@ -61,17 +61,17 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
         Object* clone = NULL;
         if(tools::find(m_visualSpawnPoints, m_selectedNode))
         {
-            clone = new StaticObject(this, OBJ_SPAWN, m_axes->GetPos());
+            clone = new StaticObject(this, OBJ_SPAWN, m_axes->getPos());
 
             m_visualSpawnPoints.push_back(clone);
         }
 
         else
         {
-            clone = m_selectedNode->CloneToObject();
+            clone = m_selectedNode->cloneToObject();
         }
 
-        NewEntity(clone);
+        newEntity(clone);
         m_selectedNode = clone;
 
         return true;
@@ -85,16 +85,16 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
         switch(c)
         {
             case 'j':
-                dy = new DYJumper(this, m_axes->GetPos());
+                dy = new DYJumper(this, m_axes->getPos());
                 break;
             case 't':
-                dy = new DYTeleporter(this, m_axes->GetPos());
+                dy = new DYTeleporter(this, m_axes->getPos());
                 break;
         }
 
         if(dy)
         {
-            RegisterDynamic(dy);
+            registerDynamic(dy);
             newObj = dy;
         }
     }
@@ -107,38 +107,38 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
         switch(c)
         {
             case 'l':
-                it = new ItemAddLife(this, m_axes->GetPos());
+                it = new ItemAddLife(this, m_axes->getPos());
                 break;
             case 'a':
-                it = new ItemAddAmmo(this, m_axes->GetPos());
+                it = new ItemAddAmmo(this, m_axes->getPos());
                 break;
             case 's':
-                it = new ItemSuperLife(this, m_axes->GetPos());
+                it = new ItemSuperLife(this, m_axes->getPos());
                 break;
             case 'f':
-                it = new ItemFatalShot(this, m_axes->GetPos());
+                it = new ItemFatalShot(this, m_axes->getPos());
                 break;
             case 'i':
-                it = new ItemAddFinder(this, m_axes->GetPos());
+                it = new ItemAddFinder(this, m_axes->getPos());
                 break;
             case 'h':
-                it = new ItemAddShotgun(this, m_axes->GetPos());
+                it = new ItemAddShotgun(this, m_axes->getPos());
                 break;
             case 'b':
-                it = new ItemAddBomb(this, m_axes->GetPos());
+                it = new ItemAddBomb(this, m_axes->getPos());
                 break;
         }
 
         if(it)
         {
-            RegisterItem(it);
+            registerItem(it);
             newObj = it;
         }
     }
 
     else if(event->keyState['p'] && event->notify == EventManager::EVENT_KEY_DOWN)
     {
-        StaticObject* visualSpawn = new StaticObject(this, OBJ_SPAWN, m_axes->GetPos());
+        StaticObject* visualSpawn = new StaticObject(this, OBJ_SPAWN, m_axes->getPos());
 
         m_visualSpawnPoints.push_back(visualSpawn);
 
@@ -151,37 +151,37 @@ bool EditorManager::AllocEntityEvent(EventManager* event)
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
             if(event->lastActiveKey.first == 's')
-                hud.entity.list->SetEnable(true);
+                hud.entity.list->setEnable(true);
 
             else if(event->lastActiveKey.first == EventManager::KEY_ESCAPE)
-                hud.entity.list->CancelSelection();
+                hud.entity.list->cancelSelection();
         }
 
         else if(event->notify == EventManager::EVENT_KEY_UP)
         {
             if(event->lastActiveKey.first == 's')
             {
-                if(hud.entity.list->IsSelection())
+                if(hud.entity.list->isSelection())
                 {
-                    string filename = hud.entity.list->GetCurrentData().GetValue<string > ();
+                    string filename = hud.entity.list->getCurrentData().getValue<string > ();
 
-                    StaticObject* so = new StaticObject(this, filename, m_axes->GetPos());
-                    RegisterStatic(so);
+                    StaticObject* so = new StaticObject(this, filename, m_axes->getPos());
+                    registerStatic(so);
                     newObj = so;
 
-                    parallelscene.newton->SetWorldSize(map.aabb);
+                    parallelscene.newton->setWorldSize(map.aabb);
 
-                    hud.entity.list->CancelSelection();
+                    hud.entity.list->cancelSelection();
                 }
 
-                hud.entity.list->SetEnable(false);
+                hud.entity.list->setEnable(false);
             }
         }
     }
 
     if(newObj)
     {
-        NewEntity(newObj);
+        newEntity(newObj);
         m_selectedNode = newObj;
 
         return true;
@@ -198,13 +198,13 @@ struct SelectionSort
     bool operator()(const tbe::scene::Node* node1, const tbe::scene::Node * node2)
     {
         if(byPos)
-            return (node1->GetPos() - cameraPos) < (node2->GetPos() - cameraPos);
+            return (node1->getPos() - cameraPos) < (node2->getPos() - cameraPos);
         else
-            return node1->GetAabb().GetSize() < node2->GetAabb().GetSize();
+            return node1->getAabb().getSize() < node2->getAabb().getSize();
     }
 };
 
-bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
+bool EditorManager::selectEntityEvent(tbe::EventManager * event)
 {
     if(event->notify != EventManager::EVENT_MOUSE_DOWN)
         return false;
@@ -215,7 +215,7 @@ bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
 
         SelectionSort pred;
 
-        pred.cameraPos = m_camera->GetPos();
+        pred.cameraPos = m_camera->getPos();
         pred.byPos = true;
         std::sort(m_allEntity.begin(), m_allEntity.end(), pred);
 
@@ -224,7 +224,7 @@ bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
 
         for(unsigned i = 0; i < m_allEntity.size(); i++)
         {
-            if(m_allEntity[i]->GetAbsolutAabb().Add(AABB(0.5f)).IsInner(m_3dSelect))
+            if(m_allEntity[i]->getAbsolutAabb().add(AABB(0.5f)).isInner(m_3dSelect))
             {
                 m_selectedNode = m_allEntity[i];
                 break;
@@ -233,8 +233,8 @@ bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
 
         if(m_selectedNode)
         {
-            m_axes->SetPos(m_selectedNode->GetPos());
-            m_OCamera->SetCenter(m_selectedNode->GetPos());
+            m_axes->setPos(m_selectedNode->getPos());
+            m_OCamera->setCenter(m_selectedNode->getPos());
 
             return true;
         }
@@ -243,7 +243,7 @@ bool EditorManager::SelectEntityEvent(tbe::EventManager * event)
     return false;
 }
 
-bool EditorManager::SettingEntityEvent(EventManager* event)
+bool EditorManager::settingEntityEvent(EventManager* event)
 {
     if(!m_selectedNode)
         return false;
@@ -255,14 +255,14 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
 
     if(event->keyState[EventManager::KEY_LSHIFT])
     {
-        manager.gameEngine->SetMouseVisible(false);
-        manager.gameEngine->SetGrabInput(true);
+        manager.gameEngine->setMouseVisible(false);
+        manager.gameEngine->setGrabInput(true);
 
         if(event->notify == EventManager::EVENT_MOUSE_MOVE)
         {
             Vector3f transform;
-            Vector3f target = m_camera->GetTarget();
-            Vector3f left = m_camera->GetLeft();
+            Vector3f target = m_camera->getTarget();
+            Vector3f left = m_camera->getLeft();
 
             if(event->keyState[EventManager::KEY_LALT])
             {
@@ -275,10 +275,10 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
                 transform.y = 0;
             }
 
-            transform += m_selectedNode->GetPos();
+            transform += m_selectedNode->getPos();
 
-            m_selectedNode->GetPhysicBody()->SetPos(transform);
-            m_axes->SetPos(transform);
+            m_selectedNode->getPhysicBody()->setPos(transform);
+            m_axes->setPos(transform);
         }
 
         else if(event->notify == EventManager::EVENT_MOUSE_DOWN)
@@ -290,46 +290,46 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
             else if(event->lastActiveMouse.first == EventManager::MOUSE_BUTTON_WHEEL_DOWN)
                 transform.y--;
 
-            transform += m_selectedNode->GetPos();
+            transform += m_selectedNode->getPos();
 
 
-            m_selectedNode->SetPos(transform);
-            m_axes->SetPos(transform);
+            m_selectedNode->setPos(transform);
+            m_axes->setPos(transform);
         }
 
         else if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
-            Vector3f pos = m_selectedNode->GetPos();
-            Matrix4f matrix = m_selectedNode->GetMatrix();
+            Vector3f pos = m_selectedNode->getPos();
+            Matrix4f matrix = m_selectedNode->getMatrix();
 
             // Rotation
             if(event->keyState['A'])
-                matrix.SetRotateX(-rotateSpeed);
+                matrix.setRotateX(-rotateSpeed);
             if(event->keyState['Z'])
-                matrix.SetRotateX(rotateSpeed);
+                matrix.setRotateX(rotateSpeed);
             if(event->keyState['Q'])
-                matrix.SetRotateY(-rotateSpeed);
+                matrix.setRotateY(-rotateSpeed);
             if(event->keyState['S'])
-                matrix.SetRotateY(rotateSpeed);
+                matrix.setRotateY(rotateSpeed);
             if(event->keyState['W'])
-                matrix.SetRotateZ(-rotateSpeed);
+                matrix.setRotateZ(-rotateSpeed);
             if(event->keyState['X'])
-                matrix.SetRotateZ(rotateSpeed);
+                matrix.setRotateZ(rotateSpeed);
 
             // In the floor
             if(event->keyState['F'])
             {
                 Vector3f start = pos;
-                start.y += m_selectedNode->GetAabb().max.y;
+                start.y += m_selectedNode->getAabb().max.y;
 
                 Vector3f end = map.aabb.min;
                 end.x = pos.x;
                 end.z = pos.z;
 
-                pos = parallelscene.newton->FindZeroMassBody(start, end);
+                pos = parallelscene.newton->findZeroMassBody(start, end);
 
                 if(event->keyState[EventManager::KEY_LALT])
-                    pos.y += -m_selectedNode->GetAabb().min.y;
+                    pos.y += -m_selectedNode->getAabb().min.y;
             }
 
             // In the gride
@@ -337,10 +337,10 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
                 tools::round(pos, grid);
 
             // Apply
-            matrix.SetPos(pos);
+            matrix.setPos(pos);
 
-            m_selectedNode->GetPhysicBody()->SetMatrix(matrix);
-            m_axes->SetPos(pos);
+            m_selectedNode->getPhysicBody()->setMatrix(matrix);
+            m_axes->setPos(pos);
         }
 
         return true;
@@ -348,8 +348,8 @@ bool EditorManager::SettingEntityEvent(EventManager* event)
 
     else
     {
-        manager.gameEngine->SetMouseVisible(true);
-        manager.gameEngine->SetGrabInput(false);
+        manager.gameEngine->setMouseVisible(true);
+        manager.gameEngine->setGrabInput(false);
     }
 
     return false;

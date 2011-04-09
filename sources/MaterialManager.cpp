@@ -24,7 +24,7 @@ MaterialManager::MaterialManager(GameManager * gameManager)
 {
     m_gameManager = gameManager;
 
-    m_world = m_gameManager->parallelscene.newton->GetNewtonWorld();
+    m_world = m_gameManager->parallelscene.newton->getNewtonWorld();
 
     Settings::World& worldSettings = m_gameManager->worldSettings;
 
@@ -61,18 +61,18 @@ MaterialManager::~MaterialManager()
     NewtonMaterialDestroyAllGroupID(m_world);
 }
 
-void MaterialManager::SetGhost(Object* body, bool state)
+void MaterialManager::setGhost(Object* body, bool state)
 {
-    NewtonNode* xbody = body->GetPhysicBody();
+    NewtonNode* xbody = body->getPhysicBody();
 
     if(state)
     {
         if(m_ghostState.count(xbody))
             return;
 
-        int newtonMaterial = NewtonBodyGetMaterialGroupID(xbody->GetBody());
+        int newtonMaterial = NewtonBodyGetMaterialGroupID(xbody->getBody());
         m_ghostState[xbody] = newtonMaterial;
-        NewtonBodySetMaterialGroupID(xbody->GetBody(), m_ghostGroupe);
+        NewtonBodySetMaterialGroupID(xbody->getBody(), m_ghostGroupe);
     }
 
     else
@@ -80,57 +80,57 @@ void MaterialManager::SetGhost(Object* body, bool state)
         if(!m_ghostState.count(xbody))
             return;
 
-        NewtonBodySetMaterialGroupID(xbody->GetBody(), m_ghostState[xbody]);
+        NewtonBodySetMaterialGroupID(xbody->getBody(), m_ghostState[xbody]);
         m_ghostState.erase(xbody);
     }
 }
 
-void MaterialManager::AddDynamic(DynamicObject* body)
+void MaterialManager::addDynamic(DynamicObject* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_dynamicGroupe);
+    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_dynamicGroupe);
 }
 
-void MaterialManager::AddStatic(StaticObject* body)
+void MaterialManager::addStatic(StaticObject* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_staticGroupe);
+    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_staticGroupe);
 }
 
-void MaterialManager::AddBullet(Bullet* body)
+void MaterialManager::addBullet(Bullet* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetBody(), m_bulletGroupe);
+    NewtonBodySetMaterialGroupID(body->getBody(), m_bulletGroupe);
 }
 
-void MaterialManager::AddPlayer(Player* body)
+void MaterialManager::addPlayer(Player* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_playersGroupe);
+    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_playersGroupe);
 }
 
-void MaterialManager::AddItem(Item* body)
+void MaterialManager::addItem(Item* body)
 {
-    NewtonBodySetMaterialGroupID(body->GetPhysicBody()->GetBody(), m_itemGroupe);
+    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_itemGroupe);
 }
 
-int MaterialManager::GetPlayersGroupe() const
+int MaterialManager::getPlayersGroupe() const
 {
     return m_playersGroupe;
 }
 
-int MaterialManager::GetWeaponsGroupe() const
+int MaterialManager::getWeaponsGroupe() const
 {
     return m_bulletGroupe;
 }
 
-int MaterialManager::GetItemGroupe() const
+int MaterialManager::getItemGroupe() const
 {
     return m_itemGroupe;
 }
 
-int MaterialManager::GetDynamicGroupe() const
+int MaterialManager::getDynamicGroupe() const
 {
     return m_dynamicGroupe;
 }
 
-int MaterialManager::GetStaticGroupe() const
+int MaterialManager::getStaticGroupe() const
 {
     return m_staticGroupe;
 }
@@ -151,14 +151,14 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
 
     if(group0 == m_playersGroupe)
     {
-        player = GetParentUserData<Player*>(body0);
-        obj = GetParentUserData<NewtonNode*>(body1);
+        player = getParentUserData<Player*>(body0);
+        obj = getParentUserData<NewtonNode*>(body1);
     }
 
     else if(group1 == m_playersGroupe)
     {
-        player = GetParentUserData<Player*>(body1);
-        obj = GetParentUserData<NewtonNode*>(body0);
+        player = getParentUserData<Player*>(body1);
+        obj = getParentUserData<NewtonNode*>(body0);
     }
 }
 
@@ -178,17 +178,17 @@ void MaterialManager::mPlayerOnDynamicContactsProcess(const NewtonJoint* contact
 
     if(group0 == m_playersGroupe)
     {
-        obj = GetParentUserData<DynamicObject*>(body1);
-        player = GetParentUserData<Player*>(body0);
+        obj = getParentUserData<DynamicObject*>(body1);
+        player = getParentUserData<Player*>(body0);
     }
 
     else if(group1 == m_playersGroupe)
     {
-        obj = GetParentUserData<DynamicObject*>(body0);
-        player = GetParentUserData<Player*>(body1);
+        obj = getParentUserData<DynamicObject*>(body0);
+        player = getParentUserData<Player*>(body1);
     }
 
-    obj->InteractWith(player);
+    obj->interactWith(player);
 }
 
 int MaterialManager::mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
@@ -204,17 +204,17 @@ int MaterialManager::mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, 
 
     if(group0 == m_itemGroupe)
     {
-        item = GetParentUserData<Item*>(body0);
-        player = GetParentUserData<Player*>(body1);
+        item = getParentUserData<Item*>(body0);
+        player = getParentUserData<Player*>(body1);
     }
 
     else if(group1 == m_itemGroupe)
     {
-        item = GetParentUserData<Item*>(body1);
-        player = GetParentUserData<Player*>(body0);
+        item = getParentUserData<Item*>(body1);
+        player = getParentUserData<Player*>(body0);
     }
 
-    player->AttachItem(item);
+    player->attachItem(item);
 
     return 0;
 }
@@ -233,12 +233,12 @@ void MaterialManager::mBulletOnMapContactsProcess(const NewtonJoint* contact, dF
     Bullet* bullet = NULL;
 
     if(group0 == m_bulletGroupe)
-        bullet = GetUserData<Bullet*>(body0);
+        bullet = getUserData<Bullet*>(body0);
 
     else if(group1 == m_bulletGroupe)
-        bullet = GetUserData<Bullet*>(body1);
+        bullet = getUserData<Bullet*>(body1);
 
-    bullet->SetLife(0);
+    bullet->setLife(0);
 }
 
 int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
@@ -258,54 +258,54 @@ int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material,
 
     if(group0 == m_bulletGroupe)
     {
-        striked = GetParentUserData<Player*>(body1);
-        bullet = GetUserData<Bullet*>(body0);
+        striked = getParentUserData<Player*>(body1);
+        bullet = getUserData<Bullet*>(body0);
     }
 
     else if(group1 == m_bulletGroupe)
     {
-        striked = GetParentUserData<Player*>(body0);
-        bullet = GetUserData<Bullet*>(body1);
+        striked = getParentUserData<Player*>(body0);
+        bullet = getUserData<Bullet*>(body1);
     }
 
-    striker = bullet->GetWeapon()->GetShooter();
-    PlayManager* playManager = striker->GetPlayManager();
+    striker = bullet->getWeapon()->getShooter();
+    PlayManager* playManager = striker->getPlayManager();
 
     if(striked == striker)
         return 0;
 
-    striked->TakeDammage(bullet);
+    striked->takeDammage(bullet);
 
-    bullet->SetLife(0);
+    bullet->setLife(0);
 
-    if(striker == playManager->GetUserPlayer() && striked->IsKilled())
+    if(striker == playManager->getUserPlayer() && striked->isKilled())
     {
         cheerCount++;
 
         if(cheerCount >= 2)
         {
-            if(!cheerClock.IsEsplanedTime(4000))
+            if(!cheerClock.isEsplanedTime(4000))
                 switch(cheerCount)
                 {
-                    case 2: playManager->Log("Double kill");
+                    case 2: playManager->log("Double kill");
                         break;
-                    case 3: playManager->Log("Triple kill");
+                    case 3: playManager->log("Triple kill");
                         break;
-                    case 4: playManager->Log("Carnage");
+                    case 4: playManager->log("Carnage");
                         break;
-                    case 5: playManager->Log("The One");
+                    case 5: playManager->log("The One");
                         break;
-                    case 6: playManager->Log("War Warrior");
+                    case 6: playManager->log("War Warrior");
                         break;
-                    case 7: playManager->Log("God Of War !!!");
+                    case 7: playManager->log("God Of War !!!");
                         break;
-                    default: playManager->Log("...");
+                    default: playManager->log("...");
                         break;
                 }
             else
                 cheerCount = 0;
 
-            cheerClock.SnapShoot();
+            cheerClock.snapShoot();
         }
     }
 

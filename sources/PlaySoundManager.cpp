@@ -17,9 +17,9 @@ PlaySoundManager::~PlaySoundManager()
 {
 }
 
-void PlaySoundManager::ProcessEffect(std::string soundName, FMOD_CHANNEL* channel)
+void PlaySoundManager::processEffect(std::string soundName, FMOD_CHANNEL* channel)
 {
     if(!m_gameManager->manager.app->globalSettings.noaudio)
-        if(m_playManager->GetBullettime()->IsActive())
+        if(m_playManager->getBullettime()->isActive())
             FMOD_Channel_SetFrequency(channel, 22050);
 }

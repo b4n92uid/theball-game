@@ -22,14 +22,14 @@ typedef std::map<std::string, int> StateMap;
 UserControl::UserControl(PlayManager* playManager) : Controller(playManager)
 {
     m_control = m_playManager->manager.app->globalSettings.control;
-    m_eventManager = m_playManager->manager.app->GetEventMng();
+    m_eventManager = m_playManager->manager.app->getEventMng();
 }
 
 UserControl::~UserControl()
 {
 }
 
-void UserControl::SetActionStateDown(std::string name, bool state)
+void UserControl::setActionStateDown(std::string name, bool state)
 {
     StateMap::iterator kit = m_control.keyboard.find(name);
     StateMap::iterator mit = m_control.mouse.find(name);
@@ -41,7 +41,7 @@ void UserControl::SetActionStateDown(std::string name, bool state)
         m_eventManager->mouseState[mit->second] = state;
 }
 
-bool UserControl::IsActionJustUp(std::string name)
+bool UserControl::isActionJustUp(std::string name)
 {
     StateMap::iterator kit = m_control.keyboard.find(name);
     StateMap::iterator mit = m_control.mouse.find(name);
@@ -58,7 +58,7 @@ bool UserControl::IsActionJustUp(std::string name)
         return false;
 }
 
-bool UserControl::IsActionJustDown(std::string name)
+bool UserControl::isActionJustDown(std::string name)
 {
     StateMap::iterator kit = m_control.keyboard.find(name);
     StateMap::iterator mit = m_control.mouse.find(name);
@@ -75,7 +75,7 @@ bool UserControl::IsActionJustDown(std::string name)
         return false;
 }
 
-bool UserControl::IsActionStateDown(std::string name)
+bool UserControl::isActionStateDown(std::string name)
 {
     StateMap::iterator kit = m_control.keyboard.find(name);
     StateMap::iterator mit = m_control.mouse.find(name);
@@ -94,22 +94,22 @@ inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
 {
     Vector3f contact, normal, penetration;
 
-    int contactPoint = NewtonCollisionCollide(node1->GetParallelScene()->GetNewtonWorld(), 1,
-                                              NewtonBodyGetCollision(node1->GetBody()), node1->GetMatrix(),
-                                              NewtonBodyGetCollision(node2->GetBody()), node2->GetMatrix(),
+    int contactPoint = NewtonCollisionCollide(node1->getParallelScene()->getNewtonWorld(), 1,
+                                              NewtonBodyGetCollision(node1->getBody()), node1->getMatrix(),
+                                              NewtonBodyGetCollision(node2->getBody()), node2->getMatrix(),
                                               contact, normal, penetration, 0);
 
-    return (contactPoint > 0 && Vector3f::Dot(normal, Vector3f(0, 1, 0)) > 0.25);
+    return (contactPoint > 0 && Vector3f::dot(normal, Vector3f(0, 1, 0)) > 0.25);
 }
 
-void UserControl::Process(Player* player)
+void UserControl::process(Player* player)
 {
-    scene::Camera* playerCam = m_playManager->manager.scene->GetCurCamera();
+    scene::Camera* playerCam = m_playManager->manager.scene->getCurCamera();
 
     bool collideWithStatic = false;
 
     for(unsigned i = 0; i < m_playManager->map.staticObjects.size(); i++)
-        if(playerCanJump(player->GetPhysicBody(), m_playManager->map.staticObjects[i]->GetPhysicBody()))
+        if(playerCanJump(player->getPhysicBody(), m_playManager->map.staticObjects[i]->getPhysicBody()))
         {
             collideWithStatic = true;
             break;
@@ -118,48 +118,48 @@ void UserControl::Process(Player* player)
     // Move
     Vector3f addForce;
 
-    if(IsActionStateDown("forward"))
-        addForce += playerCam->GetTarget() * m_worldSettings.playerMoveSpeed;
-    if(IsActionStateDown("backward"))
-        addForce -= playerCam->GetTarget() * m_worldSettings.playerMoveSpeed;
-    if(IsActionStateDown("strafLeft"))
-        addForce += playerCam->GetLeft() * m_worldSettings.playerMoveSpeed;
-    if(IsActionStateDown("strafRight"))
-        addForce -= playerCam->GetLeft() * m_worldSettings.playerMoveSpeed;
+    if(isActionStateDown("forward"))
+        addForce += playerCam->getTarget() * m_worldSettings.playerMoveSpeed;
+    if(isActionStateDown("backward"))
+        addForce -= playerCam->getTarget() * m_worldSettings.playerMoveSpeed;
+    if(isActionStateDown("strafLeft"))
+        addForce += playerCam->getLeft() * m_worldSettings.playerMoveSpeed;
+    if(isActionStateDown("strafRight"))
+        addForce -= playerCam->getLeft() * m_worldSettings.playerMoveSpeed;
 
     addForce.y = 0;
 
-    player->GetPhysicBody()->SetApplyForce(addForce);
+    player->getPhysicBody()->setApplyForce(addForce);
 
     // Jump
     if(collideWithStatic)
-        if(IsActionStateDown("jump"))
-            player->Jump();
+        if(isActionStateDown("jump"))
+            player->jump();
 
     // Boost
-    if(IsActionStateDown("boost"))
-        player->Boost();
+    if(isActionStateDown("boost"))
+        player->boost();
 
-    if(IsActionStateDown("brake"))
-        player->Brake();
+    if(isActionStateDown("brake"))
+        player->brake();
 
     // Change weapons
-    if(IsActionStateDown("switchUpWeapon"))
-        player->SwitchUpWeapon();
+    if(isActionStateDown("switchUpWeapon"))
+        player->switchUpWeapon();
 
-    if(IsActionStateDown("switchDownWeapon"))
-        player->SwitchDownWeapon();
+    if(isActionStateDown("switchDownWeapon"))
+        player->switchDownWeapon();
 
     // Shoot
-    if(IsActionStateDown("shoot"))
-        player->Shoot(m_playManager->GetShootTarget());
+    if(isActionStateDown("shoot"))
+        player->shoot(m_playManager->getShootTarget());
 
-    BulletTime* btim = m_playManager->GetBullettime();
+    BulletTime* btim = m_playManager->getBullettime();
 
     // Bullettime
-    if(IsActionJustDown("bullettime"))
-        btim->SetActive(true);
+    if(isActionJustDown("bullettime"))
+        btim->setActive(true);
 
-    else if(IsActionJustUp("bullettime"))
-        btim->SetActive(false);
+    else if(isActionJustUp("bullettime"))
+        btim->setActive(false);
 }
