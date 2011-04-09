@@ -22,43 +22,43 @@ public:
     virtual ~EditorManager();
 
     /// Construit la map et les entités
-    void SetupMap(const Settings::EditSetting& editSetting);
+    void setupMap(const Settings::EditSetting& editSetting);
 
     /// Construction de l'ETH
-    void SetupGui();
+    void setupGui();
 
     /// Traitement de l'entrer
-    void EventProcess();
+    void eventProcess();
 
     /// Traitement ETH
-    void HudProcess();
+    void hudProcess();
 
     /// Rendue
-    void Render();
+    void render();
 
 protected:
-    bool AllocEntityEvent(tbe::EventManager* event);
-    bool DeleteEntityEvent(tbe::EventManager* event);
-    bool SettingEntityEvent(tbe::EventManager* event);
-    bool SelectEntityEvent(tbe::EventManager* event);
+    bool allocEntityEvent(tbe::EventManager* event);
+    bool deleteEntityEvent(tbe::EventManager* event);
+    bool settingEntityEvent(tbe::EventManager* event);
+    bool selectEntityEvent(tbe::EventManager* event);
 
-    void NewEntity(Object* ent);
+    void newEntity(Object* ent);
 
-    bool AllocLightEvent(tbe::EventManager* event);
-    bool DeleteLightEvent(tbe::EventManager* event);
-    bool SettingLightEvent(tbe::EventManager* event);
+    bool allocLightEvent(tbe::EventManager* event);
+    bool deleteLightEvent(tbe::EventManager* event);
+    bool settingLightEvent(tbe::EventManager* event);
 
-    void NewLight(tbe::scene::Light* light);
-    void SelectLight(unsigned index);
-    void DeleteLight(unsigned index);
+    void newLight(tbe::scene::Light* light);
+    void selectLight(unsigned index);
+    void deleteLight(unsigned index);
 
-    bool SettingSkyEvent(tbe::EventManager* event);
-    bool SettingFogEvent(tbe::EventManager* event);
-    bool SettingMusicEvent(tbe::EventManager* event);
+    bool settingSkyEvent(tbe::EventManager* event);
+    bool settingFogEvent(tbe::EventManager* event);
+    bool settingMusicEvent(tbe::EventManager* event);
 
-    void ViewEventPorcess(tbe::EventManager* event);
-    void EditEventPorcess(tbe::EventManager* event);
-    void GuiEventPorcess(tbe::EventManager* event);
+    void viewEventPorcess(tbe::EventManager* event);
+    void editEventPorcess(tbe::EventManager* event);
+    void guiEventPorcess(tbe::EventManager* event);
 
 protected:
 

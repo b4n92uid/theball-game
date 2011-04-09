@@ -22,7 +22,7 @@ public:
      * Fonction virutal pure pour routine d'intercation
      * de l'objet dynamique avec a un joueur
      */
-    virtual void InteractWith(Player* player) = 0;
+    virtual void interactWith(Player* player) = 0;
 
     typedef std::map<std::string, DynamicObject*> Map;
     typedef std::vector<DynamicObject*> Array;
@@ -36,9 +36,9 @@ class DYJumper : public DynamicObject
 public:
     DYJumper(GameManager* gameManager, tbe::Matrix4f pos);
     ~DYJumper();
-    Object* CloneToObject();
-    void OutputConstruction(std::iostream& stream);
-    void InteractWith(Player* player);
+    Object* cloneToObject();
+    void outputConstruction(std::iostream& stream);
+    void interactWith(Player* player);
 
 
 protected:
@@ -50,9 +50,9 @@ class DYTeleporter : public DynamicObject
 public:
     DYTeleporter(GameManager* gameManager, tbe::Matrix4f pos);
     ~DYTeleporter();
-    Object* CloneToObject();
-    void OutputConstruction(std::iostream& stream);
-    void InteractWith(Player* player);
+    Object* cloneToObject();
+    void outputConstruction(std::iostream& stream);
+    void interactWith(Player* player);
 
 protected:
     tbe::scene::BurningEmitter* m_particles;

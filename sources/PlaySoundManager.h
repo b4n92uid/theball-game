@@ -19,7 +19,7 @@ public:
     virtual ~PlaySoundManager();
 
 private:
-    void ProcessEffect(std::string soundName, FMOD_CHANNEL* channel);
+    void processEffect(std::string soundName, FMOD_CHANNEL* channel);
 
 private:
     PlayManager* m_playManager;

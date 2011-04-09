@@ -31,67 +31,67 @@ public:
     virtual ~PlayManager();
 
     /// Construit la map et les entités
-    void SetupMap(const Settings::PartySetting& playSetting);
+    void setupMap(const Settings::PartySetting& playSetting);
 
     /// Construction de l'ETH
-    void SetupGui();
+    void setupGui();
 
     /// Appler avant le lancement du jeu
-    void OnStartGame();
+    void onStartGame();
 
     /// Traitement de l'entrer
-    void EventProcess();
+    void eventProcess();
 
     /// Traitement ETH
-    void HudProcess();
+    void hudProcess();
 
     /// Traitement Jeu
-    void GameProcess();
+    void gameProcess();
 
     /// Rendue
-    void Render();
+    void render();
 
     /// Rotine d'affichage de notification
-    void Log(std::string msg);
+    void log(std::string msg);
 
-    void SetGameOver();
-    bool IsGameOver() const;
+    void setGameOver();
+    bool isGameOver() const;
 
-    void RegisterPlayer(Player* player);
-    void UnRegisterPlayer(Player* player);
+    void registerPlayer(Player* player);
+    void unregisterPlayer(Player* player);
 
-    void HudItem(bool status);
-    void HudBullettime(bool status);
-    void HudBoost(bool status);
-    void HudDammage(bool status);
+    void hudItem(bool status);
+    void hudBullettime(bool status);
+    void hudBoost(bool status);
+    void hudDammage(bool status);
 
-    virtual BulletTime* GetBullettime() const;
+    virtual BulletTime* getBullettime() const;
 
-    virtual tbe::Vector3f GetShootTarget() const;
+    virtual tbe::Vector3f getShootTarget() const;
 
-    virtual Player* GetUserPlayer() const;
+    virtual Player* getUserPlayer() const;
 
-    virtual const Player::Array& GetPlayers() const;
+    virtual const Player::Array& getPlayers() const;
 
-    virtual const Player::Array GetTargetsOf(Player* player) const;
+    virtual const Player::Array getTargetsOf(Player* player) const;
 
-    int ModulatScore(int score);
+    int modulatScore(int score);
 
 protected:
 
-    virtual void ModSetupAi(Player* player) = 0;
-    virtual void ModSetupUser(Player* player) = 0;
+    virtual void modSetupAi(Player* player) = 0;
+    virtual void modSetupUser(Player* player) = 0;
 
-    virtual void ModUpdateStateText(std::ostringstream& ss) = 0;
-    virtual void ModUpdateScoreListText(std::ostringstream& ss) = 0;
-    virtual void ModUpdateGameOverText(std::ostringstream& ss) = 0;
+    virtual void modUpdateStateText(std::ostringstream& ss) = 0;
+    virtual void modUpdateScoreListText(std::ostringstream& ss) = 0;
+    virtual void modUpdateGameOverText(std::ostringstream& ss) = 0;
 
-    static bool PlayerScoreSortProcess(Player* p1, Player* p2)
+    static bool playerScoreSortProcess(Player* p1, Player* p2)
     {
-        if(p1->GetScore() == p2->GetScore())
-            return (p1->GetName() > p2->GetName());
+        if(p1->getScore() == p2->getScore())
+            return (p1->getName() > p2->getName());
         else
-            return (p1->GetScore() > p2->GetScore());
+            return (p1->getScore() > p2->getScore());
     }
 
     enum TimtTo

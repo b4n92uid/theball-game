@@ -22,7 +22,7 @@ FragModeAi::~FragModeAi()
 {
 }
 
-void FragModeAi::Process(Player* player)
+void FragModeAi::process(Player* player)
 {
     /*
      IA Process Frag :
@@ -60,21 +60,21 @@ void FragModeAi::Process(Player* player)
      Mouvement vers addForce
      */
 
-    const Player::Array& players = m_playManager->GetTargetsOf(player);
+    const Player::Array& players = m_playManager->getTargetsOf(player);
 
     const Item::Array& items = m_playManager->map.items;
     //    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
     const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
-    Vector3f playerPos = player->GetPos();
+    Vector3f playerPos = player->getPos();
 
     // -------------------------------------------------------------------------
 
     //    bool isCollidWithMap = false;
     //
     //    for(unsigned i = 0; i < staticObjects.size(); i++)
-    //        if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
+    //        if(isCollidWithMap = player->getPhysicBody()->IsCollidWith(staticObjects[i]->getPhysicBody()))
     //            break;
 
     // -------------------------------------------------------------------------
@@ -83,13 +83,13 @@ void FragModeAi::Process(Player* player)
 
     for(unsigned i = 0; i < dynamicObjects.size(); i++)
     {
-        if(dynamicObjects[i]->GetPos() - playerPos < m_aiParams.dynamicInteraction)
+        if(dynamicObjects[i]->getPos() - playerPos < m_aiParams.dynamicInteraction)
             m_targetOtp = dynamicObjects[i];
     }
 
     for(unsigned i = 0; i < items.size(); i++)
     {
-        if(items[i]->IsNeeded(player))
+        if(items[i]->isNeeded(player))
             m_targetOtp = items[i];
     }
 
@@ -97,27 +97,27 @@ void FragModeAi::Process(Player* player)
 
     if(m_targetOtp)
     {
-        addForce = m_targetOtp->GetPos();
+        addForce = m_targetOtp->getPos();
     }
 
     else
     {
         if(m_targetPlayer)
-            m_targetPos = m_targetPlayer->GetPos();
+            m_targetPos = m_targetPlayer->getPos();
 
-        if(m_switchTarget.IsEsplanedTime(m_aiParams.switchTargetTime)
+        if(m_switchTarget.isEsplanedTime(m_aiParams.switchTargetTime)
            || m_strikePos - playerPos < m_minDistToSwith
            || !m_targetPlayer
-           || m_targetPlayer->IsKilled()
+           || m_targetPlayer->isKilled()
            )
         {
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
             for(unsigned i = 0; i < players.size(); i++)
-                if(!players[i]->IsKilled() && m_mapAABB.IsInner(players[i])
-                   && players[i]->IsVisibleFromIA())
+                if(!players[i]->isKilled() && m_mapAABB.isInner(players[i])
+                   && players[i]->isVisibleFromIA())
                 {
-                    Vector3f testedDist = players[i]->GetPos() - playerPos;
+                    Vector3f testedDist = players[i]->getPos() - playerPos;
 
                     if(testedDist < minDist)
                     {
@@ -128,11 +128,11 @@ void FragModeAi::Process(Player* player)
 
             if(m_targetPlayer)
             {
-                m_targetPos = m_targetPlayer->GetPos();
+                m_targetPos = m_targetPlayer->getPos();
 
                 do
                     m_strikePos = tools::rand(m_targetPos - m_strikPrimiter, m_targetPos + m_strikPrimiter);
-                while(!m_mapAABB.IsInner(m_strikePos));
+                while(!m_mapAABB.isInner(m_strikePos));
 
                 m_strikePos.y = 0;
             }
@@ -146,11 +146,11 @@ void FragModeAi::Process(Player* player)
     {
         Vector3f targetPos = m_targetPos;
 
-        if(m_targetPlayer == m_playManager->GetUserPlayer()
-           && m_playManager->GetBullettime()->IsActive())
+        if(m_targetPlayer == m_playManager->getUserPlayer()
+           && m_playManager->getBullettime()->isActive())
         {
             Vector3f velocity;
-            NewtonBodyGetVelocity(m_targetPlayer->GetPhysicBody()->GetBody(), velocity);
+            NewtonBodyGetVelocity(m_targetPlayer->getPhysicBody()->getBody(), velocity);
 
             targetPos = m_targetPos - velocity;
         }
@@ -158,21 +158,21 @@ void FragModeAi::Process(Player* player)
         if(m_gustCount < m_aiParams.shootGustCount)
         {
             Vector3f margin = tools::rand(AABB(m_aiParams.shootAccuracy));
-            if(player->Shoot(m_targetPos + margin))
+            if(player->shoot(m_targetPos + margin))
                 m_gustCount++;
         }
-        else if(m_gustClock.IsEsplanedTime(m_aiParams.shootGustTime))
+        else if(m_gustClock.isEsplanedTime(m_aiParams.shootGustTime))
             m_gustCount = 0;
     }
 
-    if((AABB(-1, 1) + m_lastPos).IsInner(player)
-       && m_lastPosClock.IsEsplanedTime(2000))
+    if((AABB(-1, 1) + m_lastPos).isInner(player)
+       && m_lastPosClock.isEsplanedTime(2000))
     {
         do
         {
             m_strikePos = tools::rand(m_playManager->map.aabb);
             m_strikePos.y = 1;
-            m_strikePos = m_playManager->parallelscene.newton->FindFloor(m_strikePos);
+            m_strikePos = m_playManager->parallelscene.newton->findFloor(m_strikePos);
         }
         while(m_strikePos.y < m_playManager->map.aabb.min.y);
 
@@ -181,11 +181,11 @@ void FragModeAi::Process(Player* player)
     else
         m_lastPos = playerPos;
 
-    if(player->GetCurWeapon()->IsEmpty())
-        player->SwitchUpWeapon();
+    if(player->getCurWeapon()->isEmpty())
+        player->switchUpWeapon();
 
-    addForce = (addForce - playerPos).Normalize() * m_worldSettings.playerMoveSpeed;
+    addForce = (addForce - playerPos).normalize() * m_worldSettings.playerMoveSpeed;
     addForce.y = 0;
 
-    player->GetPhysicBody()->SetApplyForce(addForce);
+    player->getPhysicBody()->setApplyForce(addForce);
 }

@@ -28,27 +28,27 @@ public:
 
     typedef std::map<std::string, std::string> AttribMap;
 
-    void SaveLevel();
-    void SaveLevel(const std::string& filepath);
-    void LoadLevel(const std::string& filepath);
+    void saveLevel();
+    void saveLevel(const std::string& filepath);
+    void loadLevel(const std::string& filepath);
 
-    void SetOpenFileName(std::string openFileName);
-    std::string GetOpenFileName() const;
+    void setOpenFileName(std::string openFileName);
+    std::string getOpenFileName() const;
 
-    bool IsChanged();
+    bool isChanged();
 
 protected:
-    void OnLoadMap(AttribMap& att);
-    void OnLoadMusic(AttribMap& att);
-    void OnLoadFog(AttribMap& att);
-    void OnLoadSkyBox(AttribMap& att);
-    void OnLoadNode(AttribMap& att);
-    void OnLoadLight(AttribMap& att);
+    void onLoadMap(AttribMap& att);
+    void onLoadMusic(AttribMap& att);
+    void onLoadFog(AttribMap& att);
+    void onLoadSkyBox(AttribMap& att);
+    void onLoadNode(AttribMap& att);
+    void onLoadLight(AttribMap& att);
 
-    Item* CreateItem(std::string add, tbe::Matrix4f pos);
-    StaticObject* CreateStatic(std::string modelPath, tbe::Matrix4f pos);
-    DynamicObject* CreateDynamic(std::string action, tbe::Matrix4f pos);
-    Object* CreateSpawn(tbe::Vector3f pos);
+    Item* createItem(std::string add, tbe::Matrix4f pos);
+    StaticObject* createStatic(std::string modelPath, tbe::Matrix4f pos);
+    DynamicObject* createDynamic(std::string action, tbe::Matrix4f pos);
+    Object* createSpawn(tbe::Vector3f pos);
 
 protected:
     GameManager* m_gameManager;
@@ -64,9 +64,9 @@ protected:
     tbe::scene::NewtonParallelScene* m_newtonScene;
 
 private:
-    void WriteMap(std::iostream& stream);
+    void writeMap(std::iostream& stream);
 
-    static BldParser::AttribMap GetAttributs(std::ifstream& file);
+    static BldParser::AttribMap getAttributs(std::ifstream& file);
 };
 
 #endif	/* _BLDPARSER_H */

@@ -23,12 +23,39 @@ class AppManager
 {
 public:
 
+    AppManager();
+    ~AppManager();
+
+    /// Exécute le menu du jeu
+    void executeMenu();
+
+    /// Exécute l'éditeur de carte
+    void executeEditor(const Settings::EditSetting& editSetting);
+
+    /// Exécute une partie rapide
+    void executeGame(const Settings::PartySetting& playSetting);
+
+    /// Exécute la campaigne du jeu
+    void executeCampaign(const Settings::PartySetting& playSetting);
+
+    tbe::EventManager* getEventMng() const;
+    tbe::ticks::FpsManager* getFpsMng() const;
+    tbe::scene::SceneManager* getSceneMng() const;
+    tbe::gui::GuiManager* getGuiMng() const;
+    tbe::SDLDevice* getGameEngine() const;
+    FMOD_SYSTEM* getFmodSystem() const;
+
+    /// Mise a jour du contenue de la GUI
+    void updateGuiContent();
+
+    Settings globalSettings;
+
     enum PlayMode
     {
         FRAG, TEAM, ALONE
     };
 
-    static std::string UnsignedToPlayMod(unsigned pm)
+    static std::string unsignedToPlayMod(unsigned pm)
     {
         switch(pm)
         {
@@ -39,7 +66,7 @@ public:
         }
     }
 
-    static unsigned PlayModToUnsigned(std::string str)
+    static unsigned playModToUnsigned(std::string str)
     {
         std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 
@@ -49,55 +76,26 @@ public:
         else return AppManager::FRAG;
     }
 
-    Settings globalSettings;
-
-    /// Constructeur
-    AppManager();
-
-    /// Destructeur
-    ~AppManager();
-
-    /// Exécute le menu du jeu
-    void ExecuteMenu();
-
-    /// Exécute l'éditeur de carte
-    void ExecuteEditor(const Settings::EditSetting& editSetting);
-
-    /// Exécute le jeu
-    void ExecuteGame(const Settings::PartySetting& playSetting);
-
-    /// *
-    void ExecuteCampaign(const Settings::PartySetting& playSetting);
-
-    tbe::EventManager* GetEventMng() const;
-    tbe::ticks::FpsManager* GetFpsMng() const;
-    tbe::scene::SceneManager* GetSceneMng() const;
-    tbe::gui::GuiManager* GetGuiMng() const;
-    tbe::SDLDevice* GetGameEngine() const;
-    FMOD_SYSTEM* GetFmodSystem() const;
-
-    void UpdateGuiContent();
-
 protected:
-    /// Configure les options vidéo
-    void SetupVideoMode();
+    /// Initialise les options vidéo
+    void setupVideoMode();
 
-    /// Configure l'interface du menu
-    void SetupMenuGui();
+    /// Initialise l'interface du menu
+    void setupMenuGui();
 
-    /// Configure la scene de fond du menu
-    void SetupBackgroundScene();
+    /// Initialise la scene de fond du menu
+    void setupBackgroundScene();
 
-    /// Configure les option du son
-    void SetupSound();
+    /// Initialise les options audio
+    void setupSound();
 
-    void ProcessMainMenuEvent();
-    void ProcessCampaignMenuEvent();
-    void ProcessPlayMenuEvent();
-    void ProcessEditMenuEvent();
-    void ProcessSettingMenuEvent();
-    void ProcessSettingKeyMenuEvent();
-    void ProcessScoreMenuEvent();
+    void processMainMenuEvent();
+    void processCampaignMenuEvent();
+    void processPlayMenuEvent();
+    void processEditMenuEvent();
+    void processSettingMenuEvent();
+    void processSettingKeyMenuEvent();
+    void processScoreMenuEvent();
 
 protected:
     tbe::SDLDevice* m_gameEngine;

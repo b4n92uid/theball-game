@@ -16,17 +16,17 @@ public:
     StaticObject(GameManager* gameManager, std::string path, tbe::Matrix4f pos);
     ~StaticObject();
 
-    Object* CloneToObject();
+    Object* cloneToObject();
 
-    void OutputConstruction(std::iostream& stream);
+    void outputConstruction(std::iostream& stream);
 
     typedef std::map<std::string, StaticObject*> Map;
     typedef std::vector<StaticObject*> Array;
 
-    static bool IsCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects)
+    static bool isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects)
     {
         for(unsigned i = 0; i < staticObjects.size(); i++)
-            if(body->IsCollidWith(staticObjects[i]->GetPhysicBody()))
+            if(body->isCollidWith(staticObjects[i]->getPhysicBody()))
                 return true;
 
         return false;

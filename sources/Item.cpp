@@ -29,93 +29,93 @@ Item::~Item()
 {
 }
 
-void Item::SetRespawnTime(unsigned respawnTime)
+void Item::setRespawnTime(unsigned respawnTime)
 {
     this->m_respawnTime = respawnTime;
 }
 
-unsigned Item::GetRespawnTime() const
+unsigned Item::getRespawnTime() const
 {
     return m_respawnTime;
 }
 
-void Item::ResetPosition()
+void Item::resetPosition()
 {
-    m_physicBody->SetVelocity(0);
+    m_physicBody->setVelocity(0);
 
-    m_physicBody->SetMatrix(m_initialMatrix);
+    m_physicBody->setMatrix(m_initialMatrix);
 }
 
-void Item::Reborn()
+void Item::reborn()
 {
-    SetTaked(false);
+    setTaked(false);
 
-    ResetPosition();
+    resetPosition();
 }
 
-void Item::SetTaked(bool taked)
+void Item::setTaked(bool taked)
 {
     this->m_taked = taked;
 
-    SetEnable(!taked);
-    m_gameManager->manager.material->SetGhost(this, taked);
+    setEnable(!taked);
+    m_gameManager->manager.material->setGhost(this, taked);
 
     if(taked)
-        m_rebornClock.SnapShoot();
+        m_rebornClock.snapShoot();
 }
 
-bool Item::IsTaked() const
+bool Item::isTaked() const
 {
     return m_taked;
 }
 
-bool Item::IsReadyToReborn()
+bool Item::isReadyToReborn()
 {
-    return m_rebornClock.IsEsplanedTime(m_respawnTime);
+    return m_rebornClock.isEsplanedTime(m_respawnTime);
 }
 
 // ItemAddAmmo -----------------------------------------------------------------
 
 ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
-    Open(ITEM_AMMOPACK);
+    open(ITEM_AMMOPACK);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
-Object* ItemAddAmmo::CloneToObject()
+Object* ItemAddAmmo::cloneToObject()
 {
     Item* it = new ItemAddAmmo(m_gameManager, m_matrix);
-    m_gameManager->RegisterItem(it);
+    m_gameManager->registerItem(it);
     return it;
 }
 
-void ItemAddAmmo::ModifPlayer(Player* player)
+void ItemAddAmmo::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->GetPlayManager();
+    PlayManager* playManager = player->getPlayManager();
 
-    if(playManager->GetUserPlayer() == player)
-        playManager->Log("Munitions supplémentaire");
+    if(playManager->getUserPlayer() == player)
+        playManager->log("Munitions supplémentaire");
 
-    player->GetCurWeapon()->UpAmmoCount(50 * player->GetCurWeapon()->GetMaxAmmoCount() / 100);
-    m_soundManager->Play("takeammo", this);
+    player->getCurWeapon()->UpAmmoCount(50 * player->getCurWeapon()->getMaxAmmoCount() / 100);
+    m_soundManager->play("takeammo", this);
 
-    SetTaked(true);
+    setTaked(true);
 }
 
-bool ItemAddAmmo::IsNeeded(Player* player)
+bool ItemAddAmmo::isNeeded(Player* player)
 {
-    unsigned percent = player->GetCurWeapon()->GetAmmoCount()*100
-            / player->GetCurWeapon()->GetMaxAmmoCount();
+    unsigned percent = player->getCurWeapon()->getAmmoCount()*100
+            / player->getCurWeapon()->getMaxAmmoCount();
 
-    if(!IsTaked() && percent < m_aiParams.criticalAmmoValue)
+    if(!isTaked() && percent < m_aiParams.criticalAmmoValue)
         return true;
 
     return false;
 }
 
-void ItemAddAmmo::OutputConstruction(std::iostream& stream)
+void ItemAddAmmo::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -130,42 +130,42 @@ void ItemAddAmmo::OutputConstruction(std::iostream& stream)
 
 ItemAddLife::ItemAddLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
-    Open(ITEM_MEDPACK);
+    open(ITEM_MEDPACK);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
-Object* ItemAddLife::CloneToObject()
+Object* ItemAddLife::cloneToObject()
 {
     Item* it = new ItemAddLife(m_gameManager, m_matrix);
-    m_gameManager->RegisterItem(it);
+    m_gameManager->registerItem(it);
     return it;
 }
 
-void ItemAddLife::ModifPlayer(Player* player)
+void ItemAddLife::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->GetPlayManager();
+    PlayManager* playManager = player->getPlayManager();
 
-    if(playManager->GetUserPlayer() == player)
-        playManager->Log("Santé supplémentaire");
+    if(playManager->getUserPlayer() == player)
+        playManager->log("Santé supplémentaire");
 
-    player->UpLife(50);
+    player->upLife(50);
 
-    m_soundManager->Play("takelife", this);
+    m_soundManager->play("takelife", this);
 
-    SetTaked(true);
+    setTaked(true);
 }
 
-bool ItemAddLife::IsNeeded(Player* player)
+bool ItemAddLife::isNeeded(Player* player)
 {
-    if(!IsTaked() && player->GetLife() < m_aiParams.criticalLifeValue)
+    if(!isTaked() && player->getLife() < (int)m_aiParams.criticalLifeValue)
         return true;
 
     return false;
 }
 
-void ItemAddLife::OutputConstruction(std::iostream& stream)
+void ItemAddLife::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -181,16 +181,16 @@ void ItemAddLife::OutputConstruction(std::iostream& stream)
 
 ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
-    Open(ITEM_FATALSHOT);
+    open(ITEM_FATALSHOT);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
-Object* ItemFatalShot::CloneToObject()
+Object* ItemFatalShot::cloneToObject()
 {
     Item* it = new ItemFatalShot(m_gameManager, m_matrix);
-    m_gameManager->RegisterItem(it);
+    m_gameManager->registerItem(it);
     return it;
 }
 
@@ -198,16 +198,16 @@ class FatalShotEffect : public Player::CheckMe
 {
 public:
 
-    bool Shutdown(Player* player)
+    bool shutdown(Player* player)
     {
-        if(effectTime.IsEsplanedTime(8000))
+        if(effectTime.isEsplanedTime(8000))
         {
-            PlayManager* playManager = player->GetPlayManager();
+            PlayManager* playManager = player->getPlayManager();
 
-            player->GetCurWeapon()->SetMaxAmmoDammage(initialDammage);
+            player->getCurWeapon()->setMaxAmmoDammage(initialDammage);
 
-            if(playManager->GetUserPlayer() == player)
-                playManager->HudItem(false);
+            if(playManager->getUserPlayer() == player)
+                playManager->hudItem(false);
 
             return true;
         }
@@ -220,37 +220,37 @@ public:
     tbe::ticks::Clock effectTime;
 };
 
-void ItemFatalShot::ModifPlayer(Player* player)
+void ItemFatalShot::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->GetPlayManager();
+    PlayManager* playManager = player->getPlayManager();
 
-    if(playManager->GetUserPlayer() == player)
+    if(playManager->getUserPlayer() == player)
     {
-        playManager->Log("Tire fatale");
-        playManager->HudItem(true);
+        playManager->log("Tire fatale");
+        playManager->hudItem(true);
     }
 
     FatalShotEffect* effect = new FatalShotEffect;
-    effect->initialDammage = player->GetCurWeapon()->GetMaxAmmoDammage();
-    effect->effectTime.SnapShoot();
+    effect->initialDammage = player->getCurWeapon()->getMaxAmmoDammage();
+    effect->effectTime.snapShoot();
 
-    player->GetCurWeapon()->SetMaxAmmoDammage(100);
-    player->AddCheckPoint(effect);
+    player->getCurWeapon()->setMaxAmmoDammage(100);
+    player->addCheckMe(effect);
 
-    m_soundManager->Play("takefatalshot", this);
+    m_soundManager->play("takefatalshot", this);
 
-    SetTaked(true);
+    setTaked(true);
 }
 
-bool ItemFatalShot::IsNeeded(Player* player)
+bool ItemFatalShot::isNeeded(Player* player)
 {
-    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
         return true;
 
     return false;
 }
 
-void ItemFatalShot::OutputConstruction(std::iostream& stream)
+void ItemFatalShot::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -265,16 +265,16 @@ void ItemFatalShot::OutputConstruction(std::iostream& stream)
 
 ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
-    Open(ITEM_SUPERLIFE);
+    open(ITEM_SUPERLIFE);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
-Object* ItemSuperLife::CloneToObject()
+Object* ItemSuperLife::cloneToObject()
 {
     Item* it = new ItemSuperLife(m_gameManager, m_matrix);
-    m_gameManager->RegisterItem(it);
+    m_gameManager->registerItem(it);
     return it;
 }
 
@@ -282,19 +282,19 @@ class SuperLifeEffect : public Player::CheckMe
 {
 public:
 
-    bool OnTakeDammage(Player* player, Bullet* ammo)
+    bool onTakeDammage(Player* player, Bullet* ammo)
     {
         return false;
     }
 
-    bool Shutdown(Player* player)
+    bool shutdown(Player* player)
     {
-        if(effectTime.IsEsplanedTime(8000))
+        if(effectTime.isEsplanedTime(8000))
         {
-            PlayManager* playManager = player->GetPlayManager();
+            PlayManager* playManager = player->getPlayManager();
 
-            if(playManager->GetUserPlayer() == player)
-                playManager->HudItem(false);
+            if(playManager->getUserPlayer() == player)
+                playManager->hudItem(false);
 
             return true;
         }
@@ -305,36 +305,36 @@ public:
     tbe::ticks::Clock effectTime;
 };
 
-void ItemSuperLife::ModifPlayer(Player* player)
+void ItemSuperLife::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->GetPlayManager();
+    PlayManager* playManager = player->getPlayManager();
 
-    if(playManager->GetUserPlayer() == player)
+    if(playManager->getUserPlayer() == player)
     {
-        playManager->Log("Super santé !");
-        playManager->HudItem(true);
+        playManager->log("Super santé !");
+        playManager->hudItem(true);
     }
 
     SuperLifeEffect* effect = new SuperLifeEffect;
-    effect->effectTime.SnapShoot();
+    effect->effectTime.snapShoot();
 
-    player->SetLife(100);
-    player->AddCheckPoint(effect);
+    player->setLife(100);
+    player->addCheckMe(effect);
 
-    m_soundManager->Play("takesuperlife", this);
+    m_soundManager->play("takesuperlife", this);
 
-    SetTaked(true);
+    setTaked(true);
 }
 
-bool ItemSuperLife::IsNeeded(Player* player)
+bool ItemSuperLife::isNeeded(Player* player)
 {
-    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
         return true;
 
     return false;
 }
 
-void ItemSuperLife::OutputConstruction(std::iostream& stream)
+void ItemSuperLife::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -349,43 +349,43 @@ void ItemSuperLife::OutputConstruction(std::iostream& stream)
 
 ItemAddFinder::ItemAddFinder(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
-    Open(ITEM_ADDFINDER);
+    open(ITEM_ADDFINDER);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
-Object* ItemAddFinder::CloneToObject()
+Object* ItemAddFinder::cloneToObject()
 {
     Item* it = new ItemAddFinder(m_gameManager, m_matrix);
-    m_gameManager->RegisterItem(it);
+    m_gameManager->registerItem(it);
     return it;
 }
 
-void ItemAddFinder::ModifPlayer(Player* player)
+void ItemAddFinder::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->GetPlayManager();
+    PlayManager* playManager = player->getPlayManager();
 
-    if(playManager->GetUserPlayer() == player)
-        playManager->Log("Arme : Finder");
+    if(playManager->getUserPlayer() == player)
+        playManager->log("Arme : Finder");
 
     WeaponFinder* finder = new WeaponFinder(playManager);
-    player->AddWeapon(finder);
+    player->addWeapon(finder);
 
-    m_soundManager->Play("takeammo", this);
+    m_soundManager->play("takeammo", this);
 
-    SetTaked(true);
+    setTaked(true);
 }
 
-bool ItemAddFinder::IsNeeded(Player* player)
+bool ItemAddFinder::isNeeded(Player* player)
 {
-    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
         return true;
 
     return false;
 }
 
-void ItemAddFinder::OutputConstruction(std::iostream& stream)
+void ItemAddFinder::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -400,43 +400,43 @@ void ItemAddFinder::OutputConstruction(std::iostream& stream)
 
 ItemAddBomb::ItemAddBomb(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
-    Open(ITEM_ADDBOMB);
+    open(ITEM_ADDBOMB);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
-Object* ItemAddBomb::CloneToObject()
+Object* ItemAddBomb::cloneToObject()
 {
     Item* it = new ItemAddBomb(m_gameManager, m_matrix);
-    m_gameManager->RegisterItem(it);
+    m_gameManager->registerItem(it);
     return it;
 }
 
-void ItemAddBomb::ModifPlayer(Player* player)
+void ItemAddBomb::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->GetPlayManager();
+    PlayManager* playManager = player->getPlayManager();
 
-    if(playManager->GetUserPlayer() == player)
-        playManager->Log("Arme : Bomb");
+    if(playManager->getUserPlayer() == player)
+        playManager->log("Arme : Bomb");
 
     WeaponBomb* bomb = new WeaponBomb(playManager);
-    player->AddWeapon(bomb);
+    player->addWeapon(bomb);
 
-    m_soundManager->Play("takeammo", this);
+    m_soundManager->play("takeammo", this);
 
-    SetTaked(true);
+    setTaked(true);
 }
 
-bool ItemAddBomb::IsNeeded(Player* player)
+bool ItemAddBomb::isNeeded(Player* player)
 {
-    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
         return true;
 
     return false;
 }
 
-void ItemAddBomb::OutputConstruction(std::iostream& stream)
+void ItemAddBomb::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 
@@ -451,43 +451,43 @@ void ItemAddBomb::OutputConstruction(std::iostream& stream)
 
 ItemAddShotgun::ItemAddShotgun(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
 {
-    Open(ITEM_ADDSHOTGUN);
+    open(ITEM_ADDSHOTGUN);
 
-    m_physicBody->BuildConvexNode(m_hardwareBuffer.GetAllVertex(), 1.0);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
-Object* ItemAddShotgun::CloneToObject()
+Object* ItemAddShotgun::cloneToObject()
 {
     Item* it = new ItemAddShotgun(m_gameManager, m_matrix);
-    m_gameManager->RegisterItem(it);
+    m_gameManager->registerItem(it);
     return it;
 }
 
-void ItemAddShotgun::ModifPlayer(Player* player)
+void ItemAddShotgun::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->GetPlayManager();
+    PlayManager* playManager = player->getPlayManager();
 
-    if(playManager->GetUserPlayer() == player)
-        playManager->Log("Arme : Shotgun");
+    if(playManager->getUserPlayer() == player)
+        playManager->log("Arme : Shotgun");
 
     WeaponShotgun* shotgun = new WeaponShotgun(playManager);
-    player->AddWeapon(shotgun);
+    player->addWeapon(shotgun);
 
-    m_soundManager->Play("takeammo", this);
+    m_soundManager->play("takeammo", this);
 
-    SetTaked(true);
+    setTaked(true);
 }
 
-bool ItemAddShotgun::IsNeeded(Player* player)
+bool ItemAddShotgun::isNeeded(Player* player)
 {
-    if(!IsTaked() && player->GetPos() - m_matrix.GetPos() < 4.0f)
+    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
         return true;
 
     return false;
 }
 
-void ItemAddShotgun::OutputConstruction(std::iostream& stream)
+void ItemAddShotgun::outputConstruction(std::iostream& stream)
 {
     using namespace std;
 

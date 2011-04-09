@@ -20,13 +20,13 @@ public:
     UserControl(PlayManager* playManager);
     ~UserControl();
 
-    void Process(Player* player);
+    void process(Player* player);
 
-    bool IsActionJustDown(std::string name);
-    bool IsActionJustUp(std::string name);
+    bool isActionJustDown(std::string name);
+    bool isActionJustUp(std::string name);
 
-    void SetActionStateDown(std::string name, bool state);
-    bool IsActionStateDown(std::string name);
+    void setActionStateDown(std::string name, bool state);
+    bool isActionStateDown(std::string name);
 
 private:
     Settings::Control m_control;

@@ -17,11 +17,11 @@ public:
     virtual ~PlayAloneManager();
 
 protected:
-    void ModSetupUser(Player* userPlayer);
-    void ModSetupAi(Player* player);
-    void ModUpdateStateText(std::ostringstream& ss);
-    void ModUpdateScoreListText(std::ostringstream& ss);
-    void ModUpdateGameOverText(std::ostringstream& ss);
+    void modSetupUser(Player* userPlayer);
+    void modSetupAi(Player* player);
+    void modUpdateStateText(std::ostringstream& ss);
+    void modUpdateScoreListText(std::ostringstream& ss);
+    void modUpdateGameOverText(std::ostringstream& ss);
 
     tbe::scene::ParticlesEmiter* m_playersLabel;
 };

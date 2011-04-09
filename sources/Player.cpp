@@ -17,7 +17,7 @@ using namespace tbe::scene;
 Player::Player(PlayManager* playManager, std::string name, std::string model) : Object(playManager)
 {
     // Rendue
-    Open(model);
+    open(model);
 
     // Attributes
     m_name = name;
@@ -33,28 +33,28 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
 
     // Effet explosion
     m_deadExplode = new BurningEmitter(playManager->parallelscene.particles);
-    m_deadExplode->SetTexture(PARTICLE_EXPLODE);
-    m_deadExplode->SetLifeInit(m_worldSettings.playerExplodeLifeInit);
-    m_deadExplode->SetLifeDown(m_worldSettings.playerExplodeLifeDown);
-    m_deadExplode->SetFreeMove(m_worldSettings.playerExplodeFreeMove);
-    m_deadExplode->SetNumber(m_worldSettings.playerExplodeNumber);
-    m_deadExplode->SetAutoRebuild(false);
-    m_deadExplode->SetParent(this);
+    m_deadExplode->setTexture(PARTICLE_EXPLODE);
+    m_deadExplode->setLifeInit(m_worldSettings.playerExplodeLifeInit);
+    m_deadExplode->setLifeDown(m_worldSettings.playerExplodeLifeDown);
+    m_deadExplode->setFreeMove(m_worldSettings.playerExplodeFreeMove);
+    m_deadExplode->setNumber(m_worldSettings.playerExplodeNumber);
+    m_deadExplode->setAutoRebuild(false);
+    m_deadExplode->setParent(this);
 
     m_checkMe.push_back(new StartProtection(this));
 
     // Physique
-    m_physicBody->BuildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
+    m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
 
-    SetRandomSpawnPos();
+    toNextSpawnPos();
 
-    NewtonBodySetLinearDamping(m_physicBody->GetBody(), m_worldSettings.playerLinearDamping);
-    NewtonBodySetAutoSleep(m_physicBody->GetBody(), false);
+    NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
 
-    AddWeapon(blaster);
+    addWeapon(blaster);
 }
 
 Player::~Player()
@@ -65,12 +65,12 @@ Player::~Player()
     delete m_attachedCotroller;
 }
 
-Object* Player::CloneToObject()
+Object* Player::cloneToObject()
 {
     return NULL;
 }
 
-void Player::SetRandomSpawnPos()
+void Player::toNextSpawnPos()
 {
     Vector3f randPos;
 
@@ -78,13 +78,13 @@ void Player::SetRandomSpawnPos()
 
     if(spawns.empty())
     {
-        float factor = 5 * m_playManager->map.aabb.GetSize() / 100;
+        float factor = 5 * m_playManager->map.aabb.getSize() / 100;
 
         do
         {
             randPos = tools::rand(m_playManager->map.aabb - Vector3f(factor));
             randPos.y = 1;
-            randPos = m_physicBody->GetParallelScene()->FindFloor(randPos);
+            randPos = m_physicBody->getParallelScene()->findFloor(randPos);
         }
         while(randPos.y < m_playManager->map.aabb.min.y);
     }
@@ -97,117 +97,117 @@ void Player::SetRandomSpawnPos()
         spawns.insert(spawns.begin(), randPos);
     }
 
-    m_physicBody->SetVelocity(0);
-    m_physicBody->SetMatrix(randPos);
+    m_physicBody->setVelocity(0);
+    m_physicBody->setMatrix(randPos);
 }
 
-void Player::AttachItem(Item* item)
+void Player::attachItem(Item* item)
 {
     for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->OnTakeItems(this, item))
+        if(!m_checkMe[i]->onTakeItems(this, item))
             return;
 
-    item->ModifPlayer(this);
+    item->modifPlayer(this);
 }
 
-void Player::AttachController(Controller* controller)
+void Player::attachController(Controller* controller)
 {
     delete m_attachedCotroller, m_attachedCotroller = controller;
 }
 
-Controller* Player::GetAttachedCotroller() const
+Controller* Player::getAttachedCotroller() const
 {
     return m_attachedCotroller;
 }
 
-void Player::Process()
+void Player::process()
 {
     if(!m_enable)
         return;
 
-    Object::Process();
+    Object::process();
 
-    if(m_playManager->IsGameOver())
+    if(m_playManager->isGameOver())
         return;
 
     if(!m_boostAvalaible)
     {
-        if(clocks.boostDisableBlur.IsEsplanedTime(1000))
-            m_playManager->HudBoost(false);
+        if(clocks.boostDisableBlur.isEsplanedTime(1000))
+            m_playManager->hudBoost(false);
 
-        if(clocks.boostAvailable.IsEsplanedTime(m_worldSettings.playerBoostReload))
+        if(clocks.boostAvailable.isEsplanedTime(m_worldSettings.playerBoostReload))
             m_boostAvalaible = true;
     }
 
     if(m_attachedCotroller && !m_killed)
-        m_attachedCotroller->Process(this);
+        m_attachedCotroller->process(this);
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(m_checkMe[i]->Shutdown(this))
+        if(m_checkMe[i]->shutdown(this))
             delete m_checkMe[i], m_checkMe[i] = NULL;
 
     CheckMe::Array::iterator newEnd = remove(m_checkMe.begin(), m_checkMe.end(), (CheckMe*)NULL);
     m_checkMe.erase(newEnd, m_checkMe.end());
 }
 
-bool Player::Shoot(Vector3f targetpos)
+bool Player::shoot(Vector3f targetpos)
 {
     for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->OnShoot(this))
+        if(!m_checkMe[i]->onShoot(this))
             return false;
 
-    return (*m_curWeapon)->Shoot(m_matrix.GetPos(), targetpos);
+    return (*m_curWeapon)->shoot(m_matrix.getPos(), targetpos);
 }
 
-void Player::Jump()
+void Player::jump()
 {
-    NewtonBodyAddImpulse(m_physicBody->GetBody(), Vector3f(0, m_worldSettings.playerJumpForce, 0), m_matrix.GetPos());
+    NewtonBodyAddImpulse(m_physicBody->getBody(), Vector3f(0, m_worldSettings.playerJumpForce, 0), m_matrix.getPos());
 }
 
-void Player::Brake()
+void Player::brake()
 {
-    if(!clocks.boostBrake.IsEsplanedTime(500))
+    if(!clocks.boostBrake.isEsplanedTime(500))
         return;
 
-    m_physicBody->SetVelocity(0);
-    m_soundManager->Play("stop", this);
+    m_physicBody->setVelocity(0);
+    m_soundManager->play("stop", this);
 }
 
-void Player::Boost()
+void Player::boost()
 {
-    if(!m_boostAvalaible || !m_physicBody->GetApplyForce())
+    if(!m_boostAvalaible || !m_physicBody->getApplyForce())
         return;
 
     m_boostAvalaible = false;
 
-    Vector3f impulseDeri = m_physicBody->GetApplyForce().Normalize()
+    Vector3f impulseDeri = m_physicBody->getApplyForce().normalize()
             * m_worldSettings.playerBoostSpeed;
 
     impulseDeri.y = 0;
 
-    NewtonBodyAddImpulse(m_physicBody->GetBody(), impulseDeri, m_matrix.GetPos());
+    NewtonBodyAddImpulse(m_physicBody->getBody(), impulseDeri, m_matrix.getPos());
 
-    m_soundManager->Play("boost", this);
+    m_soundManager->play("boost", this);
 
-    clocks.boostAvailable.SnapShoot();
+    clocks.boostAvailable.snapShoot();
 
-    clocks.boostDisableBlur.SnapShoot();
-    m_playManager->HudBoost(true);
+    clocks.boostDisableBlur.snapShoot();
+    m_playManager->hudBoost(true);
 }
 
-inline bool IsWeaponSameName(Weapon* w1, Weapon* w2)
+inline bool isWeaponSameName(Weapon* w1, Weapon* w2)
 {
-    return w1->GetWeaponName() == w2->GetWeaponName();
+    return w1->getWeaponName() == w2->getWeaponName();
 }
 
-void Player::AddWeapon(Weapon* weapon)
+void Player::addWeapon(Weapon* weapon)
 {
     Weapon::Array::iterator select = find_if(m_weaponsPack.begin(), m_weaponsPack.end(),
-                                             bind2nd(ptr_fun(IsWeaponSameName), weapon));
+                                             bind2nd(ptr_fun(isWeaponSameName), weapon));
 
     if(select != m_weaponsPack.end())
     {
-        (*select)->UpAmmoCount(weapon->GetAmmoCount());
+        (*select)->UpAmmoCount(weapon->getAmmoCount());
         delete weapon;
     }
 
@@ -216,23 +216,23 @@ void Player::AddWeapon(Weapon* weapon)
         m_weaponsPack.push_back(weapon);
 
         m_curWeapon = --m_weaponsPack.end();
-        (*m_curWeapon)->SetShooter(this);
+        (*m_curWeapon)->setShooter(this);
 
-        m_playManager->manager.scene->GetRootNode()->AddChild(weapon);
+        m_playManager->manager.scene->getRootNode()->addChild(weapon);
     }
 }
 
-void Player::SlotWeapon(unsigned slot)
+void Player::slotWeapon(unsigned slot)
 {
     for(unsigned i = 0; i < m_weaponsPack.size(); i++)
-        if(m_weaponsPack[i]->GetSlot() == slot)
+        if(m_weaponsPack[i]->getSlot() == slot)
         {
             m_curWeapon = m_weaponsPack.begin() + i;
             break;
         }
 }
 
-void Player::SwitchUpWeapon()
+void Player::switchUpWeapon()
 {
     m_curWeapon++;
 
@@ -240,7 +240,7 @@ void Player::SwitchUpWeapon()
         m_curWeapon = m_weaponsPack.begin();
 }
 
-void Player::SwitchDownWeapon()
+void Player::switchDownWeapon()
 {
     m_curWeapon--;
 
@@ -248,31 +248,31 @@ void Player::SwitchDownWeapon()
         m_curWeapon = --m_weaponsPack.end();
 }
 
-void Player::SetCurWeapon(unsigned slot)
+void Player::setCurWeapon(unsigned slot)
 {
     if(slot >= m_weaponsPack.size())
-        throw tbe::Exception("PlayerEngine::SetCurWeapon; Invalid weapon slot (%d)", slot);
+        throw tbe::Exception("PlayerEngine::setCurWeapon; Invalid weapon slot (%d)", slot);
 
     m_curWeapon = m_weaponsPack.begin() + slot;
 }
 
-Weapon* Player::GetCurWeapon() const
+Weapon* Player::getCurWeapon() const
 {
     return (*m_curWeapon);
 }
 
-void Player::ReBorn()
+void Player::reBorn()
 {
     m_life = 100;
     m_killed = false;
 
     m_boostAvalaible = true;
 
-    m_playManager->manager.material->SetGhost(this, false);
+    m_playManager->manager.material->setGhost(this, false);
 
-    SetVisible(true);
+    setVisible(true);
 
-    m_physicBody->SetFreeze(false);
+    m_physicBody->setFreeze(false);
 
     for(unsigned i = 0; i < m_weaponsPack.size(); i++)
         delete m_weaponsPack[i];
@@ -281,174 +281,174 @@ void Player::ReBorn()
 
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
 
-    AddWeapon(blaster);
+    addWeapon(blaster);
 
-    SetRandomSpawnPos();
+    toNextSpawnPos();
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
-        m_checkMe[i]->AfterReborn(this);
+        m_checkMe[i]->afterReborn(this);
 
     m_checkMe.push_back(new StartProtection(this));
 }
 
-void Player::Kill()
+void Player::kill()
 {
     for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->OnKilled(this))
+        if(!m_checkMe[i]->onKilled(this))
             return;
 
     m_killed = true;
     m_life = 0;
 
-    m_deadExplode->Build();
+    m_deadExplode->build();
 
-    m_playManager->manager.material->SetGhost(this, true);
+    m_playManager->manager.material->setGhost(this, true);
 
-    clocks.readyToDelete.SnapShoot();
+    clocks.readyToDelete.snapShoot();
 
-    SetVisible(false);
+    setVisible(false);
 
-    m_physicBody->SetOmega(0);
-    m_physicBody->SetFreeze(true);
+    m_physicBody->setOmega(0);
+    m_physicBody->setFreeze(true);
 
-    m_soundManager->Play("kill", this);
+    m_soundManager->play("kill", this);
 
-    if(this == m_playManager->GetUserPlayer())
+    if(this == m_playManager->getUserPlayer())
     {
-        m_playManager->GetBullettime()->SetActive(false);
+        m_playManager->getBullettime()->setActive(false);
 
-        m_playManager->HudBoost(false);
-        m_playManager->HudBullettime(false);
+        m_playManager->hudBoost(false);
+        m_playManager->hudBullettime(false);
     }
 }
 
-bool Player::IsKilled() const
+bool Player::isKilled() const
 {
     return m_killed;
 }
 
-void Player::SetBoostAvalaible(bool boost)
+void Player::setBoostAvalaible(bool boost)
 {
     this->m_boostAvalaible = boost;
 }
 
-bool Player::IsBoostAvalaible() const
+bool Player::isBoostAvalaible() const
 {
     return m_boostAvalaible;
 }
 
-void Player::UpScore(int value)
+void Player::upScore(int value)
 {
-    m_score = max(m_score + m_playManager->ModulatScore(value), 0);
+    m_score = max(m_score + m_playManager->modulatScore(value), 0);
 }
 
-void Player::SetScore(int value)
+void Player::setScore(int value)
 {
-    this->m_score = max(m_playManager->ModulatScore(value), 0);
+    this->m_score = max(m_playManager->modulatScore(value), 0);
 }
 
-int Player::GetScore() const
+int Player::getScore() const
 {
     return m_score;
 }
 
-void Player::UpLife(int life)
+void Player::upLife(int life)
 {
     m_life = max(min(m_life + life, 100), 0);
 }
 
-void Player::SetLife(int life)
+void Player::setLife(int life)
 {
     m_life = max(min(life, 100), 0);
 }
 
-int Player::GetLife() const
+int Player::getLife() const
 {
     return m_life;
 }
 
-void Player::AddCheckPoint(CheckMe* cm)
+void Player::addCheckMe(CheckMe* cm)
 {
     m_checkMe.push_back(cm);
 }
 
-void Player::SetVisibleFromIA(bool visibleFromIA)
+void Player::setVisibleFromIA(bool visibleFromIA)
 {
     this->m_visibleFromIA = visibleFromIA;
 }
 
-bool Player::IsVisibleFromIA() const
+bool Player::isVisibleFromIA() const
 {
     return m_visibleFromIA;
 }
 
-void Player::TakeDammage(Bullet* ammo)
+void Player::takeDammage(Bullet* ammo)
 {
     if(m_killed)
         return;
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->OnTakeDammage(this, ammo))
+        if(!m_checkMe[i]->onTakeDammage(this, ammo))
             return;
 
-    int dammage = ammo->GetDammage();
+    int dammage = ammo->getDammage();
 
     int scoremod = dammage > m_life ? m_life : dammage;
 
     m_life = max(m_life - dammage, 0);
 
-    Weapon* wp = ammo->GetWeapon();
+    Weapon* wp = ammo->getWeapon();
 
     if(wp)
     {
-        Player* striker = wp->GetShooter();
+        Player* striker = wp->getShooter();
 
         if(m_life <= 0)
         {
-            striker->UpScore(500);
-            UpScore(-500);
+            striker->upScore(500);
+            upScore(-500);
 
-            Kill();
+            kill();
         }
         else
         {
-            striker->UpScore(scoremod);
-            UpScore(-scoremod);
+            striker->upScore(scoremod);
+            upScore(-scoremod);
         }
     }
 
-    if(m_playManager->GetUserPlayer() == this)
-        m_playManager->HudDammage(true);
+    if(m_playManager->getUserPlayer() == this)
+        m_playManager->hudDammage(true);
 
-    m_soundManager->Play("hit", this);
+    m_soundManager->play("hit", this);
 }
 
-PlayManager* Player::GetPlayManager() const
+PlayManager* Player::getPlayManager() const
 {
     return m_playManager;
 }
 
-void Player::MakeTransparent(bool enable, float alpha)
+void Player::makeTransparent(bool enable, float alpha)
 {
-    Vertex* vs = m_hardwareBuffer.Lock();
+    Vertex* vs = m_hardwareBuffer.lock();
 
     if(enable)
-        for(unsigned i = 0; i < m_hardwareBuffer.GetVertexCount(); i++)
+        for(unsigned i = 0; i < m_hardwareBuffer.getVertexCount(); i++)
             vs[i].color.w = alpha;
     else
-        for(unsigned i = 0; i < m_hardwareBuffer.GetVertexCount(); i++)
+        for(unsigned i = 0; i < m_hardwareBuffer.getVertexCount(); i++)
             vs[i].color.w = 1;
 
-    m_hardwareBuffer.UnLock();
+    m_hardwareBuffer.unlock();
 
-    Material::Array mats = GetAllMaterial();
+    Material::Array mats = getAllMaterial();
 
     if(enable)
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->Enable(Material::BLEND_MOD);
+            mats[i]->enable(Material::BLEND_MOD);
     else
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->Disable(Material::BLEND_MOD);
+            mats[i]->disable(Material::BLEND_MOD);
 }
 
 Player::StartProtection::StartProtection(Player* player)
@@ -456,31 +456,31 @@ Player::StartProtection::StartProtection(Player* player)
     using namespace tbe;
     using namespace tbe::scene;
 
-    player->MakeTransparent(true);
+    player->makeTransparent(true);
 
-    player->SetVisibleFromIA(false);
+    player->setVisibleFromIA(false);
 }
 
-bool Player::StartProtection::OnShoot(Player*)
+bool Player::StartProtection::onShoot(Player*)
 {
     return false;
 }
 
-bool Player::StartProtection::OnTakeDammage(Player*, Bullet*)
+bool Player::StartProtection::onTakeDammage(Player*, Bullet*)
 {
     return false;
 }
 
-bool Player::StartProtection::Shutdown(Player* player)
+bool Player::StartProtection::shutdown(Player* player)
 {
     using namespace tbe;
     using namespace tbe::scene;
 
-    if(m_clock.IsEsplanedTime(player->m_playManager->worldSettings.playerStartImmunity))
+    if(m_clock.isEsplanedTime(player->m_playManager->worldSettings.playerStartImmunity))
     {
-        player->MakeTransparent(false);
+        player->makeTransparent(false);
 
-        player->SetVisibleFromIA(true);
+        player->setVisibleFromIA(true);
 
         return true;
     }

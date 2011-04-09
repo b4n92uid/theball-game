@@ -21,7 +21,7 @@ BulletTime::BulletTime(PlayManager* playManager)
     m_active = false;
     m_value = 1;
     m_playManager = playManager;
-    m_userPlayer = m_playManager->GetUserPlayer();
+    m_userPlayer = m_playManager->getUserPlayer();
     m_soundManager = m_playManager->manager.sound;
 }
 
@@ -29,7 +29,7 @@ BulletTime::~BulletTime()
 {
 }
 
-void BulletTime::Process()
+void BulletTime::process()
 {
     NewtonParallelScene* newton = m_playManager->parallelscene.newton;
 
@@ -38,11 +38,11 @@ void BulletTime::Process()
         if(m_value > 0.0f)
         {
             m_value -= m_playManager->worldSettings.bullettimeDown;
-            newton->SetWorldTimestep(newton->GetWorldTimestep() / m_playManager->worldSettings.bullettimeFactor);
+            newton->setWorldTimestep(newton->getWorldTimestep() / m_playManager->worldSettings.bullettimeFactor);
         }
 
         else
-            SetActive(false);
+            setActive(false);
     }
 
     else
@@ -52,7 +52,7 @@ void BulletTime::Process()
     }
 }
 
-void BulletTime::SetActive(bool active)
+void BulletTime::setActive(bool active)
 {
     this->m_active = active;
 
@@ -63,30 +63,30 @@ void BulletTime::SetActive(bool active)
     {
         FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 0.5);
 
-        m_soundManager->Play("bullettime", m_userPlayer);
+        m_soundManager->play("bullettime", m_userPlayer);
 
-        m_playManager->HudBullettime(true);
+        m_playManager->hudBullettime(true);
     }
 
     else
     {
         FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 1.0);
 
-        m_playManager->HudBullettime(false);
+        m_playManager->hudBullettime(false);
     }
 }
 
-bool BulletTime::IsActive() const
+bool BulletTime::isActive() const
 {
     return m_active;
 }
 
-void BulletTime::SetValue(float value)
+void BulletTime::setValue(float value)
 {
     this->m_value = value;
 }
 
-float BulletTime::GetValue() const
+float BulletTime::getValue() const
 {
     return m_value;
 }

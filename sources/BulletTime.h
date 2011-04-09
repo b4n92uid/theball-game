@@ -18,13 +18,13 @@ public:
     BulletTime(PlayManager* playManager);
     virtual ~BulletTime();
 
-    void Process();
+    void process();
 
-    void SetActive(bool active);
-    bool IsActive() const;
+    void setActive(bool active);
+    bool isActive() const;
 
-    void SetValue(float value);
-    float GetValue() const;
+    void setValue(float value);
+    float getValue() const;
 
 private:
     float m_value;

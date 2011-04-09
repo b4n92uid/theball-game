@@ -19,7 +19,8 @@ class TeamModeAi : public AIControl
 public:
     TeamModeAi(PlayTeamManager* playManager);
     ~TeamModeAi();
-    void Process(Player* player);
+
+    void process(Player* player);
 
 private:
     PlayTeamManager* m_playManager;

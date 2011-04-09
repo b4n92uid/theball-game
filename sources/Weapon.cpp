@@ -45,19 +45,19 @@ Weapon::Weapon(PlayManager* playManager) : ParticlesEmiter(playManager->parallel
     m_name = "Weapon";
 }
 
-void Weapon::SetupBullet(Particle& p)
+void Weapon::setupBullet(Particle& p)
 {
     p = Particle();
     p.life = 1;
     p.color = 1;
 }
 
-void Weapon::SetShootSize(unsigned shootSize)
+void Weapon::setShootSize(unsigned shootSize)
 {
     this->m_shootSize = shootSize;
 }
 
-unsigned Weapon::GetShootSize() const
+unsigned Weapon::getShootSize() const
 {
     return m_shootSize;
 }
@@ -73,113 +73,113 @@ Weapon::~Weapon()
         delete m_bulletArray[i];
 }
 
-void Weapon::Process()
+void Weapon::process()
 {
     unsigned requsetSize = m_ammoCount * m_shootSize + m_bulletArray.size();
 
     if(requsetSize > m_number)
     {
-        SetNumber(requsetSize);
-        Build();
+        setNumber(requsetSize);
+        build();
     }
 
-    Particle* particles = BeginParticlesPosProcess();
+    Particle* particles = beginParticlesPosProcess();
 
     for(unsigned i = 0; i < m_bulletArray.size(); i++)
     {
-        if(m_bulletArray[i]->IsDeadAmmo())
+        if(m_bulletArray[i]->isDeadAmmo())
         {
             delete m_bulletArray[i], m_bulletArray[i] = NULL;
         }
 
         else
         {
-            m_bulletArray[i]->Process();
-            particles[i].pos = m_bulletArray[i]->GetPos();
+            m_bulletArray[i]->process();
+            particles[i].pos = m_bulletArray[i]->getPos();
         }
     }
 
-    EndParticlesPosProcess();
+    endParticlesPosProcess();
 
     Bullet::Array::iterator newend = remove(m_bulletArray.begin(), m_bulletArray.end(), (Bullet*)NULL);
     m_bulletArray.erase(newend, m_bulletArray.end());
 
-    SetDrawNumber(m_bulletArray.size());
+    setDrawNumber(m_bulletArray.size());
 }
 
-void Weapon::SetFireSound(std::string fireSound)
+void Weapon::setFireSound(std::string fireSound)
 {
     fspath path(fireSound);
     m_soundID = path.stem();
 
-    m_soundManager->RegisterSound(m_soundID, fireSound);
+    m_soundManager->registerSound(m_soundID, fireSound);
 }
 
-bool Weapon::IsEmpty()
+bool Weapon::isEmpty()
 {
     return (m_ammoCount == 0);
 }
 
-unsigned Weapon::GetSlot() const
+unsigned Weapon::getSlot() const
 {
     return m_slot;
 }
 
-void Weapon::SetShooter(Player* shooter)
+void Weapon::setShooter(Player* shooter)
 {
     this->m_shooter = shooter;
 }
 
-Player* Weapon::GetShooter() const
+Player* Weapon::getShooter() const
 {
     return m_shooter;
 }
 
-std::string Weapon::GetWeaponName() const
+std::string Weapon::getWeaponName() const
 {
     return m_weaponName;
 }
 
-void Weapon::SetWeaponName(std::string weaponName)
+void Weapon::setWeaponName(std::string weaponName)
 {
     this->m_weaponName = weaponName;
 }
 
-bool Weapon::Shoot(Vector3f startpos, Vector3f targetpos)
+bool Weapon::shoot(Vector3f startpos, Vector3f targetpos)
 {
     // Controle des munitions
     if(m_ammoCount <= 0)
     {
-        if(m_shooter->clocks.shoot.IsEsplanedTime(1000))
-            m_soundManager->Play("noAvailable", m_shooter);
+        if(m_shooter->clocks.shoot.isEsplanedTime(1000))
+            m_soundManager->play("noAvailable", m_shooter);
 
         return false;
     }
 
     // Controle de la cadence de tire
-    long shootCadency = m_playManager->GetBullettime()->IsActive() ? m_shootCadency * 4 : m_shootCadency;
+    long shootCadency = m_playManager->getBullettime()->isActive() ? m_shootCadency * 4 : m_shootCadency;
 
-    if(!m_shootCadencyClock.IsEsplanedTime(shootCadency))
+    if(!m_shootCadencyClock.isEsplanedTime(shootCadency))
         return false;
 
     if(m_bulletArray.size() > m_maxAmmoCount)
         return false;
 
-    m_soundManager->Play(m_soundID, m_shooter);
+    m_soundManager->play(m_soundID, m_shooter);
 
     m_ammoCount--;
 
-    ProcessShoot(startpos, targetpos);
+    processShoot(startpos, targetpos);
 
     return true;
 }
 
-void Weapon::SetShootCadency(unsigned shootCadency)
+void Weapon::setShootCadency(unsigned shootCadency)
 {
     this->m_shootCadency = shootCadency;
 }
 
-unsigned Weapon::GetShootCadency() const
+unsigned Weapon::getShootCadency() const
 {
     return m_shootCadency;
 }
@@ -198,7 +198,7 @@ bool Weapon::UpAmmoCount(int ammoCount)
     return true;
 }
 
-void Weapon::SetAmmoCount(unsigned ammoCount)
+void Weapon::setAmmoCount(unsigned ammoCount)
 {
 
     if(ammoCount > m_maxAmmoCount)
@@ -207,42 +207,42 @@ void Weapon::SetAmmoCount(unsigned ammoCount)
     this->m_ammoCount = ammoCount;
 }
 
-unsigned Weapon::GetAmmoCount() const
+unsigned Weapon::getAmmoCount() const
 {
 
     return m_ammoCount;
 }
 
-void Weapon::SetMaxAmmoCount(unsigned maxAmmoCount)
+void Weapon::setMaxAmmoCount(unsigned maxAmmoCount)
 {
 
     this->m_maxAmmoCount = maxAmmoCount;
 }
 
-unsigned Weapon::GetMaxAmmoCount() const
+unsigned Weapon::getMaxAmmoCount() const
 {
 
     return m_maxAmmoCount;
 }
 
-void Weapon::SetMaxAmmoDammage(unsigned maxAmmoDammage)
+void Weapon::setMaxAmmoDammage(unsigned maxAmmoDammage)
 {
 
     this->m_maxAmmoDammage = maxAmmoDammage;
 }
 
-unsigned Weapon::GetMaxAmmoDammage() const
+unsigned Weapon::getMaxAmmoDammage() const
 {
 
     return m_maxAmmoDammage;
 }
 
-void Weapon::SetShootSpeed(float shootSpeed)
+void Weapon::setShootSpeed(float shootSpeed)
 {
     this->m_shootSpeed = shootSpeed;
 }
 
-float Weapon::GetShootSpeed() const
+float Weapon::getShootSpeed() const
 {
     return m_shootSpeed;
 }
@@ -265,7 +265,7 @@ Weapon & Weapon::operator=(const Weapon& copy)
     return *this;
 }
 
-Node* Weapon::Clone()
+Node* Weapon::clone()
 {
     return NULL;
 }
@@ -274,32 +274,32 @@ Node* Weapon::Clone()
 
 WeaponBlaster::WeaponBlaster(PlayManager* playManager) : Weapon(playManager)
 {
-    SetMaxAmmoCount(200);
-    SetAmmoCount(180);
-    SetMaxAmmoDammage(10);
-    SetShootCadency(64);
-    SetShootSpeed(64);
-    SetFireSound(SOUND_BLASTER);
+    setMaxAmmoCount(200);
+    setAmmoCount(180);
+    setMaxAmmoDammage(10);
+    setShootCadency(64);
+    setShootSpeed(64);
+    setFireSound(SOUND_BLASTER);
 
-    SetTexture(WEAPON_BLASTER);
-    SetNumber(200);
-    Build();
+    setTexture(WEAPON_BLASTER);
+    setNumber(200);
+    build();
 
-    SetWeaponName("Blaster");
+    setWeaponName("Blaster");
 
     m_slot = 1;
 }
 
-void WeaponBlaster::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
+void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
     startpos += tools::rand(Vector3f(-m_worldSettings.playerSize * 0.5),
                             Vector3f(m_worldSettings.playerSize * 0.5));
 
     // Creation du tire
     Bullet* fire = new Bullet(m_playManager);
-    fire->SetWeapon(this);
-    fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
-    fire->Shoot(startpos, targetpos, m_shootSpeed);
+    fire->setWeapon(this);
+    fire->setDammage(tools::rand(1, m_maxAmmoDammage));
+    fire->shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
 }
@@ -308,32 +308,32 @@ void WeaponBlaster::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
 WeaponShotgun::WeaponShotgun(PlayManager* playManager) : Weapon(playManager)
 {
-    SetMaxAmmoCount(50);
-    SetAmmoCount(40);
-    SetMaxAmmoDammage(75);
-    SetShootCadency(512);
-    SetShootSpeed(64);
-    SetFireSound(SOUND_SHOTGUN);
-    SetShootSize(7);
+    setMaxAmmoCount(50);
+    setAmmoCount(40);
+    setMaxAmmoDammage(75);
+    setShootCadency(512);
+    setShootSpeed(64);
+    setFireSound(SOUND_SHOTGUN);
+    setShootSize(7);
 
-    SetTexture(WEAPON_SHOTGUN);
-    SetNumber(50 * 7);
-    Build();
+    setTexture(WEAPON_SHOTGUN);
+    setNumber(50 * 7);
+    build();
 
-    SetWeaponName("Shotgun");
+    setWeaponName("Shotgun");
 
     m_slot = 2;
 }
 
-void WeaponShotgun::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
+void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
     for(int i = 0; i < 7; i++)
     {
         // Creation du tire
         Bullet * fire = new Bullet(m_playManager);
-        fire->SetWeapon(this);
-        fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
-        fire->Shoot(startpos, targetpos, m_shootSpeed, 0.1);
+        fire->setWeapon(this);
+        fire->setDammage(tools::rand(1, m_maxAmmoDammage));
+        fire->shoot(startpos, targetpos, m_shootSpeed, 0.1);
 
         m_bulletArray.push_back(fire);
     }
@@ -343,35 +343,35 @@ void WeaponShotgun::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
 WeaponBomb::WeaponBomb(PlayManager* playManager) : Weapon(playManager)
 {
-    SetMaxAmmoCount(80);
-    SetAmmoCount(60);
-    SetMaxAmmoDammage(100);
-    SetShootCadency(512);
-    SetShootSpeed(8);
-    SetFireSound(SOUND_BOMB);
-    SetShootSize(8);
+    setMaxAmmoCount(80);
+    setAmmoCount(60);
+    setMaxAmmoDammage(100);
+    setShootCadency(512);
+    setShootSpeed(8);
+    setFireSound(SOUND_BOMB);
+    setShootSize(8);
 
-    SetTexture(WEAPON_BOMB);
-    SetNumber(m_maxAmmoCount * m_shootSize);
-    Build();
+    setTexture(WEAPON_BOMB);
+    setNumber(m_maxAmmoCount * m_shootSize);
+    build();
 
-    SetWeaponName("Bomb");
+    setWeaponName("Bomb");
 
     m_slot = 4;
 }
 
-void WeaponBomb::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
+void WeaponBomb::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
     Vector3f relrot(0, 0, 0.25);
 
     for(unsigned i = 0; i < m_shootSize; i++)
     {
-        relrot.Rotate(45 * i, 0);
+        relrot.rotate(45 * i, 0);
 
         Bullet * fire = new Bullet(m_playManager);
-        fire->SetWeapon(this);
-        fire->SetDammage(100);
-        fire->Shoot(startpos + relrot, startpos + (relrot * 4.0f), m_shootSpeed);
+        fire->setWeapon(this);
+        fire->setDammage(100);
+        fire->shoot(startpos + relrot, startpos + (relrot * 4.0f), m_shootSpeed);
 
         m_bulletArray.push_back(fire);
     }
@@ -381,78 +381,78 @@ void WeaponBomb::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
 WeaponFinder::WeaponFinder(PlayManager* playManager) : Weapon(playManager)
 {
-    SetMaxAmmoCount(200);
-    SetAmmoCount(180);
-    SetMaxAmmoDammage(50);
-    SetShootCadency(64);
-    SetShootSpeed(64);
-    SetFireSound(SOUND_FINDER);
+    setMaxAmmoCount(200);
+    setAmmoCount(180);
+    setMaxAmmoDammage(50);
+    setShootCadency(64);
+    setShootSpeed(64);
+    setFireSound(SOUND_FINDER);
 
-    SetTexture(WEAPON_FINDER);
-    SetNumber(200);
-    Build();
+    setTexture(WEAPON_FINDER);
+    setNumber(200);
+    build();
 
-    SetWeaponName("Finder");
+    setWeaponName("Finder");
 
     m_slot = 3;
 }
 
-void WeaponFinder::Process()
+void WeaponFinder::process()
 {
-    Particle* particles = BeginParticlesPosProcess();
+    Particle* particles = beginParticlesPosProcess();
 
     for(unsigned i = 0; i < m_bulletArray.size(); i++)
     {
-        if(m_bulletArray[i]->IsDeadAmmo())
+        if(m_bulletArray[i]->isDeadAmmo())
         {
             delete m_bulletArray[i], m_bulletArray[i] = NULL;
         }
 
         else
         {
-            m_bulletArray[i]->Process();
-            particles[i].pos = m_bulletArray[i]->GetPos();
+            m_bulletArray[i]->process();
+            particles[i].pos = m_bulletArray[i]->getPos();
 
             bool targetLocked = false;
 
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
-            const Player::Array& targets = m_playManager->GetTargetsOf(m_shooter);
+            const Player::Array& targets = m_playManager->getTargetsOf(m_shooter);
 
             for(unsigned j = 0; j < targets.size(); j++)
             {
-                Vector3f ammodiri = m_bulletArray[i]->GetVelocity().Normalize();
-                Vector3f targetdiri = (targets[j]->GetPos() - m_bulletArray[i]->GetPos()).Normalize();
+                Vector3f ammodiri = m_bulletArray[i]->getVelocity().normalize();
+                Vector3f targetdiri = (targets[j]->getPos() - m_bulletArray[i]->getPos()).normalize();
 
-                if(Vector3f::Dot(targetdiri, ammodiri) > 0.5f)
+                if(Vector3f::dot(targetdiri, ammodiri) > 0.5f)
                 {
-                    minDist = min(targets[j]->GetPos() - m_bulletArray[i]->GetPos(), minDist);
+                    minDist = min(targets[j]->getPos() - m_bulletArray[i]->getPos(), minDist);
                     targetLocked = true;
                 }
             }
 
             if(targetLocked)
             {
-                m_bulletArray[i]->SetApplyForce(minDist.Normalize() * m_shootSpeed / 2.0f);
+                m_bulletArray[i]->setApplyForce(minDist.normalize() * m_shootSpeed / 2.0f);
             }
         }
     }
 
-    EndParticlesPosProcess();
+    endParticlesPosProcess();
 
     Bullet::Array::iterator newend = remove(m_bulletArray.begin(), m_bulletArray.end(), (Bullet*)NULL);
     m_bulletArray.erase(newend, m_bulletArray.end());
 
-    SetDrawNumber(m_bulletArray.size());
+    setDrawNumber(m_bulletArray.size());
 }
 
-void WeaponFinder::ProcessShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
+void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
     // Creation du tire
     Bullet * fire = new Bullet(m_playManager);
-    fire->SetWeapon(this);
-    fire->SetDammage(tools::rand(1, m_maxAmmoDammage));
-    fire->Shoot(startpos, targetpos, m_shootSpeed);
+    fire->setWeapon(this);
+    fire->setDammage(tools::rand(1, m_maxAmmoDammage));
+    fire->shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
 }
@@ -467,102 +467,102 @@ Bullet::Bullet(PlayManager* playManager) : NewtonNode(playManager->parallelscene
     m_weapon = NULL;
 }
 
-void Bullet::SetShootSpeed(float shootSpeed)
+void Bullet::setShootSpeed(float shootSpeed)
 {
     this->m_shootSpeed = shootSpeed;
 }
 
-float Bullet::GetShootSpeed() const
+float Bullet::getShootSpeed() const
 {
     return m_shootSpeed;
 }
 
-void Bullet::SetDammage(int dammage)
+void Bullet::setDammage(int dammage)
 {
     this->m_dammage = dammage;
 }
 
-int Bullet::GetDammage() const
+int Bullet::getDammage() const
 {
     return m_dammage;
 }
 
-void Bullet::SetShootDiri(tbe::Vector3f shootDiri)
+void Bullet::setShootDiri(tbe::Vector3f shootDiri)
 {
     this->m_shootDiri = shootDiri;
 }
 
-tbe::Vector3f Bullet::GetShootDiri() const
+tbe::Vector3f Bullet::getShootDiri() const
 {
     return m_shootDiri;
 }
 
-void Bullet::SetTargetPos(tbe::Vector3f targetPos)
+void Bullet::setTargetPos(tbe::Vector3f targetPos)
 {
     this->m_targetPos = targetPos;
 }
 
-tbe::Vector3f Bullet::GetTargetPos() const
+tbe::Vector3f Bullet::getTargetPos() const
 {
     return m_targetPos;
 }
 
-void Bullet::SetStartPos(tbe::Vector3f startPos)
+void Bullet::setStartPos(tbe::Vector3f startPos)
 {
     this->m_startPos = startPos;
 }
 
-tbe::Vector3f Bullet::GetStartPos() const
+tbe::Vector3f Bullet::getStartPos() const
 {
     return m_startPos;
 }
 
-void Bullet::SetWeapon(Weapon* weapon)
+void Bullet::setWeapon(Weapon* weapon)
 {
     this->m_weapon = weapon;
 }
 
-Weapon* Bullet::GetWeapon() const
+Weapon* Bullet::getWeapon() const
 {
     return m_weapon;
 }
 
-void Bullet::SetLife(int life)
+void Bullet::setLife(int life)
 {
     this->m_life = life;
 }
 
-int Bullet::GetLife() const
+int Bullet::getLife() const
 {
     return m_life;
 }
 
-bool Bullet::IsDeadAmmo()
+bool Bullet::isDeadAmmo()
 {
-    return (m_life <= 0 || !m_playManager->map.aabb.IsInner(m_matrix.GetPos()));
+    return (m_life <= 0 || !m_playManager->map.aabb.isInner(m_matrix.getPos()));
 }
 
-void Bullet::Shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
+void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
 {
     m_startPos = startpos;
     m_targetPos = targetpos;
-    m_shootDiri = (targetpos - startpos).Normalize();
+    m_shootDiri = (targetpos - startpos).normalize();
     m_shootSpeed = shootspeed;
 
     m_shootDiri += tools::rand(AABB(-accuracy, accuracy));
 
-    m_matrix.SetPos(startpos);
+    m_matrix.setPos(startpos);
 
-    SetUpdatedMatrix(&m_matrix);
+    setUpdatedMatrix(&m_matrix);
 
     Settings::World& worldSettings = m_playManager->manager.app->globalSettings.world;
 
-    BuildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
+    buildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
     NewtonBodySetContinuousCollisionMode(m_body, true);
 
     m_applyGravity = false;
 
-    m_playManager->manager.material->AddBullet(this);
+    m_playManager->manager.material->addBullet(this);
 
     NewtonBodyAddImpulse(m_body, m_shootDiri * m_shootSpeed, m_startPos);
 }

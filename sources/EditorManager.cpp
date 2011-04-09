@@ -19,11 +19,11 @@ EditorManager::EditorManager(AppManager* appManager) : GameManager(appManager)
     m_selectedNode = NULL;
 
     m_FFCamera = new scene::FreeFlyCamera;
-    m_FFCamera->SetSpeed(4);
-    manager.scene->AddCamera(m_FFCamera);
+    m_FFCamera->setSpeed(4);
+    manager.scene->addCamera(m_FFCamera);
 
     m_OCamera = new scene::OrbitalCamera;
-    manager.scene->AddCamera(m_OCamera);
+    manager.scene->addCamera(m_OCamera);
 
     m_camera = m_OCamera;
 
@@ -31,28 +31,28 @@ EditorManager::EditorManager(AppManager* appManager) : GameManager(appManager)
 
     m_navigation = ENTITY;
 
-    parallelscene.newton->SetEnable(false);
+    parallelscene.newton->setEnable(false);
 
     m_completeHelp = false;
 }
 
 EditorManager::~EditorManager()
 {
-    manager.gui->DestroySession(EDITOR_EDIT_ENTITY);
-    manager.gui->DestroySession(EDITOR_EDIT_LIGHT);
-    manager.gui->DestroySession(EDITOR_EDIT_FOG);
-    manager.gui->DestroySession(EDITOR_EDIT_SKYBOX);
-    manager.gui->DestroySession(EDITOR_EDIT_MUSIC);
-    manager.gui->DestroySession(EDITOR_VIEW);
-    manager.gui->DestroySession(EDITOR_GUI);
+    manager.gui->destroySession(EDITOR_EDIT_ENTITY);
+    manager.gui->destroySession(EDITOR_EDIT_LIGHT);
+    manager.gui->destroySession(EDITOR_EDIT_FOG);
+    manager.gui->destroySession(EDITOR_EDIT_SKYBOX);
+    manager.gui->destroySession(EDITOR_EDIT_MUSIC);
+    manager.gui->destroySession(EDITOR_VIEW);
+    manager.gui->destroySession(EDITOR_GUI);
 }
 
-void EditorManager::SetupMap(const Settings::EditSetting& editSetting)
+void EditorManager::setupMap(const Settings::EditSetting& editsetting)
 {
-    m_editSetting = editSetting;
+    m_editSetting = editsetting;
 
-    m_fog = manager.scene->GetFog();
-    m_sky = manager.scene->GetSkybox();
+    m_fog = manager.scene->getFog();
+    m_sky = manager.scene->getSkybox();
 
     if(m_editSetting.createNew)
     {
@@ -62,9 +62,9 @@ void EditorManager::SetupMap(const Settings::EditSetting& editSetting)
 
     else
     {
-        manager.level->LoadLevel(m_editSetting.editMap.file);
+        manager.level->loadLevel(m_editSetting.editMap.file);
 
-        parallelscene.newton->SetWorldSize(map.aabb);
+        parallelscene.newton->setWorldSize(map.aabb);
 
         m_allEntity.reserve(map.staticObjects.size() + map.dynamicObjects.size() + map.items.size());
         m_allEntity.insert(m_allEntity.end(), map.staticObjects.begin(), map.staticObjects.end());
@@ -73,12 +73,12 @@ void EditorManager::SetupMap(const Settings::EditSetting& editSetting)
 
         m_selectedLight = map.lights.empty() ? NULL : map.lights.front();
 
-        manager.scene->SetZFar(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize() * 2);
-        manager.scene->UpdateViewParameter();
+        manager.scene->setZFar(m_fog->isEnable() ? m_fog->getEnd() : map.aabb.getSize() * 2);
+        manager.scene->updateViewParameter();
     }
 
     m_axes = new scene::Axes(parallelscene.meshs, 2, 2);
-    manager.scene->GetRootNode()->AddChild(m_axes);
+    manager.scene->getRootNode()->addChild(m_axes);
 
     for(unsigned i = 0; i < map.spawnPoints.size(); i++)
     {
@@ -86,23 +86,23 @@ void EditorManager::SetupMap(const Settings::EditSetting& editSetting)
 
         m_visualSpawnPoints.push_back(visualSpawn);
 
-        NewEntity(visualSpawn);
+        newEntity(visualSpawn);
     }
 
     // PPE ---------------------------------------------------------------------
 
-    const Settings::Video& vidSets = manager.app->globalSettings.video;
+    const Settings::Video& vidsets = manager.app->globalSettings.video;
 
     if(manager.app->globalSettings.video.usePpe)
     {
         using namespace tbe::ppe;
 
         ppe.bloom = new BloomEffect;
-        ppe.bloom->SetRttFrameSize(vidSets.ppe.worldSize);
-        ppe.bloom->SetIntensity(vidSets.ppe.worldIntensity);
-        ppe.bloom->SetThreshold(vidSets.ppe.worldThershold);
-        ppe.bloom->SetBlurPass(vidSets.ppe.worldBlurPass);
-        manager.ppe->AddPostEffect("worldEffect", ppe.bloom);
+        ppe.bloom->setRttFrameSize(vidsets.ppe.worldSize);
+        ppe.bloom->setIntensity(vidsets.ppe.worldIntensity);
+        ppe.bloom->setThreshold(vidsets.ppe.worldThershold);
+        ppe.bloom->setBlurPass(vidsets.ppe.worldBlurPass);
+        manager.ppe->addPostEffect("worldEffect", ppe.bloom);
     }
 }
 
@@ -117,7 +117,7 @@ inline bool MusicCheck(const boost::filesystem::path& filename)
     return find(validExt, end, filename.extension()) != end;
 }
 
-void EditorManager::SetupGui()
+void EditorManager::setupGui()
 {
     using namespace gui;
     using namespace boost::filesystem;
@@ -130,158 +130,158 @@ void EditorManager::SetupGui()
     Pencil bigpen(GUI_FONT, int(sizeFactor * GUI_FONTSIZE * 1.5));
 
     // Entity
-    manager.gui->SetSession(EDITOR_EDIT_ENTITY);
+    manager.gui->setSession(EDITOR_EDIT_ENTITY);
 
-    manager.gui->AddLayout(Layout::Vertical, 10, 10);
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->AddLayout(Layout::Horizental, 5, 5)
-            ->SetAlign(Layout::AFTER);
-    hud.entity.info = manager.gui->AddTextBox("");
-    hud.entity.info->SetBackground(GUI_TEXTBOX_V);
-    hud.entity.info->SetBackgroundPadding(16);
-    hud.entity.info->SetEnableBackground(true);
-    manager.gui->AddLayoutStretchSpace();
-    hud.entity.list = manager.gui->AddListBox("entity.list");
-    hud.entity.list->SetBackground(GUI_LISTBOX_V);
-    hud.entity.list->SetBackgroundPadding(8);
-    hud.entity.list->SetDefinedSize(true);
-    hud.entity.list->SetSize(Vector2f(192, 192) * sizeFactor);
-    hud.entity.list->SetEnable(false);
-    manager.gui->EndLayout();
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 10, 10);
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Horizental, 5, 5)
+            ->setAlign(Layout::AFTER);
+    hud.entity.info = manager.gui->addTextBox("");
+    hud.entity.info->setBackground(GUI_TEXTBOX_V);
+    hud.entity.info->setBackgroundPadding(16);
+    hud.entity.info->setEnableBackground(true);
+    manager.gui->addLayoutStretchSpace();
+    hud.entity.list = manager.gui->addListBox("entity.list");
+    hud.entity.list->setBackground(GUI_LISTBOX_V);
+    hud.entity.list->setBackgroundPadding(8);
+    hud.entity.list->setDefinedSize(true);
+    hud.entity.list->setSize(Vector2f(192, 192) * sizeFactor);
+    hud.entity.list->setEnable(false);
+    manager.gui->endLayout();
+    manager.gui->endLayout();
 
     // Light
-    manager.gui->SetSession(EDITOR_EDIT_LIGHT);
+    manager.gui->setSession(EDITOR_EDIT_LIGHT);
 
-    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+    manager.gui->addLayout(Layout::Horizental, 0, 10);
 
-    manager.gui->AddLayout(Layout::Vertical);
-    manager.gui->AddLayoutStretchSpace();
-    hud.light.info = manager.gui->AddTextBox("");
-    hud.light.info->SetBackground(GUI_TEXTBOX_H);
-    hud.light.info->SetBackgroundPadding(16);
-    hud.light.info->SetEnableBackground(true);
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical);
+    manager.gui->addLayoutStretchSpace();
+    hud.light.info = manager.gui->addTextBox("");
+    hud.light.info->setBackground(GUI_TEXTBOX_H);
+    hud.light.info->setBackgroundPadding(16);
+    hud.light.info->setEnableBackground(true);
+    manager.gui->endLayout();
 
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
 
-    manager.gui->AddLayout(Layout::Vertical, 5);
-    hud.light.specular = manager.gui->AddVectorBox("light.specular", 0);
-    manager.gui->AddTextBox("")->Write("Spéculaire");
-    hud.light.diffuse = manager.gui->AddVectorBox("light.diffuse", 0);
-    manager.gui->AddTextBox("")->Write("Diffuse");
-    hud.light.amibent = manager.gui->AddVectorBox("light.ambiante", 0);
-    manager.gui->AddTextBox("")->Write("Ambiante de la scene");
-    hud.light.radius = manager.gui->AddSwitchNumeric<float>("light.radius");
-    manager.gui->AddTextBox("")->Write("Rayon");
-    hud.light.type = manager.gui->AddSwitchString("light.type");
-    manager.gui->AddTextBox("")->Write("Type");
-    hud.light.slector = manager.gui->AddSwitchString("light.selector");
-    manager.gui->AddTextBox("")->Write("Séléction");
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 5);
+    hud.light.specular = manager.gui->addVectorBox("light.specular", 0);
+    manager.gui->addTextBox("")->write("Spéculaire");
+    hud.light.diffuse = manager.gui->addVectorBox("light.diffuse", 0);
+    manager.gui->addTextBox("")->write("Diffuse");
+    hud.light.amibent = manager.gui->addVectorBox("light.ambiante", 0);
+    manager.gui->addTextBox("")->write("Ambiante de la scene");
+    hud.light.radius = manager.gui->addSwitchNumeric<float>("light.radius");
+    manager.gui->addTextBox("")->write("Rayon");
+    hud.light.type = manager.gui->addSwitchString("light.type");
+    manager.gui->addTextBox("")->write("Type");
+    hud.light.slector = manager.gui->addSwitchString("light.selector");
+    manager.gui->addTextBox("")->write("Séléction");
+    manager.gui->endLayout();
 
-    manager.gui->EndLayout();
+    manager.gui->endLayout();
 
     // Skybox
-    manager.gui->SetSession(EDITOR_EDIT_SKYBOX);
+    manager.gui->setSession(EDITOR_EDIT_SKYBOX);
 
-    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+    manager.gui->addLayout(Layout::Horizental, 0, 10);
 
-    manager.gui->AddLayout(Layout::Vertical, 5);
-    manager.gui->AddLayoutStretchSpace();
-    hud.sky.info = manager.gui->AddTextBox("");
-    hud.sky.info->SetBackground(GUI_TEXTBOX_H);
-    hud.sky.info->SetBackgroundPadding(16);
-    hud.sky.info->SetEnableBackground(true);
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 5);
+    manager.gui->addLayoutStretchSpace();
+    hud.sky.info = manager.gui->addTextBox("");
+    hud.sky.info->setBackground(GUI_TEXTBOX_H);
+    hud.sky.info->setBackgroundPadding(16);
+    hud.sky.info->setEnableBackground(true);
+    manager.gui->endLayout();
 
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
 
-    manager.gui->AddLayout(Layout::Vertical, 5);
-    hud.sky.list = manager.gui->AddListBox("sky.list");
-    hud.sky.list->SetBackground(GUI_LISTBOX_V);
-    hud.sky.list->SetBackgroundPadding(8);
-    hud.sky.list->SetDefinedSize(true);
-    hud.sky.list->SetSize(Vector2f(192, 192) * sizeFactor);
-    hud.sky.face = manager.gui->AddSwitchString("sky.face");
-    hud.sky.apply = manager.gui->AddButton("sky.apply", "Appliquer");
-    hud.sky.clear = manager.gui->AddButton("sky.clear", "Effacer");
-    hud.sky.enable = manager.gui->AddSwitchString("sky.enable");
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 5);
+    hud.sky.list = manager.gui->addListBox("sky.list");
+    hud.sky.list->setBackground(GUI_LISTBOX_V);
+    hud.sky.list->setBackgroundPadding(8);
+    hud.sky.list->setDefinedSize(true);
+    hud.sky.list->setSize(Vector2f(192, 192) * sizeFactor);
+    hud.sky.face = manager.gui->addSwitchString("sky.face");
+    hud.sky.apply = manager.gui->addButton("sky.apply", "Appliquer");
+    hud.sky.clear = manager.gui->addButton("sky.clear", "Effacer");
+    hud.sky.enable = manager.gui->addSwitchString("sky.enable");
+    manager.gui->endLayout();
 
     // Fog
-    manager.gui->SetSession(EDITOR_EDIT_FOG);
+    manager.gui->setSession(EDITOR_EDIT_FOG);
 
-    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+    manager.gui->addLayout(Layout::Horizental, 0, 10);
 
-    manager.gui->AddLayout(Layout::Vertical, 5);
-    manager.gui->AddLayoutStretchSpace();
-    hud.fog.info = manager.gui->AddTextBox("");
-    hud.fog.info->SetBackground(GUI_TEXTBOX_H);
-    hud.fog.info->SetBackgroundPadding(16);
-    hud.fog.info->SetEnableBackground(true);
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 5);
+    manager.gui->addLayoutStretchSpace();
+    hud.fog.info = manager.gui->addTextBox("");
+    hud.fog.info->setBackground(GUI_TEXTBOX_H);
+    hud.fog.info->setBackgroundPadding(16);
+    hud.fog.info->setEnableBackground(true);
+    manager.gui->endLayout();
 
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
 
-    manager.gui->AddLayout(Layout::Vertical, 5);
-    hud.fog.end = manager.gui->AddSwitchNumeric<float>("fog.end");
-    manager.gui->AddTextBox("")->Write("Fin");
-    hud.fog.start = manager.gui->AddSwitchNumeric<float>("fog.start");
-    manager.gui->AddTextBox("")->Write("Début");
-    hud.fog.color = manager.gui->AddVectorBox("fog.color", 0);
-    manager.gui->AddTextBox("")->Write("Couleur");
-    hud.fog.enable = manager.gui->AddSwitchString("fog.enable");
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 5);
+    hud.fog.end = manager.gui->addSwitchNumeric<float>("fog.end");
+    manager.gui->addTextBox("")->write("Fin");
+    hud.fog.start = manager.gui->addSwitchNumeric<float>("fog.start");
+    manager.gui->addTextBox("")->write("Début");
+    hud.fog.color = manager.gui->addVectorBox("fog.color", 0);
+    manager.gui->addTextBox("")->write("Couleur");
+    hud.fog.enable = manager.gui->addSwitchString("fog.enable");
+    manager.gui->endLayout();
 
-    manager.gui->EndLayout();
+    manager.gui->endLayout();
 
     // Music
-    manager.gui->SetSession(EDITOR_EDIT_MUSIC);
+    manager.gui->setSession(EDITOR_EDIT_MUSIC);
 
-    manager.gui->AddLayout(Layout::Horizental, 0, 10);
+    manager.gui->addLayout(Layout::Horizental, 0, 10);
 
-    manager.gui->AddLayout(Layout::Vertical, 5);
-    manager.gui->AddLayoutStretchSpace();
-    hud.music.info = manager.gui->AddTextBox("");
-    hud.music.info->SetBackground(GUI_TEXTBOX_H);
-    hud.music.info->SetBackgroundPadding(16);
-    hud.music.info->SetEnableBackground(true);
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 5);
+    manager.gui->addLayoutStretchSpace();
+    hud.music.info = manager.gui->addTextBox("");
+    hud.music.info->setBackground(GUI_TEXTBOX_H);
+    hud.music.info->setBackgroundPadding(16);
+    hud.music.info->setEnableBackground(true);
+    manager.gui->endLayout();
 
-    manager.gui->AddLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
 
-    manager.gui->AddLayout(Layout::Vertical, 5);
-    hud.music.list = manager.gui->AddListBox("music.list");
-    hud.music.list->SetBackground(GUI_LISTBOX_V);
-    hud.music.list->SetBackgroundPadding(8);
-    hud.music.list->SetDefinedSize(true);
-    hud.music.list->SetSize(Vector2f(192, 192) * sizeFactor);
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Vertical, 5);
+    hud.music.list = manager.gui->addListBox("music.list");
+    hud.music.list->setBackground(GUI_LISTBOX_V);
+    hud.music.list->setBackgroundPadding(8);
+    hud.music.list->setDefinedSize(true);
+    hud.music.list->setSize(Vector2f(192, 192) * sizeFactor);
+    manager.gui->endLayout();
 
-    manager.gui->EndLayout();
+    manager.gui->endLayout();
 
-    manager.gui->SetSession(EDITOR_VIEW);
+    manager.gui->setSession(EDITOR_VIEW);
 
-    manager.gui->SetSession(EDITOR_GUI);
+    manager.gui->setSession(EDITOR_GUI);
 
-    Image* backPause = manager.gui->AddImage("00:background", BACKGROUND_PAUSE);
-    backPause->SetSize(screenSize);
+    Image* backPause = manager.gui->addImage("00:background", BACKGROUND_PAUSE);
+    backPause->setSize(screenSize);
 
-    manager.gui->AddLayout(Layout::Horizental, 0, 10);
-    manager.gui->AddLayoutStretchSpace();
-    manager.gui->AddLayout(Layout::Vertical, 10);
-    hud.pause.quit = manager.gui->AddButton("hud.pause.quit", "Quitter");
-    hud.pause.save = manager.gui->AddButton("hud.pause.save", "Enregistrer");
-    hud.pause.ret = manager.gui->AddButton("hud.pause.ret", "Retour");
-    manager.gui->AddLayoutStretchSpace();
-    hud.pause.name = manager.gui->AddEditBox("hud.pause.name", map.name);
-    manager.gui->EndLayout();
-    manager.gui->EndLayout();
+    manager.gui->addLayout(Layout::Horizental, 0, 10);
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Vertical, 10);
+    hud.pause.quit = manager.gui->addButton("hud.pause.quit", "Quitter");
+    hud.pause.save = manager.gui->addButton("hud.pause.save", "Enregistrer");
+    hud.pause.ret = manager.gui->addButton("hud.pause.ret", "Retour");
+    manager.gui->addLayoutStretchSpace();
+    hud.pause.name = manager.gui->addEditBox("hud.pause.name", map.name);
+    manager.gui->endLayout();
+    manager.gui->endLayout();
 
-    hud.pause.status = manager.gui->AddTextBox("hud.pause.status");
-    hud.pause.status->SetPencil(bigpen);
-    hud.pause.status->SetPos(20);
+    hud.pause.status = manager.gui->addTextBox("hud.pause.status");
+    hud.pause.status->setPencil(bigpen);
+    hud.pause.status->setPos(20);
 
     hud.pause.confirm = false;
 
@@ -289,39 +289,39 @@ void EditorManager::SetupGui()
 
     // Lumiere
 
-    hud.light.amibent->SetRange(0, 1);
-    hud.light.diffuse->SetRange(0, 1);
-    hud.light.specular->SetRange(0, 1);
-    hud.light.radius->SetRange(new SwitchNumeric<float>::Range(0, 128));
+    hud.light.amibent->setRange(0, 1);
+    hud.light.diffuse->setRange(0, 1);
+    hud.light.specular->setRange(0, 1);
+    hud.light.radius->setRange(new SwitchNumeric<float>::Range(0, 128));
 
-    hud.light.type->Push("Diri").Push("Point");
+    hud.light.type->push("Diri").push("Point");
 
     if(!map.lights.empty())
     {
         for(unsigned i = 0; i < map.lights.size(); i++)
-            hud.light.slector->Push("Light #" + tools::numToStr(i), i);
+            hud.light.slector->push("Light #" + tools::numToStr(i), i);
 
-        hud.light.slector->SetCurrent(0);
+        hud.light.slector->setCurrent(0);
 
-        SelectLight(0);
+        selectLight(0);
     }
 
-    hud.light.amibent->SetValue(vec43(manager.scene->GetAmbientLight()));
+    hud.light.amibent->setValue(vec43(manager.scene->getAmbientLight()));
 
     // Sky
 
-    Texture* skyTex = m_sky->GetTextures();
+    Texture* skyTex = m_sky->getTextures();
 
-    hud.sky.enable->Push("Desactiver").Push("Activer");
-    hud.sky.enable->SetCurrent(m_sky->IsEnable());
+    hud.sky.enable->push("Desactiver").push("Activer");
+    hud.sky.enable->setCurrent(m_sky->isEnable());
 
     hud.sky.face
-            ->Push("Devant", skyTex[0].GetFilename())
-            .Push("Deriere", skyTex[1].GetFilename())
-            .Push("Haut", skyTex[2].GetFilename())
-            .Push("Bas", skyTex[3].GetFilename())
-            .Push("Gauche", skyTex[4].GetFilename())
-            .Push("Droite", skyTex[5].GetFilename());
+            ->push("Devant", skyTex[0].getFilename())
+            .push("Deriere", skyTex[1].getFilename())
+            .push("Haut", skyTex[2].getFilename())
+            .push("Bas", skyTex[3].getFilename())
+            .push("Gauche", skyTex[4].getFilename())
+            .push("Droite", skyTex[5].getFilename());
 
     {
         for(directory_iterator it(SKYBOX_DIR); it != endDir; it++)
@@ -329,28 +329,28 @@ void EditorManager::SetupGui()
             const path& imgFilename = it->path();
 
             if(!is_directory(imgFilename))
-                hud.sky.list->Push(imgFilename.filename(), imgFilename.string());
+                hud.sky.list->push(imgFilename.filename(), imgFilename.string());
         }
 
-        hud.sky.list->Update();
+        hud.sky.list->update();
     }
 
     // Fog
 
-    float fogStart = m_fog->GetStart();
-    float fogEnd = m_fog->GetEnd();
+    float fogStart = m_fog->getStart();
+    float fogend = m_fog->getEnd();
 
-    hud.fog.color->SetValue(vec43(m_fog->GetColor()));
-    hud.fog.color->SetRange(0, 1);
+    hud.fog.color->setValue(vec43(m_fog->getColor()));
+    hud.fog.color->setRange(0, 1);
 
-    hud.fog.start->SetValue(fogStart);
-    hud.fog.start->SetRange(new gui::SwitchNumeric<float>::Range(0, fogEnd - 1));
+    hud.fog.start->setValue(fogStart);
+    hud.fog.start->setRange(new gui::SwitchNumeric<float>::Range(0, fogend - 1));
 
-    hud.fog.end->SetValue(fogEnd);
-    hud.fog.end->SetRange(new gui::SwitchNumeric<float>::Range(fogStart + 1, 512));
+    hud.fog.end->setValue(fogend);
+    hud.fog.end->setRange(new gui::SwitchNumeric<float>::Range(fogStart + 1, 512));
 
-    hud.fog.enable->Push("Désactiver").Push("Activer");
-    hud.fog.enable->SetCurrent(m_fog->IsEnable());
+    hud.fog.enable->push("Désactiver").push("Activer");
+    hud.fog.enable->setCurrent(m_fog->isEnable());
 
     // Statique
     {
@@ -359,10 +359,10 @@ void EditorManager::SetupGui()
             const path& staricFilename = it->path();
 
             if(!is_directory(staricFilename) && staricFilename.extension() == ".obj")
-                hud.entity.list->Push(staricFilename.filename(), staricFilename.string());
+                hud.entity.list->push(staricFilename.filename(), staricFilename.string());
         }
 
-        hud.entity.list->Update();
+        hud.entity.list->update();
     }
 
     // Musique
@@ -372,14 +372,14 @@ void EditorManager::SetupGui()
             const path& musicFilename = it->path();
 
             if(!is_directory(musicFilename) && MusicCheck(musicFilename))
-                hud.music.list->Push(musicFilename.filename(), musicFilename.string());
+                hud.music.list->push(musicFilename.filename(), musicFilename.string());
         }
 
-        hud.music.list->Update();
+        hud.music.list->update();
     }
 }
 
-bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
+bool EditorManager::settingMusicEvent(tbe::EventManager* event)
 {
     if(!manager.app->globalSettings.noaudio)
     {
@@ -395,7 +395,7 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
 
                 map.musicPath.clear();
 
-                hud.music.list->CancelSelection();
+                hud.music.list->cancelSelection();
             }
 
             if(event->lastActiveKey.first == EventManager::KEY_SPACE)
@@ -412,12 +412,12 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
             }
         }
 
-        if(hud.music.list->IsActivate())
+        if(hud.music.list->isActivate())
         {
             if(map.musicStream)
                 FMOD_Sound_Release(map.musicStream);
 
-            map.musicPath = hud.music.list->GetCurrentData().GetValue<string > ();
+            map.musicPath = hud.music.list->getCurrentData().getValue<string > ();
 
             FMOD_RESULT res = FMOD_System_CreateStream(manager.fmodsys, map.musicPath.c_str(),
                                                        FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
@@ -426,89 +426,89 @@ bool EditorManager::SettingMusicEvent(tbe::EventManager* event)
             if(res == FMOD_OK)
                 FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
 
-            hud.music.list->SetActivate(false);
+            hud.music.list->setActivate(false);
         }
     }
 
     return false;
 }
 
-bool EditorManager::SettingSkyEvent(tbe::EventManager* event)
+bool EditorManager::settingSkyEvent(tbe::EventManager* event)
 {
-    if(hud.sky.enable->IsActivate())
-        m_sky->SetEnable(hud.sky.enable->GetCurrent());
+    if(hud.sky.enable->isActivate())
+        m_sky->setEnable(hud.sky.enable->getCurrent());
 
-    else if(hud.sky.clear->IsActivate())
+    else if(hud.sky.clear->isActivate())
     {
-        m_sky->Clear();
+        m_sky->clear();
     }
 
-    else if(hud.sky.apply->IsActivate())
+    else if(hud.sky.apply->isActivate())
     {
         Texture skyTex[6];
 
         for(unsigned i = 0; i < 6; i++)
         {
-            string path = hud.sky.face->GetData(i).GetValue<string > ();
+            string path = hud.sky.face->getData(i).getValue<string > ();
 
             if(!path.empty())
                 skyTex[i] = path;
         }
 
-        m_sky->SetTextures(skyTex);
+        m_sky->setTextures(skyTex);
     }
 
-    else if(hud.sky.list->IsActivate())
+    else if(hud.sky.list->isActivate())
     {
-        hud.sky.face->SetData(hud.sky.list->GetCurrentData());
+        hud.sky.face->setData(hud.sky.list->getCurrentData());
     }
 
-    else if(hud.sky.face->IsActivate())
+    else if(hud.sky.face->isActivate())
     {
-        hud.sky.list->CancelSelection();
+        hud.sky.list->cancelSelection();
     }
 
     return false;
 }
 
-bool EditorManager::SettingFogEvent(tbe::EventManager* event)
+bool EditorManager::settingFogEvent(tbe::EventManager* event)
 {
-    if(hud.fog.enable->IsActivate())
+    if(hud.fog.enable->isActivate())
     {
-        m_fog->SetEnable(hud.fog.enable->GetCurrent());
+        m_fog->setEnable(hud.fog.enable->getCurrent());
 
-        manager.scene->SetZFar(m_fog->IsEnable() ? m_fog->GetEnd() : map.aabb.GetSize());
-        manager.scene->UpdateViewParameter();
+        manager.scene->setZFar(m_fog->isEnable() ? m_fog->getEnd() : map.aabb.getSize());
+        manager.scene->updateViewParameter();
     }
 
-    else if(hud.fog.color->IsActivate())
-        m_fog->SetColor(vec34(hud.fog.color->GetValue()));
+    else if(hud.fog.color->isActivate())
+        m_fog->setColor(vec34(hud.fog.color->getValue()));
 
-    else if(hud.fog.start->IsActivate())
+    else if(hud.fog.start->isActivate())
     {
-        m_fog->SetStart(hud.fog.start->GetValue());
+        m_fog->setStart(hud.fog.start->getValue());
 
-        gui::SwitchNumeric<float>::Range* range = new gui::SwitchNumeric<float>::Range(hud.fog.start->GetValue() + 1, 512);
+        gui::SwitchNumeric<float>::Range* range = new gui::SwitchNumeric<float>::Range(hud.fog.start->getValue() + 1, 512);
 
-        hud.fog.end->SetRange(range);
+        hud.fog.end->setRange(range);
     }
 
-    else if(hud.fog.end->IsActivate())
+    else if(hud.fog.end->isActivate())
     {
-        m_fog->SetEnd(hud.fog.end->GetValue());
+        m_fog->setEnd(hud.fog.end->getValue());;
 
-        gui::SwitchNumeric<float>::Range* range = new gui::SwitchNumeric<float>::Range(0, hud.fog.end->GetValue() - 1);
+        gui::SwitchNumeric<float>::Range* range = new gui::SwitchNumeric<float>::Range(0, hud.fog.end->getValue() - 1);
 
-        hud.fog.start->SetRange(range);
+        hud.fog.start->setRange(range);
 
-        manager.scene->SetZFar(m_fog->GetEnd());
-        manager.scene->UpdateViewParameter();
+        manager.scene->setZFar(m_fog->getEnd());
+        manager.scene->updateViewParameter();
     }
 
     return false;
 }
 
-void EditorManager::EditEventPorcess(tbe::EventManager* event)
+void EditorManager::editEventPorcess(tbe::EventManager* event)
 {
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
@@ -524,19 +524,19 @@ void EditorManager::EditEventPorcess(tbe::EventManager* event)
     {
         if(event->mouseState[EventManager::MOUSE_BUTTON_MIDDLE])
         {
-            manager.gameEngine->SetGrabInput(true);
-            manager.gameEngine->SetMouseVisible(false);
+            manager.gameEngine->setGrabInput(true);
+            manager.gameEngine->setMouseVisible(false);
 
             m_timeTo = VIEW;
             return;
         }
         else if(event->mouseState[EventManager::MOUSE_BUTTON_LEFT])
         {
-            if(!map.aabb.IsInner(m_3dSelect))
-                m_axes->SetPos(0);
+            if(!map.aabb.isInner(m_3dSelect))
+                m_axes->setPos(0);
 
             else
-                m_axes->SetPos(m_3dSelect);
+                m_axes->setPos(m_3dSelect);
         }
     }
 
@@ -562,39 +562,39 @@ void EditorManager::EditEventPorcess(tbe::EventManager* event)
     switch(m_navigation)
     {
         case ENTITY:
-            if(!SettingEntityEvent(event))
-                if(!SelectEntityEvent(event))
-                    if(!DeleteEntityEvent(event))
-                        AllocEntityEvent(event);
+            if(!settingEntityEvent(event))
+                if(!selectEntityEvent(event))
+                    if(!deleteEntityEvent(event))
+                        allocEntityEvent(event);
             break;
         case LIGHT:
-            if(!SettingLightEvent(event))
-                if(!DeleteLightEvent(event))
-                    AllocLightEvent(event);
+            if(!settingLightEvent(event))
+                if(!deleteLightEvent(event))
+                    allocLightEvent(event);
             break;
 
         case SKYBOX:
-            SettingSkyEvent(event);
+            settingSkyEvent(event);
             break;
 
         case FOG:
-            SettingFogEvent(event);
+            settingFogEvent(event);
             break;
 
         case MUSIC:
-            SettingMusicEvent(event);
+            settingMusicEvent(event);
             break;
     }
 }
 
-void EditorManager::ViewEventPorcess(tbe::EventManager* event)
+void EditorManager::viewEventPorcess(tbe::EventManager* event)
 {
     if(event->notify == EventManager::EVENT_MOUSE_DOWN)
     {
         if(event->mouseState[EventManager::MOUSE_BUTTON_MIDDLE])
         {
-            manager.gameEngine->SetGrabInput(false);
-            manager.gameEngine->SetMouseVisible(true);
+            manager.gameEngine->setGrabInput(false);
+            manager.gameEngine->setMouseVisible(true);
 
             m_timeTo = EDIT;
             return;
@@ -605,48 +605,48 @@ void EditorManager::ViewEventPorcess(tbe::EventManager* event)
         switch(event->lastActiveKey.first)
         {
             case 'r':
-                m_axes->SetPos(0);
-                m_OCamera->SetCenter(0);
-                m_FFCamera->SetPos(2);
-                m_FFCamera->SetTarget(-1);
+                m_axes->setPos(0);
+                m_OCamera->setCenter(0);
+                m_FFCamera->setPos(2);
+                m_FFCamera->setTarget(-1);
                 m_selectedNode = NULL;
                 break;
 
             case 'v':
                 if(m_camera == m_FFCamera)
                 {
-                    m_OCamera->SetPos(m_FFCamera->GetPos());
+                    m_OCamera->setPos(m_FFCamera->getPos());
                     m_camera = m_OCamera;
                 }
                 else
                 {
-                    m_FFCamera->SetPos(m_OCamera->GetPos());
+                    m_FFCamera->setPos(m_OCamera->getPos());
                     m_camera = m_FFCamera;
                 }
 
-                manager.scene->SetCurCamera(m_camera);
+                manager.scene->setCurCamera(m_camera);
                 break;
         }
 
     }
 
-    m_OCamera->SetCenter(m_axes->GetPos());
-    m_camera->OnEvent(event);
+    m_OCamera->setCenter(m_axes->getPos());
+    m_camera->onEvent(event);
 }
 
-void EditorManager::GuiEventPorcess(tbe::EventManager* event)
+void EditorManager::guiEventPorcess(tbe::EventManager* event)
 {
-    if(hud.pause.status->IsEnable() && hud.pause.statusClock.IsEsplanedTime(4000))
-        hud.pause.status->SetEnable(false);
+    if(hud.pause.status->isEnable() && hud.pause.statusClock.isEsplanedTime(4000))
+        hud.pause.status->setEnable(false);
 
-    if(hud.pause.quit->IsActivate())
+    if(hud.pause.quit->isActivate())
     {
-        hud.pause.quit->SetActivate(false);
+        hud.pause.quit->setActivate(false);
 
-        if(manager.level->IsChanged() && !hud.pause.confirm)
+        if(manager.level->isChanged() && !hud.pause.confirm)
         {
-            hud.pause.status->SetEnable(true);
-            hud.pause.status->Write("La Carte a changer !\nEtes vous sure de quitter ?");
+            hud.pause.status->setEnable(true);
+            hud.pause.status->write("La Carte a changer !\nEtes vous sure de quitter ?");
             hud.pause.confirm = true;
         }
         else
@@ -654,61 +654,61 @@ void EditorManager::GuiEventPorcess(tbe::EventManager* event)
             running = false;
         }
     }
-    else if(hud.pause.save->IsActivate())
+    else if(hud.pause.save->isActivate())
     {
-        hud.pause.save->SetActivate(false);
+        hud.pause.save->setActivate(false);
 
-        map.name = hud.pause.name->GetLabel();
-        string saveFileName = MAPS_DIR + tools::UnixName(map.name) + ".bld";
+        map.name = hud.pause.name->getLabel();
+        string saveFileName = MAPS_DIR + tools::unixName(map.name) + ".bld";
 
         if(!map.name.empty())
         {
             map.spawnPoints.clear();
 
             for(unsigned i = 0; i < m_visualSpawnPoints.size(); i++)
-                map.spawnPoints.push_back(m_visualSpawnPoints[i]->GetPos());
+                map.spawnPoints.push_back(m_visualSpawnPoints[i]->getPos());
 
             if(m_editSetting.createNew)
             {
-                manager.level->SaveLevel(saveFileName);
+                manager.level->saveLevel(saveFileName);
             }
 
             else
             {
-                manager.level->SaveLevel();
+                manager.level->saveLevel();
 
-                std::rename(manager.level->GetOpenFileName().c_str(), saveFileName.c_str());
+                std::rename(manager.level->getOpenFileName().c_str(), saveFileName.c_str());
             }
 
-            manager.app->globalSettings.ReadMapInfo();
-            manager.app->UpdateGuiContent();
+            manager.app->globalSettings.readMapInfo();
+            manager.app->updateGuiContent();
 
-            hud.pause.status->SetEnable(true);
-            hud.pause.status->Write("Carte enregistrer !");
+            hud.pause.status->setEnable(true);
+            hud.pause.status->write("Carte enregistrer !");
         }
 
     }
-    else if(hud.pause.ret->IsActivate())
+    else if(hud.pause.ret->isActivate())
     {
-        manager.gameEngine->SetGrabInput(true);
-        manager.gameEngine->SetMouseVisible(false);
+        manager.gameEngine->setGrabInput(true);
+        manager.gameEngine->setMouseVisible(false);
 
         m_timeTo = VIEW;
     }
 }
 
-void EditorManager::EventProcess()
+void EditorManager::eventProcess()
 {
-    EventManager* event = manager.gameEngine->GetEventManager();
+    EventManager* event = manager.gameEngine->getEventManager();
 
-    manager.gameEngine->PollEvent();
+    manager.gameEngine->pollEvent();
 
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
         if(event->lastActiveKey.first == EventManager::KEY_ESCAPE)
         {
-            manager.gameEngine->SetGrabInput(false);
-            manager.gameEngine->SetMouseVisible(true);
+            manager.gameEngine->setGrabInput(false);
+            manager.gameEngine->setMouseVisible(true);
 
             m_timeTo = PAUSE;
         }
@@ -717,22 +717,22 @@ void EditorManager::EventProcess()
     switch(m_timeTo)
     {
         case EDIT:
-            EditEventPorcess(event);
+            editEventPorcess(event);
             break;
 
         case VIEW:
-            ViewEventPorcess(event);
+            viewEventPorcess(event);
             break;
 
         case PAUSE:
-            GuiEventPorcess(event);
+            guiEventPorcess(event);
             break;
     }
 }
 
 inline string skyTexBaseName(const Texture& tex)
 {
-    string filename = tex.GetFilename();
+    string filename = tex.getFilename();
 
     unsigned pos = filename.find_last_of('\\');
 
@@ -742,7 +742,7 @@ inline string skyTexBaseName(const Texture& tex)
     return filename.substr(pos + 1);
 }
 
-void EditorManager::HudProcess()
+void EditorManager::hudProcess()
 {
     using namespace gui;
 
@@ -758,7 +758,7 @@ void EditorManager::HudProcess()
             info << "Entités" << endl;
 
             if(m_selectedNode)
-                info << "Selection : " << m_selectedNode->GetName() << " ; " << m_selectedNode->GetPos();
+                info << "Selection : " << m_selectedNode->getName() << " ; " << m_selectedNode->getPos();
             else
                 info << "Selection : NULL";
 
@@ -794,7 +794,7 @@ void EditorManager::HudProcess()
 
             }
 
-            hud.entity.info->Write(info.str());
+            hud.entity.info->write(info.str());
             break;
 
         case LIGHT:
@@ -813,7 +813,7 @@ void EditorManager::HudProcess()
                         << "Suppr       : Supprimer";
             }
 
-            hud.light.info->Write(info.str());
+            hud.light.info->write(info.str());
             break;
 
         case SKYBOX:
@@ -821,7 +821,7 @@ void EditorManager::HudProcess()
 
             if(m_sky)
             {
-                Texture* skyTex = m_sky->GetTextures();
+                Texture* skyTex = m_sky->getTextures();
 
                 info << endl
                         << "Devant: " << skyTexBaseName(skyTex[0]) << endl
@@ -832,13 +832,13 @@ void EditorManager::HudProcess()
                         << "Droite: " << skyTexBaseName(skyTex[5]);
             }
 
-            hud.sky.info->Write(info.str());
+            hud.sky.info->write(info.str());
             break;
 
         case FOG:
             info << "Brouiallrd (Fog)";
 
-            hud.fog.info->Write(info.str());
+            hud.fog.info->write(info.str());
             break;
 
         case MUSIC:
@@ -849,67 +849,67 @@ void EditorManager::HudProcess()
             if(map.musicStream)
                 info << endl << ">> " << map.musicPath;
 
-            hud.music.info->Write(info.str());
+            hud.music.info->write(info.str());
             break;
     }
 }
 
-void EditorManager::Render()
+void EditorManager::render()
 {
-    EventManager* event = manager.gameEngine->GetEventManager();
+    EventManager* event = manager.gameEngine->getEventManager();
 
     switch(m_timeTo)
     {
         case VIEW:
-            manager.gui->SetSession(EDITOR_VIEW);
+            manager.gui->setSession(EDITOR_VIEW);
             break;
         case EDIT:
             switch(m_navigation)
             {
                 case ENTITY:
-                    manager.gui->SetSession(EDITOR_EDIT_ENTITY);
+                    manager.gui->setSession(EDITOR_EDIT_ENTITY);
                     break;
                 case LIGHT:
-                    manager.gui->SetSession(EDITOR_EDIT_LIGHT);
+                    manager.gui->setSession(EDITOR_EDIT_LIGHT);
                     break;
                 case SKYBOX:
-                    manager.gui->SetSession(EDITOR_EDIT_SKYBOX);
+                    manager.gui->setSession(EDITOR_EDIT_SKYBOX);
                     break;
                 case FOG:
-                    manager.gui->SetSession(EDITOR_EDIT_FOG);
+                    manager.gui->setSession(EDITOR_EDIT_FOG);
                     break;
                 case MUSIC:
-                    manager.gui->SetSession(EDITOR_EDIT_MUSIC);
+                    manager.gui->setSession(EDITOR_EDIT_MUSIC);
                     break;
             }
             break;
         case PAUSE:
-            manager.gui->SetSession(EDITOR_GUI);
+            manager.gui->setSession(EDITOR_GUI);
             break;
     }
 
-    manager.gameEngine->BeginScene();
+    manager.gameEngine->beginScene();
 
     if(manager.app->globalSettings.video.usePpe)
     {
-        Rtt* rtt = manager.ppe->GetRtt();
+        Rtt* rtt = manager.ppe->getRtt();
 
-        rtt->Use(true);
-        rtt->Clear();
-        manager.scene->Render();
-        rtt->Use(false);
+        rtt->use(true);
+        rtt->clear();
+        manager.scene->render();
+        rtt->use(false);
 
-        m_3dSelect = manager.scene->ScreenToWorld(event->mousePos, rtt);
+        m_3dSelect = manager.scene->screenToWorld(event->mousePos, rtt);
 
-        manager.ppe->Render();
+        manager.ppe->render();
     }
     else
     {
-        manager.scene->Render();
-        m_3dSelect = manager.scene->ScreenToWorld(event->mousePos);
+        manager.scene->render();
+        m_3dSelect = manager.scene->screenToWorld(event->mousePos);
     }
 
-    manager.gui->Render();
+    manager.gui->render();
 
-    manager.gameEngine->EndScene();
+    manager.gameEngine->endScene();
 }

@@ -60,11 +60,11 @@ int main(int argc, char** argv)
             Settings::PartySetting ps;
             ps.playMap = Settings::MapInfo(argv[index + 1]);
             ps.playerName = Settings::PlayerInfo(argv[index + 2]);
-            ps.playerCount = tools::StrToNum<unsigned>(argv[index + 3]);
-            ps.playMod = tools::StrToNum<unsigned> (argv[index + 4]);
-            ps.playTime = tools::StrToNum<int>(argv[index + 5]);
+            ps.playerCount = tools::strToNum<unsigned>(argv[index + 3]);
+            ps.playMod = tools::strToNum<unsigned> (argv[index + 4]);
+            ps.playTime = tools::strToNum<int>(argv[index + 5]);
 
-            theBall.ExecuteGame(ps);
+            theBall.executeGame(ps);
         }
 
         else if((index = isarg(argc, argv, "edit")) != -1)
@@ -75,12 +75,12 @@ int main(int argc, char** argv)
             es.editMap = Settings::MapInfo(argv[index + 1]);
             es.createNew = false;
 
-            theBall.ExecuteEditor(es);
+            theBall.executeEditor(es);
         }
 
         else
         {
-            theBall.ExecuteMenu();
+            theBall.executeMenu();
         }
 
     }

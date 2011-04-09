@@ -21,7 +21,7 @@ AloneModeAi::~AloneModeAi()
 {
 }
 
-void AloneModeAi::Process(Player* player)
+void AloneModeAi::process(Player* player)
 {
     /*
      IA Process Alone :
@@ -51,10 +51,10 @@ void AloneModeAi::Process(Player* player)
      */
 
     if(!m_targetPlayer)
-        m_targetPlayer = m_playManager->GetUserPlayer();
+        m_targetPlayer = m_playManager->getUserPlayer();
 
     Vector3f addForce;
-    Vector3f playerPos = player->GetPos();
+    Vector3f playerPos = player->getPos();
 
     /*
         StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
@@ -62,18 +62,18 @@ void AloneModeAi::Process(Player* player)
         bool isCollidWithMap = false;
     
         for(unsigned i = 0; i < staticObjects.size(); i++)
-            if(isCollidWithMap = player->GetPhysicBody()->IsCollidWith(staticObjects[i]->GetPhysicBody()))
+            if(isCollidWithMap = player->getPhysicBody()->IsCollidWith(staticObjects[i]->getPhysicBody()))
                 break;
      */
 
-    m_targetPos = m_targetPlayer->GetPos();
+    m_targetPos = m_targetPlayer->getPos();
 
-    if(m_switchTarget.IsEsplanedTime(m_aiParams.switchTargetTime)
+    if(m_switchTarget.isEsplanedTime(m_aiParams.switchTargetTime)
        || m_strikePos - playerPos < m_minDistToSwith)
     {
         do
             m_strikePos = tools::rand(m_targetPos - m_strikPrimiter, m_targetPos + m_strikPrimiter);
-        while(!m_mapAABB.IsInner(m_strikePos));
+        while(!m_mapAABB.isInner(m_strikePos));
 
         m_strikePos.y = 0;
     }
@@ -82,11 +82,11 @@ void AloneModeAi::Process(Player* player)
     {
         Vector3f targetPos = m_targetPos;
 
-        if(m_targetPlayer == m_playManager->GetUserPlayer()
-           && m_playManager->GetBullettime()->IsActive())
+        if(m_targetPlayer == m_playManager->getUserPlayer()
+           && m_playManager->getBullettime()->isActive())
         {
             Vector3f velocity;
-            NewtonBodyGetVelocity(m_targetPlayer->GetPhysicBody()->GetBody(), velocity);
+            NewtonBodyGetVelocity(m_targetPlayer->getPhysicBody()->getBody(), velocity);
 
             targetPos = m_targetPos - velocity;
         }
@@ -94,21 +94,21 @@ void AloneModeAi::Process(Player* player)
         if(m_gustCount < m_aiParams.shootGustCount)
         {
             Vector3f margin = tools::rand(AABB(m_aiParams.shootAccuracy));
-            if(player->Shoot(m_targetPos + margin))
+            if(player->shoot(m_targetPos + margin))
                 m_gustCount++;
         }
-        else if(m_gustClock.IsEsplanedTime(m_aiParams.shootGustTime))
+        else if(m_gustClock.isEsplanedTime(m_aiParams.shootGustTime))
             m_gustCount = 0;
     }
 
-    if((AABB(-1, 1) + m_lastPos).IsInner(player)
-       && m_lastPosClock.IsEsplanedTime(2000))
+    if((AABB(-1, 1) + m_lastPos).isInner(player)
+       && m_lastPosClock.isEsplanedTime(2000))
     {
         do
         {
             m_strikePos = tools::rand(m_playManager->map.aabb);
             m_strikePos.y = 1;
-            m_strikePos = m_playManager->parallelscene.newton->FindFloor(m_strikePos);
+            m_strikePos = m_playManager->parallelscene.newton->findFloor(m_strikePos);
         }
         while(m_strikePos.y < m_playManager->map.aabb.min.y);
 
@@ -117,12 +117,12 @@ void AloneModeAi::Process(Player* player)
     else
         m_lastPos = playerPos;
 
-    if(player->GetCurWeapon()->IsEmpty())
-        player->SwitchUpWeapon();
+    if(player->getCurWeapon()->isEmpty())
+        player->switchUpWeapon();
 
     addForce = m_strikePos;
-    addForce = (addForce - playerPos).Normalize() * m_worldSettings.playerMoveSpeed;
+    addForce = (addForce - playerPos).normalize() * m_worldSettings.playerMoveSpeed;
     addForce.y = 0;
 
-    player->GetPhysicBody()->SetApplyForce(addForce);
+    player->getPhysicBody()->setApplyForce(addForce);
 }

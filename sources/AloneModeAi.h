@@ -19,7 +19,7 @@ public:
     AloneModeAi(PlayManager* playManager);
     ~AloneModeAi();
 
-    void Process(Player* player);
+    void process(Player* player);
 };
 
 #endif	/* _ALONEMODEAI_H */

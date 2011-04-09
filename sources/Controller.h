@@ -22,7 +22,7 @@ public:
     Controller(PlayManager* playManager);
     virtual ~Controller();
 
-    virtual void Process(Player* player) = 0;
+    virtual void process(Player* player) = 0;
 
 protected:
     PlayManager* m_playManager;

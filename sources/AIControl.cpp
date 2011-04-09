@@ -27,7 +27,7 @@ AIControl::AIControl(PlayManager* playManager)
 
     m_mapAABB = m_playManager->map.aabb;
 
-    m_minDistToShoot = (m_mapAABB.max - m_mapAABB.min).GetMagnitude() / 8.0f;
+    m_minDistToShoot = (m_mapAABB.max - m_mapAABB.min).getMagnitude() / 8.0f;
     m_strikPrimiter = m_minDistToShoot;
     m_minDistToSwith = m_strikPrimiter / 8.0f;
 }

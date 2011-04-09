@@ -22,37 +22,37 @@ public:
     : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles)
     , m_playManager(playManager), m_teamPlayers(teamPlayers)
     {
-        SetBlendEq(ParticlesEmiter::MODULAR);
-        SetDepthTest(true);
+        setBlendEq(ParticlesEmiter::MODULAR);
+        setDepthTest(true);
     }
 
-    tbe::scene::Node* Clone()
+    tbe::scene::Node* clone()
     {
         return new TeamBillboardIcon(*this);
     }
 
-    void SetupBullet(tbe::scene::Particle& p)
+    void setupBullet(tbe::scene::Particle& p)
     {
         p.color(1, 1, 1, 0.5);
         p.life = 1.0f;
     }
 
-    void Process()
+    void process()
     {
-        scene::Particle* particles = BeginParticlesPosProcess();
+        scene::Particle* particles = beginParticlesPosProcess();
 
         unsigned show = 0;
         for(unsigned i = 0; i < m_teamPlayers.size(); i++)
-            if(m_teamPlayers[i] != m_playManager->GetUserPlayer()
-               && !m_teamPlayers[i]->IsKilled())
+            if(m_teamPlayers[i] != m_playManager->getUserPlayer()
+               && !m_teamPlayers[i]->isKilled())
             {
-                particles[show].pos = m_teamPlayers[i]->GetPos() + Vector3f(0, 1, 0);
+                particles[show].pos = m_teamPlayers[i]->getPos() + Vector3f(0, 1, 0);
                 show++;
             }
 
-        SetDrawNumber(show);
+        setDrawNumber(show);
 
-        EndParticlesPosProcess();
+        endParticlesPosProcess();
     }
 
 protected:
@@ -63,14 +63,14 @@ protected:
 PlayTeamManager::PlayTeamManager(AppManager* appManager) : PlayManager(appManager)
 {
     m_teamBleuIcon = new TeamBillboardIcon(this, blueTeamPlayers);
-    m_teamBleuIcon->SetTexture(Texture(PARTICLE_BLEUTEAM, true));
-    m_teamBleuIcon->Build();
-    manager.scene->GetRootNode()->AddChild(m_teamBleuIcon);
+    m_teamBleuIcon->setTexture(Texture(PARTICLE_BLEUTEAM, true));
+    m_teamBleuIcon->build();
+    manager.scene->getRootNode()->addChild(m_teamBleuIcon);
 
     m_teamRedIcon = new TeamBillboardIcon(this, redTeamPlayers);
-    m_teamRedIcon->SetTexture(Texture(PARTICLE_REDTEAM, true));
-    m_teamRedIcon->Build();
-    manager.scene->GetRootNode()->AddChild(m_teamRedIcon);
+    m_teamRedIcon->setTexture(Texture(PARTICLE_REDTEAM, true));
+    m_teamRedIcon->build();
+    manager.scene->getRootNode()->addChild(m_teamRedIcon);
 }
 
 PlayTeamManager::~PlayTeamManager()
@@ -86,19 +86,19 @@ public:
         m_playManager = playManager;
     }
 
-    virtual bool OnTakeDammage(Player* player, Bullet* ammo)
+    virtual bool onTakeDammage(Player* player, Bullet* ammo)
     {
-        return (m_playManager->IsInBleuTeam(player)
-                != m_playManager->IsInBleuTeam(ammo->GetWeapon()->GetShooter())
-                && m_playManager->IsInRedTeam(player)
-                != m_playManager->IsInRedTeam(ammo->GetWeapon()->GetShooter()));
+        return (m_playManager->isInBleuTeam(player)
+                != m_playManager->isInBleuTeam(ammo->getWeapon()->getShooter())
+                && m_playManager->isInRedTeam(player)
+                != m_playManager->isInRedTeam(ammo->getWeapon()->getShooter()));
     }
 
 private:
     PlayTeamManager* m_playManager;
 };
 
-void PlayTeamManager::ModSetupUser(Player* userPlayer)
+void PlayTeamManager::modSetupUser(Player* userPlayer)
 {
     m_userBleuTeam = tools::rand(0, 2);
 
@@ -108,33 +108,33 @@ void PlayTeamManager::ModSetupUser(Player* userPlayer)
         redTeamPlayers.push_back(userPlayer);
 }
 
-void PlayTeamManager::ModSetupAi(Player* player)
+void PlayTeamManager::modSetupAi(Player* player)
 {
     using namespace scene;
 
-    player->AttachController(new TeamModeAi(this));
-    player->AddCheckPoint(new TeamModeCheckPlayers(this));
+    player->attachController(new TeamModeAi(this));
+    player->addCheckMe(new TeamModeCheckPlayers(this));
 
     if(redTeamPlayers.size() > blueTeamPlayers.size())
     {
         blueTeamPlayers.push_back(player);
-        m_teamBleuIcon->SetNumber(blueTeamPlayers.size());
-        m_teamBleuIcon->Build();
+        m_teamBleuIcon->setNumber(blueTeamPlayers.size());
+        m_teamBleuIcon->build();
     }
     else
     {
         redTeamPlayers.push_back(player);
-        m_teamRedIcon->SetNumber(redTeamPlayers.size());
-        m_teamRedIcon->Build();
+        m_teamRedIcon->setNumber(redTeamPlayers.size());
+        m_teamRedIcon->build();
     }
 
 }
 
-void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
+void PlayTeamManager::modUpdateStateText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    ss << "Score : " << m_userPlayer->GetScore() << " Point(s)" << endl;
+    ss << "Score : " << m_userPlayer->getScore() << " Point(s)" << endl;
 
     if(m_playTimeManager.startChrono > 0)
         ss << "Temps : " << m_playTimeManager.curChrono << "/" << m_playTimeManager.startChrono << endl;
@@ -147,26 +147,26 @@ void PlayTeamManager::ModUpdateStateText(std::ostringstream& ss)
         ss << "Objectif : " << m_playSetting.winCond << endl;
 }
 
-void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
+void PlayTeamManager::modUpdateScoreListText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    sort(blueTeamPlayers.begin(), blueTeamPlayers.end(), PlayerScoreSortProcess);
-    sort(redTeamPlayers.begin(), redTeamPlayers.end(), PlayerScoreSortProcess);
+    sort(blueTeamPlayers.begin(), blueTeamPlayers.end(), playerScoreSortProcess);
+    sort(redTeamPlayers.begin(), redTeamPlayers.end(), playerScoreSortProcess);
 
     unsigned bleuScore = 0, redScore = 0;
 
     if(blueTeamPlayers.size())
     {
         for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-            bleuScore += blueTeamPlayers[i]->GetScore();
+            bleuScore += blueTeamPlayers[i]->getScore();
         bleuScore /= blueTeamPlayers.size();
     }
 
     if(redTeamPlayers.size())
     {
         for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-            redScore += redTeamPlayers[i]->GetScore();
+            redScore += redTeamPlayers[i]->getScore();
         redScore /= redTeamPlayers.size();
     }
 
@@ -182,35 +182,35 @@ void PlayTeamManager::ModUpdateScoreListText(std::ostringstream& ss)
 
     ss << "Equipe bleu [" << bleuScore << "]" << endl;
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        ss << " [" << blueTeamPlayers[i]->GetScore() << "] " << blueTeamPlayers[i]->GetName() << endl;
+        ss << " [" << blueTeamPlayers[i]->getScore() << "] " << blueTeamPlayers[i]->getName() << endl;
     ss << endl;
 
     ss << "Equipe rouge [" << redScore << "]" << endl;
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        ss << " [" << redTeamPlayers[i]->GetScore() << "] " << redTeamPlayers[i]->GetName() << endl;
+        ss << " [" << redTeamPlayers[i]->getScore() << "] " << redTeamPlayers[i]->getName() << endl;
     ss << endl;
 }
 
-void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
+void PlayTeamManager::modUpdateGameOverText(std::ostringstream& ss)
 {
     using namespace gui;
 
-    sort(blueTeamPlayers.begin(), blueTeamPlayers.end(), PlayerScoreSortProcess);
-    sort(redTeamPlayers.begin(), redTeamPlayers.end(), PlayerScoreSortProcess);
+    sort(blueTeamPlayers.begin(), blueTeamPlayers.end(), playerScoreSortProcess);
+    sort(redTeamPlayers.begin(), redTeamPlayers.end(), playerScoreSortProcess);
 
     unsigned blueScore = 0, redScore = 0;
 
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        blueScore += blueTeamPlayers[i]->GetScore();
+        blueScore += blueTeamPlayers[i]->getScore();
     blueScore /= blueTeamPlayers.size();
 
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        redScore += redTeamPlayers[i]->GetScore();
+        redScore += redTeamPlayers[i]->getScore();
     redScore /= redTeamPlayers.size();
 
     if(m_playSetting.winCond > 0)
     {
-        if(m_userPlayer->GetScore() >= (int)m_playSetting.winCond)
+        if(m_userPlayer->getScore() >= (int)m_playSetting.winCond)
             ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
         else
             ss << "<< VOUS AVEZ PERDU !!! >>" << endl;
@@ -230,28 +230,28 @@ void PlayTeamManager::ModUpdateGameOverText(std::ostringstream& ss)
 
     ss << "Equipe bleu [" << blueScore << "]" << endl;
     for(unsigned i = 0; i < blueTeamPlayers.size(); i++)
-        ss << " [" << blueTeamPlayers[i]->GetScore() << "] " << blueTeamPlayers[i]->GetName() << endl;
+        ss << " [" << blueTeamPlayers[i]->getScore() << "] " << blueTeamPlayers[i]->getName() << endl;
     ss << endl;
 
     ss << "Equipe rouge [" << redScore << "]" << endl;
     for(unsigned i = 0; i < redTeamPlayers.size(); i++)
-        ss << " [" << redTeamPlayers[i]->GetScore() << "] " << redTeamPlayers[i]->GetName() << endl;
+        ss << " [" << redTeamPlayers[i]->getScore() << "] " << redTeamPlayers[i]->getName() << endl;
     ss << endl;
 
     ss << "Espace pour continuer..." << endl;
 }
 
-bool PlayTeamManager::IsInBleuTeam(Player* player) const
+bool PlayTeamManager::isInBleuTeam(Player* player) const
 {
     return find(blueTeamPlayers.begin(), blueTeamPlayers.end(), player) != blueTeamPlayers.end();
 }
 
-bool PlayTeamManager::IsInRedTeam(Player* player) const
+bool PlayTeamManager::isInRedTeam(Player* player) const
 {
     return find(redTeamPlayers.begin(), redTeamPlayers.end(), player) != redTeamPlayers.end();
 }
 
-const Player::Array PlayTeamManager::GetTargetsOf(Player* player) const
+const Player::Array PlayTeamManager::getTargetsOf(Player* player) const
 {
-    return IsInRedTeam(player) ? blueTeamPlayers : redTeamPlayers;
+    return isInRedTeam(player) ? blueTeamPlayers : redTeamPlayers;
 }

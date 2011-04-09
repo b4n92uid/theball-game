@@ -16,17 +16,17 @@ public:
     PlayTeamManager(AppManager* appManager);
     virtual ~PlayTeamManager();
 
-    bool IsInBleuTeam(Player* player) const;
-    bool IsInRedTeam(Player* player) const;
+    bool isInBleuTeam(Player* player) const;
+    bool isInRedTeam(Player* player) const;
 
-    const Player::Array GetTargetsOf(Player* player) const;
+    const Player::Array getTargetsOf(Player* player) const;
 
 protected:
-    void ModSetupUser(Player* userPlayer);
-    void ModSetupAi(Player* player);
-    void ModUpdateStateText(std::ostringstream& ss);
-    void ModUpdateScoreListText(std::ostringstream& ss);
-    void ModUpdateGameOverText(std::ostringstream& ss);
+    void modSetupUser(Player* userPlayer);
+    void modSetupAi(Player* player);
+    void modUpdateStateText(std::ostringstream& ss);
+    void modUpdateScoreListText(std::ostringstream& ss);
+    void modUpdateGameOverText(std::ostringstream& ss);
 
 protected:
     Player::Array blueTeamPlayers;

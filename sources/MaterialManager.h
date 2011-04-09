@@ -23,32 +23,32 @@ public:
     MaterialManager(GameManager* playManager);
     virtual ~MaterialManager();
 
-    void SetGhost(Object* body, bool state);
+    void setGhost(Object* body, bool state);
 
-    void AddBullet(Bullet* body);
-    void AddPlayer(Player* body);
-    void AddStatic(StaticObject* body);
-    void AddDynamic(DynamicObject* body);
-    void AddItem(Item* body);
+    void addBullet(Bullet* body);
+    void addPlayer(Player* body);
+    void addStatic(StaticObject* body);
+    void addDynamic(DynamicObject* body);
+    void addItem(Item* body);
 
-    int GetPlayersGroupe() const;
-    int GetWeaponsGroupe() const;
-    int GetItemGroupe() const;
-    int GetDynamicGroupe() const;
-    int GetStaticGroupe() const;
+    int getPlayersGroupe() const;
+    int getWeaponsGroupe() const;
+    int getItemGroupe() const;
+    int getDynamicGroupe() const;
+    int getStaticGroupe() const;
 
 protected:
 
-    template<typename T> static T GetUserData(const NewtonBody* body)
+    template<typename T> static T getUserData(const NewtonBody* body)
     {
         tbe::scene::NewtonNode* nn = static_cast<tbe::scene::NewtonNode*>(NewtonBodyGetUserData(body));
         return dynamic_cast<T>(nn);
     }
 
-    template<typename T> static T GetParentUserData(const NewtonBody* body)
+    template<typename T> static T getParentUserData(const NewtonBody* body)
     {
         tbe::scene::NewtonNode* nn = static_cast<tbe::scene::NewtonNode*>(NewtonBodyGetUserData(body));
-        return dynamic_cast<T>(nn->GetParent());
+        return dynamic_cast<T>(nn->getParent());
     }
 
     static MaterialManager* getMaterialManager(const NewtonJoint* contact)
