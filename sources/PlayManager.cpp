@@ -364,12 +364,13 @@ void PlayManager::log(std::string msg)
     m_logClock.snapShoot();
 }
 
-void PlayManager::ProcessDevelopperCodeEvent()
+void PlayManager::processDevelopperCodeEvent()
 {
     EventManager* event = manager.gameEngine->getEventManager();
 
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
+        // F1 : Dammage 10%
         if(event->keyState[EventManager::KEY_F1])
         {
             Bullet b(this);
@@ -377,6 +378,7 @@ void PlayManager::ProcessDevelopperCodeEvent()
             m_userPlayer->takeDammage(&b);
         }
 
+        // F2 : Kill
         if(event->keyState[EventManager::KEY_F2])
             m_userPlayer->kill();
 
@@ -394,6 +396,7 @@ void PlayManager::ProcessDevelopperCodeEvent()
             m_players.clear();
         }
 
+        // F6 : TEST BOT
         if(event->keyState[EventManager::KEY_F6])
         {
             unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
@@ -409,6 +412,7 @@ void PlayManager::ProcessDevelopperCodeEvent()
             manager.scene->getRootNode()->addChild(player);
         }
 
+        // F6 : TEST BOT AI
         if(event->keyState[EventManager::KEY_F7])
         {
             unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
@@ -421,6 +425,13 @@ void PlayManager::ProcessDevelopperCodeEvent()
             modSetupAi(player);
 
             manager.scene->getRootNode()->addChild(player);
+        }
+
+        // F9 : Next level
+        if(event->keyState[EventManager::KEY_F9])
+        {
+            m_userPlayer->setScore(m_playSetting.winCond);
+            setGameOver();
         }
     }
 }
@@ -481,7 +492,7 @@ void PlayManager::eventProcess()
 
         // Code developper
         #ifdef THEBALL_COMPILE_DEBUG
-        ProcessDevelopperCodeEvent();
+        processDevelopperCodeEvent();
         #endif
     }
 
