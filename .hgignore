@@ -11,9 +11,7 @@ syntax: glob
 **.bat
 **.pdf
 **.log
+**.xml
 
 .dep.inc
 Makefile
-
-score.xml
-profiles.xml
