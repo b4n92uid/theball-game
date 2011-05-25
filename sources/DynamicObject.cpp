@@ -18,7 +18,7 @@
 using namespace tbe;
 using namespace tbe::scene;
 
-DynamicObject::DynamicObject(GameManager* gameManager, tbe::Matrix4f matrix) : Object(gameManager)
+DynamicObject::DynamicObject(GameManager* gameManager, tbe::Matrix4 matrix) : Object(gameManager)
 {
     m_matrix = matrix;
 }
@@ -27,7 +27,7 @@ DynamicObject::~DynamicObject()
 {
 }
 
-DYJumper::DYJumper(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObject(gameManager, matrix)
+DYJumper::DYJumper(GameManager* gameManager, tbe::Matrix4 matrix) : DynamicObject(gameManager, matrix)
 {
     open(OBJ_JUMPER);
 
@@ -88,7 +88,7 @@ void DYJumper::interactWith(Player* player)
     m_soundManager->play("jumper", player);
 }
 
-DYTeleporter::DYTeleporter(GameManager* gameManager, tbe::Matrix4f matrix) : DynamicObject(gameManager, matrix)
+DYTeleporter::DYTeleporter(GameManager* gameManager, tbe::Matrix4 matrix) : DynamicObject(gameManager, matrix)
 {
     open(OBJ_TELEPORTER);
 

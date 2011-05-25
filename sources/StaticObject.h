@@ -13,7 +13,7 @@
 class StaticObject : public Object
 {
 public:
-    StaticObject(GameManager* gameManager, std::string path, tbe::Matrix4f pos);
+    StaticObject(GameManager* gameManager, std::string path, tbe::Matrix4 pos);
     ~StaticObject();
 
     Object* cloneToObject();

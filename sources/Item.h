@@ -14,7 +14,7 @@ class Item : public Object
 {
 public:
 
-    Item(GameManager* gameManager, tbe::Matrix4f pos);
+    Item(GameManager* gameManager, tbe::Matrix4 pos);
     ~Item();
 
     /// Réinitialise la matrice de l'item a la matrice initiale
@@ -51,7 +51,7 @@ public:
     typedef std::vector<Item*> Array;
 
 protected:
-    tbe::Matrix4f m_initialMatrix;
+    tbe::Matrix4 m_initialMatrix;
     unsigned m_respawnTime;
     Settings::Ai& m_aiParams;
 
@@ -65,7 +65,7 @@ private:
 class ItemAddAmmo : public Item
 {
 public:
-    ItemAddAmmo(GameManager* gameManager, tbe::Matrix4f pos);
+    ItemAddAmmo(GameManager* gameManager, tbe::Matrix4 pos);
     Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
@@ -77,7 +77,7 @@ public:
 class ItemAddLife : public Item
 {
 public:
-    ItemAddLife(GameManager* gameManager, tbe::Matrix4f pos);
+    ItemAddLife(GameManager* gameManager, tbe::Matrix4 pos);
     Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
@@ -89,7 +89,7 @@ public:
 class ItemFatalShot : public Item
 {
 public:
-    ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos);
+    ItemFatalShot(GameManager* gameManager, tbe::Matrix4 pos);
     Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
@@ -101,7 +101,7 @@ public:
 class ItemSuperLife : public Item
 {
 public:
-    ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos);
+    ItemSuperLife(GameManager* gameManager, tbe::Matrix4 pos);
     Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
@@ -113,7 +113,7 @@ public:
 class ItemAddFinder : public Item
 {
 public:
-    ItemAddFinder(GameManager* gameManager, tbe::Matrix4f pos);
+    ItemAddFinder(GameManager* gameManager, tbe::Matrix4 pos);
     Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
@@ -125,7 +125,7 @@ public:
 class ItemAddBomb : public Item
 {
 public:
-    ItemAddBomb(GameManager* gameManager, tbe::Matrix4f pos);
+    ItemAddBomb(GameManager* gameManager, tbe::Matrix4 pos);
     Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
@@ -137,7 +137,7 @@ public:
 class ItemAddShotgun : public Item
 {
 public:
-    ItemAddShotgun(GameManager* gameManager, tbe::Matrix4f pos);
+    ItemAddShotgun(GameManager* gameManager, tbe::Matrix4 pos);
     Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);

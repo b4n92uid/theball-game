@@ -372,7 +372,7 @@ void BldParser::onLoadLight(AttribMap& att)
     m_gameManager->map.lights.push_back(light);
 }
 
-Item* BldParser::createItem(std::string add, tbe::Matrix4f pos)
+Item* BldParser::createItem(std::string add, tbe::Matrix4 pos)
 {
     Item* item;
 
@@ -405,7 +405,7 @@ Item* BldParser::createItem(std::string add, tbe::Matrix4f pos)
     return item;
 }
 
-DynamicObject* BldParser::createDynamic(std::string action, tbe::Matrix4f pos)
+DynamicObject* BldParser::createDynamic(std::string action, tbe::Matrix4 pos)
 {
     DynamicObject* dyo;
 
@@ -423,7 +423,7 @@ DynamicObject* BldParser::createDynamic(std::string action, tbe::Matrix4f pos)
     return dyo;
 }
 
-StaticObject* BldParser::createStatic(std::string modelPath, tbe::Matrix4f pos)
+StaticObject* BldParser::createStatic(std::string modelPath, tbe::Matrix4 pos)
 {
     StaticObject* node = new StaticObject(m_gameManager, modelPath, pos);
 

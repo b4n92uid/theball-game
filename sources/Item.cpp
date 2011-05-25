@@ -16,7 +16,7 @@ using namespace tbe::scene;
 
 // Item ------------------------------------------------------------------
 
-Item::Item(GameManager* gameManager, tbe::Matrix4f pos)
+Item::Item(GameManager* gameManager, tbe::Matrix4 pos)
 : Object(gameManager), m_aiParams(gameManager->manager.app->globalSettings.ai)
 {
     m_taked = false;
@@ -76,7 +76,7 @@ bool Item::isReadyToReborn()
 
 // ItemAddAmmo -----------------------------------------------------------------
 
-ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
+ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
     open(ITEM_AMMOPACK);
 
@@ -128,7 +128,7 @@ void ItemAddAmmo::outputConstruction(std::iostream& stream)
 
 // ItemAddLife -----------------------------------------------------------------
 
-ItemAddLife::ItemAddLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
+ItemAddLife::ItemAddLife(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
     open(ITEM_MEDPACK);
 
@@ -179,7 +179,7 @@ void ItemAddLife::outputConstruction(std::iostream& stream)
 
 // ItemFatalShot ---------------------------------------------------------------
 
-ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
+ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
     open(ITEM_FATALSHOT);
 
@@ -263,7 +263,7 @@ void ItemFatalShot::outputConstruction(std::iostream& stream)
 
 // ItemSuperLife ---------------------------------------------------------------
 
-ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
+ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
     open(ITEM_SUPERLIFE);
 
@@ -347,7 +347,7 @@ void ItemSuperLife::outputConstruction(std::iostream& stream)
 
 // ItemAddFinder ---------------------------------------------------------------
 
-ItemAddFinder::ItemAddFinder(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
+ItemAddFinder::ItemAddFinder(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
     open(ITEM_ADDFINDER);
 
@@ -398,7 +398,7 @@ void ItemAddFinder::outputConstruction(std::iostream& stream)
 
 // ItemAddBomb -----------------------------------------------------------------
 
-ItemAddBomb::ItemAddBomb(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
+ItemAddBomb::ItemAddBomb(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
     open(ITEM_ADDBOMB);
 
@@ -449,7 +449,7 @@ void ItemAddBomb::outputConstruction(std::iostream& stream)
 
 // ItemAddShotgun --------------------------------------------------------------
 
-ItemAddShotgun::ItemAddShotgun(GameManager* gameManager, tbe::Matrix4f pos) : Item(gameManager, pos)
+ItemAddShotgun::ItemAddShotgun(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
     open(ITEM_ADDSHOTGUN);
 

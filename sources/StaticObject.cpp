@@ -18,7 +18,7 @@ using namespace tbe;
 using namespace tbe::scene;
 
 StaticObject::StaticObject(GameManager* gameManager, std::string path,
-                           tbe::Matrix4f matrix = tbe::Matrix4f()) : Object(gameManager)
+                           tbe::Matrix4 matrix = tbe::Matrix4()) : Object(gameManager)
 {
     m_matrix = matrix;
 

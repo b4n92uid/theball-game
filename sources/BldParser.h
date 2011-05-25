@@ -45,9 +45,9 @@ protected:
     void onLoadNode(AttribMap& att);
     void onLoadLight(AttribMap& att);
 
-    Item* createItem(std::string add, tbe::Matrix4f pos);
-    StaticObject* createStatic(std::string modelPath, tbe::Matrix4f pos);
-    DynamicObject* createDynamic(std::string action, tbe::Matrix4f pos);
+    Item* createItem(std::string add, tbe::Matrix4 pos);
+    StaticObject* createStatic(std::string modelPath, tbe::Matrix4 pos);
+    DynamicObject* createDynamic(std::string action, tbe::Matrix4 pos);
     Object* createSpawn(tbe::Vector3f pos);
 
 protected:

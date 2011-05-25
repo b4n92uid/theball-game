@@ -126,7 +126,7 @@ void PlayManager::setupMap(const Settings::PartySetting& playSetting)
 
     scene::Fog* fog = manager.scene->getFog();
 
-    manager.scene->setZFar(fog->isEnable() ? fog->getEnd() : map.aabb.getSize() * 2);
+    manager.scene->setZFar(fog->isEnable() ? fog->getEnd() : map.aabb.getLength() * 2);
     manager.scene->updateViewParameter();
 
     // PLAYERS -----------------------------------------------------------------

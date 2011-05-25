@@ -73,7 +73,7 @@ void EditorManager::setupMap(const Settings::EditSetting& editsetting)
 
         m_selectedLight = map.lights.empty() ? NULL : map.lights.front();
 
-        manager.scene->setZFar(m_fog->isEnable() ? m_fog->getEnd() : map.aabb.getSize() * 2);
+        manager.scene->setZFar(m_fog->isEnable() ? m_fog->getEnd() : map.aabb.getLength() * 2);
         manager.scene->updateViewParameter();
     }
 
@@ -477,7 +477,7 @@ bool EditorManager::settingFogEvent(tbe::EventManager* event)
     {
         m_fog->setEnable(hud.fog.enable->getCurrent());
 
-        manager.scene->setZFar(m_fog->isEnable() ? m_fog->getEnd() : map.aabb.getSize());
+        manager.scene->setZFar(m_fog->isEnable() ? m_fog->getEnd() : map.aabb.getLength());
         manager.scene->updateViewParameter();
     }
 

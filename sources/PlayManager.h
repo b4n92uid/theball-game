@@ -127,7 +127,7 @@ protected:
 
     tbe::scene::Camera* m_camera;
     tbe::scene::NewtonNode* m_cameraBody;
-    tbe::Matrix4f m_cameratMat;
+    tbe::Matrix4 m_cameratMat;
 
     tbe::Vector3f m_shootTarget;
     bool m_cursorOnPlayer;

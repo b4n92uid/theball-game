@@ -15,7 +15,7 @@
 class DynamicObject : public Object
 {
 public:
-    DynamicObject(GameManager* gameManager, tbe::Matrix4f matrix);
+    DynamicObject(GameManager* gameManager, tbe::Matrix4 matrix);
     virtual ~DynamicObject();
 
     /**
@@ -34,7 +34,7 @@ protected:
 class DYJumper : public DynamicObject
 {
 public:
-    DYJumper(GameManager* gameManager, tbe::Matrix4f pos);
+    DYJumper(GameManager* gameManager, tbe::Matrix4 pos);
     ~DYJumper();
     Object* cloneToObject();
     void outputConstruction(std::iostream& stream);
@@ -48,7 +48,7 @@ protected:
 class DYTeleporter : public DynamicObject
 {
 public:
-    DYTeleporter(GameManager* gameManager, tbe::Matrix4f pos);
+    DYTeleporter(GameManager* gameManager, tbe::Matrix4 pos);
     ~DYTeleporter();
     Object* cloneToObject();
     void outputConstruction(std::iostream& stream);

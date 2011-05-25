@@ -300,7 +300,7 @@ bool EditorManager::settingEntityEvent(EventManager* event)
         else if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
             Vector3f pos = m_selectedNode->getPos();
-            Matrix4f matrix = m_selectedNode->getMatrix();
+            Matrix4 matrix = m_selectedNode->getMatrix();
 
             // Rotation
             if(event->keyState['A'])

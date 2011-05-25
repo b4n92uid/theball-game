@@ -78,7 +78,7 @@ void Player::toNextSpawnPos()
 
     if(spawns.empty())
     {
-        float factor = 5 * m_playManager->map.aabb.getSize() / 100;
+        float factor = 5 * m_playManager->map.aabb.getLength() / 100;
 
         do
         {
