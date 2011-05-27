@@ -1,9 +1,8 @@
 #include "Weapon.h"
 
-#include "PlayManager.h"
+#include "GameManager.h"
 #include "MaterialManager.h"
 #include "SoundManager.h"
-#include "BldParser.h"
 
 #include "Player.h"
 #include "Item.h"
@@ -20,7 +19,7 @@ using namespace tbe::scene;
 
 // Weapon ----------------------------------------------------------------------
 
-Weapon::Weapon(PlayManager* playManager) : ParticlesEmiter(playManager->parallelscene.particles)
+Weapon::Weapon(GameManager* playManager) : ParticlesEmiter(playManager->parallelscene.particles)
 {
     m_playManager = playManager;
     m_worldSettings = m_playManager->manager.app->globalSettings.world;
@@ -272,7 +271,7 @@ Node* Weapon::clone()
 
 // WeaponBlaster ---------------------------------------------------------------
 
-WeaponBlaster::WeaponBlaster(PlayManager* playManager) : Weapon(playManager)
+WeaponBlaster::WeaponBlaster(GameManager* playManager) : Weapon(playManager)
 {
     setMaxAmmoCount(200);
     setAmmoCount(180);
@@ -306,7 +305,7 @@ void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
 // WeaponShotgun ---------------------------------------------------------------
 
-WeaponShotgun::WeaponShotgun(PlayManager* playManager) : Weapon(playManager)
+WeaponShotgun::WeaponShotgun(GameManager* playManager) : Weapon(playManager)
 {
     setMaxAmmoCount(50);
     setAmmoCount(40);
@@ -341,7 +340,7 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
 // WeaponBomb ------------------------------------------------------------------
 
-WeaponBomb::WeaponBomb(PlayManager* playManager) : Weapon(playManager)
+WeaponBomb::WeaponBomb(GameManager* playManager) : Weapon(playManager)
 {
     setMaxAmmoCount(80);
     setAmmoCount(60);
@@ -379,7 +378,7 @@ void WeaponBomb::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
 // WeaponFinder ----------------------------------------------------------------
 
-WeaponFinder::WeaponFinder(PlayManager* playManager) : Weapon(playManager)
+WeaponFinder::WeaponFinder(GameManager* playManager) : Weapon(playManager)
 {
     setMaxAmmoCount(200);
     setAmmoCount(180);
@@ -422,11 +421,11 @@ void WeaponFinder::process()
             for(unsigned j = 0; j < targets.size(); j++)
             {
                 Vector3f ammodiri = m_bulletArray[i]->getVelocity().normalize();
-                Vector3f targetdiri = (targets[j]->getPos() - m_bulletArray[i]->getPos()).normalize();
+                Vector3f targetdiri = (targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPos()).normalize();
 
                 if(Vector3f::dot(targetdiri, ammodiri) > 0.5f)
                 {
-                    minDist = min(targets[j]->getPos() - m_bulletArray[i]->getPos(), minDist);
+                    minDist = min(targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPos(), minDist);
                     targetLocked = true;
                 }
             }
@@ -459,7 +458,7 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
 // Bullet ----------------------------------------------------------------------
 
-Bullet::Bullet(PlayManager* playManager) : NewtonNode(playManager->parallelscene.newton)
+Bullet::Bullet(GameManager* playManager) : NewtonNode(playManager->parallelscene.newton)
 {
     m_playManager = playManager;
     m_life = 300;

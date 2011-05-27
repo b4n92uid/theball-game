@@ -11,12 +11,12 @@
 #include "AIControl.h"
 
 class Player;
-class PlayManager;
+class GameManager;
 
 class FragModeAi : public AIControl
 {
 public:
-    FragModeAi(PlayManager* playManager);
+    FragModeAi(GameManager* playManager);
     ~FragModeAi();
 
     void process(Player* player);

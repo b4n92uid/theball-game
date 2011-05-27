@@ -12,7 +12,7 @@
 #include "PlayTeamManager.h"
 
 class Player;
-class PlayManager;
+class GameManager;
 
 class TeamModeAi : public AIControl
 {

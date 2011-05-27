@@ -1,13 +1,13 @@
-/* 
+/*
  * File:   TeamModeAi.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 15 juin 2010, 17:25
  */
 
 #include "TeamModeAi.h"
 
-#include "PlayManager.h"
+#include "GameManager.h"
 #include "Player.h"
 
 using namespace std;
@@ -26,51 +26,55 @@ void TeamModeAi::process(Player* player)
 {
     const Player::Array players = m_playManager->getTargetsOf(player);
     const Item::Array& items = m_playManager->map.items;
-    const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
+    //    const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
-    Vector3f playerPos = player->getPos();
+    Vector3f playerPos = player->getVisualBody()->getPos();
 
     // Test de collision avec la map
 
-    //    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
-    //
-    //    bool isCollidWithMap = false;
-    //
-    //    for(unsigned i = 0; i < staticObjects.size(); i++)
-    //        if(isCollidWithMap = player->getPhysicBody()->IsCollidWith(staticObjects[i]->getPhysicBody()))
-    //            break;
+    /*
+        const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
+
+        bool isCollidWithMap = false;
+
+        for(unsigned i = 0; i < staticObjects.size(); i++)
+            if(isCollidWithMap = player->getPhysicBody()->IsCollidWith(staticObjects[i]->getPhysicBody()))
+                break;
+     */
 
     // Recherche d'item
 
     m_targetOtp = NULL;
 
-    for(unsigned i = 0; i < dynamicObjects.size(); i++)
-    {
-        if(dynamicObjects[i]->getPos() - playerPos < m_aiParams.dynamicInteraction)
-            m_targetOtp = dynamicObjects[i];
-    }
-
-    for(unsigned i = 0; i < items.size(); i++)
-    {
-        if(items[i]->isNeeded(player))
+    /*
+        for(unsigned i = 0; i < dynamicObjects.size(); i++)
         {
-            m_targetOtp = items[i];
-            break;
+            if(dynamicObjects[i]->getPos() - playerPos < m_aiParams.dynamicInteraction)
+                m_targetOtp = dynamicObjects[i];
         }
-    }
+
+        for(unsigned i = 0; i < items.size(); i++)
+        {
+            if(items[i]->isNeeded(player))
+            {
+                m_targetOtp = items[i];
+                break;
+            }
+        }
+     */
 
     // Priorité aux items
     if(m_targetOtp)
     {
-        addForce = m_targetOtp->getPos();
+        addForce = m_targetOtp->getVisualBody()->getPos();
     }
 
     else
     {
         // Mete a jour la position de la cible
         if(m_targetPlayer)
-            m_targetPos = m_targetPlayer->getPos();
+            m_targetPos = m_targetPlayer->getVisualBody()->getPos();
 
         // Recherche d'une nouvelle cible
         // Si Temps écouler
@@ -86,10 +90,10 @@ void TeamModeAi::process(Player* player)
 
             for(unsigned i = 0; i < players.size(); i++)
 
-                if(!players[i]->isKilled() && m_mapAABB.isInner(players[i])
+                if(!players[i]->isKilled() && m_mapAABB.isInner(players[i]->getVisualBody())
                    && players[i]->isVisibleFromIA())
                 {
-                    Vector3f testedDist = players[i]->getPos() - playerPos;
+                    Vector3f testedDist = players[i]->getVisualBody()->getPos() - playerPos;
 
                     if(testedDist < minDist)
                     {
@@ -100,7 +104,7 @@ void TeamModeAi::process(Player* player)
 
             if(m_targetPlayer)
             {
-                m_targetPos = m_targetPlayer->getPos();
+                m_targetPos = m_targetPlayer->getVisualBody()->getPos();
 
                 // Recherche d'une position d'attack
                 do
@@ -139,7 +143,7 @@ void TeamModeAi::process(Player* player)
             m_gustCount = 0;
     }
 
-    if((AABB(-1, 1) + m_lastPos).isInner(player)
+    if((AABB(-1, 1) + m_lastPos).isInner(player->getVisualBody())
        && m_lastPosClock.isEsplanedTime(2000))
     {
         do

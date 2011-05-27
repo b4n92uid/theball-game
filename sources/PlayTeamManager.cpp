@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   PlayTeamManager.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 13 février 2010, 18:42
  */
 
@@ -18,7 +18,7 @@ class TeamBillboardIcon : public tbe::scene::ParticlesEmiter
 {
 public:
 
-    TeamBillboardIcon(PlayManager* playManager, Player::Array& teamPlayers)
+    TeamBillboardIcon(GameManager* playManager, Player::Array& teamPlayers)
     : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles)
     , m_playManager(playManager), m_teamPlayers(teamPlayers)
     {
@@ -46,7 +46,7 @@ public:
             if(m_teamPlayers[i] != m_playManager->getUserPlayer()
                && !m_teamPlayers[i]->isKilled())
             {
-                particles[show].pos = m_teamPlayers[i]->getPos() + Vector3f(0, 1, 0);
+                particles[show].pos = m_teamPlayers[i]->getVisualBody()->getPos() + Vector3f(0, 1, 0);
                 show++;
             }
 
@@ -56,11 +56,11 @@ public:
     }
 
 protected:
-    PlayManager* m_playManager;
+    GameManager* m_playManager;
     Player::Array& m_teamPlayers;
 };
 
-PlayTeamManager::PlayTeamManager(AppManager* appManager) : PlayManager(appManager)
+PlayTeamManager::PlayTeamManager(AppManager* appManager) : GameManager(appManager)
 {
     m_teamBleuIcon = new TeamBillboardIcon(this, blueTeamPlayers);
     m_teamBleuIcon->setTexture(Texture(PARTICLE_BLEUTEAM, true));

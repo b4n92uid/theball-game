@@ -1,8 +1,6 @@
 #include "AppManager.h"
 
 #include "GameManager.h"
-#include "PlayManager.h"
-#include "EditorManager.h"
 
 #include "PlayFragManager.h"
 #include "PlayAloneManager.h"
@@ -171,32 +169,32 @@ void AppManager::setupMenuGui()
 
     GuiSkin* guiskin = new GuiSkin;
 
-    guiskin->button(GUI_BUTTON);
+    guiskin->button(globalSettings.gui.button);
     guiskin->buttonSize(Vector2f(192, 48) * sizeFactor);
 
-    guiskin->gauge(GUI_GAUGE);
+    guiskin->gauge(globalSettings.gui.gauge);
     guiskin->gaugeSize(Vector2f(192, 48) * sizeFactor);
 
-    guiskin->editBox(GUI_EDIT);
+    guiskin->editBox(globalSettings.gui.editBox);
     guiskin->editBoxSize(Vector2f(192, 48) * sizeFactor);
 
-    guiskin->switchBox(GUI_SWITCH);
+    guiskin->switchBox(globalSettings.gui.switchBox);
     guiskin->switchBoxSize(Vector2f(192, 48) * sizeFactor);
 
-    guiskin->vectorBox(GUI_VECTOR);
+    guiskin->vectorBox(globalSettings.gui.vectorBox);
     guiskin->vectorBoxSize(Vector2f(192, 48) * sizeFactor);
 
     guiskin->stateShowSize(Vector2f(48, 48) * sizeFactor);
 
-    guiskin->pencile(GUI_FONT, int(sizeFactor * GUI_FONTSIZE));
+    guiskin->pencile(globalSettings.gui.font, int(sizeFactor * globalSettings.gui.fontSize));
 
     m_guiManager->setSkin(guiskin);
 
-    Pencil bigpen(GUI_FONT, int(sizeFactor * GUI_FONTSIZE * 1.5));
+    Pencil bigpen(globalSettings.gui.font, int(sizeFactor * globalSettings.gui.fontSize * 1.5));
 
     // Construction ------------------------------------------------------------
 
-    Texture background(BACKGROUND_MAINMENU);
+    Texture background(globalSettings.gui.backgroundMainmenu);
 
     // Menu Principale
 
@@ -206,6 +204,17 @@ void AppManager::setupMenuGui()
             ->setSize(screenSize);
 
     m_guiManager->addLayout(Layout::Horizental);
+    m_guiManager->addLayoutStretchSpace();
+
+    m_guiManager->addLayout(Layout::Vertical, 10);
+    m_guiManager->addLayoutStretchSpace();
+
+    m_guiManager->addImage("", globalSettings.gui.backgroundBall)
+            ->setSize(256);
+
+    m_guiManager->addLayoutStretchSpace();
+    m_guiManager->endLayout();
+
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->addLayout(Layout::Vertical, 10);
     m_guiManager->addLayoutStretchSpace();
@@ -271,7 +280,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.campaign.description = m_guiManager->addTextBox("description");
-    m_controls.campaign.description->setBackground(GUI_TEXTBOX_H);
+    m_controls.campaign.description->setBackground(globalSettings.gui.backgroundTextboxH);
     m_controls.campaign.description->setBackgroundPadding(16);
 
     m_controls.campaign.levelSelect = m_guiManager->addSwitchString("level_select");
@@ -350,7 +359,7 @@ void AppManager::setupMenuGui()
 
     m_guiManager->setSession(MENU_LOAD);
 
-    m_guiManager->addImage("", BACKGROUND_LOAD)
+    m_guiManager->addImage("", globalSettings.gui.backgroundLoad)
             ->setSize(screenSize);
 
     m_guiManager->addLayout(Layout::Horizental, 0, 10);
@@ -363,30 +372,6 @@ void AppManager::setupMenuGui()
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    // Menu Edition
-
-    m_guiManager->setSession(MENU_EDIT);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    m_guiManager->addLayout(Layout::Horizental, 0, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 1
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-    m_controls.edit.ret = m_guiManager->addButton("", "Retour");
-    m_controls.edit.mapSelect = m_guiManager->addSwitchString("");
-    m_controls.edit.editMap = m_guiManager->addButton("", "Editer");
-    m_controls.edit.newMap = m_guiManager->addButton("", "Nouveau");
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
 
@@ -532,7 +517,7 @@ void AppManager::setupMenuGui()
     m_controls.score.scoreText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
     m_controls.score.scoreText->setDefinedSize(true);
     m_controls.score.scoreText->setBackgroundPadding(8);
-    m_controls.score.scoreText->setBackground(GUI_TEXTBOX_H);
+    m_controls.score.scoreText->setBackground(globalSettings.gui.backgroundTextboxH);
     m_controls.score.scoreText->setTextAlign(TextBox::LEFT);
 
     m_guiManager->addLayoutStretchSpace();
@@ -559,7 +544,7 @@ void AppManager::setupMenuGui()
     m_controls.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
     m_controls.aboutText->setDefinedSize(true);
     m_controls.aboutText->setBackgroundPadding(8);
-    m_controls.aboutText->setBackground(GUI_TEXTBOX_H);
+    m_controls.aboutText->setBackground(globalSettings.gui.backgroundTextboxH);
     m_controls.aboutText->setTextAlign(TextBox::LEFT);
 
     m_guiManager->addLayoutStretchSpace();
@@ -728,7 +713,6 @@ void AppManager::updateGuiContent()
     for(unsigned i = 0; i < globalSettings.availableMap.size(); i++)
     {
         m_controls.playmenu.mapSelect->push(globalSettings.availableMap[i].name, i);
-        m_controls.edit.mapSelect->push(globalSettings.availableMap[i].name, i);
     }
 
     m_controls.playmenu.mapSelect->setCurrent(tools::rand(0, globalSettings.availableMap.size()));
@@ -797,9 +781,6 @@ void AppManager::processMainMenuEvent()
 
     else if(m_guiManager->getControl("setting")->isActivate())
         m_guiManager->setSession(MENU_SETTING);
-
-    else if(m_guiManager->getControl("editor")->isActivate())
-        m_guiManager->setSession(MENU_EDIT);
 
     else if(m_guiManager->getControl("about")->isActivate())
         m_guiManager->setSession(MENU_ABOUT);
@@ -873,36 +854,6 @@ void AppManager::processPlayMenuEvent()
         globalSettings.profile.name = m_controls.playmenu.playerName->getLabel();
 
     else if(m_guiManager->getControl("return")->isActivate())
-        m_guiManager->setSession(MENU_MAIN);
-}
-
-void AppManager::processEditMenuEvent()
-{
-    if(m_controls.edit.editMap->isActivate())
-    {
-        unsigned index = m_controls.edit.mapSelect->getData().getValue<unsigned>();
-        Settings::MapInfo& mi = globalSettings.availableMap[index];
-
-        Settings::EditSetting es;
-        es.createNew = false;
-        es.editMap = mi.file;
-
-        executeEditor(es);
-
-        setupBackgroundScene();
-        m_guiManager->setSession(MENU_EDIT);
-    }
-    else if(m_controls.edit.newMap->isActivate())
-    {
-        Settings::EditSetting es;
-        es.createNew = true;
-
-        executeEditor(es);
-
-        setupBackgroundScene();
-        m_guiManager->setSession(MENU_EDIT);
-    }
-    else if(m_controls.edit.ret->isActivate())
         m_guiManager->setSession(MENU_MAIN);
 }
 
@@ -1015,10 +966,6 @@ void AppManager::executeMenu()
                 case MENU_QUICKPLAY:
                     processPlayMenuEvent();
                     break;
-
-                case MENU_EDIT:
-                    processEditMenuEvent();
-                    break;
             }
 
             m_camera->setPos(-m_camera->getTarget() * 8.0f);
@@ -1081,7 +1028,7 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 
     // Chargement de la carte --------------------------------------------------
 
-    PlayManager* gameManager;
+    GameManager* gameManager;
 
     switch(playSetting.playMod)
     {
@@ -1121,7 +1068,7 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 
     gameManager->onStartGame();
 
-    while(gameManager->running)
+    while(gameManager->isRunning())
     {
         if(m_fpsMng->doRender())
         {
@@ -1186,7 +1133,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
         // Chargement de la carte --------------------------------------------------
 
-        PlayManager* gameManager;
+        GameManager* gameManager;
 
         switch(curPlaySetting.playMod)
         {
@@ -1231,7 +1178,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
         gameManager->onStartGame();
 
-        while(gameManager->running)
+        while(gameManager->isRunning())
         {
             if(m_fpsMng->doRender())
             {
@@ -1337,72 +1284,6 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
         updateGuiContent();
     }
     while(!done);
-
-    if(!globalSettings.noaudio && !globalSettings.nomusic)
-        FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
-}
-
-void AppManager::executeEditor(const Settings::EditSetting& editSetting)
-{
-    cout << "ExecuteEditor" << endl;
-
-    m_sceneManager->clearAll();
-    m_ppeManager->clearAll();
-
-    if(!globalSettings.noaudio && !globalSettings.nomusic)
-        FMOD_Channel_Stop(m_mainMusicCh);
-
-    // Affichage de l'ecran de chargement --------------------------------------
-
-    m_guiManager->setSession(MENU_LOAD);
-
-    m_guiManager->getControl<gui::TextBox > ("load:stateText")
-            ->write("Chargement en cours...");
-
-    m_guiManager->updateLayout();
-
-    m_gameEngine->beginScene();
-    m_guiManager->render();
-    m_gameEngine->endScene();
-
-    // Chargement de la carte --------------------------------------------------
-
-    EditorManager* editorManager = new EditorManager(this);
-
-    editorManager->setupMap(editSetting);
-    editorManager->setupGui();
-
-    // Attente de réponse ------------------------------------------------------
-
-    m_guiManager->setSession(MENU_LOAD);
-
-    m_guiManager->getControl<gui::TextBox > ("load:stateText")
-            ->write("Appuyer sur \"Espace\" pour continuer...");
-
-    while(!m_eventMng->keyState[EventManager::KEY_SPACE])
-    {
-        m_gameEngine->pollEvent();
-        m_gameEngine->beginScene();
-        m_guiManager->render();
-        m_gameEngine->endScene();
-    }
-
-    // Début du jeu ------------------------------------------------------------
-
-    while(editorManager->running)
-    {
-        if(m_fpsMng->doRender())
-        {
-            editorManager->eventProcess();
-            editorManager->hudProcess();
-
-            editorManager->render();
-        }
-
-        m_fpsMng->update();
-    }
-
-    delete editorManager;
 
     if(!globalSettings.noaudio && !globalSettings.nomusic)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);

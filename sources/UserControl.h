@@ -11,13 +11,13 @@
 #include "Controller.h"
 
 class AppManager;
-class PlayManager;
+class GameManager;
 class Player;
 
 class UserControl : public Controller
 {
 public:
-    UserControl(PlayManager* playManager);
+    UserControl(GameManager* playManager);
     ~UserControl();
 
     void process(Player* player);

@@ -26,6 +26,49 @@ Settings::~Settings()
 {
 }
 
+void Settings::readGui()
+{
+    map<string, string*> binder;
+
+    binder["BACKGROUND_MAINMENU"] = &gui.backgroundMainmenu;
+    binder["BACKGROUND_BALL"] = &gui.backgroundBall;
+    binder["BACKGROUND_BULLETTIME"] = &gui.backgroundBullettime;
+    binder["BACKGROUND_DAMMAGE"] = &gui.backgroundDammage;
+    binder["BACKGROUND_HUD"] = &gui.backgroundHud;
+    binder["BACKGROUND_PAUSE"] = &gui.backgroundPause;
+    binder["BACKGROUND_LOAD"] = &gui.backgroundLoad;
+    binder["BACKGROUND_TEXTBOX_V"] = &gui.backgroundTextboxV;
+    binder["BACKGROUND_TEXTBOX_H"] = &gui.backgroundTextboxH;
+    binder["BACKGROUND_LISTBOX_V"] = &gui.backgroundListboxV;
+    binder["BACKGROUND_LISTBOX_H"] = &gui.backgroundListboxH;
+    binder["GUI_SCORE"] = &gui.score;
+    binder["GUI_NOTIFY"] = &gui.notify;
+    binder["GUI_PREVIEW"] = &gui.preview;
+    binder["GUI_BUTTON"] = &gui.button;
+    binder["GUI_GAUGE"] = &gui.gauge;
+    binder["GUI_EDIT"] = &gui.editBox;
+    binder["GUI_SWITCH"] = &gui.switchBox;
+    binder["GUI_VECTOR"] = &gui.vectorBox;
+    binder["GUI_FONT"] = &gui.font;
+
+    TiXmlDocument config("gui.xml");
+
+    if(!config.LoadFile())
+        throw tbe::Exception("readGui; Open file error");
+
+    TiXmlNode* root = config.FirstChildElement();
+
+    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
+    {
+        string name = node2->Attribute("name");
+
+        if(name == "GUI_FONTSIZE")
+            node2->Attribute("value", &gui.fontSize);
+        else
+            *binder[name] = node2->Attribute("value");
+    }
+}
+
 void Settings::readVideo()
 {
     TiXmlDocument config("video.xml");
@@ -169,10 +212,10 @@ void Settings::readWorld()
     vec4fbinder["PPE.BullettimeColor"] = &video.ppe.bullettimeColor;
     vec2fbinder["PPE.BullettimeSize"] = &video.ppe.bullettimeSize;
 
-    vec2fbinder["PPE.WorldSize"] = &video.ppe.worldSize;
-    floatbinder["PPE.WorldThershold"] = &video.ppe.worldThershold;
-    floatbinder["PPE.WorldIntensity"] = &video.ppe.worldIntensity;
-    floatbinder["PPE.WorldBlurPass"] = &video.ppe.worldBlurPass;
+    vec2fbinder["PPE.BloomSize"] = &video.ppe.bloomSize;
+    floatbinder["PPE.BloomThershold"] = &video.ppe.bloomThershold;
+    floatbinder["PPE.BloomIntensity"] = &video.ppe.bloomIntensity;
+    floatbinder["PPE.BloomBlurPass"] = &video.ppe.bloomBlurPass;
 
     TiXmlDocument config("world.xml");
 
@@ -377,6 +420,7 @@ void Settings::readMapInfo()
 void Settings::readSetting()
 {
     readAi();
+    readGui();
     readCampaign();
     readProfiles();
     readVideo();

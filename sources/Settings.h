@@ -19,6 +19,7 @@ public:
     void readSetting();
     void saveSetting();
 
+    void readGui();
     void readAi();
     void readProfiles();
     void readCampaign();
@@ -112,14 +113,42 @@ public:
 
             int gameoverPass;
 
-            tbe::Vector2f worldSize;
-            float worldThershold;
-            float worldIntensity;
-            float worldBlurPass;
+            tbe::Vector2f bloomSize;
+            float bloomThershold;
+            float bloomIntensity;
+            float bloomBlurPass;
 
         } ppe;
 
     } video;
+
+    struct Gui
+    {
+        std::string backgroundMainmenu;
+        std::string backgroundBall;
+        std::string backgroundBullettime;
+        std::string backgroundDammage;
+        std::string backgroundHud;
+        std::string backgroundPause;
+        std::string backgroundLoad;
+        std::string backgroundTextboxV;
+        std::string backgroundTextboxH;
+        std::string backgroundListboxV;
+        std::string backgroundListboxH;
+
+        std::string score;
+        std::string notify;
+        std::string preview;
+        std::string button;
+        std::string gauge;
+        std::string editBox;
+        std::string switchBox;
+        std::string vectorBox;
+
+        std::string font;
+        int fontSize;
+
+    } gui;
 
     struct Control
     {

@@ -13,19 +13,19 @@
 
 #include "AppManager.h"
 
-class PlayManager;
+class GameManager;
 class Player;
 
 class Controller
 {
 public:
-    Controller(PlayManager* playManager);
+    Controller(GameManager* playManager);
     virtual ~Controller();
 
     virtual void process(Player* player) = 0;
 
 protected:
-    PlayManager* m_playManager;
+    GameManager* m_playManager;
     Settings::World m_worldSettings;
 };
 

@@ -1,8 +1,9 @@
 #include "Player.h"
 
 #include "AppManager.h"
-#include "PlayManager.h"
+#include "GameManager.h"
 #include "MaterialManager.h"
+#include "MapElement.h"
 #include "SoundManager.h"
 
 #include "Define.h"
@@ -14,10 +15,21 @@ using namespace tbe::scene;
 
 // PlayerEngine ----------------------------------------------------------------
 
-Player::Player(PlayManager* playManager, std::string name, std::string model) : Object(playManager)
+Player::Player(GameManager* playManager, std::string name, std::string model) : MapElement(playManager)
 {
     // Rendue
-    open(model);
+    m_visualBody = new OBJMesh(m_gameManager->parallelscene.meshs);
+    m_visualBody->open(model);
+
+    // Physique
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->setUpdatedMatrix(&m_visualBody->getMatrix());
+    m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
+
+    toNextSpawnPos();
+
+    NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 
     // Attributes
     m_name = name;
@@ -39,17 +51,9 @@ Player::Player(PlayManager* playManager, std::string name, std::string model) : 
     m_deadExplode->setFreeMove(m_worldSettings.playerExplodeFreeMove);
     m_deadExplode->setNumber(m_worldSettings.playerExplodeNumber);
     m_deadExplode->setAutoRebuild(false);
-    m_deadExplode->setParent(this);
+    m_deadExplode->setParent(m_visualBody);
 
     m_checkMe.push_back(new StartProtection(this));
-
-    // Physique
-    m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
-
-    toNextSpawnPos();
-
-    NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
-    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
@@ -63,11 +67,6 @@ Player::~Player()
         delete m_checkMe[i];
 
     delete m_attachedCotroller;
-}
-
-Object* Player::cloneToObject()
-{
-    return NULL;
 }
 
 void Player::toNextSpawnPos()
@@ -122,11 +121,6 @@ Controller* Player::getAttachedCotroller() const
 
 void Player::process()
 {
-    if(!m_enable)
-        return;
-
-    Object::process();
-
     if(m_playManager->isGameOver())
         return;
 
@@ -156,12 +150,14 @@ bool Player::shoot(Vector3f targetpos)
         if(!m_checkMe[i]->onShoot(this))
             return false;
 
-    return (*m_curWeapon)->shoot(m_matrix.getPos(), targetpos);
+    return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
 void Player::jump()
 {
-    NewtonBodyAddImpulse(m_physicBody->getBody(), Vector3f(0, m_worldSettings.playerJumpForce, 0), m_matrix.getPos());
+    NewtonBodyAddImpulse(m_physicBody->getBody(),
+                         Vector3f(0, m_worldSettings.playerJumpForce, 0),
+                         m_visualBody->getMatrix().getPos());
 }
 
 void Player::brake()
@@ -185,7 +181,7 @@ void Player::boost()
 
     impulseDeri.y = 0;
 
-    NewtonBodyAddImpulse(m_physicBody->getBody(), impulseDeri, m_matrix.getPos());
+    NewtonBodyAddImpulse(m_physicBody->getBody(), impulseDeri, m_visualBody->getPos());
 
     m_soundManager->play("boost", this);
 
@@ -270,7 +266,7 @@ void Player::reBorn()
 
     m_playManager->manager.material->setGhost(this, false);
 
-    setVisible(true);
+    m_visualBody->setVisible(true);
 
     m_physicBody->setFreeze(false);
 
@@ -306,7 +302,7 @@ void Player::kill()
 
     clocks.readyToDelete.snapShoot();
 
-    setVisible(false);
+    m_visualBody->setVisible(false);
 
     m_physicBody->setOmega(0);
     m_physicBody->setFreeze(true);
@@ -350,6 +346,16 @@ void Player::setScore(int value)
 int Player::getScore() const
 {
     return m_score;
+}
+
+void Player::setName(std::string name)
+{
+    this->m_name = name;
+}
+
+std::string Player::getName() const
+{
+    return m_name;
 }
 
 void Player::upLife(int life)
@@ -423,25 +429,27 @@ void Player::takeDammage(Bullet* ammo)
     m_soundManager->play("hit", this);
 }
 
-PlayManager* Player::getPlayManager() const
+GameManager* Player::getGameManager() const
 {
     return m_playManager;
 }
 
 void Player::makeTransparent(bool enable, float alpha)
 {
-    Vertex* vs = m_hardwareBuffer.lock();
+    HardwareBuffer& hardbuf = m_visualBody->getHardwareBuffer();
+
+    Vertex* vs = hardbuf.lock();
 
     if(enable)
-        for(unsigned i = 0; i < m_hardwareBuffer.getVertexCount(); i++)
+        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
             vs[i].color.w = alpha;
     else
-        for(unsigned i = 0; i < m_hardwareBuffer.getVertexCount(); i++)
+        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
             vs[i].color.w = 1;
 
-    m_hardwareBuffer.unlock();
+    hardbuf.unlock();
 
-    Material::Array mats = getAllMaterial();
+    Material::Array mats = m_visualBody->getAllMaterial();
 
     if(enable)
         for(unsigned i = 0; i < mats.size(); i++)

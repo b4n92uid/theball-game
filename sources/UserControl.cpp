@@ -1,25 +1,24 @@
-/* 
+/*
  * File:   UserEventManager.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 16 décembre 2009, 21:43
  */
 
 #include "UserControl.h"
 
-#include "PlayManager.h"
+#include "GameManager.h"
 
 #include "Player.h"
 #include "Item.h"
 
 #include "Define.h"
-#include "EditorManager.h"
 
 using namespace tbe;
 
 typedef std::map<std::string, int> StateMap;
 
-UserControl::UserControl(PlayManager* playManager) : Controller(playManager)
+UserControl::UserControl(GameManager* playManager) : Controller(playManager)
 {
     m_control = m_playManager->manager.app->globalSettings.control;
     m_eventManager = m_playManager->manager.app->getEventMng();
@@ -108,8 +107,8 @@ void UserControl::process(Player* player)
 
     bool collideWithStatic = false;
 
-    for(unsigned i = 0; i < m_playManager->map.staticObjects.size(); i++)
-        if(playerCanJump(player->getPhysicBody(), m_playManager->map.staticObjects[i]->getPhysicBody()))
+    for(unsigned i = 0; i < m_playManager->map.mapElements.size(); i++)
+        if(playerCanJump(player->getPhysicBody(), m_playManager->map.mapElements[i]->getPhysicBody()))
         {
             collideWithStatic = true;
             break;

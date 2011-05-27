@@ -43,9 +43,9 @@
     <set name="PPE.GameoverPass" value="2" />
     <set name="PPE.BullettimeColor" value="1,1,1,1" />
     <set name="PPE.BullettimeSize" value="256,256" />
-    <set name="PPE.WorldSize" value="128,128" />
-    <set name="PPE.WorldThershold" value="0.25" />
-    <set name="PPE.WorldIntensity" value="0.75" />
-    <set name="PPE.WorldBlurPass" value="10" />
+    <set name="PPE.BloomSize" value="128,128" />
+    <set name="PPE.BloomThershold" value="0.25" />
+    <set name="PPE.BloomIntensity" value="0.75" />
+    <set name="PPE.BloomBlurPass" value="10" />
     
 </world>

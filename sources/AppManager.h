@@ -29,9 +29,6 @@ public:
     /// Exécute le menu du jeu
     void executeMenu();
 
-    /// Exécute l'éditeur de carte
-    void executeEditor(const Settings::EditSetting& editSetting);
-
     /// Exécute une partie rapide
     void executeGame(const Settings::PartySetting& playSetting);
 
@@ -92,7 +89,6 @@ protected:
     void processMainMenuEvent();
     void processCampaignMenuEvent();
     void processPlayMenuEvent();
-    void processEditMenuEvent();
     void processSettingMenuEvent();
     void processSettingKeyMenuEvent();
     void processScoreMenuEvent();
@@ -149,15 +145,6 @@ protected:
             tbe::gui::SwitchString* usePpe;
 
         } settings;
-
-        struct
-        {
-            tbe::gui::Button* newMap;
-            tbe::gui::SwitchString* mapSelect;
-            tbe::gui::Button* editMap;
-            tbe::gui::Button* ret;
-
-        } edit;
 
         struct
         {

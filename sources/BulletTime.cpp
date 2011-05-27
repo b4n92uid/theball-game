@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   BulletTime.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 27 juillet 2010, 13:48
  */
 
@@ -10,19 +10,18 @@
 
 #include "SoundManager.h"
 #include "GameManager.h"
-#include "PlayManager.h"
 #include "Player.h"
 
 using namespace tbe;
 using namespace tbe::scene;
 
-BulletTime::BulletTime(PlayManager* playManager)
+BulletTime::BulletTime(GameManager* gameManager)
 {
     m_active = false;
     m_value = 1;
-    m_playManager = playManager;
-    m_userPlayer = m_playManager->getUserPlayer();
-    m_soundManager = m_playManager->manager.sound;
+    m_gameManager = gameManager;
+    m_userPlayer = m_gameManager->getUserPlayer();
+    m_soundManager = m_gameManager->manager.sound;
 }
 
 BulletTime::~BulletTime()
@@ -31,14 +30,14 @@ BulletTime::~BulletTime()
 
 void BulletTime::process()
 {
-    NewtonParallelScene* newton = m_playManager->parallelscene.newton;
+    NewtonParallelScene* newton = m_gameManager->parallelscene.newton;
 
     if(m_active)
     {
         if(m_value > 0.0f)
         {
-            m_value -= m_playManager->worldSettings.bullettimeDown;
-            newton->setWorldTimestep(newton->getWorldTimestep() / m_playManager->worldSettings.bullettimeFactor);
+            m_value -= m_gameManager->worldSettings.bullettimeDown;
+            newton->setWorldTimestep(newton->getWorldTimestep() / m_gameManager->worldSettings.bullettimeFactor);
         }
 
         else
@@ -48,7 +47,7 @@ void BulletTime::process()
     else
     {
         if(m_value < 1.0f)
-            m_value += m_playManager->worldSettings.bullettimeUp;
+            m_value += m_gameManager->worldSettings.bullettimeUp;
     }
 }
 
@@ -61,18 +60,18 @@ void BulletTime::setActive(bool active)
 
     if(m_active)
     {
-        FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 0.5);
+        FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
 
         m_soundManager->play("bullettime", m_userPlayer);
 
-        m_playManager->hudBullettime(true);
+        m_gameManager->hudBullettime(true);
     }
 
     else
     {
-        FMOD_Channel_SetVolume(m_playManager->map.musicChannel, 1.0);
+        FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);
 
-        m_playManager->hudBullettime(false);
+        m_gameManager->hudBullettime(false);
     }
 }
 

@@ -13,9 +13,10 @@
 #include <fmod.h>
 
 #include "Settings.h"
-#include "Object.h"
+#include "MapElement.h"
+#include "SoundManager.h"
 
-class PlayManager;
+class GameManager;
 class Player;
 class Bullet;
 class Weapon;
@@ -24,7 +25,7 @@ class Bullet : public tbe::scene::NewtonNode
 {
 public:
 
-    Bullet(PlayManager* playManager);
+    Bullet(GameManager* playManager);
 
     void shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy = 0);
 
@@ -54,7 +55,7 @@ public:
     typedef std::vector<Bullet*> Array;
 
 protected:
-    PlayManager* m_playManager;
+    GameManager* m_playManager;
     Weapon* m_weapon;
     int m_dammage;
     int m_life;
@@ -67,7 +68,7 @@ protected:
 class Weapon : public tbe::scene::ParticlesEmiter
 {
 public:
-    Weapon(PlayManager* playManager);
+    Weapon(GameManager* playManager);
     Weapon(const Weapon& copy);
     virtual ~Weapon();
 
@@ -119,7 +120,7 @@ protected:
     virtual void process();
 
 protected:
-    PlayManager* m_playManager;
+    GameManager* m_playManager;
     SoundManager* m_soundManager;
 
     Player* m_shooter;
@@ -150,7 +151,7 @@ protected:
 class WeaponBlaster : public Weapon
 {
 public:
-    WeaponBlaster(PlayManager* playManager);
+    WeaponBlaster(GameManager* playManager);
 
 protected:
     void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
@@ -159,7 +160,7 @@ protected:
 class WeaponShotgun : public Weapon
 {
 public:
-    WeaponShotgun(PlayManager* playManager);
+    WeaponShotgun(GameManager* playManager);
 protected:
     void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };
@@ -167,7 +168,7 @@ protected:
 class WeaponFinder : public Weapon
 {
 public:
-    WeaponFinder(PlayManager* playManager);
+    WeaponFinder(GameManager* playManager);
 protected:
     void process();
     void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
@@ -176,7 +177,7 @@ protected:
 class WeaponBomb : public Weapon
 {
 public:
-    WeaponBomb(PlayManager* playManager);
+    WeaponBomb(GameManager* playManager);
 protected:
     void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };

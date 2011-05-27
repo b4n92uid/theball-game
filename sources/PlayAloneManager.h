@@ -8,9 +8,9 @@
 #ifndef _PLAYALONEMANAGER_H
 #define	_PLAYALONEMANAGER_H
 
-#include "PlayManager.h"
+#include "GameManager.h"
 
-class PlayAloneManager : public PlayManager
+class PlayAloneManager : public GameManager
 {
 public:
     PlayAloneManager(AppManager* appManager);

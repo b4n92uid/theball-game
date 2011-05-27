@@ -7,10 +7,9 @@
 
 #include "AIControl.h"
 
-#include "PlayManager.h"
+#include "GameManager.h"
 #include "Player.h"
 #include "Item.h"
-#include "BldParser.h"
 
 #include "Define.h"
 
@@ -19,7 +18,7 @@ using namespace tbe::scene;
 
 // AIManager -------------------------------------------------------------------
 
-AIControl::AIControl(PlayManager* playManager)
+AIControl::AIControl(GameManager* playManager)
 : Controller(playManager), m_aiParams(playManager->manager.app->globalSettings.ai)
 {
     m_targetPlayer = NULL;

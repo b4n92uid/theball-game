@@ -6,10 +6,10 @@
  */
 
 #include "Controller.h"
-#include "PlayManager.h"
+#include "GameManager.h"
 #include "Player.h"
 
-Controller::Controller(PlayManager* playManager)
+Controller::Controller(GameManager* playManager)
 {
     m_playManager = playManager;
     m_worldSettings = playManager->manager.app->globalSettings.world;

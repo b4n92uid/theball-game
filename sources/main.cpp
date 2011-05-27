@@ -67,17 +67,6 @@ int main(int argc, char** argv)
             theBall.executeGame(ps);
         }
 
-        else if((index = isarg(argc, argv, "edit")) != -1)
-        {
-            // NOTE edit <level>
-
-            Settings::EditSetting es;
-            es.editMap = Settings::MapInfo(argv[index + 1]);
-            es.createNew = false;
-
-            theBall.executeEditor(es);
-        }
-
         else
         {
             theBall.executeMenu();

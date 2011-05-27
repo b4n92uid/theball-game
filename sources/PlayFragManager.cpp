@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   PlayFragManager.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 13 février 2010, 17:16
  */
 
@@ -17,7 +17,7 @@ class FragBillboardIcon : public tbe::scene::ParticlesEmiter
 {
 public:
 
-    FragBillboardIcon(PlayManager* playManager)
+    FragBillboardIcon(GameManager* playManager)
     : tbe::scene::ParticlesEmiter(playManager->parallelscene.particles),
     m_playManager(playManager)
     {
@@ -47,7 +47,7 @@ public:
             if(players[i] != m_playManager->getUserPlayer()
                && !players[i]->isKilled())
             {
-                particles[show].pos = players[i]->getPos() + Vector3f(0, 1, 0);
+                particles[show].pos = players[i]->getVisualBody()->getPos() + Vector3f(0, 1, 0);
                 show++;
             }
 
@@ -57,10 +57,10 @@ public:
     }
 
 protected:
-    PlayManager* m_playManager;
+    GameManager* m_playManager;
 };
 
-PlayFragManager::PlayFragManager(AppManager* appManager) : PlayManager(appManager)
+PlayFragManager::PlayFragManager(AppManager* appManager) : GameManager(appManager)
 {
     m_playersLabel = new FragBillboardIcon(this);
     m_playersLabel->setTexture(Texture(PARTICLE_PLAYER, true));

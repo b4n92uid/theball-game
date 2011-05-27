@@ -4,31 +4,29 @@
 #include <Tbe.h>
 #include <NewtonBall/NewtonBall.h>
 
-#include "Object.h"
+#include "MapElement.h"
 #include "Weapon.h"
 #include "Item.h"
 #include "Settings.h"
 #include "Controller.h"
 #include "BulletTime.h"
 
-class PlayManager;
+class GameManager;
 
 class SoundManager;
 class MaterialManager;
 
-class Player : public Object
+class Player : public MapElement
 {
 public:
 
     /// Constructeur
-    Player(PlayManager* playManager, std::string name, std::string model);
+    Player(GameManager* playManager, std::string name, std::string model);
 
     /// Destructeur
     ~Player();
 
-    Object* cloneToObject();
-
-    /** 
+    /**
      * Ajoute une arme au joueur
      * si l'arme existe déja on ajouter les munitions puis on la supprime
      */
@@ -55,7 +53,7 @@ public:
     /// Assigne les dommages et augemente le score
     void takeDammage(Bullet* ammo);
 
-    /** 
+    /**
      * Routine de traitement pour
      * le boost et les items
      */
@@ -95,12 +93,15 @@ public:
     void setScore(int value);
     int getScore() const;
 
+    void setName(std::string name);
+    std::string getName() const;
+
     /// Santé
     void upLife(int life);
     void setLife(int life);
     int getLife() const;
 
-    PlayManager* getPlayManager() const;
+    GameManager* getGameManager() const;
 
     void outputConstruction(std::iostream& stream)
     {
@@ -190,8 +191,12 @@ protected:
 
     tbe::scene::BurningEmitter* m_deadExplode;
 
-    PlayManager* m_playManager;
+    GameManager* m_playManager;
     SoundManager* m_soundManager;
+
+    tbe::scene::OBJMesh* m_visualBody;
+
+    std::string m_name;
 
     class StartProtection : public CheckMe
     {

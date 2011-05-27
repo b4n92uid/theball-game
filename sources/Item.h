@@ -4,13 +4,13 @@
 #include <Tbe.h>
 #include <NewtonBall/NewtonBall.h>
 
-#include "Object.h"
+#include "MapElement.h"
 
 class Player;
 class GameManager;
 class SoundManager;
 
-class Item : public Object
+class Item : public MapElement
 {
 public:
 
@@ -33,7 +33,7 @@ public:
     virtual void modifPlayer(Player* player) = 0;
 
     /**
-     * Fonction virutal pure pour la notiifcation 
+     * Fonction virutal pure pour la notiifcation
      * a un joueur de son besoin a cette item dans le cas
      * d'une inteligence artifiecielle
      */
@@ -55,6 +55,8 @@ protected:
     unsigned m_respawnTime;
     Settings::Ai& m_aiParams;
 
+    tbe::scene::OBJMesh* m_visualBody;
+
 private:
     bool m_taked;
     tbe::ticks::Clock m_rebornClock;
@@ -66,7 +68,6 @@ class ItemAddAmmo : public Item
 {
 public:
     ItemAddAmmo(GameManager* gameManager, tbe::Matrix4 pos);
-    Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
     void outputConstruction(std::iostream& stream);
@@ -78,7 +79,6 @@ class ItemAddLife : public Item
 {
 public:
     ItemAddLife(GameManager* gameManager, tbe::Matrix4 pos);
-    Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
     void outputConstruction(std::iostream& stream);
@@ -90,7 +90,6 @@ class ItemFatalShot : public Item
 {
 public:
     ItemFatalShot(GameManager* gameManager, tbe::Matrix4 pos);
-    Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
     void outputConstruction(std::iostream& stream);
@@ -102,7 +101,6 @@ class ItemSuperLife : public Item
 {
 public:
     ItemSuperLife(GameManager* gameManager, tbe::Matrix4 pos);
-    Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
     void outputConstruction(std::iostream& stream);
@@ -114,7 +112,6 @@ class ItemAddFinder : public Item
 {
 public:
     ItemAddFinder(GameManager* gameManager, tbe::Matrix4 pos);
-    Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
     void outputConstruction(std::iostream& stream);
@@ -126,7 +123,6 @@ class ItemAddBomb : public Item
 {
 public:
     ItemAddBomb(GameManager* gameManager, tbe::Matrix4 pos);
-    Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
     void outputConstruction(std::iostream& stream);
@@ -138,7 +134,6 @@ class ItemAddShotgun : public Item
 {
 public:
     ItemAddShotgun(GameManager* gameManager, tbe::Matrix4 pos);
-    Object* cloneToObject();
     void modifPlayer(Player* player);
     bool isNeeded(Player* player);
     void outputConstruction(std::iostream& stream);

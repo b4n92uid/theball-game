@@ -11,12 +11,12 @@
 #include "AIControl.h"
 
 class Player;
-class PlayManager;
+class GameManager;
 
 class AloneModeAi : public AIControl
 {
 public:
-    AloneModeAi(PlayManager* playManager);
+    AloneModeAi(GameManager* playManager);
     ~AloneModeAi();
 
     void process(Player* player);

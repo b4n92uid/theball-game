@@ -1,19 +1,19 @@
-/* 
+/*
  * File:   FragModeAi.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 15 juin 2010, 17:23
  */
 
 #include "FragModeAi.h"
 
-#include "PlayManager.h"
+#include "GameManager.h"
 #include "Player.h"
 
 using namespace std;
 using namespace tbe;
 
-FragModeAi::FragModeAi(PlayManager* playManager) : AIControl(playManager)
+FragModeAi::FragModeAi(GameManager* playManager) : AIControl(playManager)
 {
     m_gustCount = 0;
 }
@@ -64,10 +64,10 @@ void FragModeAi::process(Player* player)
 
     const Item::Array& items = m_playManager->map.items;
     //    const StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
-    const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
+    //    const DynamicObject::Array& dynamicObjects = m_playManager->map.dynamicObjects;
 
     Vector3f addForce;
-    Vector3f playerPos = player->getPos();
+    Vector3f playerPos = player->getVisualBody()->getPos();
 
     // -------------------------------------------------------------------------
 
@@ -79,31 +79,33 @@ void FragModeAi::process(Player* player)
 
     // -------------------------------------------------------------------------
 
-    m_targetOtp = NULL;
+    /*
+        m_targetOtp = NULL;
 
-    for(unsigned i = 0; i < dynamicObjects.size(); i++)
-    {
-        if(dynamicObjects[i]->getPos() - playerPos < m_aiParams.dynamicInteraction)
-            m_targetOtp = dynamicObjects[i];
-    }
+        for(unsigned i = 0; i < dynamicObjects.size(); i++)
+        {
+            if(dynamicObjects[i]->getPos() - playerPos < m_aiParams.dynamicInteraction)
+                m_targetOtp = dynamicObjects[i];
+        }
 
-    for(unsigned i = 0; i < items.size(); i++)
-    {
-        if(items[i]->isNeeded(player))
-            m_targetOtp = items[i];
-    }
+        for(unsigned i = 0; i < items.size(); i++)
+        {
+            if(items[i]->isNeeded(player))
+                m_targetOtp = items[i];
+        }
+     */
 
     // -------------------------------------------------------------------------
 
     if(m_targetOtp)
     {
-        addForce = m_targetOtp->getPos();
+        addForce = m_targetOtp->getVisualBody()->getPos();
     }
 
     else
     {
         if(m_targetPlayer)
-            m_targetPos = m_targetPlayer->getPos();
+            m_targetPos = m_targetPlayer->getVisualBody()->getPos();
 
         if(m_switchTarget.isEsplanedTime(m_aiParams.switchTargetTime)
            || m_strikePos - playerPos < m_minDistToSwith
@@ -114,10 +116,10 @@ void FragModeAi::process(Player* player)
             Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
 
             for(unsigned i = 0; i < players.size(); i++)
-                if(!players[i]->isKilled() && m_mapAABB.isInner(players[i])
+                if(!players[i]->isKilled() && m_mapAABB.isInner(players[i]->getVisualBody())
                    && players[i]->isVisibleFromIA())
                 {
-                    Vector3f testedDist = players[i]->getPos() - playerPos;
+                    Vector3f testedDist = players[i]->getVisualBody()->getPos() - playerPos;
 
                     if(testedDist < minDist)
                     {
@@ -128,7 +130,7 @@ void FragModeAi::process(Player* player)
 
             if(m_targetPlayer)
             {
-                m_targetPos = m_targetPlayer->getPos();
+                m_targetPos = m_targetPlayer->getVisualBody()->getPos();
 
                 do
                     m_strikePos = tools::rand(m_targetPos - m_strikPrimiter, m_targetPos + m_strikPrimiter);
@@ -165,7 +167,7 @@ void FragModeAi::process(Player* player)
             m_gustCount = 0;
     }
 
-    if((AABB(-1, 1) + m_lastPos).isInner(player)
+    if((AABB(-1, 1) + m_lastPos).isInner(player->getVisualBody())
        && m_lastPosClock.isEsplanedTime(2000))
     {
         do

@@ -1,19 +1,19 @@
-/* 
+/*
  * File:   AloneModeAi.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 15 juin 2010, 17:25
  */
 
 #include "AloneModeAi.h"
 
-#include "PlayManager.h"
+#include "GameManager.h"
 #include "Player.h"
 
 using namespace std;
 using namespace tbe;
 
-AloneModeAi::AloneModeAi(PlayManager* playManager) : AIControl(playManager)
+AloneModeAi::AloneModeAi(GameManager* playManager) : AIControl(playManager)
 {
 }
 
@@ -54,19 +54,19 @@ void AloneModeAi::process(Player* player)
         m_targetPlayer = m_playManager->getUserPlayer();
 
     Vector3f addForce;
-    Vector3f playerPos = player->getPos();
+    Vector3f playerPos = player->getVisualBody()->getPos();
 
     /*
         StaticObject::Array& staticObjects = m_playManager->map.staticObjects;
-    
+
         bool isCollidWithMap = false;
-    
+
         for(unsigned i = 0; i < staticObjects.size(); i++)
             if(isCollidWithMap = player->getPhysicBody()->IsCollidWith(staticObjects[i]->getPhysicBody()))
                 break;
      */
 
-    m_targetPos = m_targetPlayer->getPos();
+    m_targetPos = m_targetPlayer->getVisualBody()->getPos();
 
     if(m_switchTarget.isEsplanedTime(m_aiParams.switchTargetTime)
        || m_strikePos - playerPos < m_minDistToSwith)
@@ -101,7 +101,7 @@ void AloneModeAi::process(Player* player)
             m_gustCount = 0;
     }
 
-    if((AABB(-1, 1) + m_lastPos).isInner(player)
+    if((AABB(-1, 1) + m_lastPos).isInner(player->getVisualBody())
        && m_lastPosClock.isEsplanedTime(2000))
     {
         do

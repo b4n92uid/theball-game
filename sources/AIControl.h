@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   AIManager.h
  * Author: b4n92uid
  *
@@ -14,21 +14,21 @@
 #include "Controller.h"
 #include "Player.h"
 
-class PlayManager;
+class GameManager;
 class Player;
 class Item;
 
 class AIControl : public Controller
 {
 public:
-    AIControl(PlayManager* playManager);
+    AIControl(GameManager* playManager);
     ~AIControl();
 
     typedef std::map<Player*, AIControl*> Map;
 
 protected:
     Player* m_targetPlayer;
-    Object* m_targetOtp;
+    MapElement* m_targetOtp;
 
     tbe::AABB m_mapAABB;
 

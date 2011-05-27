@@ -1,14 +1,13 @@
-/* 
+/*
  * File:   MaterialManager.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 10 novembre 2009, 15:04
  */
 
 #include "MaterialManager.h"
 
 #include "GameManager.h"
-#include "PlayManager.h"
 
 #include "Item.h"
 #include "Weapon.h"
@@ -31,29 +30,26 @@ MaterialManager::MaterialManager(GameManager * gameManager)
     m_bulletGroupe = NewtonMaterialCreateGroupID(m_world);
     m_playersGroupe = NewtonMaterialCreateGroupID(m_world);
     m_itemGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_staticGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_dynamicGroupe = NewtonMaterialCreateGroupID(m_world);
+    m_elementsGroupe = NewtonMaterialCreateGroupID(m_world);
     m_ghostGroupe = NewtonMaterialCreateGroupID(m_world);
 
-    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_dynamicGroupe, this, NULL, PlayerOnDynamicContactsProcess);
+    // NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, this, NULL, PlayerOnDynamicContactsProcess);
     // NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_staticGroupe, this, NULL, PlayerOnStaticContactsProcess);
 
-    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_itemGroupe, this, PlayerOnItemsAABBOverlape, NULL);
+    // NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_itemGroupe, this, PlayerOnItemsAABBOverlape, NULL);
 
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_dynamicGroupe, this, NULL, BulletOnMapContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_staticGroupe, this, NULL, BulletOnMapContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_itemGroupe, this, NULL, BulletOnMapContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
+    // NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
+    // NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_itemGroupe, this, NULL, BulletOnMapContactsProcess);
+    // NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
 
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_itemGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_staticGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_dynamicGroupe, false);
+    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
+    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
+    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_itemGroupe, false);
+    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_elementsGroupe, false);
     // NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_itemGroupe, false);
 
 
-    NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_staticGroupe, worldSettings.staticFriction, worldSettings.keniticFriction);
+    // NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_staticGroupe, worldSettings.staticFriction, worldSettings.keniticFriction);
 }
 
 MaterialManager::~MaterialManager()
@@ -61,7 +57,7 @@ MaterialManager::~MaterialManager()
     NewtonMaterialDestroyAllGroupID(m_world);
 }
 
-void MaterialManager::setGhost(Object* body, bool state)
+void MaterialManager::setGhost(MapElement* body, bool state)
 {
     NewtonNode* xbody = body->getPhysicBody();
 
@@ -85,14 +81,9 @@ void MaterialManager::setGhost(Object* body, bool state)
     }
 }
 
-void MaterialManager::addDynamic(DynamicObject* body)
+void MaterialManager::addElement(MapElement* body)
 {
-    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_dynamicGroupe);
-}
-
-void MaterialManager::addStatic(StaticObject* body)
-{
-    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_staticGroupe);
+    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_elementsGroupe);
 }
 
 void MaterialManager::addBullet(Bullet* body)
@@ -125,16 +116,12 @@ int MaterialManager::getItemGroupe() const
     return m_itemGroupe;
 }
 
-int MaterialManager::getDynamicGroupe() const
+int MaterialManager::getElementsGroupe() const
 {
-    return m_dynamicGroupe;
+    return m_elementsGroupe;
 }
 
-int MaterialManager::getStaticGroupe() const
-{
-    return m_staticGroupe;
-}
-
+/*
 void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
@@ -269,7 +256,7 @@ int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material,
     }
 
     striker = bullet->getWeapon()->getShooter();
-    PlayManager* playManager = striker->getPlayManager();
+    GameManager* playManager = striker->getGameManager();
 
     if(striked == striker)
         return 0;
@@ -311,3 +298,4 @@ int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material,
 
     return 0;
 }
+ */

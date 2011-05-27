@@ -1,7 +1,6 @@
 #include "Item.h"
 
 #include "GameManager.h"
-#include "PlayManager.h"
 #include "MaterialManager.h"
 #include "SoundManager.h"
 #include "Player.h"
@@ -17,12 +16,16 @@ using namespace tbe::scene;
 // Item ------------------------------------------------------------------
 
 Item::Item(GameManager* gameManager, tbe::Matrix4 pos)
-: Object(gameManager), m_aiParams(gameManager->manager.app->globalSettings.ai)
+: MapElement(gameManager), m_aiParams(gameManager->manager.app->globalSettings.ai)
 {
     m_taked = false;
+
     m_initialMatrix = pos;
-    m_matrix = m_initialMatrix;
+
     m_respawnTime = m_worldSettings.itemRespawnTime;
+
+    m_visualBody = new OBJMesh(gameManager->parallelscene.meshs);
+    m_visualBody->setMatrix(m_initialMatrix);
 }
 
 Item::~Item()
@@ -57,7 +60,7 @@ void Item::setTaked(bool taked)
 {
     this->m_taked = taked;
 
-    setEnable(!taked);
+    m_visualBody->setEnable(!taked);
     m_gameManager->manager.material->setGhost(this, taked);
 
     if(taked)
@@ -78,22 +81,18 @@ bool Item::isReadyToReborn()
 
 ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
-    open(ITEM_AMMOPACK);
+    m_visualBody->open(ITEM_AMMOPACK);
 
-    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->buildConvexNode(m_visualBody->getHardwareBuffer().getAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-}
 
-Object* ItemAddAmmo::cloneToObject()
-{
-    Item* it = new ItemAddAmmo(m_gameManager, m_matrix);
-    m_gameManager->registerItem(it);
-    return it;
+    MapElement::m_visualBody = m_visualBody;
 }
 
 void ItemAddAmmo::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->getPlayManager();
+    GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
         playManager->log("Munitions supplémentaire");
@@ -115,37 +114,20 @@ bool ItemAddAmmo::isNeeded(Player* player)
     return false;
 }
 
-void ItemAddAmmo::outputConstruction(std::iostream& stream)
-{
-    using namespace std;
-
-    stream << "+node" << endl;
-    stream << "type=ITEM" << endl;
-    stream << "matrix=" << m_matrix << endl;
-    stream << "add=AMMO" << endl;
-    stream << endl;
-}
-
 // ItemAddLife -----------------------------------------------------------------
 
 ItemAddLife::ItemAddLife(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
-    open(ITEM_MEDPACK);
+    m_visualBody->open(ITEM_MEDPACK);
 
-    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->buildConvexNode(m_visualBody->getHardwareBuffer().getAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-}
-
-Object* ItemAddLife::cloneToObject()
-{
-    Item* it = new ItemAddLife(m_gameManager, m_matrix);
-    m_gameManager->registerItem(it);
-    return it;
 }
 
 void ItemAddLife::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->getPlayManager();
+    GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
         playManager->log("Santé supplémentaire");
@@ -165,33 +147,15 @@ bool ItemAddLife::isNeeded(Player* player)
     return false;
 }
 
-void ItemAddLife::outputConstruction(std::iostream& stream)
-{
-    using namespace std;
-
-    stream << "+node" << endl;
-    stream << "type=ITEM" << endl;
-    stream << "matrix=" << m_matrix << endl;
-    stream << "add=LIFE" << endl;
-    stream << endl;
-}
-
-
 // ItemFatalShot ---------------------------------------------------------------
 
 ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
-    open(ITEM_FATALSHOT);
+    m_visualBody->open(ITEM_FATALSHOT);
 
-    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->buildConvexNode(m_visualBody->getHardwareBuffer().getAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-}
-
-Object* ItemFatalShot::cloneToObject()
-{
-    Item* it = new ItemFatalShot(m_gameManager, m_matrix);
-    m_gameManager->registerItem(it);
-    return it;
 }
 
 class FatalShotEffect : public Player::CheckMe
@@ -202,7 +166,7 @@ public:
     {
         if(effectTime.isEsplanedTime(8000))
         {
-            PlayManager* playManager = player->getPlayManager();
+            GameManager* playManager = player->getGameManager();
 
             player->getCurWeapon()->setMaxAmmoDammage(initialDammage);
 
@@ -222,7 +186,7 @@ public:
 
 void ItemFatalShot::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->getPlayManager();
+    GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
     {
@@ -244,38 +208,21 @@ void ItemFatalShot::modifPlayer(Player* player)
 
 bool ItemFatalShot::isNeeded(Player* player)
 {
-    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
+    if(!isTaked() && player->getVisualBody()->getPos() - m_visualBody->getPos() < 4.0f)
         return true;
 
     return false;
-}
-
-void ItemFatalShot::outputConstruction(std::iostream& stream)
-{
-    using namespace std;
-
-    stream << "+node" << endl;
-    stream << "type=ITEM" << endl;
-    stream << "matrix=" << m_matrix << endl;
-    stream << "add=FATALSHOT" << endl;
-    stream << endl;
 }
 
 // ItemSuperLife ---------------------------------------------------------------
 
 ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
-    open(ITEM_SUPERLIFE);
+    m_visualBody->open(ITEM_SUPERLIFE);
 
-    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->buildConvexNode(m_visualBody->getHardwareBuffer().getAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-}
-
-Object* ItemSuperLife::cloneToObject()
-{
-    Item* it = new ItemSuperLife(m_gameManager, m_matrix);
-    m_gameManager->registerItem(it);
-    return it;
 }
 
 class SuperLifeEffect : public Player::CheckMe
@@ -291,7 +238,7 @@ public:
     {
         if(effectTime.isEsplanedTime(8000))
         {
-            PlayManager* playManager = player->getPlayManager();
+            GameManager* playManager = player->getGameManager();
 
             if(playManager->getUserPlayer() == player)
                 playManager->hudItem(false);
@@ -307,7 +254,7 @@ public:
 
 void ItemSuperLife::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->getPlayManager();
+    GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
     {
@@ -328,43 +275,26 @@ void ItemSuperLife::modifPlayer(Player* player)
 
 bool ItemSuperLife::isNeeded(Player* player)
 {
-    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
+    if(!isTaked() && player->getVisualBody()->getPos() - m_visualBody->getPos() < 4.0f)
         return true;
 
     return false;
-}
-
-void ItemSuperLife::outputConstruction(std::iostream& stream)
-{
-    using namespace std;
-
-    stream << "+node" << endl;
-    stream << "type=ITEM" << endl;
-    stream << "matrix=" << m_matrix << endl;
-    stream << "add=SUPERLIFE" << endl;
-    stream << endl;
 }
 
 // ItemAddFinder ---------------------------------------------------------------
 
 ItemAddFinder::ItemAddFinder(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
-    open(ITEM_ADDFINDER);
+    m_visualBody->open(ITEM_ADDFINDER);
 
-    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->buildConvexNode(m_visualBody->getHardwareBuffer().getAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-}
-
-Object* ItemAddFinder::cloneToObject()
-{
-    Item* it = new ItemAddFinder(m_gameManager, m_matrix);
-    m_gameManager->registerItem(it);
-    return it;
 }
 
 void ItemAddFinder::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->getPlayManager();
+    GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
         playManager->log("Arme : Finder");
@@ -379,43 +309,26 @@ void ItemAddFinder::modifPlayer(Player* player)
 
 bool ItemAddFinder::isNeeded(Player* player)
 {
-    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
+    if(!isTaked() && player->getVisualBody()->getPos() - m_visualBody->getPos() < 4.0f)
         return true;
 
     return false;
-}
-
-void ItemAddFinder::outputConstruction(std::iostream& stream)
-{
-    using namespace std;
-
-    stream << "+node" << endl;
-    stream << "type=ITEM" << endl;
-    stream << "matrix=" << m_matrix << endl;
-    stream << "add=FINDER" << endl;
-    stream << endl;
 }
 
 // ItemAddBomb -----------------------------------------------------------------
 
 ItemAddBomb::ItemAddBomb(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
-    open(ITEM_ADDBOMB);
+    m_visualBody->open(ITEM_ADDBOMB);
 
-    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->buildConvexNode(m_visualBody->getHardwareBuffer().getAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-}
-
-Object* ItemAddBomb::cloneToObject()
-{
-    Item* it = new ItemAddBomb(m_gameManager, m_matrix);
-    m_gameManager->registerItem(it);
-    return it;
 }
 
 void ItemAddBomb::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->getPlayManager();
+    GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
         playManager->log("Arme : Bomb");
@@ -430,43 +343,26 @@ void ItemAddBomb::modifPlayer(Player* player)
 
 bool ItemAddBomb::isNeeded(Player* player)
 {
-    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
+    if(!isTaked() && player->getVisualBody()->getPos() - m_visualBody->getPos() < 4.0f)
         return true;
 
     return false;
-}
-
-void ItemAddBomb::outputConstruction(std::iostream& stream)
-{
-    using namespace std;
-
-    stream << "+node" << endl;
-    stream << "type=ITEM" << endl;
-    stream << "matrix=" << m_matrix << endl;
-    stream << "add=BOMB" << endl;
-    stream << endl;
 }
 
 // ItemAddShotgun --------------------------------------------------------------
 
 ItemAddShotgun::ItemAddShotgun(GameManager* gameManager, tbe::Matrix4 pos) : Item(gameManager, pos)
 {
-    open(ITEM_ADDSHOTGUN);
+    m_visualBody->open(ITEM_ADDSHOTGUN);
 
-    m_physicBody->buildConvexNode(m_hardwareBuffer.getAllVertex(), 1.0);
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->buildConvexNode(m_visualBody->getHardwareBuffer().getAllVertex(), 1.0);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-}
-
-Object* ItemAddShotgun::cloneToObject()
-{
-    Item* it = new ItemAddShotgun(m_gameManager, m_matrix);
-    m_gameManager->registerItem(it);
-    return it;
 }
 
 void ItemAddShotgun::modifPlayer(Player* player)
 {
-    PlayManager* playManager = player->getPlayManager();
+    GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
         playManager->log("Arme : Shotgun");
@@ -481,19 +377,8 @@ void ItemAddShotgun::modifPlayer(Player* player)
 
 bool ItemAddShotgun::isNeeded(Player* player)
 {
-    if(!isTaked() && player->getPos() - m_matrix.getPos() < 4.0f)
+    if(!isTaked() && player->getVisualBody()->getPos() - m_visualBody->getPos() < 4.0f)
         return true;
 
     return false;
-}
-
-void ItemAddShotgun::outputConstruction(std::iostream& stream)
-{
-    using namespace std;
-
-    stream << "+node" << endl;
-    stream << "type=ITEM" << endl;
-    stream << "matrix=" << m_matrix << endl;
-    stream << "add=SHOTGUN" << endl;
-    stream << endl;
 }

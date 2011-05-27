@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   MaterialManager.h
  * Author: b4n92uid
  *
@@ -12,8 +12,7 @@
 
 #include "Weapon.h"
 #include "Item.h"
-#include "StaticObject.h"
-#include "DynamicObject.h"
+#include "MapElement.h"
 
 class GameManager;
 
@@ -23,19 +22,17 @@ public:
     MaterialManager(GameManager* playManager);
     virtual ~MaterialManager();
 
-    void setGhost(Object* body, bool state);
+    void setGhost(MapElement* body, bool state);
 
     void addBullet(Bullet* body);
     void addPlayer(Player* body);
-    void addStatic(StaticObject* body);
-    void addDynamic(DynamicObject* body);
+    void addElement(MapElement* body);
     void addItem(Item* body);
 
     int getPlayersGroupe() const;
     int getWeaponsGroupe() const;
     int getItemGroupe() const;
-    int getDynamicGroupe() const;
-    int getStaticGroupe() const;
+    int getElementsGroupe() const;
 
 protected:
 
@@ -64,6 +61,7 @@ protected:
                                                            NewtonBodyGetMaterialGroupID(body1));
     }
 
+    /*
     void mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int);
     int mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
     int mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
@@ -113,12 +111,12 @@ protected:
         if(matmanager)
             matmanager->mPlayerOnStaticContactsProcess(contact, timestep, threadIndex);
     }
+     */
 
 protected:
     NewtonWorld* m_world;
     GameManager* m_gameManager;
-    int m_staticGroupe;
-    int m_dynamicGroupe;
+    int m_elementsGroupe;
     int m_bulletGroupe;
     int m_playersGroupe;
     int m_itemGroupe;

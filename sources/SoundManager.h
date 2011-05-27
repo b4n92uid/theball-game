@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   SoundManager.h
  * Author: b4n92uid
  *
@@ -13,7 +13,7 @@
 
 #include <Tbe.h>
 
-class Object;
+class MapElement;
 class GameManager;
 
 class SoundManager
@@ -27,7 +27,7 @@ public:
     void registerSound(std::string name, std::string filename);
 
     /// Jouer un son
-    void play(std::string soundName, Object* object);
+    void play(std::string soundName, MapElement* object);
 
     typedef std::map<std::string, FMOD_SOUND*> SoundMap;
 

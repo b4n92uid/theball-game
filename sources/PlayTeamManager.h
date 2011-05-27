@@ -8,9 +8,9 @@
 #ifndef _PLAYTEAMMANAGER_H
 #define	_PLAYTEAMMANAGER_H
 
-#include "PlayManager.h"
+#include "GameManager.h"
 
-class PlayTeamManager : public PlayManager
+class PlayTeamManager : public GameManager
 {
 public:
     PlayTeamManager(AppManager* appManager);

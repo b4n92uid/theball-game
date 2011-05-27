@@ -8,9 +8,9 @@
 #ifndef _PLAYFRAGMANAGER_H
 #define	_PLAYFRAGMANAGER_H
 
-#include "PlayManager.h"
+#include "GameManager.h"
 
-class PlayFragManager : public PlayManager
+class PlayFragManager : public GameManager
 {
 public:
     PlayFragManager(AppManager* appManager);

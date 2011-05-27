@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   BulletTime.h
  * Author: b4n92uid
  *
@@ -9,13 +9,13 @@
 #define	BULLETTIME_H
 
 class Player;
-class PlayManager;
+class GameManager;
 class SoundManager;
 
 class BulletTime
 {
 public:
-    BulletTime(PlayManager* playManager);
+    BulletTime(GameManager* gameManager);
     virtual ~BulletTime();
 
     void process();
@@ -30,7 +30,7 @@ private:
     float m_value;
     bool m_active;
     Player* m_userPlayer;
-    PlayManager* m_playManager;
+    GameManager* m_gameManager;
     SoundManager* m_soundManager;
 };
 

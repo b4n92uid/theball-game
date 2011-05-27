@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   SoundManager.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 10 novembre 2009, 15:04
  */
 
@@ -10,7 +10,7 @@
 #include "GameManager.h"
 #include "Player.h"
 #include "Define.h"
-#include "StaticObject.h"
+#include "MapElement.h"
 
 #include <fmod_errors.h>
 
@@ -73,7 +73,7 @@ void SoundManager::registerSound(std::string name, std::string filename)
     }
 }
 
-void SoundManager::play(std::string soundName, Object* object)
+void SoundManager::play(std::string soundName, MapElement* object)
 {
     #if !defined(THEBALL_DISABLE_SOUND) && !defined(THEBALL_NO_AUDIO)
     FMOD_CHANNEL* channel;
@@ -81,7 +81,7 @@ void SoundManager::play(std::string soundName, Object* object)
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
 
     FMOD_Channel_Set3DAttributes(channel,
-                                 (FMOD_VECTOR*)(float*)object->getPos(),
+                                 (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
 
     processEffect(soundName, channel);
@@ -92,5 +92,7 @@ void SoundManager::play(std::string soundName, Object* object)
 
 void SoundManager::processEffect(std::string soundName, FMOD_CHANNEL* channel)
 {
-
+    if(!m_gameManager->manager.app->globalSettings.noaudio)
+        if(m_gameManager->getBullettime()->isActive())
+            FMOD_Channel_SetFrequency(channel, 22050);
 }
