@@ -9,8 +9,6 @@
 #include "GameManager.h"
 #include "SoundManager.h"
 
-#include <lua.h>
-
 MapElement::MapElement(GameManager* gameManager)
 {
     m_gameManager = gameManager;
@@ -43,4 +41,14 @@ void MapElement::setPhysicBody(tbe::scene::NewtonNode* physicBody)
 tbe::scene::NewtonNode* MapElement::getPhysicBody() const
 {
     return m_physicBody;
+}
+
+void MapElement::setId(std::string id)
+{
+    this->m_id = id;
+}
+
+std::string MapElement::getId() const
+{
+    return m_id;
 }

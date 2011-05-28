@@ -36,7 +36,6 @@ void Settings::readGui()
     binder["BACKGROUND_DAMMAGE"] = &gui.backgroundDammage;
     binder["BACKGROUND_HUD"] = &gui.backgroundHud;
     binder["BACKGROUND_PAUSE"] = &gui.backgroundPause;
-    binder["BACKGROUND_LOAD"] = &gui.backgroundLoad;
     binder["BACKGROUND_TEXTBOX_V"] = &gui.backgroundTextboxV;
     binder["BACKGROUND_TEXTBOX_H"] = &gui.backgroundTextboxH;
     binder["BACKGROUND_LISTBOX_V"] = &gui.backgroundListboxV;

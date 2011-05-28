@@ -108,11 +108,12 @@ void UserControl::process(Player* player)
     bool collideWithStatic = false;
 
     for(unsigned i = 0; i < m_playManager->map.mapElements.size(); i++)
-        if(playerCanJump(player->getPhysicBody(), m_playManager->map.mapElements[i]->getPhysicBody()))
-        {
-            collideWithStatic = true;
-            break;
-        }
+        if(m_playManager->map.mapElements[i]->getPhysicBody())
+            if(playerCanJump(player->getPhysicBody(), m_playManager->map.mapElements[i]->getPhysicBody()))
+            {
+                collideWithStatic = true;
+                break;
+            }
 
     // Move
     Vector3f addForce;

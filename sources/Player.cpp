@@ -17,20 +17,6 @@ using namespace tbe::scene;
 
 Player::Player(GameManager* playManager, std::string name, std::string model) : MapElement(playManager)
 {
-    // Rendue
-    m_visualBody = new OBJMesh(m_gameManager->parallelscene.meshs);
-    m_visualBody->open(model);
-
-    // Physique
-    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
-    m_physicBody->setUpdatedMatrix(&m_visualBody->getMatrix());
-    m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
-
-    toNextSpawnPos();
-
-    NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
-    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-
     // Attributes
     m_name = name;
     m_playManager = playManager;
@@ -43,6 +29,12 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     m_attachedCotroller = NULL;
     m_soundManager = playManager->manager.sound;
 
+    // Rendue
+    m_visualBody = new OBJMesh(m_gameManager->parallelscene.meshs);
+    m_visualBody->open(model);
+
+    MapElement::m_visualBody = m_visualBody;
+
     // Effet explosion
     m_deadExplode = new BurningEmitter(playManager->parallelscene.particles);
     m_deadExplode->setTexture(PARTICLE_EXPLODE);
@@ -54,6 +46,18 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     m_deadExplode->setParent(m_visualBody);
 
     m_checkMe.push_back(new StartProtection(this));
+
+    // Physique
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->setUpdatedMatrix(&m_visualBody->getMatrix());
+    m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
+
+    m_visualBody->addChild(m_physicBody);
+
+    toNextSpawnPos();
+
+    NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
+    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);

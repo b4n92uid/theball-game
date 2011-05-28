@@ -169,9 +169,9 @@ void PlayAloneManager::modUpdateGameOverText(std::ostringstream& ss)
     if(m_playSetting.winCond > 0)
     {
         if(m_userPlayer->getScore() >= (int)m_playSetting.winCond)
-            ss << "<< VOUS AVEZ GANGEZ !!! >>" << endl;
+            ss << "<< Vous avez gagné !!! >>" << endl;
         else
-            ss << "<< VOUS AVEZ PERDU !!! >>" << endl;
+            ss << "<< Vous avez perdu !!! >>" << endl;
 
         ss << endl;
     }

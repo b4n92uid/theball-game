@@ -33,23 +33,21 @@ MaterialManager::MaterialManager(GameManager * gameManager)
     m_elementsGroupe = NewtonMaterialCreateGroupID(m_world);
     m_ghostGroupe = NewtonMaterialCreateGroupID(m_world);
 
-    // NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, this, NULL, PlayerOnDynamicContactsProcess);
-    // NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_staticGroupe, this, NULL, PlayerOnStaticContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, this, NULL, PlayerOnStaticContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_itemGroupe, this, PlayerOnItemsAABBOverlape, NULL);
 
-    // NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_itemGroupe, this, PlayerOnItemsAABBOverlape, NULL);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_itemGroupe, this, NULL, BulletOnMapContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
 
-    // NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
-    // NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_itemGroupe, this, NULL, BulletOnMapContactsProcess);
-    // NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
-
-    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
-    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
-    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_itemGroupe, false);
-    // NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_elementsGroupe, false);
-    // NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_itemGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_itemGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_elementsGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_itemGroupe, false);
 
 
-    // NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_staticGroupe, worldSettings.staticFriction, worldSettings.keniticFriction);
+    NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_elementsGroupe, worldSettings.staticFriction, worldSettings.keniticFriction);
 }
 
 MaterialManager::~MaterialManager()
@@ -121,7 +119,6 @@ int MaterialManager::getElementsGroupe() const
     return m_elementsGroupe;
 }
 
-/*
 void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
@@ -147,35 +144,6 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
         player = getParentUserData<Player*>(body1);
         obj = getParentUserData<NewtonNode*>(body0);
     }
-}
-
-void MaterialManager::mPlayerOnDynamicContactsProcess(const NewtonJoint* contact, dFloat, int)
-{
-    NewtonBody* body0 = NewtonJointGetBody0(contact);
-    NewtonBody* body1 = NewtonJointGetBody1(contact);
-
-    int group0 = NewtonBodyGetMaterialGroupID(body0);
-    int group1 = NewtonBodyGetMaterialGroupID(body1);
-
-    if(group0 == group1 || group0 == m_ghostGroupe || group1 == m_ghostGroupe)
-        return;
-
-    Player* player = NULL;
-    DynamicObject* obj = NULL;
-
-    if(group0 == m_playersGroupe)
-    {
-        obj = getParentUserData<DynamicObject*>(body1);
-        player = getParentUserData<Player*>(body0);
-    }
-
-    else if(group1 == m_playersGroupe)
-    {
-        obj = getParentUserData<DynamicObject*>(body0);
-        player = getParentUserData<Player*>(body1);
-    }
-
-    obj->interactWith(player);
 }
 
 int MaterialManager::mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
@@ -298,4 +266,3 @@ int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material,
 
     return 0;
 }
- */

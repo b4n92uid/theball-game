@@ -130,7 +130,6 @@ public:
         std::string backgroundDammage;
         std::string backgroundHud;
         std::string backgroundPause;
-        std::string backgroundLoad;
         std::string backgroundTextboxV;
         std::string backgroundTextboxH;
         std::string backgroundListboxV;

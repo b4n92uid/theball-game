@@ -13,6 +13,7 @@
 #include "Weapon.h"
 #include "FragModeAi.h"
 #include "SoundManager.h"
+#include "StaticElement.h"
 
 #include <boost/format.hpp>
 
@@ -153,7 +154,6 @@ GameManager::~GameManager()
     delete m_bullettime;
 
     manager.scene->clearAll();
-
 }
 
 void GameManager::setupMap(const Settings::PartySetting& playSetting)
@@ -165,7 +165,36 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     // SCENE -------------------------------------------------------------------
 
     scene::SceneParser levelloader(manager.scene);
+    levelloader.setMeshScene(parallelscene.meshs);
+    levelloader.setParticlesScene(parallelscene.particles);
+    levelloader.setLightScene(parallelscene.light);
+
     levelloader.loadScene(m_playSetting.playMap.file);
+
+    for(Iterator<scene::Mesh*> it = parallelscene.meshs->iterator(); it; it++)
+    {
+        StaticElement* elem = new StaticElement(this, *it);
+
+        registerElement(elem);
+    }
+
+    for(Iterator<scene::ParticlesEmiter*> it = parallelscene.particles->iterator(); it; it++)
+    {
+        MapElement* elem = new MapElement(this);
+        elem->setVisualBody(*it);
+        elem->setId(it->getName());
+
+        registerElement(elem);
+    }
+
+    for(Iterator<scene::Light*> it = parallelscene.light->iterator(); it; it++)
+    {
+        MapElement* elem = new MapElement(this);
+        elem->setVisualBody(*it);
+        elem->setId(it->getName());
+
+        registerElement(elem);
+    }
 
     // Marge
     map.aabb.add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
@@ -195,10 +224,10 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     m_userPlayer = new Player(this, m_playSetting.playerName.nick, m_playSetting.playerName.model);
     m_userPlayer->attachController(new UserControl(this));
 
-    manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
-
     registerPlayer(m_userPlayer);
     modSetupUser(m_userPlayer);
+
+    manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
 
     m_bullettime = new BulletTime(this);
 
@@ -458,10 +487,10 @@ void GameManager::processDevelopperCodeEvent()
             Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
 
             Player* player = new Player(this, "TEST_BOT", pi.model);
+            player->attachController(NULL);
+
             registerPlayer(player);
             modSetupAi(player);
-
-            player->attachController(NULL);
 
             manager.scene->getRootNode()->addChild(player->getVisualBody());
         }
@@ -610,11 +639,11 @@ void GameManager::gameProcess()
             unsigned selectName = tools::rand(0, m_botNames.size());
 
             Player* player = new Player(this, m_botNames[selectName], pi.model);
+
             registerPlayer(player);
+            modSetupAi(player);
 
             manager.scene->getRootNode()->addChild(player->getVisualBody());
-
-            modSetupAi(player);
 
             manager.sound->play("respawn", player);
 
@@ -630,6 +659,8 @@ void GameManager::gameProcess()
     for(unsigned i = 0; i < m_players.size(); i++)
     {
         Player* player = m_players[i];
+
+        player->process();
 
         if(player->isKilled())
         {
@@ -993,20 +1024,6 @@ bool GameManager::isRunning() const
     return m_running;
 }
 
-void GameManager::registerPlayer(Player* player)
-{
-    manager.material->addPlayer(player);
-
-    m_players.push_back(player);
-}
-
-void GameManager::unregisterPlayer(Player* player)
-{
-    Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
-
-    m_players.erase(it);
-}
-
 void GameManager::hudItem(bool status)
 {
     hud.item->setCurState(status);
@@ -1068,25 +1085,13 @@ const Player::Array GameManager::getTargetsOf(Player* player) const
     return array;
 }
 
-void GameManager::registerItem(Item* item)
-{
-    manager.material->addItem(item);
-    map.items.push_back(item);
-}
-
 void GameManager::registerElement(MapElement* elem)
 {
-    manager.material->addElement(elem);
+    if(elem->getPhysicBody())
+        manager.material->addElement(elem);
+
     map.mapElements.push_back(elem);
     map.aabb.count(elem->getVisualBody());
-}
-
-void GameManager::unregisterItem(Item* item)
-{
-    Item::Array::iterator it = find(map.items.begin(),
-                                    map.items.end(), item);
-
-    map.items.erase(it);
 }
 
 void GameManager::unregisterElement(MapElement* staticObject)
@@ -1095,4 +1100,31 @@ void GameManager::unregisterElement(MapElement* staticObject)
                                           map.mapElements.end(), staticObject);
 
     map.mapElements.erase(it);
+}
+
+void GameManager::registerPlayer(Player* player)
+{
+    manager.material->addPlayer(player);
+    m_players.push_back(player);
+}
+
+void GameManager::unregisterPlayer(Player* player)
+{
+    Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
+
+    m_players.erase(it);
+}
+
+void GameManager::registerItem(Item* item)
+{
+    manager.material->addItem(item);
+    map.items.push_back(item);
+}
+
+void GameManager::unregisterItem(Item* item)
+{
+    Item::Array::iterator it = find(map.items.begin(),
+                                    map.items.end(), item);
+
+    map.items.erase(it);
 }

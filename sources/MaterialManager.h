@@ -61,11 +61,9 @@ protected:
                                                            NewtonBodyGetMaterialGroupID(body1));
     }
 
-    /*
     void mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int);
     int mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
     int mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
-    void mPlayerOnDynamicContactsProcess(const NewtonJoint* contact, dFloat, int);
     void mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex);
 
     static void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat f, int i)
@@ -96,14 +94,6 @@ protected:
             return 0;
     }
 
-    static void PlayerOnDynamicContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
-    {
-        MaterialManager* matmanager = getMaterialManager(contact);
-
-        if(matmanager)
-            matmanager->mPlayerOnDynamicContactsProcess(contact, timestep, threadIndex);
-    }
-
     static void PlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
     {
         MaterialManager* matmanager = getMaterialManager(contact);
@@ -111,7 +101,6 @@ protected:
         if(matmanager)
             matmanager->mPlayerOnStaticContactsProcess(contact, timestep, threadIndex);
     }
-     */
 
 protected:
     NewtonWorld* m_world;

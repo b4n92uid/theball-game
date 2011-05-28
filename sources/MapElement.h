@@ -12,10 +12,11 @@
 #include <vector>
 #include <string>
 
-#include "AppManager.h"
+#include <lua.h>
 
 #include <NewtonBall/NewtonBall.h>
 
+#include "AppManager.h"
 
 class SoundManager;
 class GameManager;
@@ -31,6 +32,9 @@ public:
 
     void setPhysicBody(tbe::scene::NewtonNode* physicBody);
     tbe::scene::NewtonNode* getPhysicBody() const;
+
+    void setId(std::string id);
+    std::string getId() const;
 
     typedef std::map<std::string, MapElement*> Map;
     typedef std::vector<MapElement*> Array;
@@ -51,6 +55,8 @@ protected:
 
     tbe::scene::NewtonNode* m_physicBody;
     tbe::scene::Node* m_visualBody;
+
+    std::string m_id;
 };
 
 #endif	/* MAPELEMENT_H */

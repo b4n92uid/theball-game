@@ -223,7 +223,6 @@ void AppManager::setupMenuGui()
     m_guiManager->addButton("about", "A Propos");
     m_guiManager->addButton("score", "Scores");
     m_guiManager->addButton("setting", "Options");
-    m_guiManager->addButton("editor", "Editeur");
     m_guiManager->addButton("quickplay", "Partie rapide");
     m_guiManager->addButton("campaign", "Jouer");
 
@@ -359,7 +358,7 @@ void AppManager::setupMenuGui()
 
     m_guiManager->setSession(MENU_LOAD);
 
-    m_guiManager->addImage("", globalSettings.gui.backgroundLoad)
+    m_guiManager->addImage("", globalSettings.gui.backgroundMainmenu)
             ->setSize(screenSize);
 
     m_guiManager->addLayout(Layout::Horizental, 0, 10);
