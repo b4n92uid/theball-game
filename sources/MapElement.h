@@ -12,8 +12,6 @@
 #include <vector>
 #include <string>
 
-#include <lua.h>
-
 #include <NewtonBall/NewtonBall.h>
 
 #include "AppManager.h"

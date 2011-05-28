@@ -66,6 +66,7 @@ GameManager::GameManager(AppManager* appManager)
 
     manager.material = new MaterialManager(this);
     manager.sound = new SoundManager(this);
+    manager.script = new ScriptActions(this);
 
     map.musicStream = NULL;
     map.musicChannel = 0;
@@ -230,6 +231,13 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
 
     m_bullettime = new BulletTime(this);
+
+    // SCRIPT ------------------------------------------------------------------
+
+    string scriptpath = levelloader.getAdditional<string > ("script");
+    scriptpath = tools::pathScope(m_playSetting.playMap.file, scriptpath, true);
+
+    manager.script->load(scriptpath);
 
     // PPE ---------------------------------------------------------------------
 

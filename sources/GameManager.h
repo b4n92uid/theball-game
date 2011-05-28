@@ -14,6 +14,8 @@
 #include "MapElement.h"
 #include "AIControl.h"
 
+#include "ScriptActions.h"
+
 class UserControl;
 class MaterialManager;
 
@@ -117,6 +119,8 @@ public:
         AppManager* app;
 
         FMOD_SYSTEM* fmodsys;
+
+        ScriptActions* script;
 
     } manager;
 

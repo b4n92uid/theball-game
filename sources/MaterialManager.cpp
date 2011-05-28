@@ -7,13 +7,13 @@
 
 #include "MaterialManager.h"
 
+#include "AppManager.h"
 #include "GameManager.h"
+#include "ScriptActions.h"
 
 #include "Item.h"
 #include "Weapon.h"
 #include "Player.h"
-
-#include "AppManager.h"
 
 using namespace std;
 using namespace tbe;
