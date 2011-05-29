@@ -168,13 +168,26 @@ ScriptActions::~ScriptActions()
 
 void ScriptActions::process(std::string type1, std::string type2)
 {
+    if(m_lastFalseResult.type1 == type1 && m_lastFalseResult.type2 == type2)
+        return;
+
+
+    bool nothing = true;
+
     for(unsigned i = 0; i < m_collidRec.size(); i++)
     {
         if(type1 == m_collidRec[i].type1 && type2 == m_collidRec[i].type2)
         {
             call(m_collidRec[i].funcname);
+            nothing = false;
             break;
         }
+    }
+
+    if(nothing)
+    {
+        m_lastFalseResult.type1 = type1;
+        m_lastFalseResult.type2 = type2;
     }
 }
 

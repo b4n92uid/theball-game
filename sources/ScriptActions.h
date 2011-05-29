@@ -46,6 +46,8 @@ private:
     };
 
     std::vector<CollidRec> m_collidRec;
+
+    CollidRec m_lastFalseResult;
 };
 
 #endif	/* SCRIPTACTIONS_H */
