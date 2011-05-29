@@ -26,58 +26,84 @@ inline GameManager* getGameManager(lua_State* lua)
 
 int randomPosition(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int position(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int posistionOf(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int velocity(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int velocityOf(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int impulse(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int health(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int healthUp(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int healthOf(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int energy(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int energyUp(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int energyOf(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int loadSound(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
+
+    int i = lua_gettop(lua);
+
+    const char *id = NULL, *filepath = NULL;
+
+    if(lua_isstring(lua, 1))
+        id = lua_tostring(lua, 1);
+
+    if(lua_isstring(lua, 2))
+        filepath = lua_tostring(lua, 2);
+
+    ge->manager.sound->registerSound(id, filepath);
 }
 
 int sound(lua_State* lua)
 {
+    GameManager* ge = getGameManager(lua);
 }
 
 int registerCollid(lua_State* lua)
@@ -129,7 +155,6 @@ void ScriptActions::load(std::string scriptpath)
 
     lua_pushinteger(m_lua, (lua_Integer)m_gameManager);
     lua_setglobal(m_lua, "_this");
-    lua_pop(m_lua, 1);
 
     if(luaL_dofile(m_lua, scriptpath.c_str()) != 0)
         throw tbe::Exception("ScriptActions::load; %s (%s)", lua_tostring(m_lua, -1), scriptpath.c_str());
