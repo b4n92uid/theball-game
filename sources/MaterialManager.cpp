@@ -119,6 +119,11 @@ int MaterialManager::getElementsGroupe() const
     return m_elementsGroupe;
 }
 
+template<typename T> static T getUserData(const NewtonBody* body)
+{
+    return static_cast<T>(NewtonBodyGetUserData(body));
+}
+
 void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
@@ -131,19 +136,23 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
         return;
 
     Player* player = NULL;
-    NewtonNode* obj = NULL;
+    MapElement* elem = NULL;
 
     if(group0 == m_playersGroupe)
     {
-        player = getParentUserData<Player*>(body0);
-        obj = getParentUserData<NewtonNode*>(body1);
+        player = getUserData<Player*>(body0);
+        elem = getUserData<MapElement*>(body1);
     }
 
     else if(group1 == m_playersGroupe)
     {
-        player = getParentUserData<Player*>(body1);
-        obj = getParentUserData<NewtonNode*>(body0);
+        player = getUserData<Player*>(body1);
+        elem = getUserData<MapElement*>(body0);
     }
+
+    GameManager* ge = player->getGameManager();
+
+    ge->manager.script->process("player", elem->getId());
 }
 
 int MaterialManager::mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
@@ -159,14 +168,14 @@ int MaterialManager::mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, 
 
     if(group0 == m_itemGroupe)
     {
-        item = getParentUserData<Item*>(body0);
-        player = getParentUserData<Player*>(body1);
+        item = getUserData<Item*>(body0);
+        player = getUserData<Player*>(body1);
     }
 
     else if(group1 == m_itemGroupe)
     {
-        item = getParentUserData<Item*>(body1);
-        player = getParentUserData<Player*>(body0);
+        item = getUserData<Item*>(body1);
+        player = getUserData<Player*>(body0);
     }
 
     player->attachItem(item);
@@ -213,13 +222,13 @@ int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material,
 
     if(group0 == m_bulletGroupe)
     {
-        striked = getParentUserData<Player*>(body1);
+        striked = getUserData<Player*>(body1);
         bullet = getUserData<Bullet*>(body0);
     }
 
     else if(group1 == m_bulletGroupe)
     {
-        striked = getParentUserData<Player*>(body0);
+        striked = getUserData<Player*>(body0);
         bullet = getUserData<Bullet*>(body1);
     }
 

@@ -24,6 +24,8 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     m_physicBody->setUpdatedMatrix(&body->getMatrix());
     m_physicBody->buildTreeNode(body->getHardwareBuffer().getAllFace());
     body->addChild(m_physicBody);
+
+    NewtonBodySetUserData(m_physicBody->getBody(), this);
 }
 
 StaticElement::~StaticElement()

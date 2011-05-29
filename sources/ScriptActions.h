@@ -9,6 +9,7 @@
 #define	SCRIPTACTIONS_H
 
 #include <string>
+#include <vector>
 
 extern "C"
 {
@@ -27,9 +28,24 @@ public:
 
     void load(std::string scriptpath);
 
+    void call(std::string funcname);
+
+    void process(std::string type1, std::string type2);
+
+    friend int registerCollid(lua_State* lua);
+
 private:
     lua_State* m_lua;
     GameManager* m_gameManager;
+
+    struct CollidRec
+    {
+        std::string type1;
+        std::string type2;
+        std::string funcname;
+    };
+
+    std::vector<CollidRec> m_collidRec;
 };
 
 #endif	/* SCRIPTACTIONS_H */

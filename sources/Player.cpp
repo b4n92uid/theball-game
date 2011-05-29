@@ -19,6 +19,7 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
 {
     // Attributes
     m_name = name;
+    m_id = "player";
     m_playManager = playManager;
     m_curWeapon = m_weaponsPack.end();
     m_killed = false;
@@ -54,10 +55,12 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
 
     m_visualBody->addChild(m_physicBody);
 
-    toNextSpawnPos();
-
+    NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
     NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
+    NewtonBodySetUserData(m_physicBody->getBody(), this);
+
+    toNextSpawnPos();
 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);

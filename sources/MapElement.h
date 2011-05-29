@@ -37,14 +37,10 @@ public:
     typedef std::map<std::string, MapElement*> Map;
     typedef std::vector<MapElement*> Array;
 
-    static bool isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects)
-    {
-        for(unsigned i = 0; i < staticObjects.size(); i++)
-            if(body->isCollidWith(staticObjects[i]->getPhysicBody()))
-                return true;
+    static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
 
-        return false;
-    }
+    static bool isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects);
+
 
 protected:
     GameManager* m_gameManager;

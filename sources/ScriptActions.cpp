@@ -9,19 +9,32 @@
 #include "GameManager.h"
 #include "SoundManager.h"
 
+#define GAMEMANAGER_INTERNALE_NAME "_gameManager"
+#define SCRIPTMANAGER_INTERNALE_NAME "_scriptManager"
+
 using namespace std;
 using namespace tbe;
 
 inline GameManager* getGameManager(lua_State* lua)
 {
-    lua_settop(lua, 0);
-    lua_getglobal(lua, "_this");
+    lua_getglobal(lua, GAMEMANAGER_INTERNALE_NAME);
 
     void* ptr = (void*)lua_tointeger(lua, -1);
 
     lua_pop(lua, 1);
 
     return (GameManager*)ptr;
+}
+
+inline ScriptActions* getScriptManager(lua_State* lua)
+{
+    lua_getglobal(lua, SCRIPTMANAGER_INTERNALE_NAME);
+
+    void* ptr = (void*)lua_tointeger(lua, -1);
+
+    lua_pop(lua, 1);
+
+    return (ScriptActions*)ptr;
 }
 
 int randomPosition(lua_State* lua)
@@ -88,8 +101,6 @@ int loadSound(lua_State* lua)
 {
     GameManager* ge = getGameManager(lua);
 
-    int i = lua_gettop(lua);
-
     const char *id = NULL, *filepath = NULL;
 
     if(lua_isstring(lua, 1))
@@ -108,7 +119,15 @@ int sound(lua_State* lua)
 
 int registerCollid(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    ScriptActions* sm = getScriptManager(lua);
+
+    ScriptActions::CollidRec record = {
+        lua_tostring(lua, 1),
+        lua_tostring(lua, 2),
+        lua_tostring(lua, 3),
+    };
+
+    sm->m_collidRec.push_back(record);
 }
 
 ScriptActions::ScriptActions(GameManager* gameManager)
@@ -147,6 +166,31 @@ ScriptActions::~ScriptActions()
 {
 }
 
+void ScriptActions::process(std::string type1, std::string type2)
+{
+    for(unsigned i = 0; i < m_collidRec.size(); i++)
+    {
+        if(type1 == m_collidRec[i].type1 && type2 == m_collidRec[i].type2)
+        {
+            call(m_collidRec[i].funcname);
+            break;
+        }
+    }
+}
+
+void ScriptActions::call(std::string funcname)
+{
+    lua_getglobal(m_lua, funcname.c_str());
+
+    if(!lua_isfunction(m_lua, -1))
+    {
+        lua_pop(m_lua, 1);
+        throw tbe::Exception("ScriptActions::call; undefined function (%s)", funcname.c_str());
+    }
+
+    lua_call(m_lua, 0, 0);
+}
+
 void ScriptActions::load(std::string scriptpath)
 {
     cout << "Loading script " << scriptpath << endl;
@@ -154,7 +198,10 @@ void ScriptActions::load(std::string scriptpath)
     lua_settop(m_lua, 0);
 
     lua_pushinteger(m_lua, (lua_Integer)m_gameManager);
-    lua_setglobal(m_lua, "_this");
+    lua_setglobal(m_lua, GAMEMANAGER_INTERNALE_NAME);
+
+    lua_pushinteger(m_lua, (lua_Integer)this);
+    lua_setglobal(m_lua, SCRIPTMANAGER_INTERNALE_NAME);
 
     if(luaL_dofile(m_lua, scriptpath.c_str()) != 0)
         throw tbe::Exception("ScriptActions::load; %s (%s)", lua_tostring(m_lua, -1), scriptpath.c_str());

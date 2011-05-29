@@ -52,3 +52,19 @@ std::string MapElement::getId() const
 {
     return m_id;
 }
+
+bool MapElement::isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects)
+{
+    for(unsigned i = 0; i < staticObjects.size(); i++)
+        if(body->isCollidWith(staticObjects[i]->getPhysicBody()))
+            return true;
+
+    return false;
+}
+
+void MapElement::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
+{
+    MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
+
+    elem->getPhysicBody()->applyForceAndTorque();
+}

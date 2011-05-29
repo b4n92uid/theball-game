@@ -36,17 +36,10 @@ public:
 
 protected:
 
-    template<typename T> static T getUserData(const NewtonBody* body)
-    {
-        tbe::scene::NewtonNode* nn = static_cast<tbe::scene::NewtonNode*>(NewtonBodyGetUserData(body));
-        return dynamic_cast<T>(nn);
-    }
-
-    template<typename T> static T getParentUserData(const NewtonBody* body)
-    {
-        tbe::scene::NewtonNode* nn = static_cast<tbe::scene::NewtonNode*>(NewtonBodyGetUserData(body));
-        return dynamic_cast<T>(nn->getParent());
-    }
+    void mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int);
+    int mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
+    int mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
+    void mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex);
 
     static MaterialManager* getMaterialManager(const NewtonJoint* contact)
     {
@@ -60,11 +53,6 @@ protected:
                                                            NewtonBodyGetMaterialGroupID(body0),
                                                            NewtonBodyGetMaterialGroupID(body1));
     }
-
-    void mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int);
-    int mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
-    int mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
-    void mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex);
 
     static void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat f, int i)
     {
