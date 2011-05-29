@@ -50,6 +50,14 @@ void Settings::readGui()
     binder["GUI_VECTOR"] = &gui.vectorBox;
     binder["GUI_FONT"] = &gui.font;
 
+    map<string, tbe::Vector2f*> binderSize;
+
+    binderSize["GUI_BUTTON"] = &gui.buttonSize;
+    binderSize["GUI_GAUGE"] = &gui.gaugeSize;
+    binderSize["GUI_EDIT"] = &gui.editBoxSize;
+    binderSize["GUI_SWITCH"] = &gui.switchBoxSize;
+    binderSize["GUI_VECTOR"] = &gui.vectorBoxSize;
+
     TiXmlDocument config("gui.xml");
 
     if(!config.LoadFile())
@@ -64,7 +72,15 @@ void Settings::readGui()
         if(name == "GUI_FONTSIZE")
             node2->Attribute("value", &gui.fontSize);
         else
+        {
             *binder[name] = node2->Attribute("value");
+
+            if(binderSize.count(name))
+            {
+                const char* data = node2->Attribute("size");
+                *binderSize[name] = tools::strToVec2<float>(data, true);
+            }
+        }
     }
 }
 

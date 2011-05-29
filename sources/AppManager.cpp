@@ -170,19 +170,19 @@ void AppManager::setupMenuGui()
     GuiSkin* guiskin = new GuiSkin;
 
     guiskin->button(globalSettings.gui.button);
-    guiskin->buttonSize(Vector2f(192, 48) * sizeFactor);
+    guiskin->buttonSize(globalSettings.gui.buttonSize * sizeFactor);
 
     guiskin->gauge(globalSettings.gui.gauge);
-    guiskin->gaugeSize(Vector2f(192, 48) * sizeFactor);
+    guiskin->gaugeSize(globalSettings.gui.gaugeSize * sizeFactor);
 
     guiskin->editBox(globalSettings.gui.editBox);
-    guiskin->editBoxSize(Vector2f(192, 48) * sizeFactor);
+    guiskin->editBoxSize(globalSettings.gui.editBoxSize * sizeFactor);
 
     guiskin->switchBox(globalSettings.gui.switchBox);
-    guiskin->switchBoxSize(Vector2f(192, 48) * sizeFactor);
+    guiskin->switchBoxSize(globalSettings.gui.switchBoxSize * sizeFactor);
 
     guiskin->vectorBox(globalSettings.gui.vectorBox);
-    guiskin->vectorBoxSize(Vector2f(192, 48) * sizeFactor);
+    guiskin->vectorBoxSize(globalSettings.gui.vectorBoxSize * sizeFactor);
 
     guiskin->stateShowSize(Vector2f(48, 48) * sizeFactor);
 

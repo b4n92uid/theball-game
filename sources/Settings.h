@@ -144,6 +144,12 @@ public:
         std::string switchBox;
         std::string vectorBox;
 
+        tbe::Vector2f buttonSize;
+        tbe::Vector2f gaugeSize;
+        tbe::Vector2f editBoxSize;
+        tbe::Vector2f switchBoxSize;
+        tbe::Vector2f vectorBoxSize;
+
         std::string font;
         int fontSize;
 
