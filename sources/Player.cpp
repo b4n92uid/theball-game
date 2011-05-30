@@ -78,33 +78,24 @@ Player::~Player()
 
 void Player::toNextSpawnPos()
 {
-    Vector3f randPos;
-
     Vector3f::Array& spawns = m_playManager->map.spawnPoints;
+
+    Vector3f newpos = 0;
 
     if(spawns.empty())
     {
-        float factor = 5 * m_playManager->map.aabb.getLength() / 100;
-
-        do
-        {
-            randPos = tools::rand(m_playManager->map.aabb - Vector3f(factor));
-            randPos.y = 1;
-            randPos = m_physicBody->getParallelScene()->findFloor(randPos);
-        }
-        while(randPos.y < m_playManager->map.aabb.min.y);
+        newpos = m_playManager->getRandomPosOnTheFloor();
     }
 
     else
     {
-        randPos = spawns.back();
-
+        newpos = spawns.back();
         spawns.pop_back();
-        spawns.insert(spawns.begin(), randPos);
+        spawns.insert(spawns.begin(), newpos);
     }
 
     m_physicBody->setVelocity(0);
-    m_physicBody->setMatrix(randPos);
+    m_physicBody->setMatrix(newpos);
 }
 
 void Player::attachItem(Item* item)

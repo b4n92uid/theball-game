@@ -50,6 +50,23 @@ inline MapElement* lua_toelem(lua_State* lua, int argpos)
     return reinterpret_cast<MapElement*>((long)lua_tonumber(lua, argpos));
 }
 
+inline void lua_pushvector3(lua_State* lua, Vector3f vec)
+{
+    lua_newtable(lua);
+
+    lua_pushstring(lua, "x");
+    lua_pushnumber(lua, vec.x);
+    lua_settable(lua, -3);
+
+    lua_pushstring(lua, "y");
+    lua_pushnumber(lua, vec.y);
+    lua_settable(lua, -3);
+
+    lua_pushstring(lua, "z");
+    lua_pushnumber(lua, vec.z);
+    lua_settable(lua, -3);
+}
+
 inline Vector3f lua_tovector3(lua_State* lua, int argpos)
 {
     Vector3f vec;
@@ -74,17 +91,33 @@ inline Vector3f lua_tovector3(lua_State* lua, int argpos)
 
 int randomPosition(lua_State* lua)
 {
-    return 0;
+    GameManager* ge = getGameManager(lua);
+
+    Vector3f pos = ge->getRandomPosOnTheFloor();
+
+    lua_pushvector3(lua, pos);
+
+    return 1;
 }
 
 int position(lua_State* lua)
 {
+    MapElement* elem = lua_toelem(lua, 1);
+
+    Vector3f vec = lua_tovector3(lua, 2);
+
+    elem->getPhysicBody()->setPos(vec);
+
     return 0;
 }
 
 int posistionOf(lua_State* lua)
 {
-    return 0;
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushvector3(lua, player->getPhysicBody()->getPos());
+
+    return 1;
 }
 
 int velocity(lua_State* lua)
@@ -100,7 +133,11 @@ int velocity(lua_State* lua)
 
 int velocityOf(lua_State* lua)
 {
-    return 0;
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushvector3(lua, player->getPhysicBody()->getVelocity());
+
+    return 1;
 }
 
 int impulse(lua_State* lua)
@@ -136,7 +173,11 @@ int healthUp(lua_State* lua)
 
 int healthOf(lua_State* lua)
 {
-    return 0;
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushnumber(lua, player->getLife());
+
+    return 1;
 }
 
 int energy(lua_State* lua)

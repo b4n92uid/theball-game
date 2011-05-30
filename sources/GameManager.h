@@ -56,6 +56,8 @@ public:
     /// Rotine d'affichage de notification
     void log(std::string msg);
 
+    tbe::Vector3f getRandomPosOnTheFloor();
+
     void setGameOver();
     bool isGameOver() const;
     bool isRunning() const;
