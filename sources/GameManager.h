@@ -72,6 +72,7 @@ public:
     virtual tbe::Vector3f getShootTarget() const;
 
     virtual Player* getUserPlayer() const;
+    Player* getWinnerPlayer() const;
 
     virtual const Player::Array& getPlayers() const;
 

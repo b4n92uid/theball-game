@@ -1008,11 +1008,13 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
         cout << "End game" << endl;
 
-        done = gameManager->isGameOver();
+        done = !gameManager->isGameOver();
+
+        bool haswin = gameManager->getWinnerPlayer() == gameManager->getUserPlayer();
 
         delete gameManager;
 
-        if(done)
+        if(!done && haswin)
         {
             if(curPlaySetting.curLevel + 1 < globalSettings.campaign.maps.size())
             {

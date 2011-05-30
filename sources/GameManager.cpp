@@ -931,6 +931,11 @@ Player* GameManager::getUserPlayer() const
     return m_userPlayer;
 }
 
+Player* GameManager::getWinnerPlayer() const
+{
+    return m_winnerPlayer;
+}
+
 const Player::Array& GameManager::getPlayers() const
 {
     return m_players;
