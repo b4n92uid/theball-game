@@ -263,61 +263,6 @@ void Settings::readWorld()
     }
 }
 
-inline bool ScoreSort(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& p2)
-{
-    if(p1.playerName == p2.playerName)
-        return p1.score > p2.score;
-    else
-        return p1.playerName > p2.playerName;
-}
-
-inline bool ScoreUnique(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& p2)
-{
-    return (p1.playerName == p2.playerName && p1.playMod == p2.playMod);
-}
-
-void Settings::readScoreInfo()
-{
-    availableScore.clear();
-
-    TiXmlDocument config("score.xml");
-
-    if(!config.LoadFile())
-        throw tbe::Exception("ReadScoreInfo; Open file error");
-
-    TiXmlNode* root = config.FirstChildElement();
-
-    for(TiXmlElement* node = root->FirstChildElement(); node; node = node->NextSiblingElement())
-    {
-        ScoreInfo entry;
-
-        entry.playMod = 0;
-        entry.playersCount = 0;
-        entry.playTime = 0;
-        entry.timestamp = 0;
-        entry.score = 0;
-
-        node->QueryValueAttribute<string > ("playerName", &entry.playerName);
-        node->QueryValueAttribute<string > ("playerModel", &entry.playerModel);
-
-        node->QueryValueAttribute<string > ("levelName", &entry.levelName);
-        node->QueryValueAttribute<string > ("levelPath", &entry.levelPath);
-
-        node->QueryValueAttribute<unsigned>("playMod", &entry.playMod);
-        node->QueryValueAttribute<unsigned>("playTime", &entry.playTime);
-
-        node->QueryValueAttribute<unsigned>("playersCount", &entry.playersCount);
-
-        node->QueryValueAttribute<unsigned>("timestamp", &entry.timestamp);
-
-        node->QueryValueAttribute<unsigned>("score", &entry.score);
-
-        availableScore.push_back(entry);
-    }
-
-    sort(availableScore.begin(), availableScore.end(), ScoreSort);
-}
-
 void Settings::readPlayerInfo()
 {
     using namespace boost::filesystem;
@@ -399,12 +344,7 @@ void Settings::readCampaign()
 
         party.playMap = MapInfo(node->Attribute("map"));
 
-        node->QueryValueAttribute<unsigned>("playMode", &party.playMod);
-        node->QueryValueAttribute<unsigned>("playTime", &party.playTime);
-
         node->QueryValueAttribute<unsigned>("playerCount", &party.playerCount);
-
-        node->QueryValueAttribute<unsigned>("winCond", &party.winCond);
 
         party.curLevel = campaign.maps.size();
 
@@ -444,7 +384,6 @@ void Settings::readSetting()
 
     readMapInfo();
     readPlayerInfo();
-    readScoreInfo();
 }
 
 void Settings::saveVideo()
@@ -668,20 +607,6 @@ Settings::PlayerInfo::PlayerInfo(std::string path)
 
 Settings::PartySetting::PartySetting()
 {
-    playMod = 0;
-    playTime = 0;
-
     playerCount = 0;
-
     curLevel = 0;
-    winCond = 0;
-}
-
-Settings::ScoreInfo::ScoreInfo()
-{
-    playMod = 0;
-    playersCount = 0;
-    playTime = 0;
-    timestamp = 0;
-    score = 0;
 }

@@ -35,9 +35,9 @@ public:
 
     void callCollidCallback(std::string funcname, Player* player, MapElement* elem);
 
-    void process(Player* player, MapElement* elem);
+    void processCollid(Player* player, MapElement* elem);
 
-    friend int registerCollid(lua_State* lua);
+    void registerCollid(std::string id, std::string funcname);
 
 private:
     lua_State* m_lua;

@@ -47,32 +47,6 @@ public:
 
     Settings globalSettings;
 
-    enum PlayMode
-    {
-        FRAG, TEAM, ALONE
-    };
-
-    static std::string unsignedToPlayMod(unsigned pm)
-    {
-        switch(pm)
-        {
-            case AppManager::FRAG: return "FRAG";
-            case AppManager::ALONE: return "ALONE";
-            case AppManager::TEAM: return "TEAM";
-            default: return "FRAG";
-        }
-    }
-
-    static unsigned playModToUnsigned(std::string str)
-    {
-        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-
-        if(str == "FRAG") return AppManager::FRAG;
-        if(str == "ALONE") return AppManager::ALONE;
-        if(str == "TEAM") return AppManager::TEAM;
-        else return AppManager::FRAG;
-    }
-
 protected:
     /// Initialise les options vidéo
     void setupVideoMode();
@@ -91,7 +65,6 @@ protected:
     void processPlayMenuEvent();
     void processSettingMenuEvent();
     void processSettingKeyMenuEvent();
-    void processScoreMenuEvent();
 
 protected:
     tbe::SDLDevice* m_gameEngine;
@@ -119,8 +92,6 @@ protected:
         {
             tbe::gui::SwitchString* mapSelect;
             tbe::gui::SwitchString* playerSelect;
-            tbe::gui::SwitchString* modSelect;
-            tbe::gui::SwitchString* timeSelect;
             tbe::gui::SwitchNumeric<int>* playerCount;
             tbe::gui::EditBox* playerName;
 
@@ -145,13 +116,6 @@ protected:
             tbe::gui::SwitchString* usePpe;
 
         } settings;
-
-        struct
-        {
-            tbe::gui::TextBox* scoreText;
-            tbe::gui::SwitchString* sortType;
-            tbe::gui::Button* ret;
-        } score;
 
     } m_controls;
 };

@@ -27,7 +27,6 @@ public:
     void readControl();
     void readWorld();
     void readMapInfo();
-    void readScoreInfo();
     void readPlayerInfo();
 
     void saveVideo();
@@ -171,26 +170,6 @@ public:
         std::string file;
     };
 
-    struct ScoreInfo
-    {
-        ScoreInfo();
-
-        std::string playerName;
-        std::string playerModel;
-
-        std::string levelName;
-        std::string levelPath;
-
-        unsigned playMod;
-        unsigned playTime;
-
-        unsigned playersCount;
-
-        unsigned timestamp;
-
-        unsigned score;
-    };
-
     struct PlayerInfo
     {
         PlayerInfo();
@@ -210,13 +189,8 @@ public:
 
         MapInfo playMap;
 
-        unsigned playMod;
-        unsigned playTime;
-
         unsigned playerCount;
-
         unsigned curLevel;
-        unsigned winCond;
     };
 
     struct EditSetting
@@ -242,7 +216,6 @@ public:
     bool nomusic;
 
     std::vector<MapInfo> availableMap;
-    std::vector<ScoreInfo> availableScore;
     std::vector<PlayerInfo> availablePlayer;
 };
 

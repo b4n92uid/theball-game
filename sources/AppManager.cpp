@@ -2,66 +2,17 @@
 
 #include "GameManager.h"
 
-#include "PlayFragManager.h"
-#include "PlayAloneManager.h"
-#include "PlayTeamManager.h"
-
 #include <fmod_errors.h>
 
 using namespace std;
 using namespace tbe;
 
-inline bool ScoreSortByDate(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& p2)
-{
-    return p1.timestamp > p2.timestamp;
-}
-
-inline bool ScoreSortByValue(const Settings::ScoreInfo& p1, const Settings::ScoreInfo& p2)
-{
-    if(p1.playerName == p2.playerName)
-        return p1.score > p2.score;
-    else
-        return p1.playerName > p2.playerName;
-}
-
 inline void writeCampaignDescription(gui::TextBox* text, Settings::PartySetting& party)
 {
     text->write(gui::GuiString("Carte:       %s\n"
-                               "Mode:        %s\n"
-                               "Temps:       %d\n"
-                               "Joueurs:     %d\n"
-                               "Objectif:    %d point(s)",
+                               "Joueurs:     %d\n",
                                party.playMap.name.c_str(),
-                               AppManager::unsignedToPlayMod(party.playMod).c_str(),
-                               party.playTime,
-                               party.playerCount,
-                               party.winCond));
-}
-
-inline void writeScore(gui::TextBox* textbox, vector<Settings::ScoreInfo>& scores)
-{
-    using namespace boost::posix_time;
-
-    stringstream text;
-
-    text << "Les Scores enregistrer" << endl;
-    text << "Nom | Date | Type | Carte | Temps | Score" << endl;
-    text << endl;
-
-    for(unsigned i = 0; i < scores.size(); i++)
-    {
-        Settings::ScoreInfo& si = scores[i];
-
-        text
-                << si.playerName << " | "
-                << from_time_t(si.timestamp) << " | "
-                << AppManager::unsignedToPlayMod(si.playMod) << " | "
-                << si.levelName << " | "
-                << si.playTime << " sec | "
-                << si.score << " point(s)" << endl;
-    }
-
-    textbox->write(text.str());
+                               party.playerCount));
 }
 
 AppManager::AppManager()
@@ -221,7 +172,6 @@ void AppManager::setupMenuGui()
 
     m_guiManager->addButton("quit", "Quitter");
     m_guiManager->addButton("about", "A Propos");
-    m_guiManager->addButton("score", "Scores");
     m_guiManager->addButton("setting", "Options");
     m_guiManager->addButton("quickplay", "Partie rapide");
     m_guiManager->addButton("campaign", "Jouer");
@@ -310,8 +260,8 @@ void AppManager::setupMenuGui()
     m_controls.playmenu.playerSelect = m_guiManager->addSwitchString("playerSelect");
     m_guiManager->addTextBox("")->write("Personnage");
 
-    m_controls.playmenu.modSelect = m_guiManager->addSwitchString("modSelect");
-    m_guiManager->addTextBox("")->write("Mode");
+    m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
+    m_guiManager->addTextBox("")->write("Pseudo");
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -325,9 +275,6 @@ void AppManager::setupMenuGui()
 
     m_controls.playmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
     m_guiManager->addTextBox("")->write("Carte à jouer");
-
-    m_controls.playmenu.timeSelect = m_guiManager->addSwitchString("timeSelect");
-    m_guiManager->addTextBox("")->write("Temps");
 
     m_controls.playmenu.playerCount = m_guiManager->addSwitchNumeric<int>("playerCount");
     m_controls.playmenu.playerCount->setRange(new SwitchNumeric<int>::Range(0, 32));
@@ -343,10 +290,11 @@ void AppManager::setupMenuGui()
     // -------- Collone 3
     m_guiManager->addLayout(Layout::Vertical, 5);
     m_guiManager->addLayoutStretchSpace();
+
     m_guiManager->addButton("return", "Retour");
+
     m_guiManager->addButton("play", "Jouer");
-    m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
-    m_guiManager->addTextBox("")->write("Pseudo");
+
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
     // --------
@@ -495,35 +443,6 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
 
-    // Menu Score
-
-    m_guiManager->setSession(MENU_SCORE);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    m_guiManager->addLayout(Layout::Horizental);
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_guiManager->addLayout(Layout::Horizental, 10);
-    m_controls.score.ret = m_guiManager->addButton("score.ret", "Retour");
-    m_controls.score.sortType = m_guiManager->addSwitchString("score.sortType");
-    m_guiManager->endLayout();
-
-    m_controls.score.scoreText = m_guiManager->addTextBox("");
-    m_controls.score.scoreText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
-    m_controls.score.scoreText->setDefinedSize(true);
-    m_controls.score.scoreText->setBackgroundPadding(8);
-    m_controls.score.scoreText->setBackground(globalSettings.gui.backgroundTextboxH);
-    m_controls.score.scoreText->setTextAlign(TextBox::LEFT);
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
     // Menu A propos
 
     m_guiManager->setSession(MENU_ABOUT);
@@ -568,19 +487,6 @@ void AppManager::setupMenuGui()
         ss << "Build in " << __DATE__;
 
         m_controls.aboutText->write(ss.str());
-    }
-
-    // Menu des scores
-    {
-        sort(globalSettings.availableScore.begin(),
-             globalSettings.availableScore.end(),
-             ScoreSortByValue);
-
-        writeScore(m_controls.score.scoreText, globalSettings.availableScore);
-
-        m_controls.score.sortType
-                ->push("Tri par date", 1)
-                .push("Tri par points", 2);
     }
 
     // Menu de configuration des touches
@@ -656,23 +562,6 @@ void AppManager::setupMenuGui()
 
     // Temps de la partie
     m_controls.playmenu.playerCount->setValue(4);
-
-    m_controls.playmenu.timeSelect->
-            push("60 sec", 60).
-            push("2 min", 60 * 2).
-            push("5 min", 60 * 5).
-            push("20 min", 60 * 20).
-            push("Infinie", 0);
-
-    m_controls.playmenu.timeSelect->setCurrent(1);
-
-    // Mod de la partie
-    m_controls.playmenu.modSelect->
-            push("Frag", FRAG).
-            push("Alone", ALONE).
-            push("Team", TEAM);
-
-    m_controls.playmenu.modSelect->setCurrent(0);
 
     updateGuiContent();
 }
@@ -783,9 +672,6 @@ void AppManager::processMainMenuEvent()
 
     else if(m_guiManager->getControl("about")->isActivate())
         m_guiManager->setSession(MENU_ABOUT);
-
-    else if(m_guiManager->getControl("score")->isActivate())
-        m_guiManager->setSession(MENU_SCORE);
 }
 
 void AppManager::processCampaignMenuEvent()
@@ -838,9 +724,6 @@ void AppManager::processPlayMenuEvent()
         playSetting.playerName = globalSettings.availablePlayer[indexOfPlayer];
         playSetting.playerName.nick = m_controls.playmenu.playerName->getLabel();
 
-        playSetting.playMod = m_controls.playmenu.modSelect->getData().getValue<unsigned>();
-        playSetting.playTime = m_controls.playmenu.timeSelect->getData().getValue<unsigned>();
-
         playSetting.playerCount = m_controls.playmenu.playerCount->getValue();
 
         executeGame(playSetting);
@@ -889,31 +772,6 @@ void AppManager::processSettingKeyMenuEvent()
     }
 }
 
-void AppManager::processScoreMenuEvent()
-{
-    if(m_controls.score.ret->isActivate())
-        m_guiManager->setSession(MENU_MAIN);
-
-    else if(m_controls.score.sortType->isActivate())
-    {
-        switch(m_controls.score.sortType->getData().getValue<int>())
-        {
-            case 1:
-                std::sort(globalSettings.availableScore.begin(),
-                          globalSettings.availableScore.end(),
-                          ScoreSortByDate);
-                break;
-            case 2:
-                std::sort(globalSettings.availableScore.begin(),
-                          globalSettings.availableScore.end(),
-                          ScoreSortByValue);
-                break;
-        }
-
-        writeScore(m_controls.score.scoreText, globalSettings.availableScore);
-    }
-}
-
 void AppManager::executeMenu()
 {
     using namespace tbe::gui;
@@ -943,10 +801,6 @@ void AppManager::executeMenu()
 
                 case MENU_CAMPAIGN:
                     processCampaignMenuEvent();
-                    break;
-
-                case MENU_SCORE:
-                    processScoreMenuEvent();
                     break;
 
                 case MENU_SETTING_KEYS:
@@ -1000,8 +854,6 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 {
     cout << "--- ExecuteGame :" << endl
             << "  playLevel = " << playSetting.playMap.name << endl
-            << "  playMod = " << playSetting.playMod << endl
-            << "  playTime = " << playSetting.playTime << endl
             << "  playerCount = " << playSetting.playerCount << endl
             << "  playerModel = " << playSetting.playerName.file << endl
             << "  playerName = " << playSetting.playerName.name << endl;
@@ -1027,19 +879,7 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 
     // Chargement de la carte --------------------------------------------------
 
-    GameManager* gameManager;
-
-    switch(playSetting.playMod)
-    {
-        case FRAG: gameManager = new PlayFragManager(this);
-            break;
-        case ALONE: gameManager = new PlayAloneManager(this);
-            break;
-        case TEAM: gameManager = new PlayTeamManager(this);
-            break;
-        default:
-            throw Exception("AppManager::ExecuteGame; Unknown mode type (%d)", playSetting.playMod);
-    }
+    GameManager* gameManager = new GameManager(this);
 
     gameManager->setupMap(playSetting);
     gameManager->setupGui();
@@ -1099,12 +939,9 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
     {
         cout << "ExecuteCampaign :" << endl
                 << "playLevel = " << curPlaySetting.playMap.name << endl
-                << "playMod = " << curPlaySetting.playMod << endl
-                << "playTime = " << curPlaySetting.playTime << endl
                 << "playerCount = " << curPlaySetting.playerCount << endl
                 << "playerModel = " << curPlaySetting.playerName.file << endl
-                << "playerName = " << curPlaySetting.playerName.name << endl
-                << "winCond = " << curPlaySetting.winCond << endl;
+                << "playerName = " << curPlaySetting.playerName.name << endl;
 
         m_sceneManager->clearAll();
         m_ppeManager->clearAll();
@@ -1117,12 +954,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->setSession(MENU_LOAD);
 
         m_guiManager->getControl<gui::TextBox > ("load:stateText")
-                ->write(gui::GuiString("%s en mode %s\n"
-                                       "Marquer %d points en %d sec pour passer au niveau suivant !\n"
-                                       "Chargement en cours...",
-                                       curPlaySetting.playMap.name.c_str(),
-                                       unsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                       curPlaySetting.winCond, curPlaySetting.playTime));
+                ->write(gui::GuiString("Chargement en cours..."));
 
         m_guiManager->updateLayout();
 
@@ -1132,19 +964,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
         // Chargement de la carte --------------------------------------------------
 
-        GameManager* gameManager;
-
-        switch(curPlaySetting.playMod)
-        {
-            case FRAG: gameManager = new PlayFragManager(this);
-                break;
-            case ALONE: gameManager = new PlayAloneManager(this);
-                break;
-            case TEAM: gameManager = new PlayTeamManager(this);
-                break;
-            default:
-                throw Exception("AppManager::ExecuteGame; Unknown mode type (%d)", curPlaySetting.playMod);
-        }
+        GameManager* gameManager = new GameManager(this);
 
         gameManager->setupMap(curPlaySetting);
         gameManager->setupGui();
@@ -1154,12 +974,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
         m_guiManager->setSession(MENU_LOAD);
 
         m_guiManager->getControl<gui::TextBox > ("load:stateText")
-                ->write(gui::GuiString("%s en mode %s\n"
-                                       "Marquer %d points en %d sec pour passer au niveau suivant !\n"
-                                       "Appuyer sur \"Espace\" pour continuer...",
-                                       curPlaySetting.playMap.name.c_str(),
-                                       unsignedToPlayMod(curPlaySetting.playMod).c_str(),
-                                       curPlaySetting.winCond, curPlaySetting.playTime));
+                ->write(gui::GuiString("Appuyer sur \"Espace\" pour continuer..."));
 
         m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
@@ -1193,15 +1008,11 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
         cout << "End game" << endl;
 
-        int score = gameManager->getUserPlayer()->getScore();
-        done = !gameManager->isGameOver();
+        done = gameManager->isGameOver();
 
         delete gameManager;
 
         if(done)
-            continue;
-
-        if(score >= (int)curPlaySetting.winCond)
         {
             if(curPlaySetting.curLevel + 1 < globalSettings.campaign.maps.size())
             {
@@ -1220,10 +1031,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
                 Settings::PartySetting nextParty = globalSettings.campaign.maps[curPlaySetting.curLevel];
 
                 curPlaySetting.playMap = nextParty.playMap;
-                curPlaySetting.playMod = nextParty.playMod;
-                curPlaySetting.playTime = nextParty.playTime;
                 curPlaySetting.playerCount = nextParty.playerCount;
-                curPlaySetting.winCond = nextParty.winCond;
 
                 m_guiManager->setSession(MENU_LOAD);
 

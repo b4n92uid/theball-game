@@ -152,7 +152,7 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
 
     GameManager* ge = player->getGameManager();
 
-    ge->manager.script->process(player, elem);
+    ge->manager.script->processCollid(player, elem);
 }
 
 int MaterialManager::mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)

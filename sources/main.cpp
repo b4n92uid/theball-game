@@ -55,14 +55,12 @@ int main(int argc, char** argv)
 
         if((index = isarg(argc, argv, "play")) != -1)
         {
-            // NOTE play <level> <player> <playerCount> <playMod> <playtime>
+            // NOTE play <level> <player> <playerCount>
 
             Settings::PartySetting ps;
             ps.playMap = Settings::MapInfo(argv[index + 1]);
             ps.playerName = Settings::PlayerInfo(argv[index + 2]);
             ps.playerCount = tools::strToNum<unsigned>(argv[index + 3]);
-            ps.playMod = tools::strToNum<unsigned> (argv[index + 4]);
-            ps.playTime = tools::strToNum<int>(argv[index + 5]);
 
             theBall.executeGame(ps);
         }

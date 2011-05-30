@@ -77,8 +77,6 @@ public:
 
     virtual const Player::Array getTargetsOf(Player* player) const;
 
-    int modulatScore(int score);
-
     // Enregistrement des entités ----------------------------------------------
 
     void registerPlayer(Player* player);
@@ -139,12 +137,7 @@ public:
 
 protected:
 
-    virtual void modSetupAi(Player* player) = 0;
-    virtual void modSetupUser(Player* player) = 0;
-
-    virtual void modUpdateStateText(std::ostringstream& ss) = 0;
-    virtual void modUpdateScoreListText(std::ostringstream& ss) = 0;
-    virtual void modUpdateGameOverText(std::ostringstream& ss) = 0;
+    void processDevelopperCodeEvent();
 
     static bool playerScoreSortProcess(Player* p1, Player* p2)
     {
@@ -162,19 +155,10 @@ protected:
         TIME_TO_GAMEOVER,
     };
 
-    struct
-    {
-        int startChrono;
-        int curChrono;
-        tbe::ticks::Clock clock;
-        time_t startTimestamp;
-
-    } m_playTimeManager;
-
     Player* m_userPlayer;
+    Player* m_winnerPlayer;
 
     Player::Array m_players;
-    Weapon::Array m_weapons;
 
     BulletTime* m_bullettime;
 
@@ -186,8 +170,6 @@ protected:
     tbe::ticks::Clock m_spawnPlayer;
 
     tbe::scene::Camera* m_camera;
-    tbe::scene::NewtonNode* m_cameraBody;
-    tbe::Matrix4 m_cameratMat;
 
     tbe::Vector3f m_shootTarget;
     bool m_cursorOnPlayer;
@@ -245,8 +227,6 @@ protected:
         } background;
 
     } hud;
-
-    void processDevelopperCodeEvent();
 };
 
 #endif // _GAMEMANAGER_H

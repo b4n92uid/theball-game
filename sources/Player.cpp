@@ -333,12 +333,12 @@ bool Player::isBoostAvalaible() const
 
 void Player::upScore(int value)
 {
-    m_score = max(m_score + m_playManager->modulatScore(value), 0);
+    m_score = max(m_score + value, 0);
 }
 
 void Player::setScore(int value)
 {
-    this->m_score = max(m_playManager->modulatScore(value), 0);
+    this->m_score = max(value, 0);
 }
 
 int Player::getScore() const

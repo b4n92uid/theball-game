@@ -7,7 +7,6 @@
 
 #include "Define.h"
 #include "UserControl.h"
-#include "TeamModeAi.h"
 
 using namespace std;
 using namespace tbe;

@@ -11,7 +11,6 @@
 #include "Define.h"
 #include "Tools.h"
 #include "Weapon.h"
-#include "FragModeAi.h"
 #include "SoundManager.h"
 #include "StaticElement.h"
 
@@ -73,18 +72,14 @@ GameManager::GameManager(AppManager* appManager)
 
     m_timeTo = TIME_TO_PLAY;
 
-    m_playTimeManager.startTimestamp = time(NULL);
-
     m_gameOver = false;
 
     m_cursorOnPlayer = false;
 
+    m_winnerPlayer = NULL;
+
     m_camera = new scene::Camera(scene::Camera::TARGET_RELATIVE);
     manager.scene->addCamera(m_camera);
-
-    m_cameraBody = new scene::NewtonNode(parallelscene.newton, &m_cameratMat);
-    m_cameraBody->buildSphereNode(0.1, 0.1);
-    NewtonBodySetForceAndTorqueCallback(m_cameraBody->getBody(), NULL);
 
     m_numslot[38] = 1;
     m_numslot[233] = 2;
@@ -109,41 +104,6 @@ GameManager::~GameManager()
 
     if(!manager.app->globalSettings.noaudio && !manager.app->globalSettings.nomusic)
         FMOD_Sound_Release(map.musicStream);
-
-    if(m_gameOver && m_playSetting.playTime > 0)
-    {
-        using namespace ticks;
-
-        cout << "--- Saving Score" << endl;
-
-        TiXmlDocument scoreDoc;
-
-        if(!scoreDoc.LoadFile("score.xml"))
-            throw;
-
-        TiXmlElement* root = scoreDoc.RootElement();
-
-        TiXmlElement party("party");
-
-        party.SetAttribute("playerName", m_playSetting.playerName.name);
-        party.SetAttribute("playerModel", m_playSetting.playerName.model);
-
-        party.SetAttribute("levelName", m_playSetting.playMap.name);
-        party.SetAttribute("levelPath", m_playSetting.playMap.file);
-
-        party.SetAttribute("playMod", m_playSetting.playMod);
-        party.SetAttribute("playTime", m_playSetting.playTime);
-
-        party.SetAttribute("playersCount", m_playSetting.playerCount);
-
-        party.SetAttribute("timestamp", m_playTimeManager.startTimestamp);
-
-        party.SetAttribute("score", m_userPlayer->getScore());
-
-        root->InsertEndChild(party);
-
-        scoreDoc.SaveFile();
-    }
 
     manager.gui->destroySession(SCREEN_GAMEOVER);
     manager.gui->destroySession(SCREEN_PAUSEMENU);
@@ -204,8 +164,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     newtonWordSize.add(Vector3f(32.0f));
     parallelscene.newton->setWorldSize(newtonWordSize);
 
-    m_playTimeManager.startChrono = m_playTimeManager.curChrono = m_playSetting.playTime;
-
     scene::Fog* fog = manager.scene->getFog();
 
     manager.scene->setZFar(fog->isEnable() ? fog->getEnd() : map.aabb.getLength() * 2);
@@ -226,7 +184,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     m_userPlayer->attachController(new UserControl(this));
 
     registerPlayer(m_userPlayer);
-    modSetupUser(m_userPlayer);
 
     manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
 
@@ -515,7 +472,6 @@ void GameManager::processDevelopperCodeEvent()
             player->attachController(NULL);
 
             registerPlayer(player);
-            modSetupAi(player);
 
             manager.scene->getRootNode()->addChild(player->getVisualBody());
         }
@@ -530,7 +486,6 @@ void GameManager::processDevelopperCodeEvent()
             Player* player = new Player(this, "TEST_BOT_AI", pi.model);
 
             registerPlayer(player);
-            modSetupAi(player);
 
             manager.scene->getRootNode()->addChild(player->getVisualBody());
         }
@@ -538,7 +493,6 @@ void GameManager::processDevelopperCodeEvent()
         // F9 : Next level
         if(event->keyState[EventManager::KEY_F9])
         {
-            m_userPlayer->setScore(m_playSetting.winCond);
             setGameOver();
         }
     }
@@ -666,7 +620,6 @@ void GameManager::gameProcess()
             Player* player = new Player(this, m_botNames[selectName], pi.model);
 
             registerPlayer(player);
-            modSetupAi(player);
 
             manager.scene->getRootNode()->addChild(player->getVisualBody());
 
@@ -733,25 +686,10 @@ void GameManager::gameProcess()
             item->resetPosition();
     }
 
-    // Gestion du temps de jeu
-    if(m_playSetting.playTime > 0)
-    {
-        if(m_playTimeManager.curChrono == 0 && !m_gameOver)
-        {
-            setGameOver();
-        }
-
-        else if(m_playTimeManager.clock.isEsplanedTime(1000))
-        {
-            m_playTimeManager.curChrono--;
-
-            if(m_playTimeManager.curChrono <= 10)
-                manager.sound->play("notime", m_userPlayer);
-        }
-    }
-
     if(hud.log->isEnable() && m_logClock.isEsplanedTime(3000))
         hud.log->setEnable(false);
+
+    // TODO Vérification du gameover
 }
 
 void GameManager::hudProcess()
@@ -794,10 +732,8 @@ void GameManager::hudProcess()
 
             hud.boost->setCurState(m_userPlayer->isBoostAvalaible());
 
-            ostringstream ss;
-            modUpdateStateText(ss);
-
-            hud.state->write(ss.str());
+            // TODO Text d'état de la partie
+            // hud.state->write(ss.str());
 
             // Affichage de l'ecran de dommage si besoins
 
@@ -842,10 +778,8 @@ void GameManager::hudProcess()
     {
         manager.gui->setSession(SCREEN_PLAYERSLIST);
 
-        ostringstream ss;
-        modUpdateScoreListText(ss);
-
-        hud.scorelist->write(ss.str());
+        // TODO Affichage score de joueurs
+        // hud.scorelist->write(ss.str());
     }
 
     // Gestion de l'ETH en gameover --------------------------------------------
@@ -854,10 +788,8 @@ void GameManager::hudProcess()
     {
         manager.gui->setSession(SCREEN_GAMEOVER);
 
-        ostringstream ss;
-        modUpdateGameOverText(ss);
-
-        hud.gameover->write(ss.str());
+        // TODO Affichage état de la partie (gameover)
+        // hud.gameover->write(ss.str());
 
         // Affichage de l'ecran gameover si besoin
 
@@ -888,8 +820,6 @@ float rayFilter(const NewtonBody* body, const float*, int, void* userData, float
 
 void GameManager::render()
 {
-    //    Vector2i& screenSize = manager.app->globalSettings.video.screenSize;
-
     // Positionement camera ----------------------------------------------------
 
     Vector3f setPos = m_userPlayer->getVisualBody()->getPos();
@@ -1006,18 +936,6 @@ const Player::Array& GameManager::getPlayers() const
     return m_players;
 }
 
-int GameManager::modulatScore(int score)
-{
-    if(m_playSetting.playerCount)
-    {
-        float timeFactor = tools::clamp(1.0f - (m_playSetting.playTime / 1200.0f), 0.1f, 1.0f);
-        float countFactor = tools::clamp(1.0f - (m_playSetting.playerCount / 32.0f), 0.1f, 1.0f);
-        return ceil(score * timeFactor / countFactor);
-    }
-    else
-        return 0;
-}
-
 void GameManager::setGameOver()
 {
     m_gameOver = true;
@@ -1032,11 +950,6 @@ void GameManager::setGameOver()
 
     if(manager.app->globalSettings.video.usePpe)
         ppe.gameover->setEnable(true);
-
-    ostringstream ss;
-    modUpdateScoreListText(ss);
-
-    hud.scorelist->write(ss.str());
 }
 
 bool GameManager::isGameOver() const
