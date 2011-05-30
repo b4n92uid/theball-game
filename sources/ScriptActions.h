@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 extern "C"
 {
@@ -18,6 +19,8 @@ extern "C"
 #include <lauxlib.h>
 }
 
+class Player;
+class MapElement;
 class GameManager;
 
 class ScriptActions
@@ -30,7 +33,9 @@ public:
 
     void call(std::string funcname);
 
-    void process(std::string type1, std::string type2);
+    void callCollidCallback(std::string funcname, Player* player, MapElement* elem);
+
+    void process(Player* player, MapElement* elem);
 
     friend int registerCollid(lua_State* lua);
 
@@ -38,16 +43,7 @@ private:
     lua_State* m_lua;
     GameManager* m_gameManager;
 
-    struct CollidRec
-    {
-        std::string type1;
-        std::string type2;
-        std::string funcname;
-    };
-
-    std::vector<CollidRec> m_collidRec;
-
-    CollidRec m_lastFalseResult;
+    std::map<std::string, std::string> m_collidRec;
 };
 
 #endif	/* SCRIPTACTIONS_H */

@@ -9,6 +9,9 @@
 #include "GameManager.h"
 #include "SoundManager.h"
 
+#include "MapElement.h"
+#include "Player.h"
+
 #define GAMEMANAGER_INTERNALE_NAME "_gameManager"
 #define SCRIPTMANAGER_INTERNALE_NAME "_scriptManager"
 
@@ -19,7 +22,7 @@ inline GameManager* getGameManager(lua_State* lua)
 {
     lua_getglobal(lua, GAMEMANAGER_INTERNALE_NAME);
 
-    void* ptr = (void*)lua_tointeger(lua, -1);
+    void* ptr = (void*)(long)lua_tonumber(lua, -1);
 
     lua_pop(lua, 1);
 
@@ -30,71 +33,125 @@ inline ScriptActions* getScriptManager(lua_State* lua)
 {
     lua_getglobal(lua, SCRIPTMANAGER_INTERNALE_NAME);
 
-    void* ptr = (void*)lua_tointeger(lua, -1);
+    void* ptr = (void*)(long)lua_tonumber(lua, -1);
 
     lua_pop(lua, 1);
 
     return (ScriptActions*)ptr;
 }
 
+inline Player* lua_toplayer(lua_State* lua, int argpos)
+{
+    return reinterpret_cast<Player*>((long)lua_tonumber(lua, argpos));
+}
+
+inline MapElement* lua_toelem(lua_State* lua, int argpos)
+{
+    return reinterpret_cast<MapElement*>((long)lua_tonumber(lua, argpos));
+}
+
+inline Vector3f lua_tovector3(lua_State* lua, int argpos)
+{
+    Vector3f vec;
+
+    lua_pushstring(lua, "x");
+    lua_gettable(lua, argpos);
+    vec.x = lua_tonumber(lua, -1);
+    lua_pop(lua, 1);
+
+    lua_pushstring(lua, "y");
+    lua_gettable(lua, argpos);
+    vec.y = lua_tonumber(lua, -1);
+    lua_pop(lua, 1);
+
+    lua_pushstring(lua, "z");
+    lua_gettable(lua, argpos);
+    vec.z = lua_tonumber(lua, -1);
+    lua_pop(lua, 1);
+
+    return vec;
+}
+
 int randomPosition(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int position(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int posistionOf(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int velocity(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    MapElement* elem = lua_toelem(lua, 1);
+
+    Vector3f vec = lua_tovector3(lua, 2);
+
+    elem->getPhysicBody()->setVelocity(vec);
+
+    return 0;
 }
 
 int velocityOf(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int impulse(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    MapElement* elem = lua_toelem(lua, 1);
+
+    Vector3f vec = lua_tovector3(lua, 2);
+
+    float force = lua_tonumber(lua, 3);
+
+    NewtonBodyAddImpulse(elem->getPhysicBody()->getBody(),
+                         vec*force,
+                         elem->getPhysicBody()->getPos());
+
+    return 0;
 }
 
 int health(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    Player* player = lua_toplayer(lua, 1);
+    player->setLife(lua_tonumber(lua, 1));
+
+    return 0;
 }
 
 int healthUp(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    Player* player = lua_toplayer(lua, 1);
+    player->upLife(lua_tonumber(lua, 1));
+
+    return 0;
 }
 
 int healthOf(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int energy(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int energyUp(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int energyOf(lua_State* lua)
 {
-    GameManager* ge = getGameManager(lua);
+    return 0;
 }
 
 int loadSound(lua_State* lua)
@@ -110,24 +167,32 @@ int loadSound(lua_State* lua)
         filepath = lua_tostring(lua, 2);
 
     ge->manager.sound->registerSound(id, filepath);
+
+    return 0;
 }
 
 int sound(lua_State* lua)
 {
     GameManager* ge = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+    MapElement* elem = lua_toelem(lua, 2);
+
+    ge->manager.sound->play(id, elem);
+
+    return 0;
 }
 
 int registerCollid(lua_State* lua)
 {
     ScriptActions* sm = getScriptManager(lua);
 
-    ScriptActions::CollidRec record = {
-        lua_tostring(lua, 1),
-        lua_tostring(lua, 2),
-        lua_tostring(lua, 3),
-    };
+    string id = lua_tostring(lua, 1);
+    string fn = lua_tostring(lua, 2);
 
-    sm->m_collidRec.push_back(record);
+    sm->m_collidRec[id] = fn;
+
+    return 0;
 }
 
 ScriptActions::ScriptActions(GameManager* gameManager)
@@ -166,29 +231,27 @@ ScriptActions::~ScriptActions()
 {
 }
 
-void ScriptActions::process(std::string type1, std::string type2)
+void ScriptActions::process(Player* player, MapElement* elem)
 {
-    if(m_lastFalseResult.type1 == type1 && m_lastFalseResult.type2 == type2)
-        return;
-
-
-    bool nothing = true;
-
-    for(unsigned i = 0; i < m_collidRec.size(); i++)
+    if(m_collidRec.count(elem->getId()))
     {
-        if(type1 == m_collidRec[i].type1 && type2 == m_collidRec[i].type2)
-        {
-            call(m_collidRec[i].funcname);
-            nothing = false;
-            break;
-        }
+        callCollidCallback(m_collidRec[elem->getId()], player, elem);
+    }
+}
+
+void ScriptActions::callCollidCallback(std::string funcname, Player* player, MapElement* elem)
+{
+    lua_getglobal(m_lua, funcname.c_str());
+
+    if(!lua_isfunction(m_lua, -1))
+    {
+        lua_pop(m_lua, 1);
+        throw tbe::Exception("ScriptActions::call; undefined function (%s)", funcname.c_str());
     }
 
-    if(nothing)
-    {
-        m_lastFalseResult.type1 = type1;
-        m_lastFalseResult.type2 = type2;
-    }
+    lua_pushinteger(m_lua, (lua_Integer)player);
+    lua_pushinteger(m_lua, (lua_Integer)elem);
+    lua_call(m_lua, 2, 0);
 }
 
 void ScriptActions::call(std::string funcname)
@@ -207,8 +270,6 @@ void ScriptActions::call(std::string funcname)
 void ScriptActions::load(std::string scriptpath)
 {
     cout << "Loading script " << scriptpath << endl;
-
-    lua_settop(m_lua, 0);
 
     lua_pushinteger(m_lua, (lua_Integer)m_gameManager);
     lua_setglobal(m_lua, GAMEMANAGER_INTERNALE_NAME);
