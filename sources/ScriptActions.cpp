@@ -236,7 +236,7 @@ int registerCollid(lua_State* lua)
     return 0;
 }
 
-void diriction(lua_State* lua)
+int diriction(lua_State* lua)
 {
     Vector3f pos1 = lua_tovector3(lua, 1);
     Vector3f pos2 = lua_tovector3(lua, 2);
