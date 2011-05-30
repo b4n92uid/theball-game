@@ -236,6 +236,16 @@ int registerCollid(lua_State* lua)
     return 0;
 }
 
+void diriction(lua_State* lua)
+{
+    Vector3f pos1 = lua_tovector3(lua, 1);
+    Vector3f pos2 = lua_tovector3(lua, 2);
+
+    lua_pushvector3(lua, pos2 - pos1);
+
+    return 1;
+}
+
 ScriptActions::ScriptActions(GameManager* gameManager)
 {
     m_gameManager = gameManager;
@@ -266,10 +276,13 @@ ScriptActions::ScriptActions(GameManager* gameManager)
     lua_register(m_lua, "sound", sound);
 
     lua_register(m_lua, "registerCollid", registerCollid);
+
+    lua_register(m_lua, "diriction", diriction);
 }
 
 ScriptActions::~ScriptActions()
 {
+    lua_close(m_lua);
 }
 
 void ScriptActions::process(Player* player, MapElement* elem)
