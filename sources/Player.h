@@ -189,7 +189,7 @@ protected:
 
     Controller* m_attachedCotroller;
 
-    tbe::scene::BurningEmitter* m_deadExplode;
+    tbe::scene::ParticlesEmiter* m_deadExplode;
 
     GameManager* m_playManager;
     SoundManager* m_soundManager;

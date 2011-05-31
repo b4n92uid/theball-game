@@ -37,7 +37,7 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     MapElement::m_visualBody = m_visualBody;
 
     // Effet explosion
-    m_deadExplode = new BurningEmitter(playManager->parallelscene.particles);
+    m_deadExplode = new ParticlesEmiter(playManager->parallelscene.particles);
     m_deadExplode->setTexture(PARTICLE_EXPLODE);
     m_deadExplode->setLifeInit(m_worldSettings.playerExplodeLifeInit);
     m_deadExplode->setLifeDown(m_worldSettings.playerExplodeLifeDown);
