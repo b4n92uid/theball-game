@@ -264,7 +264,7 @@ Weapon & Weapon::operator=(const Weapon& copy)
     return *this;
 }
 
-Node* Weapon::clone()
+Weapon* Weapon::clone()
 {
     return NULL;
 }

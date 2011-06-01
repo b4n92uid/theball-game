@@ -111,7 +111,7 @@ public:
 
     void setupBullet(tbe::scene::Particle& p);
 
-    tbe::scene::Node* clone();
+    Weapon* clone();
 
     typedef std::vector<Weapon*> Array;
 
