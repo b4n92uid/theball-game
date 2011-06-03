@@ -1,7 +1,7 @@
 build
 ignore
 sourcesold
-nbproject
+private
 debug
 
 syntax: glob
@@ -12,6 +12,5 @@ syntax: glob
 **.pdf
 **.log
 **.xml
-
-.dep.inc
-Makefile
+**.bash
+**.mk
