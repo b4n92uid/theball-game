@@ -58,8 +58,8 @@ int main(int argc, char** argv)
             // NOTE play <level> <player> <playerCount>
 
             Settings::PartySetting ps;
-            ps.playMap = Settings::MapInfo(argv[index + 1]);
-            ps.playerName = Settings::PlayerInfo(argv[index + 2]);
+            ps.map = Settings::MapInfo(argv[index + 1]);
+            ps.player = Settings::PlayerInfo(argv[index + 2]);
             ps.playerCount = tools::strToNum<unsigned>(argv[index + 3]);
 
             theBall.executeGame(ps);

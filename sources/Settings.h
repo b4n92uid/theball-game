@@ -124,7 +124,6 @@ public:
     struct Gui
     {
         std::string backgroundMainmenu;
-        std::string backgroundBall;
         std::string backgroundBullettime;
         std::string backgroundDammage;
         std::string backgroundHud;
@@ -167,7 +166,11 @@ public:
         MapInfo(std::string path);
 
         std::string name;
-        std::string file;
+        std::string author;
+        std::string comment;
+        std::string script;
+
+        std::string filename;
     };
 
     struct PlayerInfo
@@ -185,18 +188,12 @@ public:
     {
         PartySetting();
 
-        PlayerInfo playerName;
+        PlayerInfo player;
 
-        MapInfo playMap;
+        MapInfo map;
 
         unsigned playerCount;
         unsigned curLevel;
-    };
-
-    struct EditSetting
-    {
-        MapInfo editMap;
-        bool createNew;
     };
 
     struct Profile

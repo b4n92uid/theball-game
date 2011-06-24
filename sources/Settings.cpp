@@ -31,7 +31,6 @@ void Settings::readGui()
     map<string, string*> binder;
 
     binder["BACKGROUND_MAINMENU"] = &gui.backgroundMainmenu;
-    binder["BACKGROUND_BALL"] = &gui.backgroundBall;
     binder["BACKGROUND_BULLETTIME"] = &gui.backgroundBullettime;
     binder["BACKGROUND_DAMMAGE"] = &gui.backgroundDammage;
     binder["BACKGROUND_HUD"] = &gui.backgroundHud;
@@ -78,7 +77,7 @@ void Settings::readGui()
             if(binderSize.count(name))
             {
                 const char* data = node2->Attribute("size");
-                *binderSize[name] = tools::strToVec2<float>(data, true);
+                binderSize[name]->fromStr(data, true);
             }
         }
     }
@@ -342,7 +341,7 @@ void Settings::readCampaign()
     {
         PartySetting party;
 
-        party.playMap = MapInfo(node->Attribute("map"));
+        party.map = MapInfo(node->Attribute("map"));
 
         node->QueryValueAttribute<unsigned>("playerCount", &party.playerCount);
 
@@ -363,7 +362,7 @@ void Settings::readMapInfo()
     {
         const path& filename = it->path();
 
-        if(filename.extension() == ".bld")
+        if(filename.extension() == ".map")
         {
             Settings::MapInfo mi(filename.file_string());
 
@@ -539,37 +538,16 @@ Settings::MapInfo::MapInfo()
 
 Settings::MapInfo::MapInfo(std::string path)
 {
-    this->file = path;
-    this->name = "Unknown";
+    this->filename = path;
 
-    ifstream file(path.c_str());
+    scene::SceneParser parser;
+    parser.loadScene(path);
 
-    if(!file)
-        throw Exception("Settings::MapInfo::MapInfo; Open file error (%s)", path.c_str());
+    author = parser.getAuthorName();
+    name = parser.getSceneName();
 
-    string buffer;
-
-    while(tools::getline(file, buffer))
-    {
-        if(buffer == ".map")
-        {
-            if(buffer.empty() || buffer[0] == '#')
-                continue;
-
-            while(tools::getline(file, buffer))
-            {
-                if(buffer.empty() || buffer[0] == '#')
-                    continue;
-
-                if(buffer.find("name") != string::npos)
-                    name = buffer.substr(buffer.find_first_of('=') + 1);
-
-                break;
-            }
-
-            break;
-        }
-    }
+    script = parser.getAdditional<string > ("script");
+    comment = parser.getAdditional<string > ("comments");
 }
 
 Settings::PlayerInfo::PlayerInfo()
