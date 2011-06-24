@@ -291,13 +291,13 @@ WeaponBlaster::WeaponBlaster(GameManager* playManager) : Weapon(playManager)
 
 void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
-    startpos += tools::rand(Vector3f(-m_worldSettings.playerSize * 0.5),
-                            Vector3f(m_worldSettings.playerSize * 0.5));
+    startpos += math::rand(Vector3f(-m_worldSettings.playerSize * 0.5),
+                           Vector3f(m_worldSettings.playerSize * 0.5));
 
     // Creation du tire
     Bullet* fire = new Bullet(m_playManager);
     fire->setWeapon(this);
-    fire->setDammage(tools::rand(1, m_maxAmmoDammage));
+    fire->setDammage(math::rand(1, m_maxAmmoDammage));
     fire->shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
@@ -331,7 +331,7 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
         // Creation du tire
         Bullet * fire = new Bullet(m_playManager);
         fire->setWeapon(this);
-        fire->setDammage(tools::rand(1, m_maxAmmoDammage));
+        fire->setDammage(math::rand(1, m_maxAmmoDammage));
         fire->shoot(startpos, targetpos, m_shootSpeed, 0.1);
 
         m_bulletArray.push_back(fire);
@@ -450,7 +450,7 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     // Creation du tire
     Bullet * fire = new Bullet(m_playManager);
     fire->setWeapon(this);
-    fire->setDammage(tools::rand(1, m_maxAmmoDammage));
+    fire->setDammage(math::rand(1, m_maxAmmoDammage));
     fire->shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
@@ -548,7 +548,7 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
     m_shootDiri = (targetpos - startpos).normalize();
     m_shootSpeed = shootspeed;
 
-    m_shootDiri += tools::rand(AABB(-accuracy, accuracy));
+    m_shootDiri += AABB(-accuracy, accuracy).randPos();
 
     m_matrix.setPos(startpos);
 

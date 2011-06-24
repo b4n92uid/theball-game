@@ -7,14 +7,6 @@
 using namespace std;
 using namespace tbe;
 
-inline void writeCampaignDescription(gui::TextBox* text, Settings::PartySetting& party)
-{
-    text->write(gui::GuiString("Carte:       %s\n"
-                               "Joueurs:     %d\n",
-                               party.playMap.name.c_str(),
-                               party.playerCount));
-}
-
 AppManager::AppManager()
 {
     m_gameEngine = new SDLDevice;
@@ -132,8 +124,8 @@ void AppManager::setupMenuGui()
     guiskin->switchBox(globalSettings.gui.switchBox);
     guiskin->switchBoxSize(globalSettings.gui.switchBoxSize * sizeFactor);
 
-    guiskin->vectorBox(globalSettings.gui.vectorBox);
-    guiskin->vectorBoxSize(globalSettings.gui.vectorBoxSize * sizeFactor);
+    //    guiskin->vectorBox(globalSettings.gui.vectorBox);
+    //    guiskin->vectorBoxSize(globalSettings.gui.vectorBoxSize * sizeFactor);
 
     guiskin->stateShowSize(Vector2f(48, 48) * sizeFactor);
 
@@ -157,14 +149,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Horizental);
     m_guiManager->addLayoutStretchSpace();
 
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_guiManager->addImage("", globalSettings.gui.backgroundBall)
-            ->setSize(256);
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
+    m_guiManager->addLayoutSpace(256);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->addLayout(Layout::Vertical, 10);
@@ -557,7 +542,7 @@ void AppManager::setupMenuGui()
     for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
         m_controls.campaign.playerSelect->push(globalSettings.availablePlayer[i].name, i);
 
-    m_controls.campaign.playerSelect->setCurrent(tools::rand(0, globalSettings.availablePlayer.size()));
+    m_controls.campaign.playerSelect->setCurrent(math::rand(0, globalSettings.availablePlayer.size()));
 
 
     // Temps de la partie
@@ -582,7 +567,13 @@ void AppManager::updateGuiContent()
     {
         Settings::PartySetting& party = globalSettings.campaign.maps[campMapSize];
 
-        writeCampaignDescription(m_controls.campaign.description, party);
+        m_controls.campaign.description
+                ->write(gui::GuiString("Carte: %s\n"
+                                       "Par: %s"
+                                       "%s",
+                                       party.map.name.c_str(),
+                                       party.map.author.c_str(),
+                                       party.map.comment.c_str()));
     }
 
     // Ball a jouer
@@ -592,7 +583,7 @@ void AppManager::updateGuiContent()
     for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
         m_controls.playmenu.playerSelect->push(globalSettings.availablePlayer[i].name, i);
 
-    m_controls.playmenu.playerSelect->setCurrent(tools::rand(0, globalSettings.availablePlayer.size()));
+    m_controls.playmenu.playerSelect->setCurrent(math::rand(0, globalSettings.availablePlayer.size()));
 
     // Carte a jouer
 
@@ -603,7 +594,7 @@ void AppManager::updateGuiContent()
         m_controls.playmenu.mapSelect->push(globalSettings.availableMap[i].name, i);
     }
 
-    m_controls.playmenu.mapSelect->setCurrent(tools::rand(0, globalSettings.availableMap.size()));
+    m_controls.playmenu.mapSelect->setCurrent(math::rand(0, globalSettings.availableMap.size()));
 }
 
 void AppManager::setupBackgroundScene()
@@ -654,7 +645,7 @@ void AppManager::setupBackgroundScene()
         m_ppeManager->addPostEffect("", bloom);
 
         MotionBlurEffect* mblur = new MotionBlurEffect;
-        mblur->setRttFrameSize(tools::nextPow2(globalSettings.video.screenSize) / 2);
+        mblur->setRttFrameSize(math::nextPow2(globalSettings.video.screenSize) / 2);
         m_ppeManager->addPostEffect("", mblur);
     }
 }
@@ -681,8 +672,15 @@ void AppManager::processCampaignMenuEvent()
         Settings::PartySetting party = m_controls.campaign.levelSelect->getData()
                 .getValue<Settings::PartySetting > ();
 
-        writeCampaignDescription(m_controls.campaign.description, party);
+        m_controls.campaign.description
+                ->write(gui::GuiString("Carte: %s\n"
+                                       "Par: %s"
+                                       "%s",
+                                       party.map.name.c_str(),
+                                       party.map.author.c_str(),
+                                       party.map.comment.c_str()));
     }
+
     else if(m_controls.campaign.play->isActivate())
     {
         Settings::PartySetting party = m_controls.campaign.levelSelect->getData()
@@ -690,8 +688,8 @@ void AppManager::processCampaignMenuEvent()
 
         unsigned indexOfPlayer = m_controls.campaign.playerSelect->getData().getValue<unsigned>();
 
-        party.playerName = globalSettings.availablePlayer[indexOfPlayer];
-        party.playerName.nick = m_controls.campaign.playerName->getLabel();
+        party.player = globalSettings.availablePlayer[indexOfPlayer];
+        party.player.nick = m_controls.campaign.playerName->getLabel();
 
         executeCampaign(party);
 
@@ -719,10 +717,10 @@ void AppManager::processPlayMenuEvent()
 
         Settings::PartySetting playSetting;
 
-        playSetting.playMap = globalSettings.availableMap[indexOfLevel];
+        playSetting.map = globalSettings.availableMap[indexOfLevel];
 
-        playSetting.playerName = globalSettings.availablePlayer[indexOfPlayer];
-        playSetting.playerName.nick = m_controls.playmenu.playerName->getLabel();
+        playSetting.player = globalSettings.availablePlayer[indexOfPlayer];
+        playSetting.player.nick = m_controls.playmenu.playerName->getLabel();
 
         playSetting.playerCount = m_controls.playmenu.playerCount->getValue();
 
@@ -823,7 +821,7 @@ void AppManager::executeMenu()
 
             m_camera->setPos(-m_camera->getTarget() * 8.0f);
 
-            m_logo->getMatrix().setRotateY(0.01);
+            m_logo->getMatrix().rotate(0.01, Vector3f::Y(1));
 
             m_gameEngine->beginScene();
 
@@ -853,10 +851,10 @@ void AppManager::executeMenu()
 void AppManager::executeGame(const Settings::PartySetting& playSetting)
 {
     cout << "--- ExecuteGame :" << endl
-            << "  playLevel = " << playSetting.playMap.name << endl
+            << "  playLevel = " << playSetting.map.name << endl
             << "  playerCount = " << playSetting.playerCount << endl
-            << "  playerModel = " << playSetting.playerName.file << endl
-            << "  playerName = " << playSetting.playerName.name << endl;
+            << "  playerModel = " << playSetting.player.file << endl
+            << "  playerName = " << playSetting.player.name << endl;
 
     m_sceneManager->clearAll();
     m_ppeManager->clearAll();
@@ -938,10 +936,10 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
     do
     {
         cout << "ExecuteCampaign :" << endl
-                << "playLevel = " << curPlaySetting.playMap.name << endl
+                << "playLevel = " << curPlaySetting.map.name << endl
                 << "playerCount = " << curPlaySetting.playerCount << endl
-                << "playerModel = " << curPlaySetting.playerName.file << endl
-                << "playerName = " << curPlaySetting.playerName.name << endl;
+                << "playerModel = " << curPlaySetting.player.file << endl
+                << "playerName = " << curPlaySetting.player.name << endl;
 
         m_sceneManager->clearAll();
         m_ppeManager->clearAll();
@@ -1032,7 +1030,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 
                 Settings::PartySetting nextParty = globalSettings.campaign.maps[curPlaySetting.curLevel];
 
-                curPlaySetting.playMap = nextParty.playMap;
+                curPlaySetting.map = nextParty.map;
                 curPlaySetting.playerCount = nextParty.playerCount;
 
                 m_guiManager->setSession(MENU_LOAD);
