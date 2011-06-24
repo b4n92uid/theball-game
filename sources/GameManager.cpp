@@ -58,6 +58,9 @@ GameManager::GameManager(AppManager* appManager)
     parallelscene.particles = new scene::ParticlesParallelScene;
     manager.scene->addParallelScene(parallelscene.particles);
 
+    parallelscene.marks = new scene::MapMarkParallelScene;
+    manager.scene->addParallelScene(parallelscene.marks);
+
     if(manager.app->globalSettings.noaudio)
         manager.fmodsys = NULL;
     else
@@ -129,8 +132,10 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     levelloader.setMeshScene(parallelscene.meshs);
     levelloader.setParticlesScene(parallelscene.particles);
     levelloader.setLightScene(parallelscene.light);
+    levelloader.setMarkScene(parallelscene.marks);
 
-    levelloader.loadScene(m_playSetting.playMap.file);
+    levelloader.loadScene(m_playSetting.map.filename);
+    levelloader.buildScene();
 
     for(Iterator<scene::Mesh*> it = parallelscene.meshs->iterator(); it; it++)
     {
@@ -180,7 +185,7 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     namefile.close();
 
-    m_userPlayer = new Player(this, m_playSetting.playerName.nick, m_playSetting.playerName.model);
+    m_userPlayer = new Player(this, m_playSetting.player.nick, m_playSetting.player.model);
     m_userPlayer->attachController(new UserControl(this));
 
     registerPlayer(m_userPlayer);
@@ -191,8 +196,7 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     // SCRIPT ------------------------------------------------------------------
 
-    string scriptpath = levelloader.getAdditional<string > ("script");
-    scriptpath = tools::pathScope(m_playSetting.playMap.file, scriptpath, true);
+    string scriptpath = tools::pathScope(m_playSetting.map.filename, m_playSetting.map.script, true);
 
     manager.script->load(scriptpath);
 
@@ -346,7 +350,6 @@ void GameManager::setupGui()
     manager.gui->addLayout(Layout::Horizental, 10);
     manager.gui->addLayoutStretchSpace();
 
-    hud.item = manager.gui->addStateShow("hud.item", GUI_ITEM, 2);
     hud.life = manager.gui->addGauge("hud.life", "Vie");
     hud.life->setSmooth(true, 1);
     hud.ammo = manager.gui->addGauge("hud.ammo", "Munition");
@@ -412,7 +415,7 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor()
 
     do
     {
-        randPos = tools::rand(map.aabb - Vector3f(factor));
+        randPos = (map.aabb - Vector3f(factor)).randPos();
         randPos.y = 1;
         randPos = parallelscene.newton->findFloor(randPos);
     }
@@ -464,7 +467,7 @@ void GameManager::processDevelopperCodeEvent()
         // F6 : TEST BOT
         if(event->keyState[EventManager::KEY_F6])
         {
-            unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
+            unsigned select = math::rand(0, manager.app->globalSettings.availablePlayer.size());
 
             Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
 
@@ -479,7 +482,7 @@ void GameManager::processDevelopperCodeEvent()
         // F6 : TEST BOT AI
         if(event->keyState[EventManager::KEY_F7])
         {
-            unsigned select = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
+            unsigned select = math::rand(0, manager.app->globalSettings.availablePlayer.size());
 
             Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
 
@@ -611,11 +614,11 @@ void GameManager::gameProcess()
     for(unsigned i = m_players.size(); i < m_playSetting.playerCount; i++)
         if(m_spawnPlayer.isEsplanedTime(4000))
         {
-            unsigned selectPlayer = tools::rand(0, manager.app->globalSettings.availablePlayer.size());
+            unsigned selectPlayer = math::rand(0, manager.app->globalSettings.availablePlayer.size());
 
             Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[selectPlayer];
 
-            unsigned selectName = tools::rand(0, m_botNames.size());
+            unsigned selectName = math::rand(0, m_botNames.size());
 
             Player* player = new Player(this, m_botNames[selectName], pi.model);
 
