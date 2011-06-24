@@ -2,8 +2,6 @@
 <configurationDescriptor version="79">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="f2" displayName="Config" projectFiles="true">
-      <itemPath>sources/Settings.cpp</itemPath>
-      <itemPath>sources/Settings.h</itemPath>
       <itemPath>dist/Release/MinGW-Windows/ai.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/campaign.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/control.xml</itemPath>
@@ -13,9 +11,15 @@
       <itemPath>dist/Release/MinGW-Windows/video.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/world.xml</itemPath>
     </logicalFolder>
+    <logicalFolder name="f3" displayName="Core" projectFiles="true" kind="ROOT">
+      <itemPath>sources/AppManager.cpp</itemPath>
+      <itemPath>sources/AppManager.h</itemPath>
+      <itemPath>sources/Settings.cpp</itemPath>
+      <itemPath>sources/Settings.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="f1" displayName="Game" projectFiles="true">
       <logicalFolder name="f1" displayName="Actors" projectFiles="true">
-        <logicalFolder name="f1" displayName="Controller" projectFiles="true">
+        <logicalFolder name="f1" displayName="Controllers" projectFiles="true">
           <itemPath>sources/AIControl.cpp</itemPath>
           <itemPath>sources/AIControl.h</itemPath>
           <itemPath>sources/Controller.cpp</itemPath>
@@ -33,7 +37,7 @@
           <itemPath>sources/StaticElement.cpp</itemPath>
           <itemPath>sources/StaticElement.h</itemPath>
         </logicalFolder>
-        <logicalFolder name="f3" displayName="Power" projectFiles="true">
+        <logicalFolder name="f3" displayName="Powers" projectFiles="true">
           <itemPath>sources/BulletTime.cpp</itemPath>
           <itemPath>sources/BulletTime.h</itemPath>
         </logicalFolder>
@@ -43,8 +47,6 @@
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f4" displayName="Managers" projectFiles="true">
-        <itemPath>sources/AppManager.cpp</itemPath>
-        <itemPath>sources/AppManager.h</itemPath>
         <itemPath>sources/GameManager.cpp</itemPath>
         <itemPath>sources/GameManager.h</itemPath>
         <itemPath>sources/MaterialManager.cpp</itemPath>
