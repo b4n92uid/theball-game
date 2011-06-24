@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <gui>
-    <set name="BACKGROUND_MAINMENU"     value="data/gfxart/background/main.png" />
-    <set name="BACKGROUND_BULLETTIME"   value="data/gfxart/background/bullettime.png" />
-    <set name="BACKGROUND_DAMMAGE"      value="data/gfxart/background/dammage.png" />
-    <set name="BACKGROUND_HUD"          value="data/gfxart/background/hud.png" />
-    <set name="BACKGROUND_PAUSE"        value="data/gfxart/background/pause.png" />
-    <set name="BACKGROUND_TEXTBOX_V"    value="data/gfxart/gui/textboxv.png" />
-    <set name="BACKGROUND_TEXTBOX_H"    value="data/gfxart/gui/textboxh.png" />
-    <set name="BACKGROUND_LISTBOX_V"    value="data/gfxart/gui/listboxv.png" />
-    <set name="BACKGROUND_LISTBOX_H"    value="data/gfxart/gui/listboxh.png" />
+    <set name="BACKGROUND_MAINMENU"     value="data/gfxart/gui/main.png" />
+    <set name="BACKGROUND_BULLETTIME"   value="data/gfxart/gui/bullettime.png" />
+    <set name="BACKGROUND_DAMMAGE"      value="data/gfxart/gui/dammage.png" />
+    <set name="BACKGROUND_HUD"          value="data/gfxart/gui/hud.png" />
+    <set name="BACKGROUND_PAUSE"        value="data/gfxart/gui/pause.png" />
+    <set name="BACKGROUND_TEXTBOX"      value="data/gfxart/gui/textbox.png" />
+    <set name="BACKGROUND_LISTBOX"      value="data/gfxart/gui/listbox.png" />
+    <set name="BACKGROUND_LOGO"         value="data/gfxart/gui/logo.png" />
+    <set name="MASK_H"                  value="data/gfxart/gui/horzmask.png" />
+    <set name="MASK_V"                  value="data/gfxart/gui/vertmask.png" />
     <set name="GUI_SCORE"               value="data/gfxart/gui/score.png" />
     <set name="GUI_NOTIFY"              value="data/gfxart/gui/notify.png" />
     <set name="GUI_PREVIEW"             value="data/gfxart/gui/previewframe.png" />
@@ -17,6 +18,6 @@
     <set name="GUI_EDIT"                value="data/gfxart/gui/edit.png" size="192, 48" />
     <set name="GUI_SWITCH"              value="data/gfxart/gui/switch.png" size="192, 48" />
     <set name="GUI_VECTOR"              value="data/gfxart/gui/vectorbox.png" size="192, 48" />
-    <set name="GUI_FONT"                value="data/gfxart/gui/comicbd.ttf" />
+    <set name="GUI_FONT"                value="data/gfxart/gui/NEUROPOL.ttf" />
     <set name="GUI_FONTSIZE"            value="12" />
 </gui>
