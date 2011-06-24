@@ -42,9 +42,6 @@ public:
     tbe::SDLDevice* getGameEngine() const;
     FMOD_SYSTEM* getFmodSystem() const;
 
-    /// Mise a jour du contenue de la GUI
-    void updateGuiContent();
-
     Settings globalSettings;
 
 protected:
@@ -66,6 +63,11 @@ protected:
     void processSettingMenuEvent();
     void processSettingKeyMenuEvent();
 
+    /// Mise a jour du contenue de la GUI
+    void updateGuiContent();
+
+    void updateQuickPlayMapInfo();
+
 protected:
     tbe::SDLDevice* m_gameEngine;
     tbe::EventManager* m_eventMng;
@@ -86,7 +88,17 @@ protected:
 
     struct
     {
-        tbe::gui::TextBox* aboutText;
+        tbe::gui::Button* campaign;
+        tbe::gui::Button* quickplay;
+        tbe::gui::Button* settings;
+        tbe::gui::Button* about;
+        tbe::gui::Button* quit;
+
+        struct
+        {
+            tbe::gui::TextBox* aboutText;
+
+        } aboutmenu;
 
         struct
         {
@@ -94,19 +106,23 @@ protected:
             tbe::gui::SwitchString* playerSelect;
             tbe::gui::SwitchNumeric<int>* playerCount;
             tbe::gui::EditBox* playerName;
+            tbe::gui::TextBox* description;
+
+            tbe::gui::Button* play;
+            tbe::gui::Button* ret;
 
         } playmenu;
 
         struct
         {
-            tbe::gui::SwitchString* levelSelect;
-            tbe::gui::Button* play;
-            tbe::gui::Button* ret;
-            tbe::gui::SwitchString* playerSelect;
-            tbe::gui::EditBox* playerName;
-            tbe::gui::TextBox* description;
+            // tbe::gui::SwitchString* levelSelect;
+            // tbe::gui::Button* play;
+            // tbe::gui::Button* ret;
+            // tbe::gui::SwitchString* playerSelect;
+            // tbe::gui::EditBox* playerName;
+            // tbe::gui::TextBox* description;
 
-        } campaign;
+        } campaignmenu;
 
         struct
         {
@@ -115,7 +131,7 @@ protected:
             tbe::gui::SwitchString* fullscreen;
             tbe::gui::SwitchString* usePpe;
 
-        } settings;
+        } settingsmenu;
 
     } m_controls;
 };

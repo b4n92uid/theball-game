@@ -154,11 +154,13 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 10);
     m_guiManager->addLayoutStretchSpace();
 
-    m_guiManager->addButton("quit", "Quitter");
-    m_guiManager->addButton("about", "A Propos");
-    m_guiManager->addButton("setting", "Options");
-    m_guiManager->addButton("quickplay", "Partie rapide");
-    m_guiManager->addButton("campaign", "Jouer");
+    m_controls.quit = m_guiManager->addButton("quit", "Quitter");
+    m_controls.about = m_guiManager->addButton("about", "A Propos");
+    m_controls.settings = m_guiManager->addButton("settings", "Options");
+    m_controls.quickplay = m_guiManager->addButton("quickplay", "Partie rapide");
+    // m_controls.campaignmenu = m_guiManager->addButton("campaign", "Jouer");
+
+    // m_guiManager->addImage("logo", globalSettings.gui.backgroundLogo);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -172,6 +174,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addImage("", background)
             ->setSize(screenSize);
 
+    /*
     m_guiManager->addLayout(Layout::Horizental, 10, 10);
     m_guiManager->addLayoutStretchSpace();
 
@@ -200,7 +203,6 @@ void AppManager::setupMenuGui()
 
     // -------- Collone 2
     m_guiManager->addLayout(Layout::Vertical, 10);
-    //    m_guiManager->addLayoutSpace(screenSize.y / 4);
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.campaign.description = m_guiManager->addTextBox("description");
@@ -215,6 +217,7 @@ void AppManager::setupMenuGui()
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
+     */
 
     // ******** Menu Jouer
 
@@ -231,11 +234,23 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 5);
     m_guiManager->addLayoutStretchSpace();
 
+    m_controls.playmenu.ret = m_guiManager->addButton("return", "Retour");
+
     m_controls.playmenu.playerSelect = m_guiManager->addSwitchString("playerSelect");
     m_guiManager->addTextBox("")->write("Personnage");
 
+    m_controls.playmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
+    m_guiManager->addTextBox("")->write("Carte à jouer");
+
+    m_controls.playmenu.playerCount = m_guiManager->addSwitchNumeric<int>("playerCount");
+    m_controls.playmenu.playerCount->setRange(new SwitchNumeric<int>::Range(0, 32));
+    m_controls.playmenu.playerCount->setStep(2);
+    m_guiManager->addTextBox("")->write("Nombres de joueurs");
+
     m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
     m_guiManager->addTextBox("")->write("Pseudo");
+
+    m_controls.playmenu.play = m_guiManager->addButton("play", "Jouer");
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -247,27 +262,11 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 5);
     m_guiManager->addLayoutStretchSpace();
 
-    m_controls.playmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
-    m_guiManager->addTextBox("")->write("Carte à jouer");
-
-    m_controls.playmenu.playerCount = m_guiManager->addSwitchNumeric<int>("playerCount");
-    m_controls.playmenu.playerCount->setRange(new SwitchNumeric<int>::Range(0, 32));
-    m_controls.playmenu.playerCount->setStep(2);
-    m_guiManager->addTextBox("")->write("Nombres de joueurs");
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 3
-    m_guiManager->addLayout(Layout::Vertical, 5);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_guiManager->addButton("return", "Retour");
-
-    m_guiManager->addButton("play", "Jouer");
+    m_controls.playmenu.description = m_guiManager->addTextBox("description");
+    m_controls.playmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.playmenu.description->setBackgroundPadding(16);
+    m_controls.playmenu.description->setSize(Vector2f(384, 256));
+    m_controls.playmenu.description->setDefinedSize(true);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -326,10 +325,10 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 8);
     m_guiManager->addLayoutStretchSpace();
 
-    m_controls.settings.screenSize = m_guiManager->addSwitchString("screenSize");
+    m_controls.settingsmenu.screenSize = m_guiManager->addSwitchString("screenSize");
     m_guiManager->addTextBox("")->write("Résolution");
 
-    m_controls.settings.antiAliasing = m_guiManager->addSwitchString("antiAliasing");
+    m_controls.settingsmenu.antiAliasing = m_guiManager->addSwitchString("antiAliasing");
     m_guiManager->addTextBox("")->write("Anti-crélénage");
 
     m_guiManager->addLayoutStretchSpace();
@@ -342,10 +341,10 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 8);
     m_guiManager->addLayoutStretchSpace();
 
-    m_controls.settings.fullscreen = m_guiManager->addSwitchString("fullScreen");
+    m_controls.settingsmenu.fullscreen = m_guiManager->addSwitchString("fullScreen");
     m_guiManager->addTextBox("")->write("Mode d'affichage");
 
-    m_controls.settings.usePpe = m_guiManager->addSwitchString("usePpe");
+    m_controls.settingsmenu.usePpe = m_guiManager->addSwitchString("usePpe");
     m_guiManager->addTextBox("")->write("P.P Effects");
 
     m_guiManager->addLayoutStretchSpace();
@@ -432,12 +431,12 @@ void AppManager::setupMenuGui()
 
     m_guiManager->addButton("return", "Retour");
 
-    m_controls.aboutText = m_guiManager->addTextBox("aboutText");
-    m_controls.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
-    m_controls.aboutText->setDefinedSize(true);
-    m_controls.aboutText->setBackgroundPadding(8);
-    m_controls.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
-    m_controls.aboutText->setTextAlign(TextBox::LEFT);
+    m_controls.aboutmenu.aboutText = m_guiManager->addTextBox("aboutText");
+    m_controls.aboutmenu.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
+    m_controls.aboutmenu.aboutText->setDefinedSize(true);
+    m_controls.aboutmenu.aboutText->setBackgroundPadding(8);
+    m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.aboutmenu.aboutText->setTextAlign(TextBox::LEFT);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -460,7 +459,7 @@ void AppManager::setupMenuGui()
 
         ss << "Build in " << __DATE__;
 
-        m_controls.aboutText->write(ss.str());
+        m_controls.aboutmenu.aboutText->write(ss.str());
     }
 
     // Menu de configuration des touches
@@ -478,11 +477,11 @@ void AppManager::setupMenuGui()
 
     // Menu de configuration vidéo
     {
-        m_controls.settings.usePpe->push("Désactiver", false).push("Activer", true);
-        m_controls.settings.usePpe->setCurrent(globalSettings.video.usePpe);
+        m_controls.settingsmenu.usePpe->push("Désactiver", false).push("Activer", true);
+        m_controls.settingsmenu.usePpe->setCurrent(globalSettings.video.usePpe);
 
-        m_controls.settings.fullscreen->push("Fenêtrer", false).push("Plein-écran", true);
-        m_controls.settings.fullscreen->setCurrent(globalSettings.video.fullScreen);
+        m_controls.settingsmenu.fullscreen->push("Fenêtrer", false).push("Plein-écran", true);
+        m_controls.settingsmenu.fullscreen->setCurrent(globalSettings.video.fullScreen);
     }
 
     {
@@ -495,7 +494,7 @@ void AppManager::setupMenuGui()
         AAAvailable[8] = 3;
         AAAvailable[16] = 4;
 
-        m_controls.settings.antiAliasing->
+        m_controls.settingsmenu.antiAliasing->
                 push("Désactiver", 0).
                 push("2x", 2).
                 push("4x", 4).
@@ -503,7 +502,7 @@ void AppManager::setupMenuGui()
                 push("16x", 16)
                 ;
 
-        m_controls.settings.antiAliasing->setCurrent(AAAvailable[cutAA]);
+        m_controls.settingsmenu.antiAliasing->setCurrent(AAAvailable[cutAA]);
     }
 
     {
@@ -518,14 +517,17 @@ void AppManager::setupMenuGui()
             stringstream ss;
             ss << availableScreen[i].x << "x" << availableScreen[i].y << "x32";
 
-            m_controls.settings.screenSize->push(ss.str(), availableScreen[i]);
+            m_controls.settingsmenu.screenSize->push(ss.str(), availableScreen[i]);
         }
 
-        m_controls.settings.screenSize->setCurrent(curSizeIndex);
+        m_controls.settingsmenu.screenSize->setCurrent(curSizeIndex);
     }
 
-    // Menu campaign
+    // Temps de la partie
+    m_controls.playmenu.playerCount->setValue(4);
 
+    // Menu campaign
+    /*
     m_controls.campaign.playerName->setLabel(globalSettings.profile.name);
 
     for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
@@ -533,17 +535,31 @@ void AppManager::setupMenuGui()
 
     m_controls.campaign.playerSelect->setCurrent(math::rand(0, globalSettings.availablePlayer.size()));
 
-
-    // Temps de la partie
-    m_controls.playmenu.playerCount->setValue(4);
+     */
 
     updateGuiContent();
+}
+
+void AppManager::updateQuickPlayMapInfo()
+{
+    unsigned selected = m_controls.playmenu.mapSelect->getCurrent();
+
+    Settings::MapInfo& mapinfo = globalSettings.availableMap[selected];
+
+    m_controls.playmenu.description
+            ->write(gui::GuiString("Carte: %s\n"
+                                   "Par: %s\n\n"
+                                   "%s",
+                                   mapinfo.name.c_str(),
+                                   mapinfo.author.c_str(),
+                                   mapinfo.comment.c_str()));
 }
 
 void AppManager::updateGuiContent()
 {
     // Campaign
 
+    /*
     m_controls.campaign.levelSelect->deleteAll();
 
     unsigned campMapSize = min(globalSettings.campaign.maps.size() - 1, globalSettings.profile.index);
@@ -564,6 +580,7 @@ void AppManager::updateGuiContent()
                                        party.map.author.c_str(),
                                        party.map.comment.c_str()));
     }
+     */
 
     // Ball a jouer
 
@@ -584,6 +601,8 @@ void AppManager::updateGuiContent()
     }
 
     m_controls.playmenu.mapSelect->setCurrent(math::rand(0, globalSettings.availableMap.size()));
+
+    updateQuickPlayMapInfo();
 }
 
 void AppManager::setupBackgroundScene()
@@ -641,21 +660,22 @@ void AppManager::setupBackgroundScene()
 
 void AppManager::processMainMenuEvent()
 {
-    if(m_guiManager->getControl("quickplay")->isActivate())
+    if(m_controls.quickplay->isActivate())
         m_guiManager->setSession(MENU_QUICKPLAY);
 
-    else if(m_guiManager->getControl("campaign")->isActivate())
-        m_guiManager->setSession(MENU_CAMPAIGN);
+        //    else if(m_controls.campaign->isActivate())
+        //        m_guiManager->setSession(MENU_CAMPAIGN);
 
-    else if(m_guiManager->getControl("setting")->isActivate())
+    else if(m_controls.settings->isActivate())
         m_guiManager->setSession(MENU_SETTING);
 
-    else if(m_guiManager->getControl("about")->isActivate())
+    else if(m_controls.about->isActivate())
         m_guiManager->setSession(MENU_ABOUT);
 }
 
 void AppManager::processCampaignMenuEvent()
 {
+    /*
     if(m_controls.campaign.levelSelect->isActivate())
     {
         Settings::PartySetting party = m_controls.campaign.levelSelect->getData()
@@ -691,15 +711,17 @@ void AppManager::processCampaignMenuEvent()
 
     else if(m_controls.campaign.ret->isActivate())
         m_guiManager->setSession(MENU_MAIN);
+     */
 }
 
 void AppManager::processPlayMenuEvent()
 {
-    if(m_controls.playmenu.mapSelect->isActivate());
+    if(m_controls.playmenu.mapSelect->isActivate())
+        updateQuickPlayMapInfo();
 
     else if(m_controls.playmenu.playerSelect->isActivate());
 
-    else if(m_guiManager->getControl("play")->isActivate())
+    else if(m_controls.playmenu.play->isActivate())
     {
         unsigned indexOfLevel = m_controls.playmenu.mapSelect->getData().getValue<unsigned>();
         unsigned indexOfPlayer = m_controls.playmenu.playerSelect->getData().getValue<unsigned>();
@@ -722,7 +744,7 @@ void AppManager::processPlayMenuEvent()
     else if(m_controls.playmenu.playerName->isActivate())
         globalSettings.profile.name = m_controls.playmenu.playerName->getLabel();
 
-    else if(m_guiManager->getControl("return")->isActivate())
+    else if(m_controls.playmenu.ret->isActivate())
         m_guiManager->setSession(MENU_MAIN);
 }
 
@@ -780,7 +802,7 @@ void AppManager::executeMenu()
             switch(m_guiManager->getSession())
             {
                 case MENU_MAIN:
-                    if(m_guiManager->getControl("quit")->isActivate())
+                    if(m_controls.quit->isActivate())
                         done = true;
                     else
                         processMainMenuEvent();

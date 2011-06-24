@@ -37,6 +37,7 @@ void Settings::readGui()
     binder["BACKGROUND_PAUSE"] = &gui.backgroundPause;
     binder["BACKGROUND_TEXTBOX"] = &gui.backgroundTextbox;
     binder["BACKGROUND_LISTBOX"] = &gui.backgroundListbox;
+    binder["BACKGROUND_LOGO"] = &gui.backgroundLogo;
     binder["MASK_H"] = &gui.maskH;
     binder["MASK_V"] = &gui.maskV;
     binder["GUI_SCORE"] = &gui.score;

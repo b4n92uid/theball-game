@@ -128,6 +128,7 @@ public:
         std::string backgroundPause;
         std::string backgroundTextbox;
         std::string backgroundListbox;
+        std::string backgroundLogo;
 
         std::string maskH;
         std::string maskV;
