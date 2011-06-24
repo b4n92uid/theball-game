@@ -99,8 +99,6 @@ public:
         unsigned antialiasing;
         unsigned lod;
 
-        float guiSizeFactor;
-
         struct Ppe
         {
             float boostIntensity;
@@ -128,10 +126,11 @@ public:
         std::string backgroundDammage;
         std::string backgroundHud;
         std::string backgroundPause;
-        std::string backgroundTextboxV;
-        std::string backgroundTextboxH;
-        std::string backgroundListboxV;
-        std::string backgroundListboxH;
+        std::string backgroundTextbox;
+        std::string backgroundListbox;
+
+        std::string maskH;
+        std::string maskV;
 
         std::string score;
         std::string notify;

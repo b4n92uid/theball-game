@@ -35,10 +35,10 @@ void Settings::readGui()
     binder["BACKGROUND_DAMMAGE"] = &gui.backgroundDammage;
     binder["BACKGROUND_HUD"] = &gui.backgroundHud;
     binder["BACKGROUND_PAUSE"] = &gui.backgroundPause;
-    binder["BACKGROUND_TEXTBOX_V"] = &gui.backgroundTextboxV;
-    binder["BACKGROUND_TEXTBOX_H"] = &gui.backgroundTextboxH;
-    binder["BACKGROUND_LISTBOX_V"] = &gui.backgroundListboxV;
-    binder["BACKGROUND_LISTBOX_H"] = &gui.backgroundListboxH;
+    binder["BACKGROUND_TEXTBOX"] = &gui.backgroundTextbox;
+    binder["BACKGROUND_LISTBOX"] = &gui.backgroundListbox;
+    binder["MASK_H"] = &gui.maskH;
+    binder["MASK_V"] = &gui.maskV;
     binder["GUI_SCORE"] = &gui.score;
     binder["GUI_NOTIFY"] = &gui.notify;
     binder["GUI_PREVIEW"] = &gui.preview;
@@ -546,8 +546,8 @@ Settings::MapInfo::MapInfo(std::string path)
     author = parser.getAuthorName();
     name = parser.getSceneName();
 
-    script = parser.getAdditional<string > ("script");
-    comment = parser.getAdditional<string > ("comments");
+    script = parser.getAdditionalString("script");
+    comment = parser.getAdditionalString("comment");
 }
 
 Settings::PlayerInfo::PlayerInfo()

@@ -252,7 +252,7 @@ void GameManager::setupGui()
     Settings::Gui& guisets = manager.app->globalSettings.gui;
     Settings::Video& vidsets = manager.app->globalSettings.video;
 
-    Pencil bigPen(guisets.font, int(guisets.fontSize * vidsets.guiSizeFactor * 1.5));
+    Pencil bigPen(guisets.font, guisets.fontSize * 1.5);
 
     // Tabaleau des joueur ------------------------------------------------------
 

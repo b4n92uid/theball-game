@@ -107,33 +107,32 @@ void AppManager::setupMenuGui()
 
     m_guiManager->clearAll();
 
-    const float& sizeFactor = globalSettings.video.guiSizeFactor = (globalSettings.video.screenSize.x / 800.0f);
     const Vector2i& screenSize = globalSettings.video.screenSize;
 
     GuiSkin* guiskin = new GuiSkin;
 
     guiskin->button(globalSettings.gui.button);
-    guiskin->buttonSize(globalSettings.gui.buttonSize * sizeFactor);
+    guiskin->buttonSize(globalSettings.gui.buttonSize);
 
     guiskin->gauge(globalSettings.gui.gauge);
-    guiskin->gaugeSize(globalSettings.gui.gaugeSize * sizeFactor);
+    guiskin->gaugeSize(globalSettings.gui.gaugeSize);
 
     guiskin->editBox(globalSettings.gui.editBox);
-    guiskin->editBoxSize(globalSettings.gui.editBoxSize * sizeFactor);
+    guiskin->editBoxSize(globalSettings.gui.editBoxSize);
 
     guiskin->switchBox(globalSettings.gui.switchBox);
-    guiskin->switchBoxSize(globalSettings.gui.switchBoxSize * sizeFactor);
+    guiskin->switchBoxSize(globalSettings.gui.switchBoxSize);
 
     //    guiskin->vectorBox(globalSettings.gui.vectorBox);
-    //    guiskin->vectorBoxSize(globalSettings.gui.vectorBoxSize * sizeFactor);
+    //    guiskin->vectorBoxSize(globalSettings.gui.vectorBoxSize);
 
-    guiskin->stateShowSize(Vector2f(48, 48) * sizeFactor);
+    guiskin->stateShowSize(Vector2f(48, 48));
 
-    guiskin->pencile(globalSettings.gui.font, int(sizeFactor * globalSettings.gui.fontSize));
+    guiskin->pencile(globalSettings.gui.font, globalSettings.gui.fontSize);
 
     m_guiManager->setSkin(guiskin);
 
-    Pencil bigpen(globalSettings.gui.font, int(sizeFactor * globalSettings.gui.fontSize * 1.5));
+    Pencil bigpen(globalSettings.gui.font, globalSettings.gui.fontSize * 1.5);
 
     // Construction ------------------------------------------------------------
 
@@ -178,10 +177,18 @@ void AppManager::setupMenuGui()
 
     // -------- Collone 1
     m_guiManager->addLayout(Layout::Vertical, 10);
-    //    m_guiManager->addLayoutSpace(screenSize.y / 4);
     m_guiManager->addLayoutStretchSpace();
 
-    m_controls.campaign.ret = m_guiManager->addButton("ret", "Retour");
+    m_controls.campaign.ret = m_guiManager->addButton("return", "Retour");
+
+    m_controls.campaign.levelSelect = m_guiManager->addSwitchString("levelSelect");
+    m_guiManager->addTextBox("")->write("Niveau");
+
+    m_controls.campaign.playerName = m_guiManager->addEditBox("playerName", "Joueur");
+    m_guiManager->addTextBox("")->write("Pseudo");
+
+    m_controls.campaign.playerSelect = m_guiManager->addSwitchString("playerSelect");
+    m_guiManager->addTextBox("")->write("Personnage");
 
     m_controls.campaign.play = m_guiManager->addButton("play", "Jouer");
 
@@ -196,38 +203,20 @@ void AppManager::setupMenuGui()
     //    m_guiManager->addLayoutSpace(screenSize.y / 4);
     m_guiManager->addLayoutStretchSpace();
 
-    m_controls.campaign.playerSelect = m_guiManager->addSwitchString("playerSelect");
-    m_guiManager->addTextBox("")->write("Personnage");
-
-    m_controls.campaign.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
-    m_guiManager->addTextBox("")->write("Pseudo");
+    m_controls.campaign.description = m_guiManager->addTextBox("description");
+    m_controls.campaign.description->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.campaign.description->setBackgroundPadding(16);
+    m_controls.campaign.description->setSize(Vector2f(384, 256));
+    m_controls.campaign.description->setDefinedSize(true);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
     // -------- Collone 2
 
     m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 3
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    //    m_guiManager->addLayoutSpace(screenSize.y / 4);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.campaign.description = m_guiManager->addTextBox("description");
-    m_controls.campaign.description->setBackground(globalSettings.gui.backgroundTextboxH);
-    m_controls.campaign.description->setBackgroundPadding(16);
-
-    m_controls.campaign.levelSelect = m_guiManager->addSwitchString("level_select");
-    m_guiManager->addTextBox("")->write("Niveau");
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // -------- Collone 3
-
-    m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
 
-    // Menu Jouer
+    // ******** Menu Jouer
 
     m_guiManager->setSession(MENU_QUICKPLAY);
 
@@ -287,7 +276,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
 
-    // Ecran de chargement
+    // ******** Ecran de chargement
 
     m_guiManager->setSession(MENU_LOAD);
 
@@ -307,7 +296,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
 
-    // Menu Option
+    // ******** Menu Option
 
     m_guiManager->setSession(MENU_SETTING);
 
@@ -366,7 +355,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
 
-    // Menu Commandes
+    // ******** Menu Commandes
 
     m_guiManager->setSession(MENU_SETTING_KEYS);
 
@@ -428,7 +417,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
 
-    // Menu A propos
+    // ******** Menu A propos
 
     m_guiManager->setSession(MENU_ABOUT);
 
@@ -447,7 +436,7 @@ void AppManager::setupMenuGui()
     m_controls.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
     m_controls.aboutText->setDefinedSize(true);
     m_controls.aboutText->setBackgroundPadding(8);
-    m_controls.aboutText->setBackground(globalSettings.gui.backgroundTextboxH);
+    m_controls.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
     m_controls.aboutText->setTextAlign(TextBox::LEFT);
 
     m_guiManager->addLayoutStretchSpace();
@@ -569,7 +558,7 @@ void AppManager::updateGuiContent()
 
         m_controls.campaign.description
                 ->write(gui::GuiString("Carte: %s\n"
-                                       "Par: %s"
+                                       "Par: %s\n\n"
                                        "%s",
                                        party.map.name.c_str(),
                                        party.map.author.c_str(),
@@ -674,7 +663,7 @@ void AppManager::processCampaignMenuEvent()
 
         m_controls.campaign.description
                 ->write(gui::GuiString("Carte: %s\n"
-                                       "Par: %s"
+                                       "Par: %s\n\n"
                                        "%s",
                                        party.map.name.c_str(),
                                        party.map.author.c_str(),
