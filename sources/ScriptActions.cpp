@@ -25,30 +25,30 @@ ScriptActions::ScriptActions(GameManager* gameManager)
 
     luaL_openlibs(m_lua);
 
-    lua_register(m_lua, "randomPosition", randomPosition);
+    lua_register(m_lua, "randomPosition", script::randomPosition);
 
-    lua_register(m_lua, "position", position);
-    lua_register(m_lua, "posistionOf", posistionOf);
+    lua_register(m_lua, "position", script::setPosition);
+    lua_register(m_lua, "posistionOf", script::getPosistion);
 
-    lua_register(m_lua, "velocity", velocity);
-    lua_register(m_lua, "velocityOf", velocityOf);
+    lua_register(m_lua, "velocity", script::setVelocity);
+    lua_register(m_lua, "velocityOf", script::getVelocity);
 
-    lua_register(m_lua, "impulse", impulse);
+    lua_register(m_lua, "impulse", script::impulse);
 
-    lua_register(m_lua, "health", health);
-    lua_register(m_lua, "healthUp", healthUp);
-    lua_register(m_lua, "healthOf", healthOf);
+    lua_register(m_lua, "health", script::setHealth);
+    lua_register(m_lua, "healthUp", script::upHealth);
+    lua_register(m_lua, "healthOf", script::getHealth);
 
-    lua_register(m_lua, "energy", energy);
-    lua_register(m_lua, "energyUp", energyUp);
-    lua_register(m_lua, "energyOf", energyOf);
+    lua_register(m_lua, "energy", script::getEnergy);
+    lua_register(m_lua, "energyUp", script::upEnergy);
+    lua_register(m_lua, "energyOf", script::getEnergy);
 
-    lua_register(m_lua, "loadSound", loadSound);
-    lua_register(m_lua, "sound", sound);
+    lua_register(m_lua, "loadSound", script::loadSound);
+    lua_register(m_lua, "sound", script::playSound);
 
-    lua_register(m_lua, "registerCollid", ::registerCollid);
+    lua_register(m_lua, "diriction", script::diriction);
 
-    lua_register(m_lua, "diriction", diriction);
+    lua_register(m_lua, "registerCollid", script::registerCollid);
 }
 
 ScriptActions::~ScriptActions()

@@ -16,6 +16,9 @@
 using namespace std;
 using namespace tbe;
 
+namespace script
+{
+
 inline GameManager* getGameManager(lua_State* lua)
 {
     lua_getglobal(lua, GAMEMANAGER_INTERNALE_NAME);
@@ -87,18 +90,7 @@ inline Vector3f lua_tovector3(lua_State* lua, int argpos)
     return vec;
 }
 
-int randomPosition(lua_State* lua)
-{
-    GameManager* ge = getGameManager(lua);
-
-    Vector3f pos = ge->getRandomPosOnTheFloor();
-
-    lua_pushvector3(lua, pos);
-
-    return 1;
-}
-
-int position(lua_State* lua)
+int setPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
@@ -109,7 +101,7 @@ int position(lua_State* lua)
     return 0;
 }
 
-int posistionOf(lua_State* lua)
+int getPosistion(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
 
@@ -118,7 +110,7 @@ int posistionOf(lua_State* lua)
     return 1;
 }
 
-int velocity(lua_State* lua)
+int setVelocity(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
@@ -129,13 +121,28 @@ int velocity(lua_State* lua)
     return 0;
 }
 
-int velocityOf(lua_State* lua)
+int getVelocity(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
 
     lua_pushvector3(lua, player->getPhysicBody()->getVelocity());
 
     return 1;
+}
+
+int setForce(lua_State* lua)
+{
+    return 0;
+}
+
+int upForce(lua_State* lua)
+{
+    return 0;
+}
+
+int getForce(lua_State* lua)
+{
+    return 0;
 }
 
 int impulse(lua_State* lua)
@@ -153,7 +160,7 @@ int impulse(lua_State* lua)
     return 0;
 }
 
-int health(lua_State* lua)
+int setHealth(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
     player->setLife(lua_tonumber(lua, 1));
@@ -161,7 +168,7 @@ int health(lua_State* lua)
     return 0;
 }
 
-int healthUp(lua_State* lua)
+int upHealth(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
     player->upLife(lua_tonumber(lua, 1));
@@ -169,7 +176,7 @@ int healthUp(lua_State* lua)
     return 0;
 }
 
-int healthOf(lua_State* lua)
+int getHealth(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
 
@@ -178,17 +185,72 @@ int healthOf(lua_State* lua)
     return 1;
 }
 
-int energy(lua_State* lua)
+int setEnergy(lua_State* lua)
 {
     return 0;
 }
 
-int energyUp(lua_State* lua)
+int upEnergy(lua_State* lua)
 {
     return 0;
 }
 
-int energyOf(lua_State* lua)
+int getEnergy(lua_State* lua)
+{
+    return 0;
+}
+
+int selectPower(lua_State* lua)
+{
+    return 0;
+}
+
+int selectedPower(lua_State* lua)
+{
+    return 0;
+}
+
+int setAmmo(lua_State* lua)
+{
+    return 0;
+}
+
+int upAmmo(lua_State* lua)
+{
+    return 0;
+}
+
+int getAmmo(lua_State* lua)
+{
+    return 0;
+}
+
+int setWeapon(lua_State* lua)
+{
+    return 0;
+}
+
+int getWeapon(lua_State* lua)
+{
+    return 0;
+}
+
+int dropWeapon(lua_State* lua)
+{
+    return 0;
+}
+
+int setScore(lua_State* lua)
+{
+    return 0;
+}
+
+int upScore(lua_State* lua)
+{
+    return 0;
+}
+
+int getScore(lua_State* lua)
 {
     return 0;
 }
@@ -210,7 +272,7 @@ int loadSound(lua_State* lua)
     return 0;
 }
 
-int sound(lua_State* lua)
+int playSound(lua_State* lua)
 {
     GameManager* ge = getGameManager(lua);
 
@@ -219,6 +281,152 @@ int sound(lua_State* lua)
 
     ge->manager.sound->play(id, elem);
 
+    return 0;
+}
+
+int randomPosition(lua_State* lua)
+{
+    GameManager* ge = getGameManager(lua);
+
+    Vector3f pos = ge->getRandomPosOnTheFloor();
+
+    lua_pushvector3(lua, pos);
+
+    return 1;
+}
+
+int loadMusic(lua_State* lua)
+{
+    return 0;
+}
+
+int playMusic(lua_State* lua)
+{
+    return 0;
+}
+
+int pauseMusic(lua_State* lua)
+{
+    return 0;
+}
+
+int stopMusic(lua_State* lua)
+{
+    return 0;
+}
+
+int diriction(lua_State* lua)
+{
+    Vector3f pos1 = lua_tovector3(lua, 1);
+    Vector3f pos2 = lua_tovector3(lua, 2);
+
+    lua_pushvector3(lua, pos2 - pos1);
+
+    return 1;
+}
+
+int nearestPlayer(lua_State* lua)
+{
+    return 0;
+}
+
+int farestPlayer(lua_State* lua)
+{
+    return 0;
+}
+
+int normalize(lua_State* lua)
+{
+    return 0;
+}
+
+int setData(lua_State* lua)
+{
+    return 0;
+}
+
+int getDataVec(lua_State* lua)
+{
+    return 0;
+}
+
+int getDataFloat(lua_State* lua)
+{
+    return 0;
+}
+
+int getDataInt(lua_State* lua)
+{
+    return 0;
+}
+
+int getDataString(lua_State* lua)
+{
+    return 0;
+}
+
+int getSceneDataString(lua_State* lua)
+{
+    return 0;
+}
+
+int getSceneDataInt(lua_State* lua)
+{
+    return 0;
+}
+
+int getSceneDataFloat(lua_State* lua)
+{
+    return 0;
+}
+
+int getSceneDataVec(lua_State* lua)
+{
+    return 0;
+}
+
+int highestScore(lua_State* lua)
+{
+    return 0;
+}
+
+int lowestScore(lua_State* lua)
+{
+    return 0;
+}
+
+int shoot(lua_State* lua)
+{
+    return 0;
+}
+
+int jump(lua_State* lua)
+{
+    return 0;
+}
+
+int boost(lua_State* lua)
+{
+    return 0;
+}
+
+int dammage(lua_State* lua)
+{
+    return 0;
+}
+
+int display(lua_State* lua)
+{
+    return 0;
+}
+
+int status(lua_State* lua)
+{
+    return 0;
+}
+
+int gameover(lua_State* lua)
+{
     return 0;
 }
 
@@ -234,12 +442,59 @@ int registerCollid(lua_State* lua)
     return 0;
 }
 
-int diriction(lua_State* lua)
+int playerList(lua_State* lua)
 {
-    Vector3f pos1 = lua_tovector3(lua, 1);
-    Vector3f pos2 = lua_tovector3(lua, 2);
+    return 0;
+}
 
-    lua_pushvector3(lua, pos2 - pos1);
+int elements(lua_State* lua)
+{
+    return 0;
+}
 
-    return 1;
+int killPlayer(lua_State* lua)
+{
+    return 0;
+}
+
+int visibility(lua_State* lua)
+{
+    return 0;
+}
+
+int physics(lua_State* lua)
+{
+    return 0;
+}
+
+int setFragScore(lua_State* lua)
+{
+    return 0;
+}
+
+int fragScore(lua_State* lua)
+{
+    return 0;
+}
+
+int setHitScore(lua_State* lua)
+{
+    return 0;
+}
+
+int hitScore(lua_State* lua)
+{
+    return 0;
+}
+
+int setMaxPlayerHealth(lua_State* lua)
+{
+    return 0;
+}
+
+int maxPlayerHealth(lua_State* lua)
+{
+    return 0;
+}
+
 }
