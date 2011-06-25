@@ -164,7 +164,7 @@ void Player::brake()
         return;
 
     m_physicBody->setVelocity(0);
-    m_soundManager->play("stop", this);
+    m_soundManager->playSound("stop", this);
 }
 
 void Player::boost()
@@ -181,7 +181,7 @@ void Player::boost()
 
     NewtonBodyAddImpulse(m_physicBody->getBody(), impulseDeri, m_visualBody->getPos());
 
-    m_soundManager->play("boost", this);
+    m_soundManager->playSound("boost", this);
 
     clocks.boostAvailable.snapShoot();
 
@@ -305,7 +305,7 @@ void Player::kill()
     m_physicBody->setOmega(0);
     m_physicBody->setFreeze(true);
 
-    m_soundManager->play("kill", this);
+    m_soundManager->playSound("kill", this);
 
     if(this == m_playManager->getUserPlayer())
     {
@@ -424,7 +424,7 @@ void Player::takeDammage(Bullet* ammo)
     if(m_playManager->getUserPlayer() == this)
         m_playManager->hudDammage(true);
 
-    m_soundManager->play("hit", this);
+    m_soundManager->playSound("hit", this);
 }
 
 GameManager* Player::getGameManager() const

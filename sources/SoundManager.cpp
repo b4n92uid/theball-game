@@ -43,6 +43,13 @@ SoundManager::SoundManager(GameManager* gameManager)
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
         registerSound(it->first, it->second);
+
+    FMOD_CHANNELGROUP* masterGroupe;
+    FMOD_System_GetMasterChannelGroup(m_fmodsys, &masterGroupe);
+    FMOD_ChannelGroup_SetVolume(masterGroupe, 0.75);
+
+    FMOD_System_CreateChannelGroup(m_fmodsys, "musicGroupe", &m_musicGroupe);
+    FMOD_ChannelGroup_SetVolume(m_musicGroupe, 1.00);
 }
 
 SoundManager::~SoundManager()
@@ -51,31 +58,33 @@ SoundManager::~SoundManager()
 
 void SoundManager::registerSound(std::string name, std::string filename)
 {
-    if(!m_gameManager->manager.app->globalSettings.noaudio)
+    if(m_gameManager->manager.app->globalSettings.noaudio)
+        return;
+
+    if(m_sounds.count(name))
     {
-        if(m_sounds.count(name))
-        {
-            cout << "Load shared sound : " << filename << endl;
-            return;
-        }
-
-        cout << "Load sound : " << filename << endl;
-
-        FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, filename.c_str(),
-                                                  FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
-                                                  0, &m_sounds[name]);
-
-        if(res != FMOD_OK)
-            throw tbe::Exception("SoundManager::RegisterSound; %s (%s)",
-                                 FMOD_ErrorString(res), filename.c_str());
-        else
-            FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
+        cout << "Load shared sound : " << filename << endl;
+        return;
     }
+
+    cout << "Load sound : " << filename << endl;
+
+    FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, filename.c_str(),
+                                              FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
+                                              0, &m_sounds[name]);
+
+    if(res != FMOD_OK)
+        throw tbe::Exception("SoundManager::registerSound; %s (%s)",
+                             FMOD_ErrorString(res), filename.c_str());
+
+    FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
 }
 
-void SoundManager::play(std::string soundName, MapElement* object)
+void SoundManager::playSound(std::string soundName, MapElement* object)
 {
-    #if !defined(THEBALL_DISABLE_SOUND) && !defined(THEBALL_NO_AUDIO)
+    if(m_gameManager->manager.app->globalSettings.noaudio)
+        return;
+
     FMOD_CHANNEL* channel;
 
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
@@ -87,12 +96,53 @@ void SoundManager::play(std::string soundName, MapElement* object)
     processEffect(soundName, channel);
 
     FMOD_Channel_SetPaused(channel, false);
-    #endif
 }
 
 void SoundManager::processEffect(std::string soundName, FMOD_CHANNEL* channel)
 {
-    if(!m_gameManager->manager.app->globalSettings.noaudio)
-        if(m_gameManager->getBullettime()->isActive())
-            FMOD_Channel_SetFrequency(channel, 22050);
+    if(m_gameManager->getBullettime()->isActive())
+        FMOD_Channel_SetFrequency(channel, 22050);
+}
+
+void SoundManager::registerMusic(std::string name, std::string filename)
+{
+    if(m_gameManager->manager.app->globalSettings.nomusic)
+        return;
+
+    if(m_sounds.count(name))
+    {
+        cout << "Load shared music : " << filename << endl;
+        return;
+    }
+
+    cout << "Load music : " << filename << endl;
+
+    FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, filename.c_str(),
+                                               FMOD_LOOP_NORMAL | FMOD_HARDWARE,
+                                               0, &m_musics[name].first);
+
+    if(res != FMOD_OK)
+        throw tbe::Exception("SoundManager::registerMusic; %s (%s)",
+                             FMOD_ErrorString(res), filename.c_str());
+}
+
+void SoundManager::playMusic(std::string soundName)
+{
+    if(m_gameManager->manager.app->globalSettings.nomusic)
+        return;
+
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_musics[soundName].first,
+                          false, &m_musics[soundName].second);
+
+    FMOD_Channel_SetChannelGroup(m_musics[soundName].second, m_musicGroupe);
+}
+
+void SoundManager::pauseMusic(std::string soundName)
+{
+    FMOD_Channel_SetPaused(m_musics[soundName].second, true);
+}
+
+void SoundManager::stopMusic(std::string soundName)
+{
+    FMOD_Channel_Stop(m_musics[soundName].second);
 }

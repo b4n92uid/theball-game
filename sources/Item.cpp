@@ -97,7 +97,7 @@ void ItemAddAmmo::modifPlayer(Player* player)
         playManager->log("Munitions supplémentaire");
 
     player->getCurWeapon()->UpAmmoCount(50 * player->getCurWeapon()->getMaxAmmoCount() / 100);
-    m_soundManager->play("takeammo", this);
+    m_soundManager->playSound("takeammo", this);
 
     setTaked(true);
 }
@@ -133,7 +133,7 @@ void ItemAddLife::modifPlayer(Player* player)
 
     player->upLife(50);
 
-    m_soundManager->play("takelife", this);
+    m_soundManager->playSound("takelife", this);
 
     setTaked(true);
 }
@@ -200,7 +200,7 @@ void ItemFatalShot::modifPlayer(Player* player)
     player->getCurWeapon()->setMaxAmmoDammage(100);
     player->addCheckMe(effect);
 
-    m_soundManager->play("takefatalshot", this);
+    m_soundManager->playSound("takefatalshot", this);
 
     setTaked(true);
 }
@@ -267,7 +267,7 @@ void ItemSuperLife::modifPlayer(Player* player)
     player->setLife(100);
     player->addCheckMe(effect);
 
-    m_soundManager->play("takesuperlife", this);
+    m_soundManager->playSound("takesuperlife", this);
 
     setTaked(true);
 }
@@ -301,7 +301,7 @@ void ItemAddFinder::modifPlayer(Player* player)
     WeaponFinder* finder = new WeaponFinder(playManager);
     player->addWeapon(finder);
 
-    m_soundManager->play("takeammo", this);
+    m_soundManager->playSound("takeammo", this);
 
     setTaked(true);
 }
@@ -335,7 +335,7 @@ void ItemAddBomb::modifPlayer(Player* player)
     WeaponBomb* bomb = new WeaponBomb(playManager);
     player->addWeapon(bomb);
 
-    m_soundManager->play("takeammo", this);
+    m_soundManager->playSound("takeammo", this);
 
     setTaked(true);
 }
@@ -369,7 +369,7 @@ void ItemAddShotgun::modifPlayer(Player* player)
     WeaponShotgun* shotgun = new WeaponShotgun(playManager);
     player->addWeapon(shotgun);
 
-    m_soundManager->play("takeammo", this);
+    m_soundManager->playSound("takeammo", this);
 
     setTaked(true);
 }

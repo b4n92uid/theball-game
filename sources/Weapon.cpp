@@ -150,7 +150,7 @@ bool Weapon::shoot(Vector3f startpos, Vector3f targetpos)
     if(m_ammoCount <= 0)
     {
         if(m_shooter->clocks.shoot.isEsplanedTime(1000))
-            m_soundManager->play("noAvailable", m_shooter);
+            m_soundManager->playSound("noAvailable", m_shooter);
 
         return false;
     }
@@ -164,7 +164,7 @@ bool Weapon::shoot(Vector3f startpos, Vector3f targetpos)
     if(m_bulletArray.size() > m_maxAmmoCount)
         return false;
 
-    m_soundManager->play(m_soundID, m_shooter);
+    m_soundManager->playSound(m_soundID, m_shooter);
 
     m_ammoCount--;
 

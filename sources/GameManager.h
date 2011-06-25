@@ -92,10 +92,6 @@ public:
     {
         std::string name;
 
-        FMOD_SOUND* musicStream;
-        FMOD_CHANNEL* musicChannel;
-        std::string musicPath;
-
         Item::Array items;
         MapElement::Array mapElements;
         tbe::scene::Light::Array lights;

@@ -23,13 +23,22 @@ public:
     SoundManager(GameManager* gameManager);
     virtual ~SoundManager();
 
+    /// Chargement d'une musique par le gestionnaire audio
+    void registerMusic(std::string name, std::string filename);
+
     /// Chargement d'un son par le gestionnaire audio
     void registerSound(std::string name, std::string filename);
 
     /// Jouer un son
-    void play(std::string soundName, MapElement* object);
+    void playSound(std::string soundName, MapElement* object);
+
+    void playMusic(std::string soundName);
+    void pauseMusic(std::string soundName);
+    void stopMusic(std::string soundName);
 
     typedef std::map<std::string, FMOD_SOUND*> SoundMap;
+
+    typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > MusicMap;
 
 protected:
     virtual void processEffect(std::string soundName, FMOD_CHANNEL* channel);
@@ -37,7 +46,9 @@ protected:
 protected:
     GameManager* m_gameManager;
     FMOD_SYSTEM* m_fmodsys;
+    FMOD_CHANNELGROUP* m_musicGroupe;
     SoundMap m_sounds;
+    MusicMap m_musics;
 };
 
 #endif	/* _SOUNDMANAGER_H */

@@ -70,9 +70,6 @@ GameManager::GameManager(AppManager* appManager)
     manager.sound = new SoundManager(this);
     manager.script = new ScriptActions(this);
 
-    map.musicStream = NULL;
-    map.musicChannel = 0;
-
     m_timeTo = TIME_TO_PLAY;
 
     m_gameOver = false;
@@ -104,9 +101,6 @@ GameManager::~GameManager()
 
     manager.gameEngine->setGrabInput(false);
     manager.gameEngine->setMouseVisible(true);
-
-    if(!manager.app->globalSettings.noaudio && !manager.app->globalSettings.nomusic)
-        FMOD_Sound_Release(map.musicStream);
 
     manager.gui->destroySession(SCREEN_GAMEOVER);
     manager.gui->destroySession(SCREEN_PAUSEMENU);
@@ -390,21 +384,6 @@ void GameManager::setupGui()
 
 void GameManager::onStartGame()
 {
-    if(!manager.app->globalSettings.noaudio && !manager.app->globalSettings.nomusic)
-    {
-        if(map.musicStream)
-            FMOD_System_PlaySound(manager.fmodsys, FMOD_CHANNEL_FREE, map.musicStream, false, &map.musicChannel);
-
-        FMOD_CHANNELGROUP* chgrp;
-        FMOD_System_GetMasterChannelGroup(manager.fmodsys, &chgrp);
-
-        FMOD_CHANNELGROUP* musicChGrp;
-        FMOD_System_CreateChannelGroup(manager.fmodsys, "musicChGrp", &musicChGrp);
-        FMOD_Channel_SetChannelGroup(map.musicChannel, musicChGrp);
-
-        FMOD_ChannelGroup_SetVolume(chgrp, 0.75);
-        FMOD_ChannelGroup_SetVolume(musicChGrp, 1.00);
-    }
 }
 
 tbe::Vector3f GameManager::getRandomPosOnTheFloor()
@@ -626,7 +605,7 @@ void GameManager::gameProcess()
 
             manager.scene->getRootNode()->addChild(player->getVisualBody());
 
-            manager.sound->play("respawn", player);
+            manager.sound->playSound("respawn", player);
 
             break;
         }
@@ -656,7 +635,7 @@ void GameManager::gameProcess()
             {
                 player->reBorn();
 
-                manager.sound->play("respawn", player);
+                manager.sound->playSound("respawn", player);
             }
         }
 

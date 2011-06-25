@@ -62,7 +62,7 @@ void BulletTime::setActive(bool active)
     {
         FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
 
-        m_soundManager->play("bullettime", m_userPlayer);
+        m_soundManager->playSound("bullettime", m_userPlayer);
 
         m_gameManager->hudBullettime(true);
     }
