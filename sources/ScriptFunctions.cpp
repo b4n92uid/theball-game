@@ -325,6 +325,61 @@ int playSound(lua_State* lua)
     return 0;
 }
 
+int loadMusic(lua_State* lua)
+{
+    string id = lua_tostring(lua, 1);
+    string path = lua_tostring(lua, 2);
+
+    GameManager* ge = getGameManager(lua);
+
+    ge->manager.sound->registerMusic(id, path);
+
+    return 0;
+}
+
+int playMusic(lua_State* lua)
+{
+    GameManager* ge = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+
+    ge->manager.sound->playMusic(id);
+
+    return 0;
+}
+
+int pauseMusic(lua_State* lua)
+{
+    GameManager* ge = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+
+    ge->manager.sound->pauseMusic(id);
+
+    return 0;
+}
+
+int stopMusic(lua_State* lua)
+{
+    GameManager* ge = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+
+    ge->manager.sound->stopMusic(id);
+
+    return 0;
+}
+
+int isViewed(lua_State* lua)
+{
+    return 1;
+}
+
+int rayCast(lua_State* lua)
+{
+    return 1;
+}
+
 int randomPosition(lua_State* lua)
 {
     GameManager* ge = getGameManager(lua);
@@ -334,26 +389,6 @@ int randomPosition(lua_State* lua)
     lua_pushvector3(lua, pos);
 
     return 1;
-}
-
-int loadMusic(lua_State* lua)
-{
-    return 0;
-}
-
-int playMusic(lua_State* lua)
-{
-    return 0;
-}
-
-int pauseMusic(lua_State* lua)
-{
-    return 0;
-}
-
-int stopMusic(lua_State* lua)
-{
-    return 0;
 }
 
 int diriction(lua_State* lua)
@@ -455,12 +490,8 @@ int jump(lua_State* lua)
     return 0;
 }
 
-int boost(lua_State* lua)
+int power(lua_State* lua)
 {
-    Player* player = lua_toplayer(lua, 1);
-
-    player->boost();
-
     return 0;
 }
 
@@ -503,12 +534,37 @@ int registerCollid(lua_State* lua)
     return 0;
 }
 
+int registerHook(lua_State* lua)
+{
+    return 0;
+}
+
 int playerList(lua_State* lua)
 {
     return 0;
 }
 
-int elements(lua_State* lua)
+int elementsList(lua_State* lua)
+{
+    return 0;
+}
+
+int elementsRand(lua_State* lua)
+{
+    return 0;
+}
+
+int elementsFirst(lua_State* lua)
+{
+    return 0;
+}
+
+int createPlayer(lua_State* lua)
+{
+    return 0;
+}
+
+int deletePlayer(lua_State* lua)
 {
     return 0;
 }

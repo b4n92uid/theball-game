@@ -69,6 +69,8 @@ int stopMusic(lua_State* lua);
 
 // Compute
 
+int isViewed(lua_State* lua);
+
 int rayCast(lua_State* lua);
 
 int randomPosition(lua_State* lua);
@@ -79,8 +81,6 @@ int nearestPlayer(lua_State* lua);
 int farestPlayer(lua_State* lua);
 
 int normalize(lua_State* lua);
-
-int isViewed(lua_State* lua);
 
 // User data
 
@@ -105,8 +105,8 @@ int lowestScore(lua_State* lua);
 
 int shoot(lua_State* lua);
 int jump(lua_State* lua);
-int boost(lua_State* lua);
 int dammage(lua_State* lua);
+int power(lua_State* lua);
 
 // HUD
 
