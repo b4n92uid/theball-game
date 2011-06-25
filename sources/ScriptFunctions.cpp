@@ -132,17 +132,30 @@ int getVelocity(lua_State* lua)
 
 int setForce(lua_State* lua)
 {
+    MapElement* elem = lua_toelem(lua, 1);
+    Vector3f vec = lua_tovector3(lua, 2);
+
+    elem->getPhysicBody()->setApplyForce(vec);
+
     return 0;
 }
 
 int upForce(lua_State* lua)
 {
+    MapElement* elem = lua_toelem(lua, 1);
+    Vector3f vec = lua_tovector3(lua, 2);
+
+    elem->getPhysicBody()->setApplyForce(elem->getPhysicBody()->getApplyForce() + vec);
+
     return 0;
 }
 
 int getForce(lua_State* lua)
 {
-    return 0;
+    MapElement* elem = lua_toelem(lua, 1);
+    lua_pushvector3(lua, elem->getPhysicBody()->getApplyForce());
+
+    return 1;
 }
 
 int impulse(lua_State* lua)
@@ -212,17 +225,31 @@ int selectedPower(lua_State* lua)
 
 int setAmmo(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    int value = lua_tointeger(lua, 2);
+
+    player->getCurWeapon()->setAmmoCount(value);
+
     return 0;
 }
 
 int upAmmo(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    int value = lua_tointeger(lua, 2);
+
+    player->getCurWeapon()->UpAmmoCount(value);
+
     return 0;
 }
 
 int getAmmo(lua_State* lua)
 {
-    return 0;
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushinteger(lua, player->getCurWeapon()->getAmmoCount());
+
+    return 1;
 }
 
 int setWeapon(lua_State* lua)
@@ -242,17 +269,31 @@ int dropWeapon(lua_State* lua)
 
 int setScore(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    int value = lua_tointeger(lua, 2);
+
+    player->setScore(value);
+
     return 0;
 }
 
 int upScore(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    int value = lua_tointeger(lua, 2);
+
+    player->upScore(value);
+
     return 0;
 }
 
 int getScore(lua_State* lua)
 {
-    return 0;
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushinteger(lua, player->getScore());
+
+    return 1;
 }
 
 int loadSound(lua_State* lua)
@@ -279,7 +320,7 @@ int playSound(lua_State* lua)
     string id = lua_tostring(lua, 1);
     MapElement* elem = lua_toelem(lua, 2);
 
-    ge->manager.sound->play(id, elem);
+    ge->manager.sound->playSound(id, elem);
 
     return 0;
 }
@@ -397,21 +438,41 @@ int lowestScore(lua_State* lua)
 
 int shoot(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    Vector3f vec = lua_tovector3(lua, 2);
+
+    player->shoot(vec);
+
     return 0;
 }
 
 int jump(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+
+    player->jump();
+
     return 0;
 }
 
 int boost(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+
+    player->boost();
+
     return 0;
 }
 
 int dammage(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    int value = lua_tointeger(lua, 2);
+
+    Bullet b(getGameManager(lua));
+    b.setDammage(value);
+    player->takeDammage(&b);
+
     return 0;
 }
 

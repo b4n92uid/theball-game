@@ -18,65 +18,69 @@ namespace script
 
 // Position
 
-int setPosition(lua_State* lua); /// elem, pos
-int getPosistion(lua_State* lua); /// elem
+int setPosition(lua_State* lua);
+int getPosistion(lua_State* lua);
 
 // Moves
 
-int setVelocity(lua_State* lua); /// elem, vec
-int getVelocity(lua_State* lua); /// elem
+int setVelocity(lua_State* lua);
+int getVelocity(lua_State* lua);
 
-int setForce(lua_State* lua); /// elem, vec
-int upForce(lua_State* lua); /// elem, vec
-int getForce(lua_State* lua); /// elem
+int setForce(lua_State* lua);
+int upForce(lua_State* lua);
+int getForce(lua_State* lua);
 
-int impulse(lua_State* lua); /// elem, vec
+int impulse(lua_State* lua);
 
 // Player Stat
 
-int setHealth(lua_State* lua); /// player, value
-int upHealth(lua_State* lua); /// player, value
-int getHealth(lua_State* lua); /// player
+int setHealth(lua_State* lua);
+int upHealth(lua_State* lua);
+int getHealth(lua_State* lua);
 
-int setEnergy(lua_State* lua); /// player, value
-int upEnergy(lua_State* lua); /// player, value
-int getEnergy(lua_State* lua); /// player
+int setEnergy(lua_State* lua);
+int upEnergy(lua_State* lua);
+int getEnergy(lua_State* lua);
 
-int selectPower(lua_State* lua); /// player, name
-int selectedPower(lua_State* lua); /// player
+int selectPower(lua_State* lua);
+int selectedPower(lua_State* lua);
 
-int setAmmo(lua_State* lua); /// player, value
-int upAmmo(lua_State* lua); /// player, value
-int getAmmo(lua_State* lua); /// player
+int setAmmo(lua_State* lua);
+int upAmmo(lua_State* lua);
+int getAmmo(lua_State* lua);
 
-int setWeapon(lua_State* lua); /// player, name
-int getWeapon(lua_State* lua); /// player
-int dropWeapon(lua_State* lua); /// player, name
+int setWeapon(lua_State* lua);
+int getWeapon(lua_State* lua);
+int dropWeapon(lua_State* lua);
 
-int setScore(lua_State* lua); /// player, value
-int upScore(lua_State* lua); /// player, value
-int getScore(lua_State* lua); /// player
+int setScore(lua_State* lua);
+int upScore(lua_State* lua);
+int getScore(lua_State* lua);
 
 // Audio
 
-int loadSound(lua_State* lua); /// id, path
-int playSound(lua_State* lua); /// id, elem
+int loadSound(lua_State* lua);
+int playSound(lua_State* lua);
 
-int loadMusic(lua_State* lua); /// id, path
-int playMusic(lua_State* lua); /// id
-int pauseMusic(lua_State* lua); /// id
-int stopMusic(lua_State* lua); /// id
+int loadMusic(lua_State* lua);
+int playMusic(lua_State* lua);
+int pauseMusic(lua_State* lua);
+int stopMusic(lua_State* lua);
 
 // Compute
 
-int randomPosition(lua_State* lua); /// pos, radius
+int rayCast(lua_State* lua);
 
-int diriction(lua_State* lua); /// elem1, elem2
+int randomPosition(lua_State* lua);
 
-int nearestPlayer(lua_State* lua); /// player
-int farestPlayer(lua_State* lua); /// player
+int diriction(lua_State* lua);
 
-int normalize(lua_State* lua); /// vec
+int nearestPlayer(lua_State* lua);
+int farestPlayer(lua_State* lua);
+
+int normalize(lua_State* lua);
+
+int isViewed(lua_State* lua);
 
 // User data
 
@@ -113,9 +117,16 @@ int gameover(lua_State* lua);
 // Management
 
 int registerCollid(lua_State* lua);
+int registerHook(lua_State* lua);
+
 int playerList(lua_State* lua);
 
-int elements(lua_State* lua);
+int elementsList(lua_State* lua);
+int elementsRand(lua_State* lua);
+int elementsFirst(lua_State* lua);
+
+int createPlayer(lua_State* lua);
+int deletePlayer(lua_State* lua);
 
 int killPlayer(lua_State* lua);
 
