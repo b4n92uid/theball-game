@@ -199,22 +199,8 @@ void Settings::readWorld()
     floatbinder["Player.Explode.FreeMove"] = &world.playerExplodeFreeMove;
     longbinder["Player.Explode.Number"] = &world.playerExplodeNumber;
 
-    floatbinder["Bullettime.Down"] = &world.bullettimeDown;
-    floatbinder["Bullettime.Up"] = &world.bullettimeUp;
-    floatbinder["Bullettime.Factor"] = &world.bullettimeFactor;
-
     floatbinder["Weapon.Size"] = &world.weaponSize;
     floatbinder["Weapon.Masse"] = &world.weaponMasse;
-
-    floatbinder["Jumper.LifeInit"] = &world.jumperLifeInit;
-    floatbinder["Jumper.LifeDown"] = &world.jumperLifeDown;
-    longbinder["Jumper.Number"] = &world.jumperNumber;
-    vec3fbinder["Jumper.Gravity"] = &world.jumperGravity;
-
-    floatbinder["Teleporter.LifeInit"] = &world.teleporterLifeInit;
-    floatbinder["Teleporter.LifeDown"] = &world.teleporterLifeDown;
-    longbinder["Teleporter.Number"] = &world.teleporterNumber;
-    vec3fbinder["Teleporter.Gravity"] = &world.teleporterGravity;
 
     longbinder["Item.RespawnTime"] = &world.itemRespawnTime;
 

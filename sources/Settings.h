@@ -69,22 +69,8 @@ public:
         float playerExplodeFreeMove;
         long playerExplodeNumber;
 
-        float bullettimeDown;
-        float bullettimeUp;
-        float bullettimeFactor;
-
         float weaponSize;
         float weaponMasse;
-
-        float jumperLifeInit;
-        float jumperLifeDown;
-        long jumperNumber;
-        tbe::Vector3f jumperGravity;
-
-        float teleporterLifeInit;
-        float teleporterLifeDown;
-        long teleporterNumber;
-        tbe::Vector3f teleporterGravity;
 
         long itemRespawnTime;
 
