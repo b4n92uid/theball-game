@@ -9,7 +9,7 @@
 #include "Item.h"
 #include "Settings.h"
 #include "Controller.h"
-#include "BulletTime.h"
+#include "Power.h"
 
 class GameManager;
 
@@ -26,12 +26,6 @@ public:
     /// Destructeur
     ~Player();
 
-    /**
-     * Ajoute une arme au joueur
-     * si l'arme existe déja on ajouter les munitions puis on la supprime
-     */
-    void addWeapon(Weapon* weapon);
-
     /// Tire sur le vecteur targetpos
     bool shoot(tbe::Vector3f targetpos);
 
@@ -45,7 +39,7 @@ public:
     void jump();
 
     /// Accéleration
-    void boost();
+    void power(bool stat, tbe::Vector3f targetpos = 0);
 
     /// Freinage
     void brake();
@@ -73,7 +67,13 @@ public:
     Controller* getAttachedCotroller() const;
 
     /// Assigne une position alétoire au sol
-    void toNextSpawnPos();
+    void randomPosOnFloor();
+
+    /**
+     * Ajoute une arme au joueur
+     * si l'arme existe déja on ajouter les munitions puis on la supprime
+     */
+    void addWeapon(Weapon* weapon);
 
     /// Change l'arme courante
     void slotWeapon(unsigned slot);
@@ -84,14 +84,29 @@ public:
     void setCurWeapon(unsigned slot);
     Weapon* getCurWeapon() const;
 
-    /// Boost
-    void setBoostAvalaible(bool boost);
-    bool isBoostAvalaible() const;
+    /**
+     * Ajoute un pouvoir au joueur
+     */
+    void addPower(Power* power);
+
+    /// Change l'arme courante
+    void slotPower(unsigned slot);
+    void switchUpPower();
+    void switchDownPower();
+
+    /// Pouvoires
+    void setCurPower(unsigned slot);
+    Power* getCurPower() const;
 
     /// Score
     void upScore(int value = 1);
     void setScore(int value);
     int getScore() const;
+
+    /// Energie
+    void upEnergy(int value = 1);
+    void setEnergy(int energy);
+    int getEnergy() const;
 
     void setName(std::string name);
     std::string getName() const;
@@ -102,10 +117,6 @@ public:
     int getLife() const;
 
     GameManager* getGameManager() const;
-
-    void outputConstruction(std::iostream& stream)
-    {
-    }
 
     struct
     {
@@ -169,9 +180,6 @@ public:
 
     void addCheckMe(CheckMe* cm);
 
-    void setVisibleFromIA(bool visibleFromIA);
-    bool isVisibleFromIA() const;
-
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;
 
@@ -179,13 +187,15 @@ protected:
     int m_life;
     int m_score;
     bool m_killed;
-    bool m_boostAvalaible;
-    bool m_visibleFromIA;
+    int m_energy;
 
     CheckMe::Array m_checkMe;
 
     Weapon::Array::iterator m_curWeapon;
     Weapon::Array m_weaponsPack;
+
+    Power::Array::iterator m_curPower;
+    Power::Array m_powerPack;
 
     Controller* m_attachedCotroller;
 
@@ -196,7 +206,7 @@ protected:
 
     tbe::scene::OBJMesh* m_visualBody;
 
-    std::string m_name;
+    std::string m_nickname;
 
     class StartProtection : public CheckMe
     {

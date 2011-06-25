@@ -6,22 +6,35 @@
  */
 
 #include "BulletTime.h"
+
 #include "Define.h"
 
-#include "SoundManager.h"
-#include "GameManager.h"
 #include "Player.h"
+#include "GameManager.h"
+#include "SoundManager.h"
 
 using namespace tbe;
 using namespace tbe::scene;
 
-BulletTime::BulletTime(GameManager* gameManager)
+BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 {
-    m_active = false;
-    m_value = 1;
-    m_gameManager = gameManager;
-    m_userPlayer = m_gameManager->getUserPlayer();
-    m_soundManager = m_gameManager->manager.sound;
+    m_name = "BulletTime";
+
+    m_ppeffect = NULL;
+
+    if(m_gameManager->manager.app->globalSettings.video.usePpe)
+    {
+        using namespace ppe;
+
+        m_ppeffect = new ColorEffect;
+        m_ppeffect->setInternalPass(true);
+        m_ppeffect->setRttFrameSize(256);
+        m_ppeffect->setFusionMode(ColorEffect::BLACK_WHITE);
+        m_ppeffect->setColor(Vector4f(1));
+        m_ppeffect->setEnable(false);
+
+        m_gameManager->manager.ppe->addPostEffect("blettimeEffect", m_ppeffect);
+    }
 }
 
 BulletTime::~BulletTime()
@@ -30,62 +43,85 @@ BulletTime::~BulletTime()
 
 void BulletTime::process()
 {
-    NewtonParallelScene* newton = m_gameManager->parallelscene.newton;
+    int value = m_owner->getEnergy();
 
     if(m_active)
     {
-        if(m_value > 0.0f)
+        if(value > 0)
         {
-            m_value -= m_gameManager->worldSettings.bullettimeDown;
-            newton->setWorldTimestep(newton->getWorldTimestep() / m_gameManager->worldSettings.bullettimeFactor);
+            NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
+
+            NewtonBody* body = NewtonWorldGetFirstBody(nworld);
+
+            while(body)
+            {
+                Vector3f force;
+                NewtonBodyGetForce(body, force);
+                force *= 0.5;
+
+                NewtonBodySetForce(body, force);
+
+                body = NewtonWorldGetNextBody(nworld, body);
+            }
+
+            value -= 2;
         }
 
         else
-            setActive(false);
+            m_active = false;
     }
 
-    else
+    m_owner->setEnergy(value);
+}
+
+void BulletTime::activate(tbe::Vector3f target)
+{
+    Power::activate(target);
+
+    // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
+
+    m_soundManager->playSound("bullettime", m_owner);
+
+    if(m_ppeffect)
+        m_ppeffect->setEnable(true);
+
+    NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
+
+    NewtonBody* body = NewtonWorldGetFirstBody(nworld);
+
+    while(body)
     {
-        if(m_value < 1.0f)
-            m_value += m_gameManager->worldSettings.bullettimeUp;
+        Vector3f vel;
+        NewtonBodyGetVelocity(body, vel);
+
+        vel *= 0.5;
+        NewtonBodySetVelocity(body, vel);
+
+        body = NewtonWorldGetNextBody(nworld, body);
     }
 }
 
-void BulletTime::setActive(bool active)
+void BulletTime::diactivate()
 {
-    this->m_active = active;
+    Power::diactivate();
 
-    if(m_value <= 0)
-        m_active = false;
+    // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);
 
-    if(m_active)
+    if(m_ppeffect)
+        m_ppeffect->setEnable(false);
+
+    NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
+
+    NewtonBody* body = NewtonWorldGetFirstBody(nworld);
+
+    while(body)
     {
-        FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
+        Vector3f vel;
+        NewtonBodyGetVelocity(body, vel);
 
-        m_soundManager->playSound("bullettime", m_userPlayer);
+        vel *= 2.0;
+        NewtonBodySetVelocity(body, vel);
 
-        m_gameManager->hudBullettime(true);
+        body = NewtonWorldGetNextBody(nworld, body);
     }
-
-    else
-    {
-        FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);
-
-        m_gameManager->hudBullettime(false);
-    }
-}
-
-bool BulletTime::isActive() const
-{
-    return m_active;
-}
-
-void BulletTime::setValue(float value)
-{
-    this->m_value = value;
-}
-
-float BulletTime::getValue() const
-{
-    return m_value;
 }

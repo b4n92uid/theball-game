@@ -40,6 +40,8 @@
         <logicalFolder name="f3" displayName="Powers" projectFiles="true">
           <itemPath>sources/BulletTime.cpp</itemPath>
           <itemPath>sources/BulletTime.h</itemPath>
+          <itemPath>sources/Power.cpp</itemPath>
+          <itemPath>sources/Power.h</itemPath>
         </logicalFolder>
         <logicalFolder name="f4" displayName="Weapons" projectFiles="true">
           <itemPath>sources/Weapon.cpp</itemPath>

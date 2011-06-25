@@ -8,11 +8,14 @@
 #ifndef BULLETTIME_H
 #define	BULLETTIME_H
 
-class Player;
-class GameManager;
-class SoundManager;
+#include <map>
 
-class BulletTime
+#include "ColorEffect.h"
+#include "Power.h"
+
+class Player;
+
+class BulletTime : public Power
 {
 public:
     BulletTime(GameManager* gameManager);
@@ -20,18 +23,11 @@ public:
 
     void process();
 
-    void setActive(bool active);
-    bool isActive() const;
+    virtual void activate(tbe::Vector3f target);
+    virtual void diactivate();
 
-    void setValue(float value);
-    float getValue() const;
-
-private:
-    float m_value;
-    bool m_active;
-    Player* m_userPlayer;
-    GameManager* m_gameManager;
-    SoundManager* m_soundManager;
+protected:
+    tbe::ppe::ColorEffect* m_ppeffect;
 };
 
 #endif	/* BULLETTIME_H */

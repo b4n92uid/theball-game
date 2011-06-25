@@ -155,10 +155,9 @@ bool Weapon::shoot(Vector3f startpos, Vector3f targetpos)
         return false;
     }
 
-    // Controle de la cadence de tire
-    long shootCadency = m_playManager->getBullettime()->isActive() ? m_shootCadency * 4 : m_shootCadency;
+    // NOTE Controle de la cadence de tire (Bullettime)
 
-    if(!m_shootCadencyClock.isEsplanedTime(shootCadency))
+    if(!m_shootCadencyClock.isEsplanedTime(m_shootCadency))
         return false;
 
     if(m_bulletArray.size() > m_maxAmmoCount)

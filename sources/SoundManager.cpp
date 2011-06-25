@@ -93,15 +93,9 @@ void SoundManager::playSound(std::string soundName, MapElement* object)
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
 
-    processEffect(soundName, channel);
+    // NOTE Process sound effect on bullettilme
 
     FMOD_Channel_SetPaused(channel, false);
-}
-
-void SoundManager::processEffect(std::string soundName, FMOD_CHANNEL* channel)
-{
-    if(m_gameManager->getBullettime()->isActive())
-        FMOD_Channel_SetFrequency(channel, 22050);
 }
 
 void SoundManager::registerMusic(std::string name, std::string filename)

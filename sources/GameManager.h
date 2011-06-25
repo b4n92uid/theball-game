@@ -63,11 +63,7 @@ public:
     bool isRunning() const;
 
     void hudItem(bool status);
-    void hudBullettime(bool status);
-    void hudBoost(bool status);
     void hudDammage(bool status);
-
-    virtual BulletTime* getBullettime() const;
 
     virtual tbe::Vector3f getShootTarget() const;
 
@@ -158,8 +154,6 @@ protected:
 
     Player::Array m_players;
 
-    BulletTime* m_bullettime;
-
     Settings::PartySetting m_playSetting;
 
     tbe::ticks::Clock m_logClock;
@@ -212,7 +206,6 @@ protected:
         tbe::gui::Gauge* life;
         tbe::gui::Gauge* bullettime;
 
-        tbe::gui::StateShow* boost;
         tbe::gui::StateShow* item;
 
         struct

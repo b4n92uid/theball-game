@@ -61,6 +61,8 @@ GameManager::GameManager(AppManager* appManager)
     parallelscene.marks = new scene::MapMarkParallelScene;
     manager.scene->addParallelScene(parallelscene.marks);
 
+    // NOTE noaudio arg crash
+
     if(manager.app->globalSettings.noaudio)
         manager.fmodsys = NULL;
     else
@@ -109,7 +111,6 @@ GameManager::~GameManager()
 
     delete manager.sound;
     delete manager.material;
-    delete m_bullettime;
 
     manager.scene->clearAll();
 }
@@ -186,8 +187,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
 
-    m_bullettime = new BulletTime(this);
-
     // SCRIPT ------------------------------------------------------------------
 
     string scriptpath = tools::pathScope(m_playSetting.map.filename, m_playSetting.map.script, true);
@@ -206,14 +205,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
         ppe.boost->setEnable(false);
         ppe.boost->setIntensity(vidSets.ppe.boostIntensity);
         manager.ppe->addPostEffect("boostEffect", ppe.boost);
-
-        ppe.bullettime = new ColorEffect;
-        ppe.bullettime->setInternalPass(true);
-        ppe.bullettime->setRttFrameSize(vidSets.ppe.bullettimeSize);
-        ppe.bullettime->setFusionMode(ColorEffect::BLACK_WHITE);
-        ppe.bullettime->setColor(vidSets.ppe.bullettimeColor);
-        ppe.bullettime->setEnable(false);
-        manager.ppe->addPostEffect("blettimeEffect", ppe.bullettime);
 
         ppe.dammage = new ColorEffect;
         ppe.dammage->setInternalPass(true);
@@ -350,7 +341,6 @@ void GameManager::setupGui()
     hud.ammo->setSmooth(true, 1);
     hud.bullettime = manager.gui->addGauge("hud.bullettime", "Bulettime");
     hud.bullettime->setSmooth(true, 1);
-    hud.boost = manager.gui->addStateShow("hud.boost", GUI_BOOST, 2);
 
     manager.gui->addLayoutStretchSpace();
     manager.gui->endLayout();
@@ -528,8 +518,7 @@ void GameManager::eventProcess()
             manager.gameEngine->setGrabInput(false);
             manager.gameEngine->setMouseVisible(true);
 
-            for(unsigned i = 0; i < m_players.size(); i++)
-                m_bullettime->setActive(false);
+            // NOTE Disable ppe
 
             m_timeTo = TIME_TO_PAUSE;
         }
@@ -644,7 +633,7 @@ void GameManager::gameProcess()
 
             if(!map.aabb.isInner(player->getVisualBody()))
             {
-                player->toNextSpawnPos();
+                player->randomPosOnFloor();
             }
         }
     }
@@ -693,7 +682,7 @@ void GameManager::hudProcess()
         const int &ammoCount = curWeapon->getAmmoCount(),
                 &ammoCountMax = curWeapon->getMaxAmmoCount(),
                 &life = m_userPlayer->getLife(),
-                &bullettime = static_cast<int>(m_bullettime->getValue() * 100);
+                &energy = m_userPlayer->getEnergy();
 
         if(!m_userPlayer->isKilled())
         {
@@ -708,11 +697,9 @@ void GameManager::hudProcess()
 
             hud.life->setValue(life);
 
-            hud.bullettime->setLabel((format("Bullettilme %1%/100") % bullettime).str());
+            hud.bullettime->setLabel((format("Energie %1%/100") % energy).str());
 
-            hud.bullettime->setValue(bullettime);
-
-            hud.boost->setCurState(m_userPlayer->isBoostAvalaible());
+            hud.bullettime->setValue(energy);
 
             // TODO Text d'état de la partie
             // hud.state->write(ss.str());
@@ -831,8 +818,6 @@ void GameManager::render()
     // Physique ----------------------------------------------------------------
 
     parallelscene.newton->setWorldTimestep(1.0f / m_newtonClock.getEsplanedTime());
-
-    m_bullettime->process();
 
     // Son 3D ------------------------------------------------------------------
 
@@ -954,31 +939,6 @@ void GameManager::hudItem(bool status)
     hud.item->setCurState(status);
 }
 
-void GameManager::hudBullettime(bool status)
-{
-    if(manager.app->globalSettings.video.usePpe)
-    {
-        ppe.bullettime->setEnable(status);
-        ppe.bloom->setEnable(!status);
-    }
-    else
-    {
-        hud.background.bullettime->setEnable(status);
-    }
-}
-
-void GameManager::hudBoost(bool status)
-{
-    if(manager.app->globalSettings.video.usePpe)
-    {
-        ppe.boost->setEnable(status);
-    }
-    else
-    {
-
-    }
-}
-
 void GameManager::hudDammage(bool status)
 {
     if(manager.app->globalSettings.video.usePpe)
@@ -995,11 +955,6 @@ void GameManager::hudDammage(bool status)
         if(status)
             hud.background.dammage->setOpacity(0.75);
     }
-}
-
-BulletTime* GameManager::getBullettime() const
-{
-    return m_bullettime;
 }
 
 const Player::Array GameManager::getTargetsOf(Player* player) const

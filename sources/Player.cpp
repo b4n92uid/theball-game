@@ -5,9 +5,9 @@
 #include "MaterialManager.h"
 #include "MapElement.h"
 #include "SoundManager.h"
+#include "BulletTime.h"
 
 #include "Define.h"
-#include "BulletTime.h"
 
 using namespace std;
 using namespace tbe;
@@ -18,15 +18,15 @@ using namespace tbe::scene;
 Player::Player(GameManager* playManager, std::string name, std::string model) : MapElement(playManager)
 {
     // Attributes
-    m_name = name;
+    m_nickname = name;
     m_id = "player";
     m_playManager = playManager;
     m_curWeapon = m_weaponsPack.end();
+    m_curPower = m_powerPack.end();
     m_killed = false;
-    m_boostAvalaible = true;
-    m_visibleFromIA = true;
     m_score = 0;
     m_life = 100;
+    m_energy = 100;
     m_attachedCotroller = NULL;
     m_soundManager = playManager->manager.sound;
 
@@ -60,12 +60,15 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
     NewtonBodySetUserData(m_physicBody->getBody(), this);
 
-    toNextSpawnPos();
+    randomPosOnFloor();
 
     // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
-
     addWeapon(blaster);
+
+    // Pouvoir principale
+    BulletTime* btime = new BulletTime(m_playManager);
+    addPower(btime);
 }
 
 Player::~Player()
@@ -76,7 +79,7 @@ Player::~Player()
     delete m_attachedCotroller;
 }
 
-void Player::toNextSpawnPos()
+void Player::randomPosOnFloor()
 {
     Vector3f::Array& spawns = m_playManager->map.spawnPoints;
 
@@ -122,15 +125,6 @@ void Player::process()
     if(m_playManager->isGameOver())
         return;
 
-    if(!m_boostAvalaible)
-    {
-        if(clocks.boostDisableBlur.isEsplanedTime(1000))
-            m_playManager->hudBoost(false);
-
-        if(clocks.boostAvailable.isEsplanedTime(m_worldSettings.playerBoostReload))
-            m_boostAvalaible = true;
-    }
-
     if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->process(this);
 
@@ -140,6 +134,12 @@ void Player::process()
 
     CheckMe::Array::iterator newEnd = remove(m_checkMe.begin(), m_checkMe.end(), (CheckMe*)NULL);
     m_checkMe.erase(newEnd, m_checkMe.end());
+
+    if(m_energy > 0)
+        (*m_curPower)->process();
+
+    if(m_energy < 100)
+        m_energy++;
 }
 
 bool Player::shoot(Vector3f targetpos)
@@ -167,26 +167,12 @@ void Player::brake()
     m_soundManager->playSound("stop", this);
 }
 
-void Player::boost()
+void Player::power(bool stat, tbe::Vector3f targetpos)
 {
-    if(!m_boostAvalaible || !m_physicBody->getApplyForce())
-        return;
-
-    m_boostAvalaible = false;
-
-    Vector3f impulseDeri = m_physicBody->getApplyForce().normalize()
-            * m_worldSettings.playerBoostSpeed;
-
-    impulseDeri.y = 0;
-
-    NewtonBodyAddImpulse(m_physicBody->getBody(), impulseDeri, m_visualBody->getPos());
-
-    m_soundManager->playSound("boost", this);
-
-    clocks.boostAvailable.snapShoot();
-
-    clocks.boostDisableBlur.snapShoot();
-    m_playManager->hudBoost(true);
+    if(stat)
+        (*m_curPower)->activate(targetpos);
+    else
+        (*m_curPower)->diactivate();
 }
 
 inline bool isWeaponSameName(Weapon* w1, Weapon* w2)
@@ -255,12 +241,50 @@ Weapon* Player::getCurWeapon() const
     return (*m_curWeapon);
 }
 
+inline bool isPowerSameName(Power* w1, Power* w2)
+{
+    return w1->getName() == w2->getName();
+}
+
+void Player::addPower(Power* power)
+{
+    Power::Array::iterator select = find_if(m_powerPack.begin(), m_powerPack.end(),
+                                            bind2nd(ptr_fun(isPowerSameName), power));
+
+    if(select == m_powerPack.end())
+    {
+        m_powerPack.push_back(power);
+
+        m_curPower = --m_powerPack.end();
+        (*m_curPower)->setOwner(this);
+    }
+}
+
+void Player::slotPower(unsigned slot)
+{
+}
+
+void Player::switchUpPower()
+{
+}
+
+void Player::switchDownPower()
+{
+}
+
+void Player::setCurPower(unsigned slot)
+{
+}
+
+Power* Player::getCurPower() const
+{
+    return *m_curPower;
+}
+
 void Player::reBorn()
 {
     m_life = 100;
     m_killed = false;
-
-    m_boostAvalaible = true;
 
     m_playManager->manager.material->setGhost(this, false);
 
@@ -277,7 +301,7 @@ void Player::reBorn()
 
     addWeapon(blaster);
 
-    toNextSpawnPos();
+    randomPosOnFloor();
 
     for(unsigned i = 0; i < m_checkMe.size(); i++)
         m_checkMe[i]->afterReborn(this);
@@ -306,29 +330,11 @@ void Player::kill()
     m_physicBody->setFreeze(true);
 
     m_soundManager->playSound("kill", this);
-
-    if(this == m_playManager->getUserPlayer())
-    {
-        m_playManager->getBullettime()->setActive(false);
-
-        m_playManager->hudBoost(false);
-        m_playManager->hudBullettime(false);
-    }
 }
 
 bool Player::isKilled() const
 {
     return m_killed;
-}
-
-void Player::setBoostAvalaible(bool boost)
-{
-    this->m_boostAvalaible = boost;
-}
-
-bool Player::isBoostAvalaible() const
-{
-    return m_boostAvalaible;
 }
 
 void Player::upScore(int value)
@@ -346,14 +352,29 @@ int Player::getScore() const
     return m_score;
 }
 
+void Player::upEnergy(int value)
+{
+    this->m_energy += value;
+}
+
+void Player::setEnergy(int energy)
+{
+    this->m_energy = energy;
+}
+
+int Player::getEnergy() const
+{
+    return m_energy;
+}
+
 void Player::setName(std::string name)
 {
-    this->m_name = name;
+    this->m_nickname = name;
 }
 
 std::string Player::getName() const
 {
-    return m_name;
+    return m_nickname;
 }
 
 void Player::upLife(int life)
@@ -374,16 +395,6 @@ int Player::getLife() const
 void Player::addCheckMe(CheckMe* cm)
 {
     m_checkMe.push_back(cm);
-}
-
-void Player::setVisibleFromIA(bool visibleFromIA)
-{
-    this->m_visibleFromIA = visibleFromIA;
-}
-
-bool Player::isVisibleFromIA() const
-{
-    return m_visibleFromIA;
 }
 
 void Player::takeDammage(Bullet* ammo)
@@ -464,7 +475,7 @@ Player::StartProtection::StartProtection(Player* player)
 
     player->makeTransparent(true);
 
-    player->setVisibleFromIA(false);
+    // player->setVisibleFromIA(false);
 }
 
 bool Player::StartProtection::onShoot(Player*)
@@ -486,7 +497,7 @@ bool Player::StartProtection::shutdown(Player* player)
     {
         player->makeTransparent(false);
 
-        player->setVisibleFromIA(true);
+        // player->setVisibleFromIA(true);
 
         return true;
     }

@@ -136,10 +136,6 @@ void UserControl::process(Player* player)
         if(isActionStateDown("jump"))
             player->jump();
 
-    // Boost
-    if(isActionStateDown("boost"))
-        player->boost();
-
     if(isActionStateDown("brake"))
         player->brake();
 
@@ -154,12 +150,12 @@ void UserControl::process(Player* player)
     if(isActionStateDown("shoot"))
         player->shoot(m_playManager->getShootTarget());
 
-    BulletTime* btim = m_playManager->getBullettime();
+    // NOTE key action power isActionJustDown
 
     // Bullettime
     if(isActionJustDown("bullettime"))
-        btim->setActive(true);
+        player->power(true, m_playManager->getShootTarget());
 
     else if(isActionJustUp("bullettime"))
-        btim->setActive(false);
+        player->power(false, m_playManager->getShootTarget());
 }

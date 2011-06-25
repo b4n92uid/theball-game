@@ -41,9 +41,6 @@ public:
     typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > MusicMap;
 
 protected:
-    virtual void processEffect(std::string soundName, FMOD_CHANNEL* channel);
-
-protected:
     GameManager* m_gameManager;
     FMOD_SYSTEM* m_fmodsys;
     FMOD_CHANNELGROUP* m_musicGroupe;
