@@ -94,7 +94,7 @@ void Weapon::process()
         else
         {
             m_bulletArray[i]->process();
-            particles[i].pos = m_bulletArray[i]->getPos();
+            particles[i].pos = m_bulletArray[i]->getPhysicBody()->getPos();
         }
     }
 
@@ -409,7 +409,7 @@ void WeaponFinder::process()
         else
         {
             m_bulletArray[i]->process();
-            particles[i].pos = m_bulletArray[i]->getPos();
+            particles[i].pos = m_bulletArray[i]->getPhysicBody()->getPos();
 
             bool targetLocked = false;
 
@@ -419,19 +419,19 @@ void WeaponFinder::process()
 
             for(unsigned j = 0; j < targets.size(); j++)
             {
-                Vector3f ammodiri = m_bulletArray[i]->getVelocity().normalize();
-                Vector3f targetdiri = (targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPos()).normalize();
+                Vector3f ammodiri = m_bulletArray[i]->getPhysicBody()->getVelocity().normalize();
+                Vector3f targetdiri = (targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos()).normalize();
 
                 if(Vector3f::dot(targetdiri, ammodiri) > 0.5f)
                 {
-                    minDist = min(targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPos(), minDist);
+                    minDist = min(targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos(), minDist);
                     targetLocked = true;
                 }
             }
 
             if(targetLocked)
             {
-                m_bulletArray[i]->setApplyForce(minDist.normalize() * m_shootSpeed / 2.0f);
+                m_bulletArray[i]->getPhysicBody()->setApplyForce(minDist.normalize() * m_shootSpeed / 2.0f);
             }
         }
     }
@@ -457,12 +457,23 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
 // Bullet ----------------------------------------------------------------------
 
-Bullet::Bullet(GameManager* playManager) : NewtonNode(playManager->parallelscene.newton)
+Bullet::Bullet(GameManager* playManager) : MapElement(playManager)
 {
-    m_playManager = playManager;
     m_life = 300;
     m_dammage = 0;
     m_weapon = NULL;
+}
+
+Bullet::~Bullet()
+{
+    delete m_physicBody;
+    delete m_visualBody;
+}
+
+void Bullet::process()
+{
+    m_physicBody->process();
+    m_visualBody->process();
 }
 
 void Bullet::setShootSpeed(float shootSpeed)
@@ -537,7 +548,7 @@ int Bullet::getLife() const
 
 bool Bullet::isDeadAmmo()
 {
-    return (m_life <= 0 || !m_playManager->map.aabb.isInner(m_matrix.getPos()));
+    return (m_life <= 0 || !m_gameManager->map.aabb.isInner(m_visualBody->getPos()));
 }
 
 void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
@@ -549,18 +560,23 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
 
     m_shootDiri += AABB(-accuracy, accuracy).randPos();
 
-    m_matrix.setPos(startpos);
+    BullNode* placehold = new BullNode;
+    setVisualBody(placehold);
 
-    setUpdatedMatrix(&m_matrix);
+    placehold->setPos(startpos);
 
-    Settings::World& worldSettings = m_playManager->manager.app->globalSettings.world;
+    Settings::World& worldSettings = m_gameManager->manager.app->globalSettings.world;
 
-    buildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
-    NewtonBodySetContinuousCollisionMode(m_body, true);
+    NewtonNode* body = new NewtonNode(m_gameManager->parallelscene.newton);
+    body->setUpdatedMatrix(&placehold->getMatrix());
+    body->buildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
+    body->setApplyGravity(false);
+    NewtonBodySetForceAndTorqueCallback(body->getBody(), MapElement::applyForceAndTorqueCallback);
+    NewtonBodySetUserData(body->getBody(), this);
+    NewtonBodySetContinuousCollisionMode(body->getBody(), true);
+    NewtonBodyAddImpulse(body->getBody(), m_shootDiri * m_shootSpeed, m_startPos);
 
-    m_applyGravity = false;
+    setPhysicBody(body);
 
-    m_playManager->manager.material->addBullet(this);
-
-    NewtonBodyAddImpulse(m_body, m_shootDiri * m_shootSpeed, m_startPos);
+    m_gameManager->manager.material->addBullet(this);
 }

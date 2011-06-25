@@ -55,11 +55,10 @@ void BulletTime::process()
 
             while(body)
             {
-                Vector3f force;
-                NewtonBodyGetForce(body, force);
-                force *= 0.5;
+                MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
 
-                NewtonBodySetForce(body, force);
+                elem->getPhysicBody()->setApplyForce(elem->getPhysicBody()->getApplyForce()*0.1);
+                elem->getPhysicBody()->setApplyTorque(elem->getPhysicBody()->getApplyTorque()*0.1);
 
                 body = NewtonWorldGetNextBody(nworld, body);
             }
@@ -94,7 +93,7 @@ void BulletTime::activate(tbe::Vector3f target)
         Vector3f vel;
         NewtonBodyGetVelocity(body, vel);
 
-        vel *= 0.5;
+        vel *= 0.1;
         NewtonBodySetVelocity(body, vel);
 
         body = NewtonWorldGetNextBody(nworld, body);
@@ -119,7 +118,7 @@ void BulletTime::diactivate()
         Vector3f vel;
         NewtonBodyGetVelocity(body, vel);
 
-        vel *= 2.0;
+        vel *= 10.0;
         NewtonBodySetVelocity(body, vel);
 
         body = NewtonWorldGetNextBody(nworld, body);

@@ -86,7 +86,7 @@ void MaterialManager::addElement(MapElement* body)
 
 void MaterialManager::addBullet(Bullet* body)
 {
-    NewtonBodySetMaterialGroupID(body->getBody(), m_bulletGroupe);
+    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_bulletGroupe);
 }
 
 void MaterialManager::addPlayer(Player* body)

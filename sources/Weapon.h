@@ -21,11 +21,12 @@ class Player;
 class Bullet;
 class Weapon;
 
-class Bullet : public tbe::scene::NewtonNode
+class Bullet : public MapElement
 {
 public:
 
     Bullet(GameManager* playManager);
+    ~Bullet();
 
     void shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy = 0);
 
@@ -43,6 +44,8 @@ public:
     void setDammage(int dammage);
     int getDammage() const;
 
+    void process();
+
     void setShootDiri(tbe::Vector3f shootDiri);
     tbe::Vector3f getShootDiri() const;
 
@@ -55,7 +58,6 @@ public:
     typedef std::vector<Bullet*> Array;
 
 protected:
-    GameManager* m_playManager;
     Weapon* m_weapon;
     int m_dammage;
     int m_life;
