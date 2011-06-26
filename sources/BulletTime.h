@@ -10,8 +10,11 @@
 
 #include <map>
 
+#include <NewtonBall/NewtonBall.h>
+
 #include "ColorEffect.h"
 #include "Power.h"
+#include "Weapon.h"
 
 class Player;
 
@@ -27,7 +30,12 @@ public:
     virtual void diactivate();
 
 protected:
+    static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
+
+protected:
+    Weapon* m_usedWeapon;
     tbe::ppe::ColorEffect* m_ppeffect;
+    std::map<NewtonBody*, NewtonApplyForceAndTorque> m_callbacks;
 };
 
 #endif	/* BULLETTIME_H */
