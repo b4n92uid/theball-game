@@ -251,19 +251,19 @@ int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material,
             if(!cheerClock.isEsplanedTime(4000))
                 switch(cheerCount)
                 {
-                    case 2: playManager->log("Double kill");
+                    case 2: playManager->display("Double kill");
                         break;
-                    case 3: playManager->log("Triple kill");
+                    case 3: playManager->display("Triple kill");
                         break;
-                    case 4: playManager->log("Carnage");
+                    case 4: playManager->display("Carnage");
                         break;
-                    case 5: playManager->log("The One");
+                    case 5: playManager->display("The One");
                         break;
-                    case 6: playManager->log("War Warrior");
+                    case 6: playManager->display("War Warrior");
                         break;
-                    case 7: playManager->log("God Of War !!!");
+                    case 7: playManager->display("God Of War !!!");
                         break;
-                    default: playManager->log("...");
+                    default: playManager->display("...");
                         break;
                 }
             else

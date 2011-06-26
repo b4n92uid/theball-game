@@ -97,7 +97,6 @@ void SoundManager::playSound(std::string soundName, MapElement* object)
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
 
 
-    // NOTE Process sound effect on bullettilme
     processSoundEffect(channel);
 
     FMOD_Channel_SetPaused(channel, false);

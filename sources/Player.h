@@ -39,7 +39,7 @@ public:
     void jump();
 
     /// Accéleration
-    void power(bool stat, tbe::Vector3f targetpos = 0);
+    bool power(bool stat, tbe::Vector3f targetpos = 0);
 
     /// Freinage
     void brake();
@@ -128,57 +128,11 @@ public:
 
     } clocks;
 
-    class CheckMe
-    {
-    public:
-
-        CheckMe()
-        {
-        }
-
-        virtual ~CheckMe()
-        {
-        }
-
-        virtual void afterReborn(Player* player)
-        {
-        }
-
-        virtual bool shutdown(Player* player)
-        {
-            return false;
-        }
-
-        virtual bool onTakeDammage(Player* player, Bullet* ammo)
-        {
-            return true;
-        }
-
-        virtual bool onShoot(Player* player)
-        {
-            return true;
-        }
-
-        virtual bool onKilled(Player* player)
-        {
-            return true;
-        }
-
-        virtual bool onTakeItems(Player* player, Item* item)
-        {
-            return true;
-        }
-
-        virtual bool isInvisible(Player* player)
-        {
-            return false;
-        }
-
-        typedef std::vector<CheckMe*> Array;
-    };
-
-
-    void addCheckMe(CheckMe* cm);
+    boost::signal<void(Player*) > onRespawn;
+    boost::signal<bool(Player*, Bullet*) > onDammage;
+    boost::signal<bool(Player*, tbe::Vector3f) > onShoot;
+    boost::signal<bool(Player*) > onKilled;
+    boost::signal<bool(Player*, bool, tbe::Vector3f) > onPower;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;
@@ -188,8 +142,6 @@ protected:
     int m_score;
     bool m_killed;
     int m_energy;
-
-    CheckMe::Array m_checkMe;
 
     Weapon::Array::iterator m_curWeapon;
     Weapon::Array m_weaponsPack;
@@ -207,18 +159,6 @@ protected:
     tbe::scene::OBJMesh* m_visualBody;
 
     std::string m_nickname;
-
-    class StartProtection : public CheckMe
-    {
-    public:
-        StartProtection(Player* player);
-        bool onTakeDammage(Player* player, Bullet* ammo);
-        bool shutdown(Player* player);
-        bool onShoot(Player* player);
-
-    private:
-        tbe::ticks::Clock m_clock;
-    };
 
 private:
     bool m_energyVoid;

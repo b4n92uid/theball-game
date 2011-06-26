@@ -46,8 +46,6 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     m_deadExplode->setAutoRebuild(false);
     m_deadExplode->setParent(m_visualBody);
 
-    m_checkMe.push_back(new StartProtection(this));
-
     // Physique
     m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
     m_physicBody->setUpdatedMatrix(&m_visualBody->getMatrix());
@@ -73,9 +71,6 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
 
 Player::~Player()
 {
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        delete m_checkMe[i];
-
     delete m_attachedCotroller;
 }
 
@@ -103,10 +98,6 @@ void Player::randomPosOnFloor()
 
 void Player::attachItem(Item* item)
 {
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->onTakeItems(this, item))
-            return;
-
     item->modifPlayer(this);
 }
 
@@ -127,13 +118,6 @@ void Player::process()
 
     if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->process(this);
-
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(m_checkMe[i]->shutdown(this))
-            delete m_checkMe[i], m_checkMe[i] = NULL;
-
-    CheckMe::Array::iterator newEnd = remove(m_checkMe.begin(), m_checkMe.end(), (CheckMe*)NULL);
-    m_checkMe.erase(newEnd, m_checkMe.end());
 
     if(m_energy > 0 && !m_energyVoid)
     {
@@ -157,9 +141,8 @@ void Player::process()
 
 bool Player::shoot(Vector3f targetpos)
 {
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->onShoot(this))
-            return false;
+    if(!onShoot(this, targetpos))
+        return false;
 
     return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
@@ -180,12 +163,17 @@ void Player::brake()
     m_soundManager->playSound("stop", this);
 }
 
-void Player::power(bool stat, tbe::Vector3f targetpos)
+bool Player::power(bool stat, tbe::Vector3f targetpos)
 {
+    if(!onPower(this, stat, targetpos))
+        return false;
+
     if(stat)
         (*m_curPower)->activate(targetpos);
     else
         (*m_curPower)->diactivate();
+
+    return true;
 }
 
 inline bool isWeaponSameName(Weapon* w1, Weapon* w2)
@@ -316,17 +304,13 @@ void Player::reBorn()
 
     randomPosOnFloor();
 
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        m_checkMe[i]->afterReborn(this);
-
-    m_checkMe.push_back(new StartProtection(this));
+    onRespawn(this);
 }
 
 void Player::kill()
 {
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->onKilled(this))
-            return;
+    if(!onKilled(this))
+        return;
 
     m_killed = true;
     m_life = 0;
@@ -405,19 +389,13 @@ int Player::getLife() const
     return m_life;
 }
 
-void Player::addCheckMe(CheckMe* cm)
-{
-    m_checkMe.push_back(cm);
-}
-
 void Player::takeDammage(Bullet* ammo)
 {
     if(m_killed)
         return;
 
-    for(unsigned i = 0; i < m_checkMe.size(); i++)
-        if(!m_checkMe[i]->onTakeDammage(this, ammo))
-            return;
+    if(!onDammage(this, ammo))
+        return;
 
     int dammage = ammo->getDammage();
 
@@ -481,6 +459,7 @@ void Player::makeTransparent(bool enable, float alpha)
             mats[i]->disable(Material::BLEND_MOD);
 }
 
+/*
 Player::StartProtection::StartProtection(Player* player)
 {
     using namespace tbe;
@@ -517,3 +496,4 @@ bool Player::StartProtection::shutdown(Player* player)
 
     return false;
 }
+ */

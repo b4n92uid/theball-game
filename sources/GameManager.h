@@ -54,11 +54,14 @@ public:
     void render();
 
     /// Rotine d'affichage de notification
-    void log(std::string msg);
+    void display(std::string msg);
+
+    /// Rotine d'affichage de l'état de la partie
+    void status(std::string msg);
 
     tbe::Vector3f getRandomPosOnTheFloor();
 
-    void setGameOver();
+    void setGameOver(Player* winner, std::string finalmsg);
     bool isGameOver() const;
     bool isRunning() const;
 
@@ -128,6 +131,8 @@ public:
     } parallelscene;
 
     Settings::World worldSettings;
+
+    boost::signal<std::string() > onScoreWrite;
 
 protected:
 

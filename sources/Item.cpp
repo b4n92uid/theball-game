@@ -94,7 +94,7 @@ void ItemAddAmmo::modifPlayer(Player* player)
     GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
-        playManager->log("Munitions supplémentaire");
+        playManager->display("Munitions supplémentaire");
 
     player->getCurWeapon()->UpAmmoCount(50 * player->getCurWeapon()->getMaxAmmoCount() / 100);
     m_soundManager->playSound("takeammo", this);
@@ -129,7 +129,7 @@ void ItemAddLife::modifPlayer(Player* player)
     GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
-        playManager->log("Santé supplémentaire");
+        playManager->display("Santé supplémentaire");
 
     player->upLife(50);
 
@@ -157,6 +157,7 @@ ItemFatalShot::ItemFatalShot(GameManager* gameManager, tbe::Matrix4 pos) : Item(
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
+/*
 class FatalShotEffect : public Player::CheckMe
 {
 public:
@@ -182,6 +183,7 @@ public:
     unsigned initialDammage;
     tbe::ticks::Clock effectTime;
 };
+ */
 
 void ItemFatalShot::modifPlayer(Player* player)
 {
@@ -189,16 +191,16 @@ void ItemFatalShot::modifPlayer(Player* player)
 
     if(playManager->getUserPlayer() == player)
     {
-        playManager->log("Tire fatale");
+        playManager->display("Tire fatale");
         playManager->hudItem(true);
     }
 
-    FatalShotEffect* effect = new FatalShotEffect;
-    effect->initialDammage = player->getCurWeapon()->getMaxAmmoDammage();
-    effect->effectTime.snapShoot();
+    //    FatalShotEffect* effect = new FatalShotEffect;
+    //    effect->initialDammage = player->getCurWeapon()->getMaxAmmoDammage();
+    //    effect->effectTime.snapShoot();
+    //     player->addCheckMe(effect);
 
     player->getCurWeapon()->setMaxAmmoDammage(100);
-    player->addCheckMe(effect);
 
     m_soundManager->playSound("takefatalshot", this);
 
@@ -224,6 +226,7 @@ ItemSuperLife::ItemSuperLife(GameManager* gameManager, tbe::Matrix4 pos) : Item(
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
 }
 
+/*
 class SuperLifeEffect : public Player::CheckMe
 {
 public:
@@ -250,6 +253,7 @@ public:
 
     tbe::ticks::Clock effectTime;
 };
+ */
 
 void ItemSuperLife::modifPlayer(Player* player)
 {
@@ -257,15 +261,15 @@ void ItemSuperLife::modifPlayer(Player* player)
 
     if(playManager->getUserPlayer() == player)
     {
-        playManager->log("Super santé !");
+        playManager->display("Super santé !");
         playManager->hudItem(true);
     }
 
-    SuperLifeEffect* effect = new SuperLifeEffect;
-    effect->effectTime.snapShoot();
+    //    SuperLifeEffect* effect = new SuperLifeEffect;
+    //    effect->effectTime.snapShoot();
+    //    player->addCheckMe(effect);
 
     player->setLife(100);
-    player->addCheckMe(effect);
 
     m_soundManager->playSound("takesuperlife", this);
 
@@ -296,7 +300,7 @@ void ItemAddFinder::modifPlayer(Player* player)
     GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
-        playManager->log("Arme : Finder");
+        playManager->display("Arme : Finder");
 
     WeaponFinder* finder = new WeaponFinder(playManager);
     player->addWeapon(finder);
@@ -330,7 +334,7 @@ void ItemAddBomb::modifPlayer(Player* player)
     GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
-        playManager->log("Arme : Bomb");
+        playManager->display("Arme : Bomb");
 
     WeaponBomb* bomb = new WeaponBomb(playManager);
     player->addWeapon(bomb);
@@ -364,7 +368,7 @@ void ItemAddShotgun::modifPlayer(Player* player)
     GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
-        playManager->log("Arme : Shotgun");
+        playManager->display("Arme : Shotgun");
 
     WeaponShotgun* shotgun = new WeaponShotgun(playManager);
     player->addWeapon(shotgun);

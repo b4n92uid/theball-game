@@ -890,8 +890,8 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 
     GameManager* gameManager = new GameManager(this);
 
-    gameManager->setupMap(playSetting);
     gameManager->setupGui();
+    gameManager->setupMap(playSetting);
 
     // Attente de réponse ------------------------------------------------------
 

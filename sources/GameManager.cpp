@@ -386,12 +386,17 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor()
     return randPos;
 }
 
-void GameManager::log(std::string msg)
+void GameManager::display(std::string msg)
 {
     hud.log->write(msg);
     hud.log->setEnable(true);
 
     m_logClock.snapShoot();
+}
+
+void GameManager::status(std::string msg)
+{
+    hud.state->write(msg);
 }
 
 void GameManager::processDevelopperCodeEvent()
@@ -458,7 +463,7 @@ void GameManager::processDevelopperCodeEvent()
         // F9 : Next level
         if(event->keyState[EventManager::KEY_F9])
         {
-            setGameOver();
+            setGameOver(m_userPlayer, "Next Level >>");
         }
     }
 }
@@ -652,8 +657,6 @@ void GameManager::gameProcess()
 
     if(hud.log->isEnable() && m_logClock.isEsplanedTime(3000))
         hud.log->setEnable(false);
-
-    // TODO Vérification du gameover
 }
 
 void GameManager::hudProcess()
@@ -693,9 +696,6 @@ void GameManager::hudProcess()
             hud.bullettime->setLabel((format("Energie %1%/100") % energy).str());
 
             hud.bullettime->setValue(energy);
-
-            // TODO Text d'état de la partie
-            // hud.state->write(ss.str());
 
             // Affichage de l'ecran de dommage si besoins
 
@@ -740,8 +740,9 @@ void GameManager::hudProcess()
     {
         manager.gui->setSession(SCREEN_PLAYERSLIST);
 
-        // TODO Affichage score de joueurs
-        // hud.scorelist->write(ss.str());
+        string conent = onScoreWrite();
+
+        hud.scorelist->write(conent);
     }
 
     // Gestion de l'ETH en gameover --------------------------------------------
@@ -749,9 +750,6 @@ void GameManager::hudProcess()
     if(m_timeTo == TIME_TO_GAMEOVER)
     {
         manager.gui->setSession(SCREEN_GAMEOVER);
-
-        // TODO Affichage état de la partie (gameover)
-        // hud.gameover->write(ss.str());
 
         // Affichage de l'ecran gameover si besoin
 
@@ -901,10 +899,14 @@ const Player::Array& GameManager::getPlayers() const
     return m_players;
 }
 
-void GameManager::setGameOver()
+void GameManager::setGameOver(Player* winner, std::string finalmsg)
 {
     m_gameOver = true;
     m_timeTo = TIME_TO_GAMEOVER;
+
+    hud.gameover->write(finalmsg);
+
+    m_winnerPlayer = winner;
 
     for(unsigned i = 0; i < m_players.size(); i++)
         NewtonBodySetFreezeState(m_players[i]->getPhysicBody()->getBody(), true);

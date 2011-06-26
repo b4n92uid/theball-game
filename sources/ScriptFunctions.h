@@ -116,8 +116,9 @@ int gameover(lua_State* lua);
 
 // Management
 
+int registerGlobalHook(lua_State* lua);
+int registerPlayerHook(lua_State* lua);
 int registerCollid(lua_State* lua);
-int registerHook(lua_State* lua);
 
 int playerList(lua_State* lua);
 

@@ -13,6 +13,8 @@
 #include "MapElement.h"
 #include "Player.h"
 
+#include <boost/foreach.hpp>
+
 using namespace std;
 using namespace tbe;
 
@@ -509,16 +511,28 @@ int dammage(lua_State* lua)
 
 int display(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    gm->display(lua_tostring(lua, 1));
+
     return 0;
 }
 
 int status(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    gm->status(lua_tostring(lua, 1));
+
     return 0;
 }
 
 int gameover(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    gm->setGameOver(lua_toplayer(lua, 1), lua_tostring(lua, 2));
+
     return 0;
 }
 
@@ -534,8 +548,161 @@ int registerCollid(lua_State* lua)
     return 0;
 }
 
-int registerHook(lua_State* lua)
+int registerGlobalHook(lua_State* lua)
 {
+    return 0;
+}
+
+struct RespawnHook
+{
+
+    RespawnHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player * player)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushinteger(lua, (lua_Integer)player);
+        lua_call(lua, 1, 1);
+
+        return lua_toboolean(lua, 1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct PowerHook
+{
+
+    PowerHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player* player, bool stat, Vector3f target)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushinteger(lua, (lua_Integer)player);
+        lua_pushboolean(lua, stat);
+        lua_pushvector3(lua, target);
+        lua_call(lua, 3, 1);
+
+        return lua_toboolean(lua, 1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct ShootHook
+{
+
+    ShootHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player* player, Vector3f target)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushinteger(lua, (lua_Integer)player);
+        lua_pushvector3(lua, target);
+        lua_call(lua, 2, 1);
+
+        return lua_toboolean(lua, 1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct KilledHook
+{
+
+    KilledHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player * player)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushinteger(lua, (lua_Integer)player);
+        lua_call(lua, 1, 1);
+
+        return lua_toboolean(lua, 1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct DammageHook
+{
+
+    DammageHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player* player, Bullet * bullet)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushinteger(lua, (lua_Integer)player);
+        lua_pushinteger(lua, (lua_Integer)bullet);
+        lua_call(lua, 2, 1);
+
+        return lua_toboolean(lua, 1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+int registerPlayerHook(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    string type = lua_tostring(lua, 1);
+    string func = lua_tostring(lua, 2);
+
+    const Player::Array& players = gm->getPlayers();
+
+    BOOST_FOREACH(Player* player, players)
+    {
+        if(type == "dammage")
+            player->onDammage.connect(DammageHook(lua, func));
+        if(type == "killed")
+            player->onKilled.connect(KilledHook(lua, func));
+        if(type == "shoot")
+            player->onShoot.connect(ShootHook(lua, func));
+        if(type == "power")
+            player->onPower.connect(PowerHook(lua, func));
+        /*
+        if(type == "jump")
+            player->onJump.connect();
+        if(type == "move")
+            player->onMove.connect();
+        if(type == "ai")
+            player->onAi.connect();
+         */
+        if(type == "respawn")
+            player->onRespawn.connect(RespawnHook(lua, func));
+    }
+
     return 0;
 }
 
