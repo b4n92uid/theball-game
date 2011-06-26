@@ -2,6 +2,8 @@
 <configurationDescriptor version="79">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="f2" displayName="Config" projectFiles="true">
+      <itemPath>sources/Define.h</itemPath>
+      <itemPath>sources/Platform.h</itemPath>
       <itemPath>dist/Release/MinGW-Windows/ai.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/campaign.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/control.xml</itemPath>
@@ -82,8 +84,6 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>sources/Define.h</itemPath>
-    <itemPath>sources/Platform.h</itemPath>
     <itemPath>sources/main.cpp</itemPath>
   </logicalFolder>
   <sourceRootList>
@@ -131,6 +131,7 @@
             <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_system-mgw44-s-1_44.a</linkerLibFileItem>
             <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_date_time-mgw44-s-1_44.a</linkerLibFileItem>
             <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_filesystem-mgw44-s-1_44.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_signals-mgw44-s-1_44.a</linkerLibFileItem>
             <linkerLibFileItem>D:/librairies/cpp/lua/lua-5.1.4/src/liblua.a</linkerLibFileItem>
             <linkerLibLibItem>opengl32</linkerLibLibItem>
             <linkerLibLibItem>glu32</linkerLibLibItem>
@@ -192,6 +193,7 @@
             <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_date_time-mgw44-s-1_44.a</linkerLibFileItem>
             <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_filesystem-mgw44-s-1_44.a</linkerLibFileItem>
             <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_system-mgw44-s-1_44.a</linkerLibFileItem>
+            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_signals-mgw44-s-1_44.a</linkerLibFileItem>
             <linkerLibFileItem>D:/librairies/cpp/lua/lua-5.1.4/src/liblua.a</linkerLibFileItem>
             <linkerLibLibItem>opengl32</linkerLibLibItem>
             <linkerLibLibItem>glu32</linkerLibLibItem>

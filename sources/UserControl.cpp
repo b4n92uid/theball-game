@@ -150,12 +150,10 @@ void UserControl::process(Player* player)
     if(isActionStateDown("shoot"))
         player->shoot(m_playManager->getShootTarget());
 
-    // NOTE key action power isActionJustDown
-
-    // Bullettime
-    if(isActionJustDown("bullettime"))
+    // Power
+    if(isActionJustDown("power"))
         player->power(true, m_playManager->getShootTarget());
 
-    else if(isActionJustUp("bullettime"))
+    else if(isActionJustUp("power"))
         player->power(false, m_playManager->getShootTarget());
 }

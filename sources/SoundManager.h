@@ -10,6 +10,7 @@
 
 #include <map>
 #include <fmod.h>
+#include <boost/signal.hpp>
 
 #include <Tbe.h>
 
@@ -39,6 +40,8 @@ public:
     typedef std::map<std::string, FMOD_SOUND*> SoundMap;
 
     typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > MusicMap;
+
+    boost::signal<void (FMOD_CHANNEL*)> processSoundEffect;
 
 protected:
     GameManager* m_gameManager;

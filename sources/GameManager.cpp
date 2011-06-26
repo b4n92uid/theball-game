@@ -61,8 +61,6 @@ GameManager::GameManager(AppManager* appManager)
     parallelscene.marks = new scene::MapMarkParallelScene;
     manager.scene->addParallelScene(parallelscene.marks);
 
-    // NOTE noaudio arg crash
-
     if(manager.app->globalSettings.noaudio)
         manager.fmodsys = NULL;
     else
@@ -319,11 +317,6 @@ void GameManager::setupGui()
     hud.background.dammage->setSize(vidsets.screenSize);
     hud.background.dammage->setEnable(false);
 
-    hud.background.bullettime = manager.gui->addImage("1:hud.background.bullettime", guisets.backgroundBullettime);
-    hud.background.bullettime->setOpacity(0.5);
-    hud.background.bullettime->setSize(vidsets.screenSize);
-    hud.background.bullettime->setEnable(false);
-
     manager.gui->addImage("2:background", guisets.backgroundHud)->setSize(vidsets.screenSize);
 
     Image* croshair = manager.gui->addImage("01:croshair", GUI_CROSHAIR);
@@ -518,7 +511,7 @@ void GameManager::eventProcess()
             manager.gameEngine->setGrabInput(false);
             manager.gameEngine->setMouseVisible(true);
 
-            // NOTE Disable ppe
+            m_userPlayer->getCurPower()->diactivate();
 
             m_timeTo = TIME_TO_PAUSE;
         }

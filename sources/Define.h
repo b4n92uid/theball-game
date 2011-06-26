@@ -6,6 +6,7 @@
 // GUI HUD ---------------------------------------------------------------------
 #define GUI_CROSHAIR    "data/gfxart/gui/croshair.png"
 #define GUI_BOOST       "data/gfxart/gui/boost.png"
+#define GUI_BULLETTIME  "data/gfxart/gui/bullettime.png"
 
 // ITEM ------------------------------------------------------------------------
 #define ITEM_MEDPACK    "data/models/items/medpack.obj"

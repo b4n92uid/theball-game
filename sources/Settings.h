@@ -89,9 +89,6 @@ public:
         {
             float boostIntensity;
 
-            tbe::Vector2f bullettimeSize;
-            tbe::Vector4f bullettimeColor;
-
             tbe::Vector4f dammageColor;
 
             int gameoverPass;
@@ -108,7 +105,6 @@ public:
     struct Gui
     {
         std::string backgroundMainmenu;
-        std::string backgroundBullettime;
         std::string backgroundDammage;
         std::string backgroundHud;
         std::string backgroundPause;

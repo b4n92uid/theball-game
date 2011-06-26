@@ -21,9 +21,12 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
     m_name = "BulletTime";
 
     m_ppeffect = NULL;
+    m_screeneffect = NULL;
     m_usedWeapon = NULL;
 
-    if(m_gameManager->manager.app->globalSettings.video.usePpe)
+    Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;
+
+    if(vidsets.usePpe)
     {
         using namespace ppe;
 
@@ -35,6 +38,13 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
         m_ppeffect->setEnable(false);
 
         m_gameManager->manager.ppe->addPostEffect("blettimeEffect", m_ppeffect);
+    }
+    else
+    {
+        m_screeneffect = m_gameManager->manager.gui->addImage("blettimeEffect", GUI_BULLETTIME);
+        m_screeneffect->setOpacity(0.5);
+        m_screeneffect->setSize(vidsets.screenSize);
+        m_screeneffect->setEnable(false);
     }
 }
 
@@ -115,6 +125,11 @@ void BulletTime::process()
     m_owner->setEnergy(value);
 }
 
+void BulletTime::soundEffect(FMOD_CHANNEL* channel)
+{
+    FMOD_Channel_SetFrequency(channel, 22050);
+}
+
 void BulletTime::activate(tbe::Vector3f target)
 {
     if(m_active)
@@ -123,11 +138,13 @@ void BulletTime::activate(tbe::Vector3f target)
     Power::activate(target);
 
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
-
+    m_soundManager->processSoundEffect.connect(soundEffect);
     m_soundManager->playSound("bullettime", m_owner);
 
     if(m_ppeffect)
         m_ppeffect->setEnable(true);
+    else
+        m_screeneffect->setEnable(true);
 
     m_usedWeapon = m_owner->getCurWeapon();
     m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
@@ -167,10 +184,13 @@ void BulletTime::diactivate()
 
     Power::diactivate();
 
+    m_soundManager->processSoundEffect.disconnect(soundEffect);
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);
 
     if(m_ppeffect)
         m_ppeffect->setEnable(false);
+    else
+        m_screeneffect->setEnable(false);
 
     m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
 

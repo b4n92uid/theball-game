@@ -44,12 +44,15 @@ SoundManager::SoundManager(GameManager* gameManager)
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
         registerSound(it->first, it->second);
 
-    FMOD_CHANNELGROUP* masterGroupe;
-    FMOD_System_GetMasterChannelGroup(m_fmodsys, &masterGroupe);
-    FMOD_ChannelGroup_SetVolume(masterGroupe, 0.75);
+    if(!m_gameManager->manager.app->globalSettings.nomusic)
+    {
+        FMOD_CHANNELGROUP* masterGroupe;
+        FMOD_System_GetMasterChannelGroup(m_fmodsys, &masterGroupe);
+        FMOD_ChannelGroup_SetVolume(masterGroupe, 0.75);
 
-    FMOD_System_CreateChannelGroup(m_fmodsys, "musicGroupe", &m_musicGroupe);
-    FMOD_ChannelGroup_SetVolume(m_musicGroupe, 1.00);
+        FMOD_System_CreateChannelGroup(m_fmodsys, "musicGroupe", &m_musicGroupe);
+        FMOD_ChannelGroup_SetVolume(m_musicGroupe, 1.00);
+    }
 }
 
 SoundManager::~SoundManager()
@@ -93,7 +96,9 @@ void SoundManager::playSound(std::string soundName, MapElement* object)
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
 
+
     // NOTE Process sound effect on bullettilme
+    processSoundEffect(channel);
 
     FMOD_Channel_SetPaused(channel, false);
 }
@@ -133,10 +138,16 @@ void SoundManager::playMusic(std::string soundName)
 
 void SoundManager::pauseMusic(std::string soundName)
 {
+    if(m_gameManager->manager.app->globalSettings.nomusic)
+        return;
+
     FMOD_Channel_SetPaused(m_musics[soundName].second, true);
 }
 
 void SoundManager::stopMusic(std::string soundName)
 {
+    if(m_gameManager->manager.app->globalSettings.nomusic)
+        return;
+
     FMOD_Channel_Stop(m_musics[soundName].second);
 }

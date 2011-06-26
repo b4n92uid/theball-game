@@ -392,8 +392,8 @@ void AppManager::setupMenuGui()
     m_guiManager->addTextBox("")->write("Brake");
     m_guiManager->addKeyConfig("shoot");
     m_guiManager->addTextBox("")->write("Tirer");
-    m_guiManager->addKeyConfig("bullettime");
-    m_guiManager->addTextBox("")->write("Bllettime");
+    m_guiManager->addKeyConfig("power");
+    m_guiManager->addTextBox("")->write("Pouvoirs");
     m_guiManager->addKeyConfig("switchUpWeapon");
     m_guiManager->addTextBox("")->write("Arme suivante");
     m_guiManager->addKeyConfig("switchDownWeapon");

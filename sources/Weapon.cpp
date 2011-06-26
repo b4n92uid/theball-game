@@ -155,8 +155,6 @@ bool Weapon::shoot(Vector3f startpos, Vector3f targetpos)
         return false;
     }
 
-    // NOTE Controle de la cadence de tire (Bullettime)
-
     if(!m_shootCadencyClock.isEsplanedTime(m_shootCadency))
         return false;
 

@@ -31,7 +31,6 @@ void Settings::readGui()
     map<string, string*> binder;
 
     binder["BACKGROUND_MAINMENU"] = &gui.backgroundMainmenu;
-    binder["BACKGROUND_BULLETTIME"] = &gui.backgroundBullettime;
     binder["BACKGROUND_DAMMAGE"] = &gui.backgroundDammage;
     binder["BACKGROUND_HUD"] = &gui.backgroundHud;
     binder["BACKGROUND_PAUSE"] = &gui.backgroundPause;
@@ -209,9 +208,6 @@ void Settings::readWorld()
     vec4fbinder["PPE.DammageColor"] = &video.ppe.dammageColor;
 
     intbinder["PPE.GameoverPass"] = &video.ppe.gameoverPass;
-
-    vec4fbinder["PPE.BullettimeColor"] = &video.ppe.bullettimeColor;
-    vec2fbinder["PPE.BullettimeSize"] = &video.ppe.bullettimeSize;
 
     vec2fbinder["PPE.BloomSize"] = &video.ppe.bloomSize;
     floatbinder["PPE.BloomThershold"] = &video.ppe.bloomThershold;
@@ -416,7 +412,7 @@ void Settings::saveControl()
     actions.push_back("boost");
     actions.push_back("brake");
     actions.push_back("shoot");
-    actions.push_back("bullettime");
+    actions.push_back("power");
     actions.push_back("switchUpWeapon");
     actions.push_back("switchDownWeapon");
 
@@ -500,7 +496,7 @@ void Settings::fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
     actions.push_back("boost");
     actions.push_back("brake");
     actions.push_back("shoot");
-    actions.push_back("bullettime");
+    actions.push_back("power");
     actions.push_back("switchUpWeapon");
     actions.push_back("switchDownWeapon");
 

@@ -31,9 +31,11 @@ public:
 
 protected:
     static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
+    static void soundEffect(FMOD_CHANNEL* channel);
 
 protected:
     Weapon* m_usedWeapon;
+    tbe::gui::Image* m_screeneffect;
     tbe::ppe::ColorEffect* m_ppeffect;
     std::map<NewtonBody*, NewtonApplyForceAndTorque> m_callbacks;
 };
