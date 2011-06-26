@@ -117,6 +117,9 @@ void BulletTime::process()
 
 void BulletTime::activate(tbe::Vector3f target)
 {
+    if(m_active)
+        return;
+
     Power::activate(target);
 
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
@@ -159,6 +162,9 @@ void BulletTime::activate(tbe::Vector3f target)
 
 void BulletTime::diactivate()
 {
+    if(!m_active)
+        return;
+
     Power::diactivate();
 
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);

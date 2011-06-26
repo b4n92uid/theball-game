@@ -219,6 +219,9 @@ protected:
     private:
         tbe::ticks::Clock m_clock;
     };
+
+private:
+    bool m_energyVoid;
 };
 
 #endif /* _PLAYERENGINE_H */

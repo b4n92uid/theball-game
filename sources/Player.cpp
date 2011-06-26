@@ -135,11 +135,24 @@ void Player::process()
     CheckMe::Array::iterator newEnd = remove(m_checkMe.begin(), m_checkMe.end(), (CheckMe*)NULL);
     m_checkMe.erase(newEnd, m_checkMe.end());
 
-    if(m_energy > 0)
+    if(m_energy > 0 && !m_energyVoid)
+    {
         (*m_curPower)->process();
 
+        if(m_energy <= 0)
+        {
+            m_energyVoid = true;
+            (*m_curPower)->diactivate();
+        }
+    }
+
     if(m_energy < 100)
+    {
         m_energy++;
+
+        if(m_energy > 50)
+            m_energyVoid = false;
+    }
 }
 
 bool Player::shoot(Vector3f targetpos)
