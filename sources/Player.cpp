@@ -58,20 +58,27 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
     NewtonBodySetUserData(m_physicBody->getBody(), this);
 
-    randomPosOnFloor();
-
-    // Arme principale
-    WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
-    addWeapon(blaster);
-
-    // Pouvoir principale
-    BulletTime* btime = new BulletTime(m_playManager);
-    addPower(btime);
+    reBorn();
 }
 
 Player::~Player()
 {
     delete m_attachedCotroller;
+
+    free();
+}
+
+void Player::free()
+{
+    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
+        delete m_weaponsPack[i];
+
+    m_weaponsPack.clear();
+
+    for(unsigned i = 0; i < m_powerPack.size(); i++)
+        delete m_powerPack[i];
+
+    m_powerPack.clear();
 }
 
 void Player::randomPosOnFloor()
@@ -141,7 +148,7 @@ void Player::process()
 
 bool Player::shoot(Vector3f targetpos)
 {
-    if(!onShoot(this, targetpos))
+    if(!onShoot.empty() && !onShoot(this, targetpos))
         return false;
 
     return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
@@ -165,7 +172,7 @@ void Player::brake()
 
 bool Player::power(bool stat, tbe::Vector3f targetpos)
 {
-    if(!onPower(this, stat, targetpos))
+    if(!onPower.empty() && !onPower(this, stat, targetpos))
         return false;
 
     if(stat)
@@ -291,25 +298,24 @@ void Player::reBorn()
 
     m_visualBody->setVisible(true);
 
-    m_physicBody->setFreeze(false);
+    m_physicBody->setApplyGravity(true);
 
-    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
-        delete m_weaponsPack[i];
+    free();
 
-    m_weaponsPack.clear();
-
+    // Arme principale
     WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
-
     addWeapon(blaster);
 
-    randomPosOnFloor();
+    // Pouvoir principale
+    BulletTime* btime = new BulletTime(m_playManager);
+    addPower(btime);
 
     onRespawn(this);
 }
 
 void Player::kill()
 {
-    if(!onKilled(this))
+    if(!onKilled.empty() && !onKilled(this))
         return;
 
     m_killed = true;
@@ -323,8 +329,11 @@ void Player::kill()
 
     m_visualBody->setVisible(false);
 
+    m_physicBody->setVelocity(0);
     m_physicBody->setOmega(0);
-    m_physicBody->setFreeze(true);
+    m_physicBody->setApplyForce(0);
+    m_physicBody->setApplyTorque(0);
+    m_physicBody->setApplyGravity(false);
 
     m_soundManager->playSound("kill", this);
 }
@@ -394,7 +403,7 @@ void Player::takeDammage(Bullet* ammo)
     if(m_killed)
         return;
 
-    if(!onDammage(this, ammo))
+    if(!onDammage.empty() && !onDammage(this, ammo))
         return;
 
     int dammage = ammo->getDammage();

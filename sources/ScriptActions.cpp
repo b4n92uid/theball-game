@@ -28,7 +28,7 @@ ScriptActions::ScriptActions(GameManager* gameManager)
     lua_register(m_lua, "randomPosition", script::randomPosition);
 
     lua_register(m_lua, "setPosition", script::setPosition);
-    lua_register(m_lua, "getPosistion", script::getPosistion);
+    lua_register(m_lua, "getPosition", script::getPosition);
 
     lua_register(m_lua, "setVelocity", script::setVelocity);
     lua_register(m_lua, "getVelocity", script::getVelocity);

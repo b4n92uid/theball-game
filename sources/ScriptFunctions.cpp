@@ -14,6 +14,7 @@
 #include "Player.h"
 
 #include <boost/foreach.hpp>
+#include <boost/regex.hpp>
 
 using namespace std;
 using namespace tbe;
@@ -51,6 +52,18 @@ inline Player* lua_toplayer(lua_State* lua, int argpos)
 inline MapElement* lua_toelem(lua_State* lua, int argpos)
 {
     return reinterpret_cast<MapElement*>((long)lua_tonumber(lua, argpos));
+}
+
+template<typename T> void lua_pushtable(lua_State* lua, const vector<T>& vec)
+{
+    lua_newtable(lua);
+
+    for(unsigned i = 0; i < vec.size(); i++)
+    {
+        lua_pushnumber(lua, i);
+        lua_pushnumber(lua, (lua_Integer)vec[i]);
+        lua_settable(lua, -3);
+    }
 }
 
 inline void lua_pushvector3(lua_State* lua, Vector3f vec)
@@ -98,16 +111,22 @@ int setPosition(lua_State* lua)
 
     Vector3f vec = lua_tovector3(lua, 2);
 
-    elem->getPhysicBody()->setPos(vec);
+    if(elem->getPhysicBody())
+        elem->getPhysicBody()->setPos(vec);
+    else if(elem->getVisualBody())
+        elem->getVisualBody()->setPos(vec);
 
     return 0;
 }
 
-int getPosistion(lua_State* lua)
+int getPosition(lua_State* lua)
 {
-    Player* player = lua_toplayer(lua, 1);
+    MapElement* elem = lua_toelem(lua, 1);
 
-    lua_pushvector3(lua, player->getPhysicBody()->getPos());
+    if(elem->getPhysicBody())
+        lua_pushvector3(lua, elem->getPhysicBody()->getPos());
+    else if(elem->getVisualBody())
+        lua_pushvector3(lua, elem->getVisualBody()->getPos());
 
     return 1;
 }
@@ -494,6 +513,12 @@ int jump(lua_State* lua)
 
 int power(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    Vector3f vec = lua_tovector3(lua, 2);
+    bool stat = lua_toboolean(lua, 3);
+
+    player->power(stat, vec);
+
     return 0;
 }
 
@@ -562,14 +587,12 @@ struct RespawnHook
         callback = f;
     }
 
-    bool operator()(Player * player)
+    void operator()(Player * player)
     {
         lua_getglobal(lua, callback.c_str());
 
         lua_pushinteger(lua, (lua_Integer)player);
-        lua_call(lua, 1, 1);
-
-        return lua_toboolean(lua, 1);
+        lua_call(lua, 1, 0);
     }
 
     string callback;
@@ -713,17 +736,80 @@ int playerList(lua_State* lua)
 
 int elementsList(lua_State* lua)
 {
-    return 0;
+    using namespace boost;
+
+    GameManager* gm = getGameManager(lua);
+
+    if(lua_gettop(lua) == 1)
+    {
+        regex pattern(lua_tostring(lua, 1));
+
+        MapElement::Array selection;
+
+        BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
+        {
+            if(regex_match(elem->getId(), pattern))
+                selection.push_back(elem);
+        }
+
+        if(selection.empty())
+            lua_pushnil(lua);
+        else
+            lua_pushtable(lua, selection);
+    }
+    else
+    {
+        lua_pushtable(lua, gm->map.mapElements);
+    }
+
+    return 1;
 }
 
 int elementsRand(lua_State* lua)
 {
-    return 0;
+    using namespace boost;
+
+    GameManager* gm = getGameManager(lua);
+
+    regex pattern(lua_tostring(lua, 1));
+
+    MapElement::Array selection;
+
+    BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
+    {
+        if(regex_match(elem->getId(), pattern))
+            selection.push_back(elem);
+    }
+
+    if(selection.empty())
+        lua_pushnil(lua);
+    else
+        lua_pushinteger(lua, (lua_Integer)selection[math::rand(0, selection.size())]);
+
+    return 1;
 }
 
 int elementsFirst(lua_State* lua)
 {
-    return 0;
+    using namespace boost;
+
+    GameManager* gm = getGameManager(lua);
+
+    regex pattern(lua_tostring(lua, 1));
+
+    MapElement::Array selection;
+
+    BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
+    {
+        if(regex_match(elem->getId(), pattern))
+        {
+            lua_pushinteger(lua, (lua_Integer)elem);
+            return 1;
+        }
+    }
+
+    lua_pushnil(lua);
+    return 1;
 }
 
 int createPlayer(lua_State* lua)

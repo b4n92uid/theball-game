@@ -19,7 +19,7 @@ namespace script
 // Position
 
 int setPosition(lua_State* lua);
-int getPosistion(lua_State* lua);
+int getPosition(lua_State* lua);
 
 // Moves
 

@@ -26,6 +26,8 @@ public:
     /// Destructeur
     ~Player();
 
+    void free();
+
     /// Tire sur le vecteur targetpos
     bool shoot(tbe::Vector3f targetpos);
 
@@ -129,10 +131,10 @@ public:
     } clocks;
 
     boost::signal<void(Player*) > onRespawn;
-    boost::signal<bool(Player*, Bullet*) > onDammage;
     boost::signal<bool(Player*, tbe::Vector3f) > onShoot;
-    boost::signal<bool(Player*) > onKilled;
     boost::signal<bool(Player*, bool, tbe::Vector3f) > onPower;
+    boost::signal<bool(Player*, Bullet*) > onDammage;
+    boost::signal<bool(Player*) > onKilled;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;

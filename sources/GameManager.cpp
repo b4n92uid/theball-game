@@ -146,6 +146,15 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
         registerElement(elem);
     }
 
+    for(Iterator<scene::MapMark*> it = parallelscene.marks->iterator(); it; it++)
+    {
+        MapElement* elem = new MapElement(this);
+        elem->setVisualBody(*it);
+        elem->setId(it->getName());
+
+        registerElement(elem);
+    }
+
     for(Iterator<scene::Light*> it = parallelscene.light->iterator(); it; it++)
     {
         MapElement* elem = new MapElement(this);
@@ -966,7 +975,9 @@ void GameManager::registerElement(MapElement* elem)
         manager.material->addElement(elem);
 
     map.mapElements.push_back(elem);
-    map.aabb.count(elem->getVisualBody());
+
+    if(elem->getVisualBody())
+        map.aabb.count(elem->getVisualBody());
 }
 
 void GameManager::unregisterElement(MapElement* staticObject)

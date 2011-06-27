@@ -50,6 +50,12 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 
 BulletTime::~BulletTime()
 {
+    Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;
+
+    if(vidsets.usePpe)
+        m_gameManager->manager.ppe->deletePostEffect(m_ppeffect);
+    else
+        m_gameManager->manager.gui->deleteControl("blettimeEffect");
 }
 
 void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
