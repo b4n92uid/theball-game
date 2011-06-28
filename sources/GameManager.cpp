@@ -66,9 +66,15 @@ GameManager::GameManager(AppManager* appManager)
     else
         manager.fmodsys = appManager->getFmodSystem();
 
+    manager.parser = new SceneParser(manager.scene);
+    manager.parser->setMeshScene(parallelscene.meshs);
+    manager.parser->setParticlesScene(parallelscene.particles);
+    manager.parser->setLightScene(parallelscene.light);
+    manager.parser->setMarkScene(parallelscene.marks);
+
     manager.material = new MaterialManager(this);
     manager.sound = new SoundManager(this);
-    manager.script = new ScriptActions(this);
+    manager.script = new ScriptManager(this);
 
     m_timeTo = TIME_TO_PLAY;
 
@@ -109,6 +115,8 @@ GameManager::~GameManager()
 
     delete manager.sound;
     delete manager.material;
+    delete manager.script;
+    delete manager.parser;
 
     manager.scene->clearAll();
 }
@@ -121,14 +129,8 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     // SCENE -------------------------------------------------------------------
 
-    scene::SceneParser levelloader(manager.scene);
-    levelloader.setMeshScene(parallelscene.meshs);
-    levelloader.setParticlesScene(parallelscene.particles);
-    levelloader.setLightScene(parallelscene.light);
-    levelloader.setMarkScene(parallelscene.marks);
-
-    levelloader.loadScene(m_playSetting.map.filename);
-    levelloader.buildScene();
+    manager.parser->loadScene(m_playSetting.map.filename);
+    manager.parser->buildScene();
 
     for(Iterator<scene::Mesh*> it = parallelscene.meshs->iterator(); it; it++)
     {

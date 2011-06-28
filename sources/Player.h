@@ -91,7 +91,7 @@ public:
      */
     void addPower(Power* power);
 
-    /// Change l'arme courante
+    /// Change le pouvoir courante
     void slotPower(unsigned slot);
     void switchUpPower();
     void switchDownPower();

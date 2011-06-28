@@ -1,12 +1,12 @@
 /*
- * File:   ScriptActions.h
+ * File:   ScriptManager.h
  * Author: b4n92uid
  *
  * Created on 28 mai 2011, 20:58
  */
 
-#ifndef SCRIPTACTIONS_H
-#define	SCRIPTACTIONS_H
+#ifndef SCRIPTMANAGER_H
+#define	SCRIPTMANAGER_H
 
 #include <string>
 #include <vector>
@@ -23,11 +23,11 @@ class Player;
 class MapElement;
 class GameManager;
 
-class ScriptActions
+class ScriptManager
 {
 public:
-    ScriptActions(GameManager* gameManager);
-    virtual ~ScriptActions();
+    ScriptManager(GameManager* gameManager);
+    virtual ~ScriptManager();
 
     void load(std::string scriptpath);
 
@@ -46,5 +46,5 @@ private:
     std::map<std::string, std::string> m_collidRec;
 };
 
-#endif	/* SCRIPTACTIONS_H */
+#endif	/* ScriptManager_H */
 

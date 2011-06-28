@@ -9,7 +9,7 @@
 
 #include "AppManager.h"
 #include "GameManager.h"
-#include "ScriptActions.h"
+#include "ScriptManager.h"
 
 #include "Item.h"
 #include "Weapon.h"

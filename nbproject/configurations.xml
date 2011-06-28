@@ -46,6 +46,8 @@
           <itemPath>sources/Power.h</itemPath>
         </logicalFolder>
         <logicalFolder name="f4" displayName="Weapons" projectFiles="true">
+          <itemPath>sources/Bullet.cpp</itemPath>
+          <itemPath>sources/Bullet.h</itemPath>
           <itemPath>sources/Weapon.cpp</itemPath>
           <itemPath>sources/Weapon.h</itemPath>
         </logicalFolder>
@@ -55,10 +57,10 @@
         <itemPath>sources/GameManager.h</itemPath>
         <itemPath>sources/MaterialManager.cpp</itemPath>
         <itemPath>sources/MaterialManager.h</itemPath>
-        <itemPath>sources/ScriptActions.cpp</itemPath>
-        <itemPath>sources/ScriptActions.h</itemPath>
         <itemPath>sources/ScriptFunctions.cpp</itemPath>
         <itemPath>sources/ScriptFunctions.h</itemPath>
+        <itemPath>sources/ScriptManager.cpp</itemPath>
+        <itemPath>sources/ScriptManager.h</itemPath>
         <itemPath>sources/SoundManager.cpp</itemPath>
         <itemPath>sources/SoundManager.h</itemPath>
       </logicalFolder>

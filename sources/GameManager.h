@@ -14,7 +14,7 @@
 #include "MapElement.h"
 #include "AIControl.h"
 
-#include "ScriptActions.h"
+#include "ScriptManager.h"
 
 class UserControl;
 class MaterialManager;
@@ -109,6 +109,8 @@ public:
         tbe::ppe::PostProcessManager* ppe;
         tbe::ticks::FpsManager* fps;
 
+        tbe::scene::SceneParser* parser;
+
         MaterialManager* material;
         SoundManager* sound;
 
@@ -116,7 +118,7 @@ public:
 
         FMOD_SYSTEM* fmodsys;
 
-        ScriptActions* script;
+        ScriptManager* script;
 
     } manager;
 
