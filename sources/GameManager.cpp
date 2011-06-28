@@ -11,6 +11,7 @@
 #include "Define.h"
 #include "Tools.h"
 #include "Weapon.h"
+#include "Bullet.h"
 #include "SoundManager.h"
 #include "StaticElement.h"
 

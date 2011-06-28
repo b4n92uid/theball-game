@@ -265,21 +265,6 @@ int getEnergy(lua_State* lua)
     return 0;
 }
 
-int selectPower(lua_State* lua)
-{
-    return 0;
-}
-
-int switchPower(lua_State* lua)
-{
-    return 0;
-}
-
-int getSelectedPower(lua_State* lua)
-{
-    return 0;
-}
-
 int setAmmo(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
@@ -307,6 +292,21 @@ int getAmmo(lua_State* lua)
     lua_pushinteger(lua, player->getCurWeapon()->getAmmoCount());
 
     return 1;
+}
+
+int selectPower(lua_State* lua)
+{
+    return 0;
+}
+
+int switchPower(lua_State* lua)
+{
+    return 0;
+}
+
+int getSelectedPower(lua_State* lua)
+{
+    return 0;
 }
 
 int selectWeapon(lua_State* lua)
@@ -398,12 +398,12 @@ int stopMusic(lua_State* lua)
     return 0;
 }
 
-int isViewed(lua_State* lua)
+int rayCast(lua_State* lua)
 {
     return 1;
 }
 
-int rayCast(lua_State* lua)
+int isViewed(lua_State* lua)
 {
     return 1;
 }
@@ -415,16 +415,6 @@ int randomPosition(lua_State* lua)
     Vector3f pos = ge->getRandomPosOnTheFloor();
 
     lua_pushvector3(lua, pos);
-
-    return 1;
-}
-
-int diriction(lua_State* lua)
-{
-    Vector3f pos1 = lua_tovector3(lua, 1);
-    Vector3f pos2 = lua_tovector3(lua, 2);
-
-    lua_pushvector3(lua, pos2 - pos1);
 
     return 1;
 }
@@ -495,6 +485,16 @@ int farestPlayer(lua_State* lua)
     Player* farest = *min_element(targets.begin(), targets.end(), FarestPlayer(player));
 
     lua_pushplayer(lua, farest);
+
+    return 1;
+}
+
+int diriction(lua_State* lua)
+{
+    Vector3f pos1 = lua_tovector3(lua, 1);
+    Vector3f pos2 = lua_tovector3(lua, 2);
+
+    lua_pushvector3(lua, pos2 - pos1);
 
     return 1;
 }
@@ -606,6 +606,26 @@ int power(lua_State* lua)
     return 0;
 }
 
+int createPlayers(lua_State* lua)
+{
+    return 0;
+}
+
+int deletePlayer(lua_State* lua)
+{
+    return 0;
+}
+
+int isKilledPlayer(lua_State* lua)
+{
+    return 0;
+}
+
+int killPlayer(lua_State* lua)
+{
+    return 0;
+}
+
 int display(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
@@ -624,25 +644,83 @@ int status(lua_State* lua)
     return 0;
 }
 
-int gameover(lua_State* lua)
+int playerList(lua_State* lua)
 {
-    GameManager* gm = getGameManager(lua);
-
-    gm->setGameOver(lua_toplayer(lua, 1), lua_tostring(lua, 2));
-
     return 0;
 }
 
-int registerCollid(lua_State* lua)
+int getElementsList(lua_State* lua)
 {
-    ScriptManager* sm = getScriptManager(lua);
+    using namespace boost;
 
-    string id = lua_tostring(lua, 1);
-    string fn = lua_tostring(lua, 2);
+    GameManager* gm = getGameManager(lua);
 
-    sm->registerCollid(id, fn);
+    if(lua_gettop(lua) == 0)
+    {
+        lua_pushtable(lua, gm->map.mapElements);
+    }
+    else
+    {
+        if(lua_istable(lua, 1) and lua_isnumber(lua, 2))
+        {
+            // Vector3f pos = lua_tovector(lua, 1);
+            // float radius = lua_tonumber(lua, 2);
 
-    return 0;
+            // TODO pick element in area
+        }
+        else if(lua_isstring(lua, 1))
+        {
+            regex pattern(lua_tostring(lua, 1));
+
+            int count = 0;
+
+            if(lua_isnumber(lua, 2))
+                count = lua_tonumber(lua, 2);
+
+            MapElement::Array selection;
+
+            BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
+            {
+                if(regex_match(elem->getId(), pattern))
+                    selection.push_back(elem);
+
+                if(count > 0 && (int)selection.size() >= count)
+                    break;
+            }
+
+            if(selection.empty())
+                lua_pushnil(lua);
+            else
+                lua_pushtable(lua, selection);
+        }
+
+    }
+
+    return 1;
+}
+
+int getElementsRand(lua_State* lua)
+{
+    using namespace boost;
+
+    GameManager* gm = getGameManager(lua);
+
+    regex pattern(lua_tostring(lua, 1));
+
+    MapElement::Array selection;
+
+    BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
+    {
+        if(regex_match(elem->getId(), pattern))
+            selection.push_back(elem);
+    }
+
+    if(selection.empty())
+        lua_pushnil(lua);
+    else
+        lua_pushinteger(lua, (lua_Integer)selection[math::rand(0, selection.size())]);
+
+    return 1;
 }
 
 struct ScoreHook
@@ -831,103 +909,24 @@ int registerPlayerHook(lua_State* lua)
     return 0;
 }
 
-int playerList(lua_State* lua)
+int registerCollid(lua_State* lua)
 {
+    ScriptManager* sm = getScriptManager(lua);
+
+    string id = lua_tostring(lua, 1);
+    string fn = lua_tostring(lua, 2);
+
+    sm->registerCollid(id, fn);
+
     return 0;
 }
 
-int getElementsList(lua_State* lua)
+int gameover(lua_State* lua)
 {
-    using namespace boost;
-
     GameManager* gm = getGameManager(lua);
 
-    if(lua_gettop(lua) == 1)
-    {
-        regex pattern(lua_tostring(lua, 1));
+    gm->setGameOver(lua_toplayer(lua, 1), lua_tostring(lua, 2));
 
-        MapElement::Array selection;
-
-        BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
-        {
-            if(regex_match(elem->getId(), pattern))
-                selection.push_back(elem);
-        }
-
-        if(selection.empty())
-            lua_pushnil(lua);
-        else
-            lua_pushtable(lua, selection);
-    }
-    else
-    {
-        lua_pushtable(lua, gm->map.mapElements);
-    }
-
-    return 1;
-}
-
-int getElementsRand(lua_State* lua)
-{
-    using namespace boost;
-
-    GameManager* gm = getGameManager(lua);
-
-    regex pattern(lua_tostring(lua, 1));
-
-    MapElement::Array selection;
-
-    BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
-    {
-        if(regex_match(elem->getId(), pattern))
-            selection.push_back(elem);
-    }
-
-    if(selection.empty())
-        lua_pushnil(lua);
-    else
-        lua_pushinteger(lua, (lua_Integer)selection[math::rand(0, selection.size())]);
-
-    return 1;
-}
-
-// NOTE
-
-int elementsFirst(lua_State* lua)
-{
-    using namespace boost;
-
-    GameManager* gm = getGameManager(lua);
-
-    regex pattern(lua_tostring(lua, 1));
-
-    MapElement::Array selection;
-
-    BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
-    {
-        if(regex_match(elem->getId(), pattern))
-        {
-            lua_pushinteger(lua, (lua_Integer)elem);
-            return 1;
-        }
-    }
-
-    lua_pushnil(lua);
-    return 1;
-}
-
-int createPlayer(lua_State* lua)
-{
-    return 0;
-}
-
-int deletePlayer(lua_State* lua)
-{
-    return 0;
-}
-
-int killPlayer(lua_State* lua)
-{
     return 0;
 }
 

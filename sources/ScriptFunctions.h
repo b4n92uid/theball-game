@@ -54,10 +54,6 @@ int selectWeapon(lua_State* lua);
 int getSelectedWeapon(lua_State* lua);
 int switchWeapon(lua_State* lua);
 
-int setScore(lua_State* lua);
-int upScore(lua_State* lua);
-int getScore(lua_State* lua);
-
 // Audio
 
 int loadSound(lua_State* lua);
@@ -97,7 +93,7 @@ int shoot(lua_State* lua);
 int power(lua_State* lua);
 int dammage(lua_State* lua);
 
-int createPlayer(lua_State* lua);
+int createPlayers(lua_State* lua);
 int killPlayer(lua_State* lua);
 int isKilledPlayer(lua_State* lua);
 int deletePlayer(lua_State* lua);

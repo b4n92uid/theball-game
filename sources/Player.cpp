@@ -6,6 +6,8 @@
 #include "MapElement.h"
 #include "SoundManager.h"
 #include "BulletTime.h"
+#include "Weapon.h"
+#include "Bullet.h"
 
 #include "Define.h"
 

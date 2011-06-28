@@ -13,6 +13,7 @@
 
 #include "Item.h"
 #include "Weapon.h"
+#include "Bullet.h"
 #include "Player.h"
 
 using namespace std;

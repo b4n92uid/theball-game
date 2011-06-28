@@ -27,6 +27,98 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "setPosition", script::setPosition);
     lua_register(m_lua, "getPosition", script::getPosition);
+
+    lua_register(m_lua, "setVelocity", script::setVelocity);
+    lua_register(m_lua, "getVelocity", script::getVelocity);
+
+    lua_register(m_lua, "setForce", script::setForce);
+    lua_register(m_lua, "upForce", script::upForce);
+    lua_register(m_lua, "getForce", script::getForce);
+
+    lua_register(m_lua, "impulse", script::impulse);
+
+    lua_register(m_lua, "getNickName", script::getNickName);
+
+    lua_register(m_lua, "setHealth", script::setHealth);
+    lua_register(m_lua, "upHealth", script::upHealth);
+    lua_register(m_lua, "getHealth", script::getHealth);
+
+    lua_register(m_lua, "setEnergy", script::setEnergy);
+    lua_register(m_lua, "upEnergy", script::upEnergy);
+    lua_register(m_lua, "getEnergy", script::getEnergy);
+
+    lua_register(m_lua, "selectPower", script::selectPower);
+    lua_register(m_lua, "switchPower", script::switchPower);
+    lua_register(m_lua, "getSelectedPower", script::getSelectedPower);
+
+    lua_register(m_lua, "setAmmo", script::setAmmo);
+    lua_register(m_lua, "upAmmo", script::upAmmo);
+    lua_register(m_lua, "getAmmo", script::getAmmo);
+
+    lua_register(m_lua, "selectWeapon", script::selectWeapon);
+    lua_register(m_lua, "getSelectedWeapon", script::getSelectedWeapon);
+    lua_register(m_lua, "switchWeapon", script::switchWeapon);
+
+
+    lua_register(m_lua, "loadSound", script::loadSound);
+    lua_register(m_lua, "playSound", script::playSound);
+
+    lua_register(m_lua, "loadMusic", script::loadMusic);
+    lua_register(m_lua, "playMusic", script::playMusic);
+    lua_register(m_lua, "pauseMusic", script::pauseMusic);
+    lua_register(m_lua, "stopMusic", script::stopMusic);
+
+
+    lua_register(m_lua, "rayCast", script::rayCast);
+
+    lua_register(m_lua, "randomPosition", script::randomPosition);
+
+    lua_register(m_lua, "nearestPlayer", script::nearestPlayer);
+    lua_register(m_lua, "farestPlayer", script::farestPlayer);
+
+    lua_register(m_lua, "isViewed", script::isViewed);
+
+    lua_register(m_lua, "diriction", script::diriction);
+
+    lua_register(m_lua, "length", script::length);
+
+
+    lua_register(m_lua, "setElemData", script::setElemData);
+    lua_register(m_lua, "getElemData", script::getElemData);
+
+    lua_register(m_lua, "getSceneData", script::getSceneData);
+
+
+    lua_register(m_lua, "jump", script::jump);
+    lua_register(m_lua, "shoot", script::shoot);
+    lua_register(m_lua, "power", script::power);
+    lua_register(m_lua, "dammage", script::dammage);
+
+    lua_register(m_lua, "createPlayers", script::createPlayers);
+    lua_register(m_lua, "killPlayer", script::killPlayer);
+    lua_register(m_lua, "isKilledPlayer", script::isKilledPlayer);
+    lua_register(m_lua, "deletePlayer", script::deletePlayer);
+
+
+    lua_register(m_lua, "display", script::display);
+    lua_register(m_lua, "status", script::status);
+
+
+    lua_register(m_lua, "playerList", script::playerList);
+
+    lua_register(m_lua, "getElementsList", script::getElementsList);
+    lua_register(m_lua, "getElementsList", script::getElementsList);
+    lua_register(m_lua, "getElementsRand", script::getElementsRand);
+
+    lua_register(m_lua, "registerCollid", script::registerCollid);
+    lua_register(m_lua, "registerGlobalHook", script::registerGlobalHook);
+    lua_register(m_lua, "registerPlayerHook", script::registerPlayerHook);
+
+    lua_register(m_lua, "gameover", script::gameover);
+
+    lua_register(m_lua, "ghost", script::ghost);
+
+    lua_register(m_lua, "setInterval", script::setInterval);
 }
 
 ScriptManager::~ScriptManager()
