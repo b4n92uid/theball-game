@@ -12,9 +12,12 @@
 
 #include "MapElement.h"
 #include "Player.h"
+#include "Bullet.h"
 
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
+
+#define foreach BOOST_FOREACH
 
 using namespace std;
 using namespace tbe;
@@ -33,7 +36,7 @@ inline GameManager* getGameManager(lua_State* lua)
     return (GameManager*)ptr;
 }
 
-inline ScriptActions* getScriptManager(lua_State* lua)
+inline ScriptManager* getScriptManager(lua_State* lua)
 {
     lua_getglobal(lua, SCRIPTMANAGER_INTERNALE_NAME);
 
@@ -41,7 +44,12 @@ inline ScriptActions* getScriptManager(lua_State* lua)
 
     lua_pop(lua, 1);
 
-    return (ScriptActions*)ptr;
+    return (ScriptManager*)ptr;
+}
+
+inline void lua_pushplayer(lua_State* lua, Player* p)
+{
+    lua_pushinteger(lua, (lua_Integer)p);
 }
 
 inline Player* lua_toplayer(lua_State* lua, int argpos)
@@ -103,6 +111,11 @@ inline Vector3f lua_tovector3(lua_State* lua, int argpos)
     lua_pop(lua, 1);
 
     return vec;
+}
+
+void lua_pushstring(lua_State *L, string s)
+{
+    lua_pushstring(L, s.c_str());
 }
 
 int setPosition(lua_State* lua)
@@ -194,6 +207,14 @@ int impulse(lua_State* lua)
     return 0;
 }
 
+int getNickName(lua_State* lua)
+{
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushstring(lua, player->getName());
+    return 1;
+}
+
 int setHealth(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
@@ -221,16 +242,26 @@ int getHealth(lua_State* lua)
 
 int setEnergy(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    player->setEnergy(lua_tonumber(lua, 1));
+
     return 0;
 }
 
 int upEnergy(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    player->upEnergy(lua_tonumber(lua, 1));
+
     return 0;
 }
 
 int getEnergy(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushnumber(lua, player->getEnergy());
+
     return 0;
 }
 
@@ -239,7 +270,12 @@ int selectPower(lua_State* lua)
     return 0;
 }
 
-int selectedPower(lua_State* lua)
+int switchPower(lua_State* lua)
+{
+    return 0;
+}
+
+int getSelectedPower(lua_State* lua)
 {
     return 0;
 }
@@ -273,48 +309,19 @@ int getAmmo(lua_State* lua)
     return 1;
 }
 
-int setWeapon(lua_State* lua)
+int selectWeapon(lua_State* lua)
 {
     return 0;
 }
 
-int getWeapon(lua_State* lua)
+int getSelectedWeapon(lua_State* lua)
 {
     return 0;
 }
 
-int dropWeapon(lua_State* lua)
+int switchWeapon(lua_State* lua)
 {
     return 0;
-}
-
-int setScore(lua_State* lua)
-{
-    Player* player = lua_toplayer(lua, 1);
-    int value = lua_tointeger(lua, 2);
-
-    player->setScore(value);
-
-    return 0;
-}
-
-int upScore(lua_State* lua)
-{
-    Player* player = lua_toplayer(lua, 1);
-    int value = lua_tointeger(lua, 2);
-
-    player->upScore(value);
-
-    return 0;
-}
-
-int getScore(lua_State* lua)
-{
-    Player* player = lua_toplayer(lua, 1);
-
-    lua_pushinteger(lua, player->getScore());
-
-    return 1;
 }
 
 int loadSound(lua_State* lua)
@@ -422,74 +429,139 @@ int diriction(lua_State* lua)
     return 1;
 }
 
+struct NearestPlayer
+{
+
+    NearestPlayer(Player * p)
+    {
+        cp = p;
+    }
+
+    bool operator()(Player* p1, Player * p2)
+    {
+        if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
+           < p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+            return true;
+        else
+            return false;
+    }
+
+    Player* cp;
+};
+
 int nearestPlayer(lua_State* lua)
 {
-    return 0;
+    GameManager* gm = getGameManager(lua);
+
+    Player* player = lua_toplayer(lua, 1);
+
+    const Player::Array target = gm->getPlayers();
+
+    Player* nearest = *min_element(target.begin(), target.end(), NearestPlayer(player));
+
+    lua_pushplayer(lua, nearest);
+
+    return 1;
 }
+
+struct FarestPlayer
+{
+
+    FarestPlayer(Player * p)
+    {
+        cp = p;
+    }
+
+    bool operator()(Player* p1, Player * p2)
+    {
+        if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
+           > p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+            return true;
+        else
+            return false;
+    }
+
+    Player* cp;
+};
 
 int farestPlayer(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    Player* player = lua_toplayer(lua, 1);
+
+    const Player::Array targets = gm->getPlayers();
+
+    Player* farest = *min_element(targets.begin(), targets.end(), FarestPlayer(player));
+
+    lua_pushplayer(lua, farest);
+
+    return 1;
+}
+
+int length(lua_State* lua)
+{
+    lua_pushnumber(lua, (lua_tovector3(lua, 1) - lua_tovector3(lua, 2)).getMagnitude());
+
     return 0;
 }
 
-int normalize(lua_State* lua)
+int setElemData(lua_State* lua)
 {
+    MapElement* elem = lua_toelem(lua, 1);
+
+    string key = lua_tostring(lua, 2);
+
+    if(lua_isstring(lua, 2))
+        elem->getVisualBody()->setUserData(key, lua_tostring(lua, 2));
+
+    else if(lua_isnumber(lua, 2))
+    {
+        lua_Number num = lua_tonumber(lua, 2);
+
+        if(round(num) == num)
+            elem->getVisualBody()->setUserData(key, (int)num);
+
+        else
+            elem->getVisualBody()->setUserData(key, (float)num);
+    }
+
+
     return 0;
 }
 
-int setData(lua_State* lua)
+int getElemData(lua_State* lua)
 {
-    return 0;
+    MapElement* elem = lua_toelem(lua, 1);
+    string key = lua_tostring(lua, 2);
+
+    string type = lua_tostring(lua, 3);
+
+    Any value = elem->getVisualBody()->getUserData(key);
+
+    if(type == "int")
+        lua_pushinteger(lua, value.getValue<int>());
+
+    else if(type == "float")
+        lua_pushnumber(lua, value.getValue<float>());
+
+    else if(type == "string")
+        lua_pushstring(lua, value.getValue<string > ());
+
+    return 1;
 }
 
-int getDataVec(lua_State* lua)
+int getSceneData(lua_State* lua)
 {
-    return 0;
-}
+    GameManager* gm = getGameManager(lua);
 
-int getDataFloat(lua_State* lua)
-{
-    return 0;
-}
+    string key = lua_tostring(lua, 1);
 
-int getDataInt(lua_State* lua)
-{
-    return 0;
-}
+    string value = gm->manager.parser->getAdditionalString(key);
 
-int getDataString(lua_State* lua)
-{
-    return 0;
-}
+    lua_pushstring(lua, value);
 
-int getSceneDataString(lua_State* lua)
-{
-    return 0;
-}
-
-int getSceneDataInt(lua_State* lua)
-{
-    return 0;
-}
-
-int getSceneDataFloat(lua_State* lua)
-{
-    return 0;
-}
-
-int getSceneDataVec(lua_State* lua)
-{
-    return 0;
-}
-
-int highestScore(lua_State* lua)
-{
-    return 0;
-}
-
-int lowestScore(lua_State* lua)
-{
-    return 0;
+    return 1;
 }
 
 int shoot(lua_State* lua)
@@ -511,17 +583,6 @@ int jump(lua_State* lua)
     return 0;
 }
 
-int power(lua_State* lua)
-{
-    Player* player = lua_toplayer(lua, 1);
-    Vector3f vec = lua_tovector3(lua, 2);
-    bool stat = lua_toboolean(lua, 3);
-
-    player->power(stat, vec);
-
-    return 0;
-}
-
 int dammage(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
@@ -530,6 +591,17 @@ int dammage(lua_State* lua)
     Bullet b(getGameManager(lua));
     b.setDammage(value);
     player->takeDammage(&b);
+
+    return 0;
+}
+
+int power(lua_State* lua)
+{
+    Player* player = lua_toplayer(lua, 1);
+    Vector3f vec = lua_tovector3(lua, 2);
+    bool stat = lua_toboolean(lua, 3);
+
+    player->power(stat, vec);
 
     return 0;
 }
@@ -563,7 +635,7 @@ int gameover(lua_State* lua)
 
 int registerCollid(lua_State* lua)
 {
-    ScriptActions* sm = getScriptManager(lua);
+    ScriptManager* sm = getScriptManager(lua);
 
     string id = lua_tostring(lua, 1);
     string fn = lua_tostring(lua, 2);
@@ -573,8 +645,38 @@ int registerCollid(lua_State* lua)
     return 0;
 }
 
+struct ScoreHook
+{
+
+    ScoreHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    string operator()()
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_call(lua, 0, 0);
+
+        return lua_tostring(lua, 1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
 int registerGlobalHook(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    string type = lua_tostring(lua, 1);
+    string func = lua_tostring(lua, 2);
+
+    if(type == "score")
+        gm->onScoreWrite.connect(ScoreHook(lua, func));
+
     return 0;
 }
 
@@ -734,7 +836,7 @@ int playerList(lua_State* lua)
     return 0;
 }
 
-int elementsList(lua_State* lua)
+int getElementsList(lua_State* lua)
 {
     using namespace boost;
 
@@ -765,7 +867,7 @@ int elementsList(lua_State* lua)
     return 1;
 }
 
-int elementsRand(lua_State* lua)
+int getElementsRand(lua_State* lua)
 {
     using namespace boost;
 
@@ -788,6 +890,8 @@ int elementsRand(lua_State* lua)
 
     return 1;
 }
+
+// NOTE
 
 int elementsFirst(lua_State* lua)
 {
@@ -827,42 +931,12 @@ int killPlayer(lua_State* lua)
     return 0;
 }
 
-int visibility(lua_State* lua)
+int ghost(lua_State* lua)
 {
     return 0;
 }
 
-int physics(lua_State* lua)
-{
-    return 0;
-}
-
-int setFragScore(lua_State* lua)
-{
-    return 0;
-}
-
-int fragScore(lua_State* lua)
-{
-    return 0;
-}
-
-int setHitScore(lua_State* lua)
-{
-    return 0;
-}
-
-int hitScore(lua_State* lua)
-{
-    return 0;
-}
-
-int setMaxPlayerHealth(lua_State* lua)
-{
-    return 0;
-}
-
-int maxPlayerHealth(lua_State* lua)
+int setInterval(lua_State* lua)
 {
     return 0;
 }
