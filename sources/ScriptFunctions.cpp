@@ -646,7 +646,11 @@ int status(lua_State* lua)
 
 int playerList(lua_State* lua)
 {
-    return 0;
+    GameManager* gm = getGameManager(lua);
+
+    lua_pushtable(lua, gm->getPlayers());
+
+    return 1;
 }
 
 int getElementsList(lua_State* lua)
@@ -935,8 +939,43 @@ int ghost(lua_State* lua)
     return 0;
 }
 
+struct Interval
+{
+
+    Interval(lua_State* l, string c, int t)
+    {
+        lua = l;
+        callback = c;
+        time = t;
+
+        lua_getglobal(lua, callback.c_str());
+        lua_call(lua, 0, 0);
+    }
+
+    void operator()()
+    {
+        if(clock.isEsplanedTime(time))
+        {
+            lua_getglobal(lua, callback.c_str());
+            lua_call(lua, 0, 0);
+        }
+    }
+
+    ticks::Clock clock;
+    lua_State* lua;
+    string callback;
+    int time;
+};
+
 int setInterval(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    string callback = lua_tostring(lua, 1);
+    int time = lua_tointeger(lua, 2);
+
+    gm->onEachFrame.connect(Interval(lua, callback, time));
+
     return 0;
 }
 

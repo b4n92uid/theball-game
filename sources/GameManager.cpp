@@ -669,6 +669,8 @@ void GameManager::gameProcess()
 
     if(hud.log->isEnable() && m_logClock.isEsplanedTime(3000))
         hud.log->setEnable(false);
+
+    onEachFrame();
 }
 
 void GameManager::hudProcess()
