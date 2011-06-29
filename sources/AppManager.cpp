@@ -242,11 +242,6 @@ void AppManager::setupMenuGui()
     m_controls.playmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
     m_guiManager->addTextBox("")->write("Carte à jouer");
 
-    m_controls.playmenu.playerCount = m_guiManager->addSwitchNumeric<int>("playerCount");
-    m_controls.playmenu.playerCount->setRange(new SwitchNumeric<int>::Range(0, 32));
-    m_controls.playmenu.playerCount->setStep(2);
-    m_guiManager->addTextBox("")->write("Nombres de joueurs");
-
     m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
     m_guiManager->addTextBox("")->write("Pseudo");
 
@@ -523,9 +518,6 @@ void AppManager::setupMenuGui()
         m_controls.settingsmenu.screenSize->setCurrent(curSizeIndex);
     }
 
-    // Temps de la partie
-    m_controls.playmenu.playerCount->setValue(4);
-
     // Menu campaign
     /*
     m_controls.campaign.playerName->setLabel(globalSettings.profile.name);
@@ -733,8 +725,6 @@ void AppManager::processPlayMenuEvent()
         playSetting.player = globalSettings.availablePlayer[indexOfPlayer];
         playSetting.player.nick = m_controls.playmenu.playerName->getLabel();
 
-        playSetting.playerCount = m_controls.playmenu.playerCount->getValue();
-
         executeGame(playSetting);
 
         setupBackgroundScene();
@@ -863,7 +853,6 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 {
     cout << "--- ExecuteGame :" << endl
             << "  playLevel = " << playSetting.map.name << endl
-            << "  playerCount = " << playSetting.playerCount << endl
             << "  playerModel = " << playSetting.player.file << endl
             << "  playerName = " << playSetting.player.name << endl;
 
@@ -948,7 +937,6 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
     {
         cout << "ExecuteCampaign :" << endl
                 << "playLevel = " << curPlaySetting.map.name << endl
-                << "playerCount = " << curPlaySetting.playerCount << endl
                 << "playerModel = " << curPlaySetting.player.file << endl
                 << "playerName = " << curPlaySetting.player.name << endl;
 
@@ -1042,7 +1030,6 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
                 Settings::PartySetting nextParty = globalSettings.campaign.maps[curPlaySetting.curLevel];
 
                 curPlaySetting.map = nextParty.map;
-                curPlaySetting.playerCount = nextParty.playerCount;
 
                 m_guiManager->setSession(MENU_LOAD);
 

@@ -104,7 +104,6 @@ protected:
         {
             tbe::gui::SwitchString* mapSelect;
             tbe::gui::SwitchString* playerSelect;
-            tbe::gui::SwitchNumeric<int>* playerCount;
             tbe::gui::EditBox* playerName;
             tbe::gui::TextBox* description;
 

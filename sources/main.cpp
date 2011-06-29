@@ -60,7 +60,6 @@ int main(int argc, char** argv)
             Settings::PartySetting ps;
             ps.map = Settings::MapInfo(argv[index + 1]);
             ps.player = Settings::PlayerInfo(argv[index + 2]);
-            ps.playerCount = tools::strToNum<unsigned>(argv[index + 3]);
 
             theBall.executeGame(ps);
         }

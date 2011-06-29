@@ -36,18 +36,6 @@ public:
     void fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager);
     void fillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager);
 
-    struct Ai
-    {
-        unsigned switchTargetTime;
-        unsigned criticalLifeValue;
-        unsigned criticalAmmoValue;
-        unsigned shootGustCount;
-        unsigned shootGustTime;
-        float dynamicInteraction;
-        float shootAccuracy;
-
-    } ai;
-
     struct World
     {
         float gravity;
@@ -174,7 +162,6 @@ public:
 
         MapInfo map;
 
-        unsigned playerCount;
         unsigned curLevel;
     };
 
@@ -196,6 +183,8 @@ public:
 
     std::vector<MapInfo> availableMap;
     std::vector<PlayerInfo> availablePlayer;
+
+    std::vector<std::string> botNames;
 };
 
 

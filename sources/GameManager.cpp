@@ -181,15 +181,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     // PLAYERS -----------------------------------------------------------------
 
-    ifstream namefile("NAMES.txt");
-
-    do m_botNames.push_back(string());
-    while(getline(namefile, m_botNames.back()));
-
-    m_botNames.pop_back();
-
-    namefile.close();
-
     m_userPlayer = new Player(this, m_playSetting.player.nick, m_playSetting.player.model);
     m_userPlayer->attachController(new UserControl(this));
 
@@ -588,26 +579,6 @@ void GameManager::gameProcess()
 
     if(m_gameOver)
         return;
-
-    for(unsigned i = m_players.size(); i < m_playSetting.playerCount; i++)
-        if(m_spawnPlayer.isEsplanedTime(4000))
-        {
-            unsigned selectPlayer = math::rand(0, manager.app->globalSettings.availablePlayer.size());
-
-            Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[selectPlayer];
-
-            unsigned selectName = math::rand(0, m_botNames.size());
-
-            Player* player = new Player(this, m_botNames[selectName], pi.model);
-
-            registerPlayer(player);
-
-            manager.scene->getRootNode()->addChild(player->getVisualBody());
-
-            manager.sound->playSound("respawn", player);
-
-            break;
-        }
 
     /*
      * Pour chaque joueurs

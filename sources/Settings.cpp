@@ -138,38 +138,6 @@ void Settings::readControl()
     }
 }
 
-void Settings::readAi()
-{
-    map<string, float*> fltbinder;
-    map<string, unsigned*> unsbinder;
-
-    unsbinder["SWITCH_TARGET_TIME"] = &ai.switchTargetTime;
-    unsbinder["CRITICAL_LIFE_VALUE"] = &ai.criticalLifeValue;
-    unsbinder["CRITICAL_AMMO_VALUE"] = &ai.criticalAmmoValue;
-    unsbinder["SHOOT_GUST_COUNT"] = &ai.shootGustCount;
-    unsbinder["SHOOT_GUST_TIME"] = &ai.shootGustTime;
-
-    fltbinder["DYNAMIC_INTERACTION"] = &ai.dynamicInteraction;
-    fltbinder["SHOOT_ACCURACY"] = &ai.shootAccuracy;
-
-    TiXmlDocument config("ai.xml");
-
-    if(!config.LoadFile())
-        throw tbe::Exception("ReadAi; Open file error");
-
-    TiXmlNode* root = config.FirstChildElement();
-
-    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
-    {
-        const char* name = node2->Attribute("name");
-
-        if(unsbinder.count(name))
-            node2->QueryValueAttribute<unsigned>("value", unsbinder[name]);
-        else if(fltbinder.count(name))
-            node2->QueryFloatAttribute("value", fltbinder[name]);
-    }
-}
-
 void Settings::readWorld()
 {
     map<string, float*> floatbinder;
@@ -249,6 +217,15 @@ void Settings::readPlayerInfo()
 {
     using namespace boost::filesystem;
 
+    ifstream namefile("NAMES.txt");
+
+    do botNames.push_back(string());
+    while(getline(namefile, botNames.back()));
+
+    botNames.pop_back();
+
+    namefile.close();
+
     availablePlayer.clear();
 
     directory_iterator end;
@@ -326,8 +303,6 @@ void Settings::readCampaign()
 
         party.map = MapInfo(node->Attribute("map"));
 
-        node->QueryValueAttribute<unsigned>("playerCount", &party.playerCount);
-
         party.curLevel = campaign.maps.size();
 
         campaign.maps.push_back(party);
@@ -356,7 +331,6 @@ void Settings::readMapInfo()
 
 void Settings::readSetting()
 {
-    readAi();
     readGui();
     readCampaign();
     readProfiles();
@@ -568,6 +542,5 @@ Settings::PlayerInfo::PlayerInfo(std::string path)
 
 Settings::PartySetting::PartySetting()
 {
-    playerCount = 0;
     curLevel = 0;
 }

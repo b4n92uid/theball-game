@@ -176,8 +176,6 @@ protected:
 
     std::list<tbe::Vector3f> m_playerPosRec;
 
-    std::vector<std::string> m_botNames;
-
     TimtTo m_timeTo;
 
     bool m_gameOver;
