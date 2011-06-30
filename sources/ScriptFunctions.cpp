@@ -448,9 +448,16 @@ struct NearestPlayer
 
         else
         {
-            if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
-               < p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+            if(p2->isKilled())
                 return true;
+
+            if(p1->isKilled())
+                return false;
+
+            else if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
+                    < p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+                return true;
+
             else
                 return false;
         }
@@ -469,7 +476,10 @@ int nearestPlayer(lua_State* lua)
 
     Player* nearest = *min_element(target.begin(), target.end(), NearestPlayer(player));
 
-    lua_pushplayer(lua, nearest);
+    if(nearest->isKilled())
+        lua_pushnil(lua);
+    else
+        lua_pushplayer(lua, nearest);
 
     return 1;
 }
@@ -492,9 +502,16 @@ struct FarestPlayer
 
         else
         {
-            if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
-               > p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+            if(p2->isKilled())
                 return true;
+
+            if(p1->isKilled())
+                return false;
+
+            else if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
+                    > p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+                return true;
+
             else
                 return false;
         }
@@ -513,7 +530,10 @@ int farestPlayer(lua_State* lua)
 
     Player* farest = *min_element(targets.begin(), targets.end(), FarestPlayer(player));
 
-    lua_pushplayer(lua, farest);
+    if(farest->isKilled())
+        lua_pushnil(lua);
+    else
+        lua_pushplayer(lua, farest);
 
     return 1;
 }
@@ -742,7 +762,13 @@ int isKilledPlayer(lua_State* lua)
 int killPlayer(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
-    player->kill();
+
+    Player* killer = NULL;
+
+    if(lua_isnumber(lua, 2))
+        killer = lua_toplayer(lua, 2);
+
+    player->kill(killer);
 
     return 0;
 }
@@ -869,9 +895,29 @@ struct ScoreHook
     {
         lua_getglobal(lua, callback.c_str());
 
-        lua_call(lua, 0, 0);
+        lua_call(lua, 0, 1);
 
         return lua_tostring(lua, -1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct FrameHook
+{
+
+    FrameHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    void operator()(Player * userplayer)
+    {
+        lua_getglobal(lua, callback.c_str());
+        lua_pushplayer(lua, userplayer);
+        lua_call(lua, 1, 0);
     }
 
     string callback;
@@ -887,6 +933,9 @@ int registerGlobalHook(lua_State* lua)
 
     if(type == "score")
         gm->onScoreWrite.connect(ScoreHook(lua, func));
+
+    else if(type == "frame")
+        gm->onEachFrame.connect(FrameHook(lua, func));
 
     return 0;
 }
@@ -970,12 +1019,13 @@ struct KilledHook
         callback = f;
     }
 
-    bool operator()(Player * player)
+    bool operator()(Player* player, Player * killer)
     {
         lua_getglobal(lua, callback.c_str());
 
-        lua_pushinteger(lua, (lua_Integer)player);
-        lua_call(lua, 1, 1);
+        lua_pushplayer(lua, player);
+        lua_pushplayer(lua, killer);
+        lua_call(lua, 2, 1);
 
         return lua_toboolean(lua, -1);
     }
@@ -993,12 +1043,12 @@ struct DammageHook
         callback = f;
     }
 
-    bool operator()(Player* player, Bullet * bullet)
+    bool operator()(Player* player, Player * shooter)
     {
         lua_getglobal(lua, callback.c_str());
 
-        lua_pushinteger(lua, (lua_Integer)player);
-        lua_pushinteger(lua, (lua_Integer)bullet);
+        lua_pushplayer(lua, player);
+        lua_pushplayer(lua, shooter);
         lua_call(lua, 2, 1);
 
         return lua_toboolean(lua, -1);
@@ -1117,17 +1167,15 @@ struct Interval
         lua = l;
         callback = c;
         time = t;
-
-        lua_getglobal(lua, callback.c_str());
-        lua_call(lua, 0, 0);
     }
 
-    void operator()()
+    void operator()(Player * userplayer)
     {
         if(clock.isEsplanedTime(time))
         {
             lua_getglobal(lua, callback.c_str());
-            lua_call(lua, 0, 0);
+            lua_pushplayer(lua, userplayer);
+            lua_call(lua, 1, 0);
         }
     }
 

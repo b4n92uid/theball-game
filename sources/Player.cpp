@@ -315,9 +315,9 @@ void Player::reBorn()
     onRespawn(this);
 }
 
-void Player::kill()
+void Player::kill(Player* killer)
 {
-    if(!onKilled.empty() && !onKilled(this))
+    if(!onKilled.empty() && !onKilled(this, killer))
         return;
 
     m_killed = true;
@@ -405,7 +405,7 @@ void Player::takeDammage(Bullet* ammo)
     if(m_killed)
         return;
 
-    if(!onDammage.empty() && !onDammage(this, ammo))
+    if(!onDammage.empty() && !onDammage(this, ammo->getWeapon()->getShooter()))
         return;
 
     int dammage = ammo->getDammage();
@@ -425,7 +425,7 @@ void Player::takeDammage(Bullet* ammo)
             striker->upScore(500);
             upScore(-500);
 
-            kill();
+            kill(striker);
         }
         else
         {

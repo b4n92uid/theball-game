@@ -433,7 +433,7 @@ void GameManager::processDevelopperCodeEvent()
 
         // F2 : Kill
         if(event->keyState[EventManager::KEY_F2])
-            m_userPlayer->kill();
+            m_userPlayer->kill(NULL);
 
         if(event->keyState[EventManager::KEY_F5])
         {
@@ -655,8 +655,6 @@ void GameManager::gameProcess()
 
     if(hud.log->isEnable() && m_logClock.isEsplanedTime(3000))
         hud.log->setEnable(false);
-
-    onEachFrame();
 }
 
 void GameManager::hudProcess()
@@ -780,6 +778,8 @@ float rayFilter(const NewtonBody* body, const float*, int, void* userData, float
 
 void GameManager::render()
 {
+    onEachFrame(m_userPlayer);
+
     // Positionement camera ----------------------------------------------------
 
     Vector3f setPos = m_userPlayer->getVisualBody()->getPos();

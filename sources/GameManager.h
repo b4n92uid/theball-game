@@ -137,7 +137,7 @@ public:
     Settings::World worldSettings;
 
     boost::signal<std::string() > onScoreWrite;
-    boost::signal<void() > onEachFrame;
+    boost::signal<void(Player*) > onEachFrame;
 
 protected:
 

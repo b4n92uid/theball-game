@@ -56,7 +56,7 @@ public:
     void process();
 
     /// Mort :)
-    void kill();
+    void kill(Player* killer);
     bool isKilled() const;
 
     void makeTransparent(bool enable, float alpha = 0.25);
@@ -133,8 +133,8 @@ public:
     boost::signal<void(Player*) > onRespawn;
     boost::signal<bool(Player*, tbe::Vector3f) > onShoot;
     boost::signal<bool(Player*, bool, tbe::Vector3f) > onPower;
-    boost::signal<bool(Player*, Bullet*) > onDammage;
-    boost::signal<bool(Player*) > onKilled;
+    boost::signal<bool(Player*, Player*) > onDammage;
+    boost::signal<bool(Player*, Player*) > onKilled;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;

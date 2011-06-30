@@ -43,15 +43,21 @@ protected:
 
     static MaterialManager* getMaterialManager(const NewtonJoint* contact)
     {
-        return getMaterialManager(NewtonJointGetBody0(contact),
-                                  NewtonJointGetBody1(contact));
+        NewtonBody* b0 = NewtonJointGetBody0(contact);
+        NewtonBody* b1 = NewtonJointGetBody1(contact);
+
+        if(b0 && b1)
+            return getMaterialManager(b0, b1);
+        else
+            return NULL;
     }
 
     static MaterialManager* getMaterialManager(const NewtonBody* body0, const NewtonBody* body1)
     {
-        return (MaterialManager*)NewtonMaterialGetUserData(NewtonBodyGetWorld(body0),
-                                                           NewtonBodyGetMaterialGroupID(body0),
-                                                           NewtonBodyGetMaterialGroupID(body1));
+        int g0 = NewtonBodyGetMaterialGroupID(body0);
+        int g1 = NewtonBodyGetMaterialGroupID(body1);
+
+        return (MaterialManager*)NewtonMaterialGetUserData(NewtonBodyGetWorld(body0), g0, g1);
     }
 
     static void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat f, int i)
