@@ -35,9 +35,11 @@ protected:
 
 protected:
     Weapon* m_usedWeapon;
-    tbe::gui::Image* m_screeneffect;
-    tbe::ppe::ColorEffect* m_ppeffect;
     std::map<NewtonBody*, NewtonApplyForceAndTorque> m_callbacks;
+
+protected:
+    static tbe::gui::Image* m_screeneffect;
+    static tbe::ppe::ColorEffect* m_ppeffect;
 };
 
 #endif	/* BULLETTIME_H */

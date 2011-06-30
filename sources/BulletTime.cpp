@@ -16,17 +16,18 @@
 using namespace tbe;
 using namespace tbe::scene;
 
+tbe::gui::Image* BulletTime::m_screeneffect = NULL;
+tbe::ppe::ColorEffect* BulletTime::m_ppeffect = NULL;
+
 BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 {
     m_name = "BulletTime";
 
-    m_ppeffect = NULL;
-    m_screeneffect = NULL;
     m_usedWeapon = NULL;
 
     Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;
 
-    if(vidsets.usePpe)
+    if(vidsets.usePpe && !m_ppeffect)
     {
         using namespace ppe;
 
@@ -37,9 +38,9 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
         m_ppeffect->setColor(Vector4f(1));
         m_ppeffect->setEnable(false);
 
-        m_gameManager->manager.ppe->addPostEffect("blettimeEffect", m_ppeffect);
+        m_gameManager->manager.ppe->addPostEffect("bullettime", m_ppeffect);
     }
-    else
+    else if(!m_screeneffect)
     {
         m_screeneffect = m_gameManager->manager.gui->addImage("blettimeEffect", GUI_BULLETTIME);
         m_screeneffect->setOpacity(0.5);
