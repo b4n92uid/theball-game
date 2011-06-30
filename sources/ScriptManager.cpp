@@ -78,13 +78,21 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "isViewed", script::isViewed);
 
+    lua_register(m_lua, "normalize", script::normalize);
+
     lua_register(m_lua, "diriction", script::diriction);
 
     lua_register(m_lua, "length", script::length);
 
 
-    lua_register(m_lua, "setElemData", script::setElemData);
-    lua_register(m_lua, "getElemData", script::getElemData);
+    lua_register(m_lua, "setElemDataS", script::setElemDataS);
+    lua_register(m_lua, "getElemDataS", script::getElemDataS);
+
+    lua_register(m_lua, "setElemDataN", script::setElemDataN);
+    lua_register(m_lua, "getElemDataN", script::getElemDataN);
+
+    lua_register(m_lua, "setElemDataV", script::setElemDataV);
+    lua_register(m_lua, "getElemDataV", script::getElemDataV);
 
     lua_register(m_lua, "getSceneData", script::getSceneData);
 

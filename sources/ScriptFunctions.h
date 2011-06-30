@@ -79,10 +79,18 @@ int diriction(lua_State* lua);
 
 int length(lua_State* lua);
 
+int normalize(lua_State* lua);
+
 // User data
 
-int setElemData(lua_State* lua);
-int getElemData(lua_State* lua);
+int setElemDataS(lua_State* lua);
+int getElemDataS(lua_State* lua);
+
+int setElemDataN(lua_State* lua);
+int getElemDataN(lua_State* lua);
+
+int setElemDataV(lua_State* lua);
+int getElemDataV(lua_State* lua);
 
 int getSceneData(lua_State* lua);
 

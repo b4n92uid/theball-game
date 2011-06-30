@@ -412,9 +412,20 @@ int randomPosition(lua_State* lua)
 {
     GameManager* ge = getGameManager(lua);
 
-    Vector3f pos = ge->getRandomPosOnTheFloor();
+    if(lua_istable(lua, 1), lua_isnumber(lua, 2))
+    {
+        Vector3f pos = lua_tovector3(lua, 1);
+        float radius = lua_tonumber(lua, 2);
 
-    lua_pushvector3(lua, pos);
+        Vector3f randpos = ge->getRandomPosOnTheFloor(pos, radius);
+        lua_pushvector3(lua, randpos);
+    }
+
+    else
+    {
+        Vector3f randpos = ge->getRandomPosOnTheFloor();
+        lua_pushvector3(lua, randpos);
+    }
 
     return 1;
 }
@@ -429,11 +440,20 @@ struct NearestPlayer
 
     bool operator()(Player* p1, Player * p2)
     {
-        if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
-           < p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
-            return true;
-        else
+        if(p1 == cp)
             return false;
+
+        if(p2 == cp)
+            return true;
+
+        else
+        {
+            if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
+               < p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+                return true;
+            else
+                return false;
+        }
     }
 
     Player* cp;
@@ -464,11 +484,20 @@ struct FarestPlayer
 
     bool operator()(Player* p1, Player * p2)
     {
-        if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
-           > p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
-            return true;
-        else
+        if(p1 == cp)
             return false;
+
+        if(p2 == cp)
+            return true;
+
+        else
+        {
+            if(p1->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos()
+               > p2->getPhysicBody()->getPos() - cp->getPhysicBody()->getPos())
+                return true;
+            else
+                return false;
+        }
     }
 
     Player* cp;
@@ -503,50 +532,96 @@ int length(lua_State* lua)
 {
     lua_pushnumber(lua, (lua_tovector3(lua, 1) - lua_tovector3(lua, 2)).getMagnitude());
 
-    return 0;
+    return 1;
 }
 
-int setElemData(lua_State* lua)
+int normalize(lua_State* lua)
+{
+    lua_pushvector3(lua, lua_tovector3(lua, 1).normalize());
+
+    return 1;
+}
+
+int setElemDataS(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
     string key = lua_tostring(lua, 2);
+    string value = lua_tostring(lua, 3);
 
-    if(lua_isstring(lua, 2))
-        elem->getVisualBody()->setUserData(key, lua_tostring(lua, 2));
+    elem->getVisualBody()->setUserData(key, value);
 
-    else if(lua_isnumber(lua, 2))
+    return 0;
+}
+
+int getElemDataS(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
+    string key = lua_tostring(lua, 2);
+
+    if(elem->getVisualBody()->hasUserData(key))
     {
-        lua_Number num = lua_tonumber(lua, 2);
-
-        if(round(num) == num)
-            elem->getVisualBody()->setUserData(key, (int)num);
-
-        else
-            elem->getVisualBody()->setUserData(key, (float)num);
+        Any value = elem->getVisualBody()->getUserData(key);
+        lua_pushstring(lua, value.getValue<string > ());
     }
+    else
+        lua_pushnil(lua);
 
+    return 1;
+}
+
+int setElemDataN(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
+
+    string key = lua_tostring(lua, 2);
+    float value = lua_tonumber(lua, 3);
+
+    elem->getVisualBody()->setUserData(key, value);
 
     return 0;
 }
 
-int getElemData(lua_State* lua)
+int getElemDataN(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
     string key = lua_tostring(lua, 2);
 
-    string type = lua_tostring(lua, 3);
+    if(elem->getVisualBody()->hasUserData(key))
+    {
+        Any value = elem->getVisualBody()->getUserData(key);
+        lua_pushnumber(lua, value.getValue<float> ());
+    }
+    else
+        lua_pushnil(lua);
 
-    Any value = elem->getVisualBody()->getUserData(key);
+    return 1;
+}
 
-    if(type == "int")
-        lua_pushinteger(lua, value.getValue<int>());
+int setElemDataV(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
 
-    else if(type == "float")
-        lua_pushnumber(lua, value.getValue<float>());
+    string key = lua_tostring(lua, 2);
+    Vector3f value = lua_tovector3(lua, 3);
 
-    else if(type == "string")
-        lua_pushstring(lua, value.getValue<string > ());
+    elem->getVisualBody()->setUserData(key, value);
+
+    return 0;
+}
+
+int getElemDataV(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
+    string key = lua_tostring(lua, 2);
+
+    if(elem->getVisualBody()->hasUserData(key))
+    {
+        Any value = elem->getVisualBody()->getUserData(key);
+        lua_pushvector3(lua, value.getValue<Vector3f > ());
+    }
+    else
+        lua_pushnil(lua);
 
     return 1;
 }
@@ -608,21 +683,67 @@ int power(lua_State* lua)
 
 int createPlayers(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    if(lua_isnumber(lua, 1))
+    {
+        int count = lua_tonumber(lua, 1);
+
+        for(int i = 0; i < count; i++)
+        {
+            unsigned selectPlayer = math::rand(0, gm->manager.app->globalSettings.availablePlayer.size());
+
+            Settings::PlayerInfo& pi = gm->manager.app->globalSettings.availablePlayer[selectPlayer];
+
+            unsigned selectName = math::rand(0, gm->manager.app->globalSettings.botNames.size());
+
+            Player* player = new Player(gm, gm->manager.app->globalSettings.botNames[selectName], pi.model);
+
+            gm->registerPlayer(player);
+
+            gm->manager.scene->getRootNode()->addChild(player->getVisualBody());
+        }
+    }
+    else if(lua_isstring(lua, 1) && lua_isstring(lua, 2))
+    {
+        string name = lua_tostring(lua, 1);
+        string model = lua_tostring(lua, 2);
+
+        Player* player = new Player(gm, name, model);
+
+        gm->registerPlayer(player);
+
+        gm->manager.scene->getRootNode()->addChild(player->getVisualBody());
+    }
+
     return 0;
 }
 
 int deletePlayer(lua_State* lua)
 {
+    GameManager* gm = getGameManager(lua);
+
+    Player* player = lua_toplayer(lua, 1);
+
+    gm->unregisterPlayer(player);
+    delete player;
+
     return 0;
 }
 
 int isKilledPlayer(lua_State* lua)
 {
-    return 0;
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushboolean(lua, player->isKilled());
+    return 1;
 }
 
 int killPlayer(lua_State* lua)
 {
+    Player* player = lua_toplayer(lua, 1);
+    player->kill();
+
     return 0;
 }
 
@@ -711,12 +832,20 @@ int getElementsRand(lua_State* lua)
 
     regex pattern(lua_tostring(lua, 1));
 
+    int count = 0;
+
+    if(lua_isnumber(lua, 2))
+        count = lua_tonumber(lua, 2);
+
     MapElement::Array selection;
 
     BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
     {
         if(regex_match(elem->getId(), pattern))
             selection.push_back(elem);
+
+        if(count > 0 && (int)selection.size() >= count)
+            break;
     }
 
     if(selection.empty())
@@ -742,7 +871,7 @@ struct ScoreHook
 
         lua_call(lua, 0, 0);
 
-        return lua_tostring(lua, 1);
+        return lua_tostring(lua, -1);
     }
 
     string callback;
@@ -801,7 +930,7 @@ struct PowerHook
         lua_pushvector3(lua, target);
         lua_call(lua, 3, 1);
 
-        return lua_toboolean(lua, 1);
+        return lua_toboolean(lua, -1);
     }
 
     string callback;
@@ -825,7 +954,7 @@ struct ShootHook
         lua_pushvector3(lua, target);
         lua_call(lua, 2, 1);
 
-        return lua_toboolean(lua, 1);
+        return lua_toboolean(lua, -1);
     }
 
     string callback;
@@ -848,7 +977,7 @@ struct KilledHook
         lua_pushinteger(lua, (lua_Integer)player);
         lua_call(lua, 1, 1);
 
-        return lua_toboolean(lua, 1);
+        return lua_toboolean(lua, -1);
     }
 
     string callback;
@@ -872,7 +1001,28 @@ struct DammageHook
         lua_pushinteger(lua, (lua_Integer)bullet);
         lua_call(lua, 2, 1);
 
-        return lua_toboolean(lua, 1);
+        return lua_toboolean(lua, -1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct AIHook
+{
+
+    AIHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    void operator()(Player * player)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushinteger(lua, (lua_Integer)player);
+        lua_call(lua, 1, 1);
     }
 
     string callback;
@@ -890,24 +1040,44 @@ int registerPlayerHook(lua_State* lua)
 
     BOOST_FOREACH(Player* player, players)
     {
-        if(type == "dammage")
+        if(type == "ai")
+        {
+            Controller* ctrl = player->getAttachedCotroller();
+
+            if(!ctrl)
+            {
+                ctrl = new AIControl(gm);
+                ctrl->onAi.connect(AIHook(lua, func));
+
+                player->attachController(ctrl);
+            }
+
+        }
+
+        else if(type == "respawn")
+        {
+            player->onRespawn.connect(RespawnHook(lua, func));
+            player->onRespawn(player);
+        }
+
+        else if(type == "dammage")
             player->onDammage.connect(DammageHook(lua, func));
-        if(type == "killed")
+
+        else if(type == "killed")
             player->onKilled.connect(KilledHook(lua, func));
-        if(type == "shoot")
+
+        else if(type == "shoot")
             player->onShoot.connect(ShootHook(lua, func));
-        if(type == "power")
+
+        else if(type == "power")
             player->onPower.connect(PowerHook(lua, func));
+
         /*
         if(type == "jump")
             player->onJump.connect();
         if(type == "move")
             player->onMove.connect();
-        if(type == "ai")
-            player->onAi.connect();
          */
-        if(type == "respawn")
-            player->onRespawn.connect(RespawnHook(lua, func));
     }
 
     return 0;
