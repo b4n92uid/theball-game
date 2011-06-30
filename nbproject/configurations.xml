@@ -4,12 +4,10 @@
     <logicalFolder name="f2" displayName="Config" projectFiles="true">
       <itemPath>sources/Define.h</itemPath>
       <itemPath>sources/Platform.h</itemPath>
-      <itemPath>dist/Release/MinGW-Windows/ai.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/campaign.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/control.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/gui.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/profiles.xml</itemPath>
-      <itemPath>dist/Release/MinGW-Windows/score.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/video.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/world.xml</itemPath>
     </logicalFolder>

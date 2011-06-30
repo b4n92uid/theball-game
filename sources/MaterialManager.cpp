@@ -45,8 +45,8 @@ MaterialManager::MaterialManager(GameManager * gameManager)
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_itemGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_elementsGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_itemGroupe, false);
 
+    NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_itemGroupe, false);
 
     NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_elementsGroupe, worldSettings.staticFriction, worldSettings.keniticFriction);
 }

@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 
         if((index = isarg(argc, argv, "play")) != -1)
         {
-            // NOTE play <level> <player> <playerCount>
+            // NOTE play <level> <player>
 
             Settings::PartySetting ps;
             ps.map = Settings::MapInfo(argv[index + 1]);
