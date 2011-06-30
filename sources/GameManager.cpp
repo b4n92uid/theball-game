@@ -389,6 +389,21 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor()
     return randPos;
 }
 
+tbe::Vector3f GameManager::getRandomPosOnTheFloor(Vector3f pos, float radius)
+{
+    Vector3f randPos;
+
+    do
+    {
+        randPos = pos + AABB(radius).randPos();
+        randPos.y = 1;
+        randPos = parallelscene.newton->findFloor(randPos);
+    }
+    while(randPos.y < map.aabb.min.y);
+
+    return randPos;
+}
+
 void GameManager::display(std::string msg)
 {
     hud.log->write(msg);

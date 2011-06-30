@@ -59,6 +59,8 @@ public:
     /// Rotine d'affichage de l'état de la partie
     void status(std::string msg);
 
+    tbe::Vector3f getRandomPosOnTheFloor(tbe::Vector3f pos, float radius);
+
     tbe::Vector3f getRandomPosOnTheFloor();
 
     void setGameOver(Player* winner, std::string finalmsg);
