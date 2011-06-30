@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Controller.h
  * Author: b4n92uid
  *
@@ -10,6 +10,8 @@
 
 #include <Tbe.h>
 #include <SDLDevice/SDLDevice.h>
+
+#include <boost/signals.hpp>
 
 #include "AppManager.h"
 
@@ -23,6 +25,8 @@ public:
     virtual ~Controller();
 
     virtual void process(Player* player) = 0;
+
+    boost::signal<void(Player*) > onAi;
 
 protected:
     GameManager* m_playManager;
