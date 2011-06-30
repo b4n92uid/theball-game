@@ -14,8 +14,7 @@ using namespace tbe::scene;
 
 // Item ------------------------------------------------------------------
 
-Item::Item(GameManager* gameManager, tbe::Matrix4 pos)
-: MapElement(gameManager), m_aiParams(gameManager->manager.app->globalSettings.ai)
+Item::Item(GameManager* gameManager, tbe::Matrix4 pos) : MapElement(gameManager)
 {
     m_taked = false;
 
@@ -107,8 +106,8 @@ bool ItemAddAmmo::isNeeded(Player* player)
     unsigned percent = player->getCurWeapon()->getAmmoCount()*100
             / player->getCurWeapon()->getMaxAmmoCount();
 
-    if(!isTaked() && percent < m_aiParams.criticalAmmoValue)
-        return true;
+    //    if(!isTaked() && percent < m_aiParams.criticalAmmoValue)
+    //        return true;
 
     return false;
 }
@@ -140,8 +139,8 @@ void ItemAddLife::modifPlayer(Player* player)
 
 bool ItemAddLife::isNeeded(Player* player)
 {
-    if(!isTaked() && player->getLife() < (int)m_aiParams.criticalLifeValue)
-        return true;
+    //    if(!isTaked() && player->getLife() < (int)m_aiParams.criticalLifeValue)
+    //        return true;
 
     return false;
 }

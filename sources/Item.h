@@ -53,7 +53,6 @@ public:
 protected:
     tbe::Matrix4 m_initialMatrix;
     unsigned m_respawnTime;
-    Settings::Ai& m_aiParams;
 
     tbe::scene::OBJMesh* m_visualBody;
 

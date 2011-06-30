@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   AIManager.cpp
  * Author: b4n92uid
- * 
+ *
  * Created on 16 décembre 2009, 18:45
  */
 
@@ -18,19 +18,15 @@ using namespace tbe::scene;
 
 // AIManager -------------------------------------------------------------------
 
-AIControl::AIControl(GameManager* playManager)
-: Controller(playManager), m_aiParams(playManager->manager.app->globalSettings.ai)
+AIControl::AIControl(GameManager* playManager) : Controller(playManager)
 {
-    m_targetPlayer = NULL;
-    m_targetOtp = NULL;
-
-    m_mapAABB = m_playManager->map.aabb;
-
-    m_minDistToShoot = (m_mapAABB.max - m_mapAABB.min).getMagnitude() / 8.0f;
-    m_strikPrimiter = m_minDistToShoot;
-    m_minDistToSwith = m_strikPrimiter / 8.0f;
 }
 
 AIControl::~AIControl()
 {
+}
+
+void AIControl::process(Player* player)
+{
+    onAi(player);
 }
