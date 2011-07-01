@@ -5,6 +5,7 @@
     <set name="BACKGROUND_HUD"          value="data/gfxart/gui/hud.png" />
     <set name="BACKGROUND_PAUSE"        value="data/gfxart/gui/pause.png" />
     <set name="BACKGROUND_TEXTBOX"      value="data/gfxart/gui/textbox.png" />
+    <set name="BACKGROUND_TEXTBOX_ARR" 	value="data/gfxart/gui/textboxarr.png" />
     <set name="BACKGROUND_LISTBOX"      value="data/gfxart/gui/listbox.png" />
     <set name="BACKGROUND_LOGO"         value="data/gfxart/gui/logo.png" />
     <set name="MASK_H"                  value="data/gfxart/gui/horzmask.png" />
