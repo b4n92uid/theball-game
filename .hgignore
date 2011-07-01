@@ -14,3 +14,5 @@ syntax: glob
 **.xml
 **.bash
 **.mk
+**.blend1
+**.blend2
