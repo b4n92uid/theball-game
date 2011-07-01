@@ -27,7 +27,7 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 
     Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;
 
-    if(vidsets.usePpe && !m_ppeffect)
+    if(vidsets.ppeUse && !m_ppeffect)
     {
         using namespace ppe;
 
@@ -53,7 +53,7 @@ BulletTime::~BulletTime()
 {
     Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;
 
-    if(vidsets.usePpe)
+    if(vidsets.ppeUse)
         m_gameManager->manager.ppe->deletePostEffect(m_ppeffect);
     else
         m_gameManager->manager.gui->deleteControl("blettimeEffect");

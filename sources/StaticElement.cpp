@@ -20,12 +20,71 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 
     m_id = body->getName();
 
-    m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton);
-    m_physicBody->setUpdatedMatrix(&body->getMatrix());
-    m_physicBody->buildTreeNode(body->getHardwareBuffer().getAllFace());
-    body->addChild(m_physicBody);
+    string physic = "convex";
 
-    NewtonBodySetUserData(m_physicBody->getBody(), this);
+    if(body->hasUserData("physic"))
+        physic = body->getUserData("physic").getValue<string > ();
+
+    Vector3f size = body->getAabb().getSize() / 2.0f;
+
+    if(body->hasUserData("size"))
+        size.fromStr(body->getUserData("size").getValue<string > ());
+
+    // Pour les corp convex a un seul coté
+    if(physic == "convex" and body->getHardwareBuffer().getVertexCount() < 18)
+    {
+        physic = "box";
+
+        AABB aabb = body->getAabb();
+
+        if(math::isZero(aabb.min.x) and math::isZero(aabb.max.x))
+        {
+            aabb.max.x = 0.001;
+            aabb.min.x = -0.01;
+        }
+        if(math::isZero(aabb.min.y) and math::isZero(aabb.max.y))
+        {
+            aabb.max.y = 0.001;
+            aabb.min.y = -0.001;
+        }
+        if(math::isZero(aabb.min.z) and math::isZero(aabb.max.z))
+        {
+            aabb.max.z = 0.001;
+            aabb.min.z = -0.001;
+        }
+
+        size = aabb.getSize() / 2.0f;
+    }
+
+    float masse = 0;
+
+    if(body->hasUserData("masse"))
+        masse = body->getUserData("masse").getValue<float> ();
+
+    if(physic != "ghost")
+    {
+        m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton);
+        m_physicBody->setUpdatedMatrix(&body->getMatrix());
+
+        if(physic == "box")
+            m_physicBody->buildBoxNode(size, masse);
+
+        else if(physic == "sphere")
+            m_physicBody->buildSphereNode(size, masse);
+
+        else if(physic == "convex")
+            m_physicBody->buildConvexNode(body->getHardwareBuffer().getAllVertex(), masse);
+
+        else if(physic == "tree")
+            m_physicBody->buildTreeNode(body->getHardwareBuffer().getAllFace());
+
+        else
+            throw Exception("StaticElement::StaticElement; unable to build (%s) physics body", physic.c_str());
+
+        body->addChild(m_physicBody);
+
+        NewtonBodySetUserData(m_physicBody->getBody(), this);
+    }
 }
 
 StaticElement::~StaticElement()

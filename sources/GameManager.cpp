@@ -173,7 +173,7 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     scene::Fog* fog = manager.scene->getFog();
 
-    manager.scene->setZFar(fog->isEnable() ? fog->getEnd() : map.aabb.getLength() * 2);
+    manager.scene->setZFar(fog->isEnable() ? fog->getEnd() + 8 : map.aabb.getLength() * 2);
     manager.scene->updateViewParameter();
 
     // PLAYERS -----------------------------------------------------------------
@@ -195,32 +195,27 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     const Settings::Video& vidSets = manager.app->globalSettings.video;
 
-    if(vidSets.usePpe)
+    if(vidSets.ppeUse)
     {
         using namespace tbe::ppe;
-
-        ppe.boost = new MotionBlurEffect;
-        ppe.boost->setEnable(false);
-        ppe.boost->setIntensity(vidSets.ppe.boostIntensity);
-        manager.ppe->addPostEffect("boostEffect", ppe.boost);
 
         ppe.dammage = new ColorEffect;
         ppe.dammage->setInternalPass(true);
         ppe.dammage->setFusionMode(ColorEffect::MULTIPLICATION_COLOR);
-        ppe.dammage->setColor(vidSets.ppe.dammageColor);
+        ppe.dammage->setColor(Vector4f(1, 0, 0, 1));
         ppe.dammage->setEnable(false);
         manager.ppe->addPostEffect("dammageEffect", ppe.dammage);
 
         ppe.gameover = new BlurEffect;
-        ppe.gameover->setPasse(vidSets.ppe.gameoverPass);
+        ppe.gameover->setPasse(1);
         ppe.gameover->setEnable(false);
         manager.ppe->addPostEffect("gameoverEffect", ppe.gameover);
 
         ppe.bloom = new BloomEffect;
-        ppe.bloom->setRttFrameSize(vidSets.ppe.bloomSize);
-        ppe.bloom->setIntensity(vidSets.ppe.bloomIntensity);
-        ppe.bloom->setThreshold(vidSets.ppe.bloomThershold);
-        ppe.bloom->setBlurPass(vidSets.ppe.bloomBlurPass);
+        ppe.bloom->setRttFrameSize(vidSets.ppeSize);
+        ppe.bloom->setIntensity(0.75);
+        ppe.bloom->setThreshold(0.25);
+        ppe.bloom->setBlurPass(10);
         manager.ppe->addPostEffect("bloomEffect", ppe.bloom);
     }
 }
@@ -369,6 +364,7 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor()
 {
     Vector3f randPos;
 
+    // Réduit le champs d'application de 5%
     float factor = 5 * map.aabb.getLength() / 100;
 
     do
@@ -681,7 +677,7 @@ void GameManager::hudProcess()
 
             // Affichage de l'ecran de dommage si besoins
 
-            if(manager.app->globalSettings.video.usePpe)
+            if(manager.app->globalSettings.video.ppeUse)
             {
                 if(ppe.dammage->isEnable())
                 {
@@ -754,7 +750,19 @@ void GameManager::render()
     if(!m_gameOver)
         onEachFrame(m_userPlayer);
 
+    Vector3f campos = m_camera->getPos();
+    Vector3f camtar = m_camera->getTarget();
+
     // Positionement camera ----------------------------------------------------
+
+    /*
+     * La position de la camera est caluclé a partir
+     * de la position du joueur, et en reculant de 4 unité vers l'arrier.
+     *
+     * Un lancé de rayon est éffectuer pour savoir si la position de la camera
+     * entre en collision avec un objet, si c'est le cas alors la position
+     * arrier diminue en fonction du taux d'intersection.
+     */
 
     Vector3f setPos = m_userPlayer->getVisualBody()->getPos();
 
@@ -766,14 +774,14 @@ void GameManager::render()
     float cameraback = 4.0f;
 
     Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.playerSize * 1.5, 0);
-    Vector3f camendpos = camzeropos + (-m_camera->getTarget()) * cameraback;
+    Vector3f camendpos = camzeropos + (-camtar) * cameraback;
 
     float hit = 1;
     NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
 
-    hit = hit * cameraback / 1.0f;
+    hit = hit * cameraback;
 
-    Vector3f campos = camzeropos - m_camera->getTarget() * min(hit, cameraback);
+    campos = camzeropos - camtar * min(hit, cameraback);
 
     m_camera->setPos(campos);
 
@@ -786,10 +794,15 @@ void GameManager::render()
 
     // Son 3D ------------------------------------------------------------------
 
+    /*
+     * Met a jour la position virtuelle de la camera du moteur audio pour
+     * calculer les son 3D.
+     */
+
     if(!manager.app->globalSettings.noaudio)
     {
-        FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)m_camera->getPos(), 0,
-                                            (FMOD_VECTOR*)(float*)m_camera->getTarget(),
+        FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)campos, 0,
+                                            (FMOD_VECTOR*)(float*)camtar,
                                             (FMOD_VECTOR*)(float*)m_camera->getUp());
 
         FMOD_System_Update(manager.fmodsys);
@@ -797,13 +810,32 @@ void GameManager::render()
 
     // Pick --------------------------------------------------------------------
 
-    m_shootTarget = parallelscene.newton->findAnyBody(m_camera->getPos(), m_camera->getPos() + m_camera->getTarget() * map.aabb.getSize());
+    /*
+     * Ici sera spécifier le vecteur de visé du joueur
+     * en effectuant un lancé de rayon grace au moteur physique
+     * depuis la position de la camera vers un vecteur aligé sur
+     * le vecteur cible de la camera.
+     *
+     * Si le vecteur de visé se trouve a l'interieur du joueur
+     * on relance un second rayon en ignorant le joueur et en affectant une
+     * légere transparence a ce dernier.
+     *
+     * Si la position de la camera se trouve a l'interieur du joueur
+     * on relance un second rayon en ignorant le joueur et en affectant une
+     * forte transparence a ce dernier.
+     */
 
-    AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(Vector3f(0.1f));
+    Vector3f endray = campos + camtar * map.aabb.getLength();
 
-    if(useraabb.isInner(m_camera->getPos()))
+    m_shootTarget = parallelscene.newton->findAnyBody(campos, endray);
+
+    AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb();
+
+    cout << m_shootTarget << endl;
+
+    if(useraabb.isInner(campos))
     {
-        m_shootTarget = parallelscene.newton->findZeroMassBody(m_camera->getPos(), m_camera->getPos() + m_camera->getTarget() * map.aabb.getSize());
+        m_shootTarget = parallelscene.newton->findZeroMassBody(campos, endray);
 
         m_cursorOnPlayer = true;
 
@@ -812,7 +844,7 @@ void GameManager::render()
 
     else if(useraabb.isInner(m_shootTarget))
     {
-        m_shootTarget = parallelscene.newton->findZeroMassBody(m_camera->getPos(), m_camera->getPos() + m_camera->getTarget() * map.aabb.getSize());
+        m_shootTarget = parallelscene.newton->findZeroMassBody(campos, endray);
 
         m_cursorOnPlayer = true;
 
@@ -830,7 +862,7 @@ void GameManager::render()
 
     manager.gameEngine->beginScene();
 
-    if(manager.app->globalSettings.video.usePpe)
+    if(manager.app->globalSettings.video.ppeUse)
     {
         Rtt* rtt = manager.ppe->getRtt();
 
@@ -892,7 +924,7 @@ void GameManager::setGameOver(Player* winner, std::string finalmsg)
 
     hud.background.gameover->setEnable(true);
 
-    if(manager.app->globalSettings.video.usePpe)
+    if(manager.app->globalSettings.video.ppeUse)
         ppe.gameover->setEnable(true);
 }
 
@@ -908,7 +940,7 @@ bool GameManager::isRunning() const
 
 void GameManager::hudDammage(bool status)
 {
-    if(manager.app->globalSettings.video.usePpe)
+    if(manager.app->globalSettings.video.ppeUse)
     {
         ppe.dammage->setEnable(status);
 

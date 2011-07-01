@@ -98,8 +98,6 @@ public:
 
         tbe::AABB aabb;
 
-        tbe::Vector3f::Array spawnPoints;
-
     } map;
 
     struct
@@ -180,7 +178,6 @@ protected:
         tbe::ppe::BlurEffect* gameover;
         tbe::ppe::ColorEffect* bullettime;
         tbe::ppe::ColorEffect* dammage;
-        tbe::ppe::MotionBlurEffect* boost;
 
     } ppe;
 

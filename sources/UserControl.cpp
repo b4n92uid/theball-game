@@ -89,52 +89,33 @@ bool UserControl::isActionStateDown(std::string name)
         return false;
 }
 
-inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
-{
-    Vector3f contact, normal, penetration;
-
-    int contactPoint = NewtonCollisionCollide(node1->getParallelScene()->getNewtonWorld(), 1,
-                                              NewtonBodyGetCollision(node1->getBody()), node1->getMatrix(),
-                                              NewtonBodyGetCollision(node2->getBody()), node2->getMatrix(),
-                                              contact, normal, penetration, 0);
-
-    return (contactPoint > 0 && Vector3f::dot(normal, Vector3f(0, 1, 0)) > 0.25);
-}
-
 void UserControl::process(Player* player)
 {
     scene::Camera* playerCam = m_playManager->manager.scene->getCurCamera();
-
-    bool collideWithStatic = false;
-
-    for(unsigned i = 0; i < m_playManager->map.mapElements.size(); i++)
-        if(m_playManager->map.mapElements[i]->getPhysicBody())
-            if(playerCanJump(player->getPhysicBody(), m_playManager->map.mapElements[i]->getPhysicBody()))
-            {
-                collideWithStatic = true;
-                break;
-            }
 
     // Move
     Vector3f addForce;
 
     if(isActionStateDown("forward"))
-        addForce += playerCam->getTarget() * m_worldSettings.playerMoveSpeed;
+        addForce += playerCam->getTarget();
     if(isActionStateDown("backward"))
-        addForce -= playerCam->getTarget() * m_worldSettings.playerMoveSpeed;
+        addForce -= playerCam->getTarget();
     if(isActionStateDown("strafLeft"))
-        addForce += playerCam->getLeft() * m_worldSettings.playerMoveSpeed;
+        addForce += playerCam->getLeft();
     if(isActionStateDown("strafRight"))
-        addForce -= playerCam->getLeft() * m_worldSettings.playerMoveSpeed;
+        addForce -= playerCam->getLeft();
 
     addForce.y = 0;
 
-    player->getPhysicBody()->setApplyForce(addForce);
+    if(!math::isZero(addForce))
+    {
+        addForce.normalize() *= m_worldSettings.playerMoveSpeed;
+        player->getPhysicBody()->setApplyForce(addForce);
+    }
 
     // Jump
-    if(collideWithStatic)
-        if(isActionStateDown("jump"))
-            player->jump();
+    if(isActionStateDown("jump"))
+        player->jump();
 
     if(isActionStateDown("brake"))
         player->brake();

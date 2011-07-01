@@ -33,11 +33,11 @@ void AppManager::setupVideoMode()
                          globalSettings.video.screenSize,
                          globalSettings.video.bits,
                          globalSettings.video.fullScreen,
-                         globalSettings.video.usePpe ? 0 : globalSettings.video.antialiasing);
+                         globalSettings.video.ppeUse ? 0 : globalSettings.video.antialiasing);
 
-    if(!Shader::checkHardware() && globalSettings.video.usePpe)
+    if(!Shader::checkHardware() && globalSettings.video.ppeUse)
     {
-        globalSettings.video.usePpe = false;
+        globalSettings.video.ppeUse = false;
 
         m_gameEngine->window(CAPTION_TITLE,
                              globalSettings.video.screenSize,
@@ -53,7 +53,7 @@ void AppManager::setupVideoMode()
     m_ppeManager = m_gameEngine->getPostProcessManager();
 
 
-    if(globalSettings.video.usePpe
+    if(globalSettings.video.ppeUse
        && globalSettings.video.antialiasing
        && FrameBufferObject::checkHardware())
     {
@@ -475,7 +475,7 @@ void AppManager::setupMenuGui()
     // Menu de configuration vidéo
     {
         m_controls.settingsmenu.usePpe->push("Désactiver", false).push("Activer", true);
-        m_controls.settingsmenu.usePpe->setCurrent(globalSettings.video.usePpe);
+        m_controls.settingsmenu.usePpe->setCurrent(globalSettings.video.ppeUse);
 
         m_controls.settingsmenu.fullscreen->push("Fenêtrer", false).push("Plein-écran", true);
         m_controls.settingsmenu.fullscreen->setCurrent(globalSettings.video.fullScreen);
@@ -627,7 +627,7 @@ void AppManager::setupBackgroundScene()
 
     // PPE ---------------------------------------------------------------------
 
-    if(globalSettings.video.usePpe)
+    if(globalSettings.video.ppeUse)
     {
         using namespace ppe;
 
@@ -828,7 +828,7 @@ void AppManager::executeMenu()
 
             m_gameEngine->beginScene();
 
-            if(globalSettings.video.usePpe)
+            if(globalSettings.video.ppeUse)
             {
                 Rtt* ppeRtt = m_ppeManager->getRtt();
                 ppeRtt->use(true);

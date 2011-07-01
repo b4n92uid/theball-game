@@ -3,6 +3,8 @@
 
 #define CAPTION_TITLE "theBall ("__DATE__")"
 
+#define foreach BOOST_FOREACH
+
 // GUI HUD ---------------------------------------------------------------------
 #define GUI_CROSHAIR    "data/gfxart/gui/croshair.png"
 #define GUI_BOOST       "data/gfxart/gui/boost.png"

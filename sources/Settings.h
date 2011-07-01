@@ -40,20 +40,13 @@ public:
     {
         float gravity;
 
-        float staticFriction;
-        float keniticFriction;
-
         float playerMoveSpeed;
         float playerBoostSpeed;
         float playerJumpForce;
         float playerSize;
         float playerMasse;
         float playerLinearDamping;
-
-        float playerExplodeLifeInit;
-        float playerExplodeLifeDown;
-        float playerExplodeFreeMove;
-        long playerExplodeNumber;
+        tbe::Vector3f playerAngularDamping;
 
         float weaponSize;
         float weaponMasse;
@@ -63,26 +56,13 @@ public:
     struct Video
     {
         tbe::Vector2i screenSize;
+        int bits;
+
         bool fullScreen;
-        bool usePpe;
-        unsigned bits;
-        unsigned antialiasing;
-        unsigned lod;
+        int antialiasing;
 
-        struct Ppe
-        {
-            float boostIntensity;
-
-            tbe::Vector4f dammageColor;
-
-            int gameoverPass;
-
-            tbe::Vector2f bloomSize;
-            float bloomThershold;
-            float bloomIntensity;
-            float bloomBlurPass;
-
-        } ppe;
+        bool ppeUse;
+        tbe::Vector2i ppeSize;
 
     } video;
 

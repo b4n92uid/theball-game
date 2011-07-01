@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include <boost/foreach.hpp>
+
 #include "AppManager.h"
 #include "GameManager.h"
 #include "MaterialManager.h"
@@ -40,10 +42,10 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     // Effet explosion
     m_deadExplode = new ParticlesEmiter(playManager->parallelscene.particles);
     m_deadExplode->setTexture(PARTICLE_EXPLODE);
-    m_deadExplode->setLifeInit(m_worldSettings.playerExplodeLifeInit);
-    m_deadExplode->setLifeDown(m_worldSettings.playerExplodeLifeDown);
-    m_deadExplode->setFreeMove(m_worldSettings.playerExplodeFreeMove);
-    m_deadExplode->setNumber(m_worldSettings.playerExplodeNumber);
+    m_deadExplode->setLifeInit(1.0);
+    m_deadExplode->setLifeDown(1.0);
+    m_deadExplode->setFreeMove(0.8);
+    m_deadExplode->setNumber(64);
     m_deadExplode->setAutoRebuild(false);
     m_deadExplode->setParent(m_visualBody);
 
@@ -55,7 +57,10 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     m_visualBody->addChild(m_physicBody);
 
     NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
+
     NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
+    NewtonBodySetAngularDamping(m_physicBody->getBody(), m_worldSettings.playerAngularDamping);
+
     NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
     NewtonBodySetUserData(m_physicBody->getBody(), this);
 
@@ -84,24 +89,8 @@ void Player::free()
 
 void Player::randomPosOnFloor()
 {
-    Vector3f::Array& spawns = m_playManager->map.spawnPoints;
-
-    Vector3f newpos = 0;
-
-    if(spawns.empty())
-    {
-        newpos = m_playManager->getRandomPosOnTheFloor();
-    }
-
-    else
-    {
-        newpos = spawns.back();
-        spawns.pop_back();
-        spawns.insert(spawns.begin(), newpos);
-    }
-
     m_physicBody->setVelocity(0);
-    m_physicBody->setMatrix(newpos);
+    m_physicBody->setMatrix(m_playManager->getRandomPosOnTheFloor());
 }
 
 void Player::attachItem(Item* item)
@@ -155,11 +144,35 @@ bool Player::shoot(Vector3f targetpos)
     return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
+inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
+{
+    Vector3f contact, normal, penetration;
+
+    int contactPoint = NewtonCollisionCollide(node1->getParallelScene()->getNewtonWorld(), 1,
+                                              NewtonBodyGetCollision(node1->getBody()), node1->getMatrix(),
+                                              NewtonBodyGetCollision(node2->getBody()), node2->getMatrix(),
+                                              contact, normal, penetration, 0);
+
+    float dot = Vector3f::dot(normal, Vector3f(0, 1, 0));
+
+    return (contactPoint > 0 && dot > 0.25);
+}
+
 void Player::jump()
 {
-    NewtonBodyAddImpulse(m_physicBody->getBody(),
-                         Vector3f(0, m_worldSettings.playerJumpForce, 0),
-                         m_visualBody->getMatrix().getPos());
+
+    foreach(MapElement* elem, m_playManager->map.mapElements)
+    {
+        NewtonNode* nnode = elem->getPhysicBody();
+
+        if(nnode && playerCanJump(nnode, m_physicBody))
+        {
+            NewtonBodyAddImpulse(m_physicBody->getBody(),
+                                 Vector3f(0, m_worldSettings.playerJumpForce, 0),
+                                 m_visualBody->getMatrix().getPos());
+            break;
+        }
+    }
 }
 
 void Player::brake()
