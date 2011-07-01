@@ -763,10 +763,10 @@ void GameManager::render()
 
     m_playerPosRec.push_back(setPos);
 
-    float cameraback = 2.5f;
+    float cameraback = 4.0f;
 
-    Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.playerSize * 2, 0);
-    Vector3f camendpos = camzeropos + (-m_camera->getTarget()) * (cameraback + 1.5f);
+    Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.playerSize * 1.5, 0);
+    Vector3f camendpos = camzeropos + (-m_camera->getTarget()) * cameraback;
 
     float hit = 1;
     NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
