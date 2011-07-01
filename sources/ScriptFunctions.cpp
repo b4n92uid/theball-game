@@ -931,10 +931,7 @@ int registerGlobalHook(lua_State* lua)
     string type = lua_tostring(lua, 1);
     string func = lua_tostring(lua, 2);
 
-    if(type == "score")
-        gm->onScoreWrite.connect(ScoreHook(lua, func));
-
-    else if(type == "frame")
+    if(type == "frame")
         gm->onEachFrame.connect(FrameHook(lua, func));
 
     return 0;

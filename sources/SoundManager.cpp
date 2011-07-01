@@ -44,7 +44,7 @@ SoundManager::SoundManager(GameManager* gameManager)
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
         registerSound(it->first, it->second);
 
-    if(!m_gameManager->manager.app->globalSettings.nomusic)
+    if(!m_gameManager->manager.app->globalSettings.noaudio)
     {
         FMOD_CHANNELGROUP* masterGroupe;
         FMOD_System_GetMasterChannelGroup(m_fmodsys, &masterGroupe);
@@ -104,7 +104,7 @@ void SoundManager::playSound(std::string soundName, MapElement* object)
 
 void SoundManager::registerMusic(std::string name, std::string filename)
 {
-    if(m_gameManager->manager.app->globalSettings.nomusic)
+    if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
 
     if(m_sounds.count(name))
@@ -126,7 +126,7 @@ void SoundManager::registerMusic(std::string name, std::string filename)
 
 void SoundManager::playMusic(std::string soundName)
 {
-    if(m_gameManager->manager.app->globalSettings.nomusic)
+    if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
 
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_musics[soundName].first,
@@ -137,7 +137,7 @@ void SoundManager::playMusic(std::string soundName)
 
 void SoundManager::pauseMusic(std::string soundName)
 {
-    if(m_gameManager->manager.app->globalSettings.nomusic)
+    if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
 
     FMOD_Channel_SetPaused(m_musics[soundName].second, true);
@@ -145,7 +145,7 @@ void SoundManager::pauseMusic(std::string soundName)
 
 void SoundManager::stopMusic(std::string soundName)
 {
-    if(m_gameManager->manager.app->globalSettings.nomusic)
+    if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
 
     FMOD_Channel_Stop(m_musics[soundName].second);

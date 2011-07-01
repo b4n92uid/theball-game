@@ -100,11 +100,6 @@ public:
     void setCurPower(unsigned slot);
     Power* getCurPower() const;
 
-    /// Score
-    void upScore(int value = 1);
-    void setScore(int value);
-    int getScore() const;
-
     /// Energie
     void upEnergy(int value = 1);
     void setEnergy(int energy);
@@ -141,7 +136,6 @@ public:
 
 protected:
     int m_life;
-    int m_score;
     bool m_killed;
     int m_energy;
 

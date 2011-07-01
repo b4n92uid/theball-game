@@ -62,10 +62,7 @@ GameManager::GameManager(AppManager* appManager)
     parallelscene.marks = new scene::MapMarkParallelScene;
     manager.scene->addParallelScene(parallelscene.marks);
 
-    if(manager.app->globalSettings.noaudio)
-        manager.fmodsys = NULL;
-    else
-        manager.fmodsys = appManager->getFmodSystem();
+    manager.fmodsys = appManager->getFmodSystem();
 
     manager.parser = new SceneParser(manager.scene);
     manager.parser->setMeshScene(parallelscene.meshs);
@@ -249,14 +246,6 @@ void GameManager::setupGui()
     manager.gui->addLayout(Layout::Horizental);
     manager.gui->addLayoutStretchSpace();
 
-    hud.scorelist = manager.gui->addTextBox("hud.scorelist");
-    hud.scorelist->setPencil(bigPen);
-    hud.scorelist->setSize(vidsets.screenSize * Vector2f(0.75, 0.75));
-    hud.scorelist->setDefinedSize(true);
-    hud.scorelist->setBackground(guisets.score);
-    hud.scorelist->setTextAlign(TextBox::LEFT);
-    hud.scorelist->setBackgroundPadding(Vector2f(16, 8));
-
     manager.gui->addLayoutStretchSpace();
     manager.gui->endLayout();
     manager.gui->addLayoutStretchSpace();
@@ -267,24 +256,28 @@ void GameManager::setupGui()
     manager.gui->setSession(SCREEN_GAMEOVER);
 
     Texture black;
-    black.build(128, 0);
+    black.build(128, Vector4f(0, 0, 0, 1));
 
     hud.background.gameover = manager.gui->addImage("hud.background.gameover", black);
     hud.background.gameover->setSize(vidsets.screenSize);
-    hud.background.gameover->setOpacity(0.75);
+    hud.background.gameover->setOpacity(0);
     hud.background.gameover->setEnable(false);
 
     manager.gui->addLayout(Layout::Vertical, 10, 10);
     manager.gui->addLayoutStretchSpace();
     manager.gui->addLayout(Layout::Horizental, 10, 10);
     manager.gui->addLayoutStretchSpace();
+
     hud.gameover = manager.gui->addTextBox("hud.gameover");
-    hud.gameover->setSize(vidsets.screenSize * Vector2f(0.75, 0.75));
+    hud.gameover->setSize(Vector2f(vidsets.screenSize) * Vector2f(0.75, 0.75));
     hud.gameover->setDefinedSize(true);
     hud.gameover->setPencil(bigPen);
-    hud.gameover->setBackground(guisets.score);
-    hud.gameover->setBackgroundPadding(8);
+    hud.gameover->setBackground(guisets.backgroundTextbox);
+    hud.gameover->setBackgroundPadding(16);
+    hud.gameover->setBackgroundMask(guisets.maskH);
+    hud.gameover->setArrowTexture(guisets.backgroundTextboxArr);
     hud.gameover->setTextAlign(TextBox::LEFT);
+
     manager.gui->addLayoutStretchSpace();
     manager.gui->endLayout();
     manager.gui->addLayoutStretchSpace();
@@ -495,7 +488,7 @@ void GameManager::eventProcess()
     EventManager* event = manager.gameEngine->getEventManager();
 
     // Session de jeu
-    if(m_timeTo == TIME_TO_PLAY || m_timeTo == TIME_TO_VIEWSCORE)
+    if(m_timeTo == TIME_TO_PLAY)
     {
         manager.gui->setSession(SCREEN_HUD);
 
@@ -506,18 +499,11 @@ void GameManager::eventProcess()
         if(event->notify == EventManager::EVENT_MOUSE_MOVE)
             manager.scene->getCurCamera()->rotate(event->mousePosRel);
 
-        // Affichage des scores
+        // Séléction d'amre
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
             if(m_numslot.count(event->lastActiveKey.first))
                 m_userPlayer->slotWeapon(m_numslot[event->lastActiveKey.first]);
-
-            if(event->lastActiveKey.first == EventManager::KEY_TAB)
-            {
-                manager.gameEngine->setMouseVisible(true);
-
-                m_timeTo = TIME_TO_VIEWSCORE;
-            }
         }
 
         if(event->notify == EventManager::EVENT_KEY_UP
@@ -663,8 +649,6 @@ void GameManager::hudProcess()
 
     // Gestion de l'ETH en jeu -------------------------------------------------
 
-    sort(m_players.begin(), m_players.end(), playerScoreSortProcess);
-
     if(m_timeTo == TIME_TO_PLAY)
     {
         using boost::format;
@@ -732,17 +716,6 @@ void GameManager::hudProcess()
         }
     }
 
-    // Gestion de l'ETH en affichage des scores --------------------------------
-
-    if(m_timeTo == TIME_TO_VIEWSCORE && !m_userPlayer->isKilled())
-    {
-        manager.gui->setSession(SCREEN_PLAYERSLIST);
-
-        string conent = onScoreWrite();
-
-        hud.scorelist->write(conent);
-    }
-
     // Gestion de l'ETH en gameover --------------------------------------------
 
     if(m_timeTo == TIME_TO_GAMEOVER)
@@ -778,7 +751,8 @@ float rayFilter(const NewtonBody* body, const float*, int, void* userData, float
 
 void GameManager::render()
 {
-    onEachFrame(m_userPlayer);
+    if(!m_gameOver)
+        onEachFrame(m_userPlayer);
 
     // Positionement camera ----------------------------------------------------
 
@@ -821,29 +795,7 @@ void GameManager::render()
         FMOD_System_Update(manager.fmodsys);
     }
 
-    // Rendue ------------------------------------------------------------------
-
-    manager.gameEngine->beginScene();
-
-    if(manager.app->globalSettings.video.usePpe)
-    {
-        Rtt* rtt = manager.ppe->getRtt();
-
-        rtt->use(true);
-        rtt->clear();
-        manager.scene->render();
-        rtt->use(false);
-
-        // m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2, rtt);
-
-        manager.ppe->render();
-    }
-    else
-    {
-        manager.scene->render();
-
-        // m_shootTarget = manager.scene->ScreenToWorld(screenSize / 2);
-    }
+    // Pick --------------------------------------------------------------------
 
     m_shootTarget = parallelscene.newton->findAnyBody(m_camera->getPos(), m_camera->getPos() + m_camera->getTarget() * map.aabb.getSize());
 
@@ -872,6 +824,26 @@ void GameManager::render()
         m_cursorOnPlayer = false;
 
         m_userPlayer->makeTransparent(false);
+    }
+
+    // Rendue ------------------------------------------------------------------
+
+    manager.gameEngine->beginScene();
+
+    if(manager.app->globalSettings.video.usePpe)
+    {
+        Rtt* rtt = manager.ppe->getRtt();
+
+        rtt->use(true);
+        rtt->clear();
+        manager.scene->render();
+        rtt->use(false);
+
+        manager.ppe->render();
+    }
+    else
+    {
+        manager.scene->render();
     }
 
     manager.gui->render();
@@ -909,7 +881,12 @@ void GameManager::setGameOver(Player* winner, std::string finalmsg)
     m_winnerPlayer = winner;
 
     for(unsigned i = 0; i < m_players.size(); i++)
+    {
+        m_players[i]->getPhysicBody()->setApplyForce(0);
+        m_players[i]->getPhysicBody()->setVelocity(0);
+
         NewtonBodySetFreezeState(m_players[i]->getPhysicBody()->getBody(), true);
+    }
 
     manager.gameEngine->setMouseVisible(true);
 
@@ -927,11 +904,6 @@ bool GameManager::isGameOver() const
 bool GameManager::isRunning() const
 {
     return m_running;
-}
-
-void GameManager::hudItem(bool status)
-{
-    hud.item->setCurState(status);
 }
 
 void GameManager::hudDammage(bool status)

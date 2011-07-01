@@ -97,6 +97,7 @@ public:
         std::string backgroundHud;
         std::string backgroundPause;
         std::string backgroundTextbox;
+        std::string backgroundTextboxArr;
         std::string backgroundListbox;
         std::string backgroundLogo;
 
@@ -179,7 +180,6 @@ public:
     } campaign;
 
     bool noaudio;
-    bool nomusic;
 
     std::vector<MapInfo> availableMap;
     std::vector<PlayerInfo> availablePlayer;

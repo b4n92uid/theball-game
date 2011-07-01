@@ -103,8 +103,8 @@ void ItemAddAmmo::modifPlayer(Player* player)
 
 bool ItemAddAmmo::isNeeded(Player* player)
 {
-    unsigned percent = player->getCurWeapon()->getAmmoCount()*100
-            / player->getCurWeapon()->getMaxAmmoCount();
+    //    unsigned percent = player->getCurWeapon()->getAmmoCount()*100
+    //            / player->getCurWeapon()->getMaxAmmoCount();
 
     //    if(!isTaked() && percent < m_aiParams.criticalAmmoValue)
     //        return true;
@@ -191,7 +191,7 @@ void ItemFatalShot::modifPlayer(Player* player)
     if(playManager->getUserPlayer() == player)
     {
         playManager->display("Tire fatale");
-        playManager->hudItem(true);
+        // playManager->hudItem(true);
     }
 
     //    FatalShotEffect* effect = new FatalShotEffect;
@@ -261,7 +261,7 @@ void ItemSuperLife::modifPlayer(Player* player)
     if(playManager->getUserPlayer() == player)
     {
         playManager->display("Super santé !");
-        playManager->hudItem(true);
+        // playManager->hudItem(true);
     }
 
     //    SuperLifeEffect* effect = new SuperLifeEffect;

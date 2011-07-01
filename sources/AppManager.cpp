@@ -258,6 +258,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.playmenu.description = m_guiManager->addTextBox("description");
+    m_controls.playmenu.description->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
     m_controls.playmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
     m_controls.playmenu.description->setBackgroundPadding(16);
     m_controls.playmenu.description->setSize(Vector2f(384, 256));
@@ -428,6 +429,7 @@ void AppManager::setupMenuGui()
 
     m_controls.aboutmenu.aboutText = m_guiManager->addTextBox("aboutText");
     m_controls.aboutmenu.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
+    m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
     m_controls.aboutmenu.aboutText->setDefinedSize(true);
     m_controls.aboutmenu.aboutText->setBackgroundPadding(8);
     m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
@@ -776,7 +778,7 @@ void AppManager::executeMenu()
     using namespace tbe::gui;
     using namespace tbe::scene;
 
-    if(!globalSettings.noaudio && !globalSettings.nomusic)
+    if(!globalSettings.noaudio)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 
     bool done = false;
@@ -859,7 +861,7 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
     m_sceneManager->clearAll();
     m_ppeManager->clearAll();
 
-    if(!globalSettings.noaudio && !globalSettings.nomusic)
+    if(!globalSettings.noaudio)
         FMOD_Channel_Stop(m_mainMusicCh);
 
     // Affichage de l'ecran de chargement --------------------------------------
@@ -923,7 +925,7 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 
     delete gameManager;
 
-    if(!globalSettings.noaudio && !globalSettings.nomusic)
+    if(!globalSettings.noaudio)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 
@@ -943,7 +945,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
         m_sceneManager->clearAll();
         m_ppeManager->clearAll();
 
-        if(!globalSettings.noaudio && !globalSettings.nomusic)
+        if(!globalSettings.noaudio)
             FMOD_Channel_Stop(m_mainMusicCh);
 
         // Affichage de l'ecran de chargement --------------------------------------
@@ -1090,7 +1092,7 @@ void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
     }
     while(!done);
 
-    if(!globalSettings.noaudio && !globalSettings.nomusic)
+    if(!globalSettings.noaudio)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 

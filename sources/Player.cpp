@@ -26,7 +26,6 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     m_curWeapon = m_weaponsPack.end();
     m_curPower = m_powerPack.end();
     m_killed = false;
-    m_score = 0;
     m_life = 100;
     m_energy = 100;
     m_attachedCotroller = NULL;
@@ -345,21 +344,6 @@ bool Player::isKilled() const
     return m_killed;
 }
 
-void Player::upScore(int value)
-{
-    m_score = max(m_score + value, 0);
-}
-
-void Player::setScore(int value)
-{
-    this->m_score = max(value, 0);
-}
-
-int Player::getScore() const
-{
-    return m_score;
-}
-
 void Player::upEnergy(int value)
 {
     this->m_energy += value;
@@ -410,29 +394,14 @@ void Player::takeDammage(Bullet* ammo)
 
     int dammage = ammo->getDammage();
 
-    int scoremod = dammage > m_life ? m_life : dammage;
-
     m_life = max(m_life - dammage, 0);
 
     Weapon* wp = ammo->getWeapon();
 
-    if(wp)
-    {
-        Player* striker = wp->getShooter();
+    Player* striker = wp->getShooter();
 
-        if(m_life <= 0)
-        {
-            striker->upScore(500);
-            upScore(-500);
-
-            kill(striker);
-        }
-        else
-        {
-            striker->upScore(scoremod);
-            upScore(-scoremod);
-        }
-    }
+    if(m_life <= 0)
+        kill(striker);
 
     if(m_playManager->getUserPlayer() == this)
         m_playManager->hudDammage(true);

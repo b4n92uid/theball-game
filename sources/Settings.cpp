@@ -19,7 +19,6 @@ using namespace tbe::gui;
 Settings::Settings()
 {
     noaudio = false;
-    nomusic = false;
 }
 
 Settings::~Settings()
@@ -35,6 +34,7 @@ void Settings::readGui()
     binder["BACKGROUND_HUD"] = &gui.backgroundHud;
     binder["BACKGROUND_PAUSE"] = &gui.backgroundPause;
     binder["BACKGROUND_TEXTBOX"] = &gui.backgroundTextbox;
+    binder["BACKGROUND_TEXTBOX_ARR"] = &gui.backgroundTextboxArr;
     binder["BACKGROUND_LISTBOX"] = &gui.backgroundListbox;
     binder["BACKGROUND_LOGO"] = &gui.backgroundLogo;
     binder["MASK_H"] = &gui.maskH;

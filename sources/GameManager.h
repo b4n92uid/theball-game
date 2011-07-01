@@ -67,7 +67,6 @@ public:
     bool isGameOver() const;
     bool isRunning() const;
 
-    void hudItem(bool status);
     void hudDammage(bool status);
 
     virtual tbe::Vector3f getShootTarget() const;
@@ -136,24 +135,14 @@ public:
 
     Settings::World worldSettings;
 
-    boost::signal<std::string() > onScoreWrite;
     boost::signal<void(Player*) > onEachFrame;
 
 protected:
 
     void processDevelopperCodeEvent();
 
-    static bool playerScoreSortProcess(Player* p1, Player* p2)
-    {
-        if(p1->getScore() == p2->getScore())
-            return (p1->getName() > p2->getName());
-        else
-            return (p1->getScore() > p2->getScore());
-    }
-
     enum TimtTo
     {
-        TIME_TO_VIEWSCORE,
         TIME_TO_PLAY,
         TIME_TO_PAUSE,
         TIME_TO_GAMEOVER,
@@ -205,7 +194,6 @@ protected:
 
         } playmenu;
 
-        tbe::gui::TextBox* scorelist;
         tbe::gui::TextBox* state;
         tbe::gui::TextBox* gameover;
         tbe::gui::TextBox* log;
@@ -213,8 +201,6 @@ protected:
         tbe::gui::Gauge* ammo;
         tbe::gui::Gauge* life;
         tbe::gui::Gauge* bullettime;
-
-        tbe::gui::StateShow* item;
 
         struct
         {

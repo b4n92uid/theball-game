@@ -47,9 +47,6 @@ int main(int argc, char** argv)
 
         int index = -1;
 
-        if((index = isarg(argc, argv, "nomusic")) != -1)
-            theBall.globalSettings.nomusic = true;
-
         if((index = isarg(argc, argv, "noaudio")) != -1)
             theBall.globalSettings.noaudio = true;
 
