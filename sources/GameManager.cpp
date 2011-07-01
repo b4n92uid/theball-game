@@ -226,7 +226,6 @@ void GameManager::setupGui()
 
     cout << "--- Loading GUI" << endl;
 
-
     Settings::Gui& guisets = manager.app->globalSettings.gui;
     Settings::Video& vidsets = manager.app->globalSettings.video;
 
@@ -581,7 +580,7 @@ void GameManager::gameProcess()
      * Pour chaque joueurs
      *  - les joueurs mort pour les reconstruires
      *  - les joueurs en fin de vie pour la préparation a la mort ;)
-     *  - les joueurs hors de l'arene pour les remetren place
+     *  - les joueurs hors de l'arene pour les remetr en place
      */
     for(unsigned i = 0; i < m_players.size(); i++)
     {
@@ -611,7 +610,8 @@ void GameManager::gameProcess()
 
             if(!map.aabb.isInner(player->getVisualBody()))
             {
-                player->randomPosOnFloor();
+                if(!onOutOfArena(player))
+                    player->setInLastSpawnPoint();
             }
         }
     }
@@ -830,8 +830,6 @@ void GameManager::render()
     m_shootTarget = parallelscene.newton->findAnyBody(campos, endray);
 
     AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb();
-
-    cout << m_shootTarget << endl;
 
     if(useraabb.isInner(campos))
     {

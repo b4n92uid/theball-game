@@ -924,6 +924,28 @@ struct FrameHook
     lua_State* lua;
 };
 
+struct OutOfArenaHook
+{
+
+    OutOfArenaHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player * userplayer)
+    {
+        lua_getglobal(lua, callback.c_str());
+        lua_pushplayer(lua, userplayer);
+        lua_call(lua, 1, 1);
+
+        return lua_toboolean(lua, -1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
 int registerGlobalHook(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
@@ -933,6 +955,9 @@ int registerGlobalHook(lua_State* lua)
 
     if(type == "frame")
         gm->onEachFrame.connect(FrameHook(lua, func));
+
+    else if(type == "out")
+        gm->onOutOfArena.connect(OutOfArenaHook(lua, func));
 
     return 0;
 }

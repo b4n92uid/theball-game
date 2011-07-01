@@ -71,6 +71,9 @@ public:
     /// Assigne une position alétoire au sol
     void randomPosOnFloor();
 
+    /// Assigne la dernier position d'apparition
+    void setInLastSpawnPoint();
+
     /**
      * Ajoute une arme au joueur
      * si l'arme existe déja on ajouter les munitions puis on la supprime
@@ -155,6 +158,8 @@ protected:
     tbe::scene::OBJMesh* m_visualBody;
 
     std::string m_nickname;
+
+    tbe::Vector3f m_lastSpawnPoint;
 
 private:
     bool m_energyVoid;

@@ -18,6 +18,6 @@
     <set name="GUI_EDIT"                value="data/gfxart/gui/edit.png" size="192, 48" />
     <set name="GUI_SWITCH"              value="data/gfxart/gui/switch.png" size="192, 48" />
     <set name="GUI_VECTOR"              value="data/gfxart/gui/vectorbox.png" size="192, 48" />
-    <set name="GUI_FONT"                value="data/gfxart/gui/NEUROPOL.ttf" />
+    <set name="GUI_FONT"                value="data/gfxart/gui/neuropol.ttf" />
     <set name="GUI_FONTSIZE"            value="12" />
 </gui>

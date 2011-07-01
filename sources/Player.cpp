@@ -87,6 +87,12 @@ void Player::free()
     m_powerPack.clear();
 }
 
+void Player::setInLastSpawnPoint()
+{
+    m_physicBody->setVelocity(0);
+    m_physicBody->setMatrix(m_lastSpawnPoint);
+}
+
 void Player::randomPosOnFloor()
 {
     m_physicBody->setVelocity(0);
@@ -180,6 +186,7 @@ void Player::brake()
     if(!clocks.boostBrake.isEsplanedTime(500))
         return;
 
+    m_physicBody->setOmega(0);
     m_physicBody->setVelocity(0);
     m_soundManager->playSound("stop", this);
 }
@@ -325,6 +332,8 @@ void Player::reBorn()
     addPower(btime);
 
     onRespawn(this);
+
+    m_lastSpawnPoint = m_physicBody->getPos();
 }
 
 void Player::kill(Player* killer)

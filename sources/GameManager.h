@@ -134,6 +134,7 @@ public:
     Settings::World worldSettings;
 
     boost::signal<void(Player*) > onEachFrame;
+    boost::signal<bool(Player*) > onOutOfArena;
 
 protected:
 
