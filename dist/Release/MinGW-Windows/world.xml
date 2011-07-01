@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <world>
-    <set name="World.Gravity" value="2" />
+    <set name="World.Gravity" value="6" />
 
     <set name="Friction.Static" value="512" />
     <set name="Friction.Kenitic" value="256" />
 
-    <set name="Player.MoveSpeed" value="64" />
-    <set name="Player.BoostSpeed" value="64" />
-    <set name="Player.JumpForce" value="8" />
-    <set name="Player.Size" value="0.25" />
-    <set name="Player.Masse" value="4" />
-    <set name="Player.LinearDamping" value="2" />
-    <set name="Player.BoostReload" value="3000" />
-    <set name="Player.StartImmunity" value="2000" />
+    <set name="Player.MoveSpeed" value="256" />
+    <set name="Player.BoostSpeed" value="256" />
+    <set name="Player.JumpForce" value="16" />
+    <set name="Player.Size" value="1" />
+    <set name="Player.Masse" value="8" />
+    <set name="Player.LinearDamping" value="4" />
 
     <set name="Player.Explode.LifeInit" value="1.0" />
     <set name="Player.Explode.LifeDown" value="1.0" />
@@ -21,8 +19,6 @@
 
     <set name="Weapon.Size" value="0.001" />
     <set name="Weapon.Masse" value="0.1" />
-
-    <set name="Item.RespawnTime" value="8000" />
 
     <set name="PPE.DammageColor" value="1,0,0,1" />
     <set name="PPE.GameoverPass" value="2" />

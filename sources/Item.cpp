@@ -20,7 +20,7 @@ Item::Item(GameManager* gameManager, tbe::Matrix4 pos) : MapElement(gameManager)
 
     m_initialMatrix = pos;
 
-    m_respawnTime = m_worldSettings.itemRespawnTime;
+    // m_respawnTime = m_worldSettings.itemRespawnTime;
 
     m_visualBody = new OBJMesh(gameManager->parallelscene.meshs);
     m_visualBody->setMatrix(m_initialMatrix);

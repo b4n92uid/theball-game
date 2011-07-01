@@ -49,8 +49,6 @@ public:
         float playerSize;
         float playerMasse;
         float playerLinearDamping;
-        long playerStartImmunity;
-        long playerBoostReload;
 
         float playerExplodeLifeInit;
         float playerExplodeLifeDown;
@@ -59,8 +57,6 @@ public:
 
         float weaponSize;
         float weaponMasse;
-
-        long itemRespawnTime;
 
     } world;
 

@@ -158,8 +158,6 @@ void Settings::readWorld()
     floatbinder["Player.Size"] = &world.playerSize;
     floatbinder["Player.Masse"] = &world.playerMasse;
     floatbinder["Player.LinearDamping"] = &world.playerLinearDamping;
-    longbinder["Player.BoostReload"] = &world.playerBoostReload;
-    longbinder["Player.StartImmunity"] = &world.playerStartImmunity;
 
     floatbinder["Player.Explode.LifeInit"] = &world.playerExplodeLifeInit;
     floatbinder["Player.Explode.LifeDown"] = &world.playerExplodeLifeDown;
@@ -168,8 +166,6 @@ void Settings::readWorld()
 
     floatbinder["Weapon.Size"] = &world.weaponSize;
     floatbinder["Weapon.Masse"] = &world.weaponMasse;
-
-    longbinder["Item.RespawnTime"] = &world.itemRespawnTime;
 
     floatbinder["PPE.BoostIntensity"] = &video.ppe.boostIntensity;
 
