@@ -187,9 +187,7 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     // SCRIPT ------------------------------------------------------------------
 
-    string scriptpath = tools::pathScope(m_playSetting.map.filename, m_playSetting.map.script, true);
-
-    manager.script->load(scriptpath);
+    manager.script->load(m_playSetting.map.script);
 
     // PPE ---------------------------------------------------------------------
 
@@ -229,7 +227,11 @@ void GameManager::setupGui()
     Settings::Gui& guisets = manager.app->globalSettings.gui;
     Settings::Video& vidsets = manager.app->globalSettings.video;
 
-    Pencil bigPen(guisets.font, guisets.fontSize * 1.5);
+    Pencil whiteBigPen(guisets.font, guisets.fontSize * 1.5);
+    whiteBigPen.setColor(1);
+
+    Pencil whitePen(guisets.font, guisets.fontSize);
+    whitePen.setColor(1);
 
     // Tabaleau des joueur ------------------------------------------------------
 
@@ -265,7 +267,7 @@ void GameManager::setupGui()
     hud.gameover = manager.gui->addTextBox("hud.gameover");
     hud.gameover->setSize(Vector2f(vidsets.screenSize) * Vector2f(0.75, 0.75));
     hud.gameover->setDefinedSize(true);
-    hud.gameover->setPencil(bigPen);
+    hud.gameover->setPencil(whiteBigPen);
     hud.gameover->setBackground(guisets.backgroundTextbox);
     hud.gameover->setPadding(16);
     hud.gameover->setBackgroundMask(guisets.maskH);
@@ -294,7 +296,7 @@ void GameManager::setupGui()
     manager.gui->addLayoutStretchSpace();
 
     TextBox* pauseLabel = manager.gui->addTextBox("hud.pauseLabel");
-    pauseLabel->setPencil(bigPen);
+    pauseLabel->setPencil(whiteBigPen);
     pauseLabel->write("Menu Pause !");
 
     manager.gui->endLayout();
@@ -337,7 +339,7 @@ void GameManager::setupGui()
     manager.gui->addLayoutStretchSpace();
 
     hud.log = manager.gui->addTextBox("hud.log");
-    hud.log->setPencil(bigPen);
+    hud.log->setPencil(whiteBigPen);
     hud.log->setBackground(guisets.notify);
     hud.log->setPadding(Vector2f(32, 16));
     hud.log->setEnable(false);
@@ -350,6 +352,7 @@ void GameManager::setupGui()
 
     // -------- State
     hud.state = manager.gui->addTextBox("hud.state");
+    hud.state->setPencil(whitePen);
     // --------
 
     manager.gui->endLayout();
@@ -660,7 +663,7 @@ void GameManager::hudProcess()
 
         if(!m_userPlayer->isKilled())
         {
-            // Mise a jour des bar de progression (Vie, Muinition, Bullettime, Boost)
+            // Mise a jour des bar de progression (Vie, Muinition, Bullettime)
 
             hud.ammo->setLabel((format("%1% %2%/%3%")
                                % curWeapon->getWeaponName() % ammoCount % ammoCountMax).str());

@@ -137,7 +137,7 @@ void AppManager::setupMenuGui()
 
     guiskin->gauge(globalSettings.gui.gauge);
     guiskin->gaugeSize(globalSettings.gui.gaugeSize);
-    guiskin->gaugeMetaCount = 4;
+    guiskin->gaugeMetaCount = 2;
 
     guiskin->editBox(globalSettings.gui.editBox);
     guiskin->editBoxSize(globalSettings.gui.editBoxSize);
@@ -291,12 +291,15 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 5);
     m_guiManager->addLayoutStretchSpace();
 
+    m_controls.playmenu.preview = m_guiManager->addImage("preview");
+    m_controls.playmenu.preview->setSize(Vector2f(384, 256));
+
     m_controls.playmenu.description = m_guiManager->addTextBox("description");
     m_controls.playmenu.description->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
     m_controls.playmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
     m_controls.playmenu.description->setPadding(16);
     m_controls.playmenu.description->setBackgroundMask(globalSettings.gui.maskH);
-    m_controls.playmenu.description->setSize(Vector2f(384, 256));
+    m_controls.playmenu.description->setSize(Vector2f(384, 128));
     m_controls.playmenu.description->setDefinedSize(true);
     m_controls.playmenu.description->setTextAlign(TextBox::LEFT);
 
@@ -418,8 +421,6 @@ void AppManager::setupMenuGui()
     // -------- Collone 2
     m_guiManager->addLayout(Layout::Vertical, 2);
     m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addKeyConfig("boost");
-    labels << "Boost";
     m_guiManager->addKeyConfig("brake");
     labels << "Brake";
     m_guiManager->addKeyConfig("shoot");
@@ -592,6 +593,21 @@ void AppManager::updateQuickPlayMapInfo()
                                    mapinfo.name.c_str(),
                                    mapinfo.author.c_str(),
                                    mapinfo.comment.c_str()));
+
+    if(!mapinfo.screen.empty())
+    {
+        try
+        {
+            m_controls.playmenu.preview->setBackground(mapinfo.screen);
+        }
+        catch(std::exception& e)
+        {
+            cout << e.what() << endl;
+            m_controls.playmenu.preview->setBackground(globalSettings.gui.nopreview);
+        }
+    }
+    else
+        m_controls.playmenu.preview->setBackground(globalSettings.gui.nopreview);
 }
 
 void AppManager::updateGuiContent()
@@ -702,7 +718,10 @@ void AppManager::processCampaignMenuEvent()
 void AppManager::processPlayMenuEvent()
 {
     if(m_controls.playmenu.mapSelect->isActivate())
+    {
         updateQuickPlayMapInfo();
+        m_controls.playmenu.mapSelect->setActivate(false);
+    }
 
     else if(m_controls.playmenu.playerSelect->isActivate());
 

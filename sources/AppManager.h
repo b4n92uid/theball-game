@@ -101,6 +101,8 @@ protected:
             tbe::gui::EditBox* playerName;
             tbe::gui::TextBox* description;
 
+            tbe::gui::Image* preview;
+
             tbe::gui::Button* play;
             tbe::gui::Button* ret;
 

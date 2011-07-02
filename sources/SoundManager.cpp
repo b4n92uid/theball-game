@@ -26,7 +26,6 @@ SoundManager::SoundManager(GameManager* gameManager)
 
     map<string, string> soundPaths;
 
-    soundPaths["boost"] = "data/sfxart/boost.wav";
     soundPaths["stop"] = "data/sfxart/stop.wav";
     soundPaths["bullettime"] = "data/sfxart/bullettime.wav";
     soundPaths["hit"] = "data/sfxart/hit.wav";

@@ -8,9 +8,9 @@
     <set name="BACKGROUND_TEXTBOX_ARR" 	value="data/gfxart/gui/textboxarr.png" />
     <set name="BACKGROUND_LISTBOX"      value="data/gfxart/gui/listbox.png" />
     <set name="BACKGROUND_LOGO"         value="data/gfxart/gui/logo.png" />
+    <set name="NO_PREVIEW"         		value="data/gfxart/gui/nopreview.png" />
     <set name="MASK_H"                  value="data/gfxart/gui/horzmask.png" />
     <set name="MASK_V"                  value="data/gfxart/gui/vertmask.png" />
-    <set name="GUI_SCORE"               value="data/gfxart/gui/score.png" />
     <set name="GUI_NOTIFY"              value="data/gfxart/gui/notify.png" />
     <set name="GUI_PREVIEW"             value="data/gfxart/gui/previewframe.png" />
     <set name="GUI_BUTTON"              value="data/gfxart/gui/button.png" size="128, 32" />

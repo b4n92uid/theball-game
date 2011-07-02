@@ -39,6 +39,7 @@ void Settings::readGui()
     binder["BACKGROUND_LOGO"] = &gui.backgroundLogo;
     binder["MASK_H"] = &gui.maskH;
     binder["MASK_V"] = &gui.maskV;
+    binder["NO_PREVIEW"] = &gui.nopreview;
     binder["GUI_SCORE"] = &gui.score;
     binder["GUI_NOTIFY"] = &gui.notify;
     binder["GUI_PREVIEW"] = &gui.preview;
@@ -161,7 +162,6 @@ void Settings::readWorld()
     floatbinder["World.Gravity"] = &world.gravity;
 
     floatbinder["Player.MoveSpeed"] = &world.playerMoveSpeed;
-    floatbinder["Player.BoostSpeed"] = &world.playerBoostSpeed;
     floatbinder["Player.JumpForce"] = &world.playerJumpForce;
     floatbinder["Player.Size"] = &world.playerSize;
     floatbinder["Player.Masse"] = &world.playerMasse;
@@ -318,7 +318,7 @@ void Settings::readMapInfo()
 void Settings::readSetting()
 {
     readGui();
-    readCampaign();
+    // readCampaign();
     readProfiles();
     readVideo();
     readControl();
@@ -369,7 +369,6 @@ void Settings::saveControl()
     actions.push_back("strafRight");
     actions.push_back("strafLeft");
     actions.push_back("jump");
-    actions.push_back("boost");
     actions.push_back("brake");
     actions.push_back("shoot");
     actions.push_back("power");
@@ -453,7 +452,6 @@ void Settings::fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
     actions.push_back("strafRight");
     actions.push_back("strafLeft");
     actions.push_back("jump");
-    actions.push_back("boost");
     actions.push_back("brake");
     actions.push_back("shoot");
     actions.push_back("power");
@@ -486,11 +484,20 @@ Settings::MapInfo::MapInfo(std::string path)
     scene::SceneParser parser;
     parser.loadScene(path);
 
+    cout << "Load Map file: " << filename << endl;
+
     author = parser.getAuthorName();
     name = parser.getSceneName();
 
     script = parser.getAdditionalString("script");
+    screen = parser.getAdditionalString("screenshot");
     comment = parser.getAdditionalString("comment");
+
+    if(!script.empty())
+        script = tools::pathScope(filename, script, true);
+
+    if(!screen.empty())
+        screen = tools::pathScope(filename, screen, true);
 
     if(author.empty())
         author = "<Inconnue>";

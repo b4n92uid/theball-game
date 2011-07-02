@@ -183,7 +183,7 @@ void Player::jump()
 
 void Player::brake()
 {
-    if(!clocks.boostBrake.isEsplanedTime(500))
+    if(!clocks.brake.isEsplanedTime(500))
         return;
 
     m_physicBody->setOmega(0);

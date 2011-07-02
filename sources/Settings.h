@@ -41,7 +41,6 @@ public:
         float gravity;
 
         float playerMoveSpeed;
-        float playerBoostSpeed;
         float playerJumpForce;
         float playerSize;
         float playerMasse;
@@ -76,6 +75,8 @@ public:
         std::string backgroundTextboxArr;
         std::string backgroundListbox;
         std::string backgroundLogo;
+
+        std::string nopreview;
 
         std::string maskH;
         std::string maskV;
@@ -116,6 +117,7 @@ public:
         std::string author;
         std::string comment;
         std::string script;
+        std::string screen;
 
         std::string filename;
     };

@@ -50,8 +50,7 @@ public:
     void takeDammage(Bullet* ammo);
 
     /**
-     * Routine de traitement pour
-     * le boost et les items
+     * Routine de traitement
      */
     void process();
 
@@ -120,9 +119,7 @@ public:
 
     struct
     {
-        tbe::ticks::Clock boostDisableBlur;
-        tbe::ticks::Clock boostAvailable;
-        tbe::ticks::Clock boostBrake;
+        tbe::ticks::Clock brake;
         tbe::ticks::Clock shoot;
         tbe::ticks::Clock readyToDelete;
 
