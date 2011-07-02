@@ -292,14 +292,14 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.playmenu.preview = m_guiManager->addImage("preview");
-    m_controls.playmenu.preview->setSize(Vector2f(384, 256));
+    m_controls.playmenu.preview->setSize(Vector2f(256, 256));
 
     m_controls.playmenu.description = m_guiManager->addTextBox("description");
     m_controls.playmenu.description->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
     m_controls.playmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
     m_controls.playmenu.description->setPadding(16);
     m_controls.playmenu.description->setBackgroundMask(globalSettings.gui.maskH);
-    m_controls.playmenu.description->setSize(Vector2f(384, 128));
+    m_controls.playmenu.description->setSize(Vector2f(256, 128));
     m_controls.playmenu.description->setDefinedSize(true);
     m_controls.playmenu.description->setTextAlign(TextBox::LEFT);
 
