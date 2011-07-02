@@ -880,6 +880,8 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
     m_guiManager->getControl<gui::TextBox > ("load:stateText")
             ->write("Appuyer sur \"Espace\" pour continuer...");
 
+    m_guiManager->updateLayout();
+
     m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
     while(!m_eventMng->keyState[EventManager::KEY_SPACE])

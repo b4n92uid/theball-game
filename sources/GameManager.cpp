@@ -309,9 +309,7 @@ void GameManager::setupGui()
     hud.background.dammage->setSize(vidsets.screenSize);
     hud.background.dammage->setEnable(false);
 
-    manager.gui->addImage("2:background", guisets.backgroundHud)->setSize(vidsets.screenSize);
-
-    Image* croshair = manager.gui->addImage("01:croshair", GUI_CROSHAIR);
+    Image* croshair = manager.gui->addImage("1:croshair", GUI_CROSHAIR);
     croshair->setPos(Vector2f(vidsets.screenSize) / 2.0f - croshair->getSize() / 2.0f);
 
     manager.gui->addLayout(Layout::Vertical, 10, 10);

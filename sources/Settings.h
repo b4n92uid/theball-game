@@ -69,7 +69,6 @@ public:
     {
         std::string backgroundMainmenu;
         std::string backgroundDammage;
-        std::string backgroundHud;
         std::string backgroundPause;
         std::string backgroundTextbox;
         std::string backgroundTextboxArr;
