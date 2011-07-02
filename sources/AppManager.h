@@ -51,9 +51,6 @@ protected:
     /// Initialise l'interface du menu
     void setupMenuGui();
 
-    /// Initialise la scene de fond du menu
-    void setupBackgroundScene();
-
     /// Initialise les options audio
     void setupSound();
 
@@ -75,9 +72,6 @@ protected:
     tbe::scene::SceneManager* m_sceneManager;
     tbe::ppe::PostProcessManager* m_ppeManager;
     tbe::ticks::FpsManager* m_fpsMng;
-
-    tbe::scene::Mesh* m_logo;
-    tbe::scene::Camera* m_camera;
 
     tbe::ticks::Clock m_screenWaitClock;
 

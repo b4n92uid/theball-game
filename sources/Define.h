@@ -3,6 +3,8 @@
 
 #define CAPTION_TITLE "theBall ("__DATE__")"
 
+#include <boost/foreach.hpp>
+
 #define foreach BOOST_FOREACH
 
 // GUI HUD ---------------------------------------------------------------------

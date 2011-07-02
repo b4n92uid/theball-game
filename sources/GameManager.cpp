@@ -267,7 +267,7 @@ void GameManager::setupGui()
     hud.gameover->setDefinedSize(true);
     hud.gameover->setPencil(bigPen);
     hud.gameover->setBackground(guisets.backgroundTextbox);
-    hud.gameover->setBackgroundPadding(16);
+    hud.gameover->setPadding(16);
     hud.gameover->setBackgroundMask(guisets.maskH);
     hud.gameover->setArrowTexture(guisets.backgroundTextboxArr);
     hud.gameover->setTextAlign(TextBox::LEFT);
@@ -339,7 +339,7 @@ void GameManager::setupGui()
     hud.log = manager.gui->addTextBox("hud.log");
     hud.log->setPencil(bigPen);
     hud.log->setBackground(guisets.notify);
-    hud.log->setBackgroundPadding(Vector2f(32, 16));
+    hud.log->setPadding(Vector2f(32, 16));
     hud.log->setEnable(false);
 
     manager.gui->addLayoutStretchSpace();

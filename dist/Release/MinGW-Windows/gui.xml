@@ -13,11 +13,11 @@
     <set name="GUI_SCORE"               value="data/gfxart/gui/score.png" />
     <set name="GUI_NOTIFY"              value="data/gfxart/gui/notify.png" />
     <set name="GUI_PREVIEW"             value="data/gfxart/gui/previewframe.png" />
-    <set name="GUI_BUTTON"              value="data/gfxart/gui/button.png" size="192, 48" />
+    <set name="GUI_BUTTON"              value="data/gfxart/gui/button.png" size="128, 32" />
     <set name="GUI_GAUGE"               value="data/gfxart/gui/gauge.png" size="192, 48" />
-    <set name="GUI_EDIT"                value="data/gfxart/gui/edit.png" size="192, 48" />
-    <set name="GUI_SWITCH"              value="data/gfxart/gui/switch.png" size="192, 48" />
-    <set name="GUI_VECTOR"              value="data/gfxart/gui/vectorbox.png" size="192, 48" />
+    <set name="GUI_EDIT"                value="data/gfxart/gui/editbox.png" size="256, 32" />
+    <set name="GUI_SWITCH"              value="data/gfxart/gui/switch.png" size="256, 32" />
+    <set name="GUI_VECTOR"              value="data/gfxart/gui/vectorbox.png" size="256, 32" />
     <set name="GUI_FONT"                value="data/gfxart/gui/neuropol.ttf" />
     <set name="GUI_FONTSIZE"            value="12" />
 </gui>

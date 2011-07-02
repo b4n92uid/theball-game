@@ -67,8 +67,6 @@ void AppManager::setupVideoMode()
     Texture::resetCache();
 
     setupMenuGui();
-
-    setupBackgroundScene();
 }
 
 void AppManager::setupSound()
@@ -101,6 +99,26 @@ void AppManager::setupSound()
     }
 }
 
+class GuiLabel : public vector<gui::TextBox*>
+{
+public:
+
+    GuiLabel(gui::GuiManager* manager)
+    {
+        _manager = manager;
+    }
+
+    void operator<<(std::string text)
+    {
+        gui::TextBox* label = _manager->addTextBox(text);
+        label->write(text);
+        push_back(label);
+    }
+
+private:
+    gui::GuiManager* _manager;
+};
+
 void AppManager::setupMenuGui()
 {
     using namespace tbe::gui;
@@ -109,26 +127,33 @@ void AppManager::setupMenuGui()
 
     const Vector2i& screenSize = globalSettings.video.screenSize;
 
+    GuiLabel labels(m_guiManager);
+
     GuiSkin* guiskin = new GuiSkin;
 
     guiskin->button(globalSettings.gui.button);
     guiskin->buttonSize(globalSettings.gui.buttonSize);
+    guiskin->buttonMetaCount = 4;
 
     guiskin->gauge(globalSettings.gui.gauge);
     guiskin->gaugeSize(globalSettings.gui.gaugeSize);
+    guiskin->gaugeMetaCount = 4;
 
     guiskin->editBox(globalSettings.gui.editBox);
     guiskin->editBoxSize(globalSettings.gui.editBoxSize);
+    guiskin->editBoxMetaCount = 4;
 
     guiskin->switchBox(globalSettings.gui.switchBox);
     guiskin->switchBoxSize(globalSettings.gui.switchBoxSize);
+    guiskin->switchBoxMetaCount = 4;
 
     //    guiskin->vectorBox(globalSettings.gui.vectorBox);
     //    guiskin->vectorBoxSize(globalSettings.gui.vectorBoxSize);
 
     guiskin->stateShowSize(Vector2f(48, 48));
 
-    guiskin->pencile(globalSettings.gui.font, globalSettings.gui.fontSize);
+    guiskin->pencil(globalSettings.gui.font, globalSettings.gui.fontSize);
+    guiskin->pencil.setColor(Vector4f(0, 0, 0, 1));
 
     m_guiManager->setSkin(guiskin);
 
@@ -148,8 +173,6 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Horizental);
     m_guiManager->addLayoutStretchSpace();
 
-    m_guiManager->addLayoutSpace(256);
-
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->addLayout(Layout::Vertical, 10);
     m_guiManager->addLayoutStretchSpace();
@@ -160,7 +183,9 @@ void AppManager::setupMenuGui()
     m_controls.quickplay = m_guiManager->addButton("quickplay", "Partie rapide");
     // m_controls.campaignmenu = m_guiManager->addButton("campaign", "Jouer");
 
-    // m_guiManager->addImage("logo", globalSettings.gui.backgroundLogo);
+    m_guiManager->addLayoutSpace(64);
+
+    m_guiManager->addImage("logo", globalSettings.gui.backgroundLogo);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -185,13 +210,13 @@ void AppManager::setupMenuGui()
     m_controls.campaign.ret = m_guiManager->addButton("return", "Retour");
 
     m_controls.campaign.levelSelect = m_guiManager->addSwitchString("levelSelect");
-    m_guiManager->addTextBox("")->write("Niveau");
+    labels << "Niveau";
 
     m_controls.campaign.playerName = m_guiManager->addEditBox("playerName", "Joueur");
-    m_guiManager->addTextBox("")->write("Pseudo");
+    labels << "Pseudo";
 
     m_controls.campaign.playerSelect = m_guiManager->addSwitchString("playerSelect");
-    m_guiManager->addTextBox("")->write("Personnage");
+    labels << "Personnage";
 
     m_controls.campaign.play = m_guiManager->addButton("play", "Jouer");
 
@@ -234,16 +259,25 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 5);
     m_guiManager->addLayoutStretchSpace();
 
-    m_controls.playmenu.ret = m_guiManager->addButton("return", "Retour");
+    m_controls.playmenu.ret = m_guiManager->addButton("return", "");
+    m_controls.playmenu.ret->setMetaCount(4);
+    m_controls.playmenu.ret->setSize(64);
+    m_controls.playmenu.ret->setBackground("data/gfxart/gui/button-arrow.png");
+
+    m_guiManager->addLayoutSpace(32);
 
     m_controls.playmenu.playerSelect = m_guiManager->addSwitchString("playerSelect");
-    m_guiManager->addTextBox("")->write("Personnage");
+    labels << "Personnage";
 
     m_controls.playmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
-    m_guiManager->addTextBox("")->write("Carte à jouer");
+    labels << "Carte à jouer";
 
     m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
-    m_guiManager->addTextBox("")->write("Pseudo");
+    m_controls.playmenu.playerName->setBackground("data/gfxart/gui/editbox-profil.png");
+    m_controls.playmenu.playerName->setPadding(Vector2f(40, 1));
+    labels << "Pseudo";
+
+    m_guiManager->addLayoutSpace(16);
 
     m_controls.playmenu.play = m_guiManager->addButton("play", "Jouer");
 
@@ -260,9 +294,11 @@ void AppManager::setupMenuGui()
     m_controls.playmenu.description = m_guiManager->addTextBox("description");
     m_controls.playmenu.description->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
     m_controls.playmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
-    m_controls.playmenu.description->setBackgroundPadding(16);
+    m_controls.playmenu.description->setPadding(16);
+    m_controls.playmenu.description->setBackgroundMask(globalSettings.gui.maskH);
     m_controls.playmenu.description->setSize(Vector2f(384, 256));
     m_controls.playmenu.description->setDefinedSize(true);
+    m_controls.playmenu.description->setTextAlign(TextBox::LEFT);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -322,10 +358,10 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.settingsmenu.screenSize = m_guiManager->addSwitchString("screenSize");
-    m_guiManager->addTextBox("")->write("Résolution");
+    labels << "Résolution";
 
     m_controls.settingsmenu.antiAliasing = m_guiManager->addSwitchString("antiAliasing");
-    m_guiManager->addTextBox("")->write("Anti-crélénage");
+    labels << "Anti-crélénage";
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -338,10 +374,10 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.settingsmenu.fullscreen = m_guiManager->addSwitchString("fullScreen");
-    m_guiManager->addTextBox("")->write("Mode d'affichage");
+    labels << "Mode d'affichage";
 
     m_controls.settingsmenu.usePpe = m_guiManager->addSwitchString("usePpe");
-    m_guiManager->addTextBox("")->write("P.P Effects");
+    labels << "P.P Effects";
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -364,15 +400,15 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 2);
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->addKeyConfig("forward");
-    m_guiManager->addTextBox("")->write("Avancer");
+    labels << "Avancer";
     m_guiManager->addKeyConfig("backward");
-    m_guiManager->addTextBox("")->write("Reculer");
+    labels << "Reculer";
     m_guiManager->addKeyConfig("strafRight");
-    m_guiManager->addTextBox("")->write("A gauche");
+    labels << "A gauche";
     m_guiManager->addKeyConfig("strafLeft");
-    m_guiManager->addTextBox("")->write("A droite");
+    labels << "A droite";
     m_guiManager->addKeyConfig("jump");
-    m_guiManager->addTextBox("")->write("Sauter");
+    labels << "Sauter";
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
     // --------
@@ -383,17 +419,17 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 2);
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->addKeyConfig("boost");
-    m_guiManager->addTextBox("")->write("Boost");
+    labels << "Boost";
     m_guiManager->addKeyConfig("brake");
-    m_guiManager->addTextBox("")->write("Brake");
+    labels << "Brake";
     m_guiManager->addKeyConfig("shoot");
-    m_guiManager->addTextBox("")->write("Tirer");
+    labels << "Tirer";
     m_guiManager->addKeyConfig("power");
-    m_guiManager->addTextBox("")->write("Pouvoirs");
+    labels << "Pouvoirs";
     m_guiManager->addKeyConfig("switchUpWeapon");
-    m_guiManager->addTextBox("")->write("Arme suivante");
+    labels << "Arme suivante";
     m_guiManager->addKeyConfig("switchDownWeapon");
-    m_guiManager->addTextBox("")->write("Arme précédente");
+    labels << "Arme précédente";
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
     // --------
@@ -431,8 +467,9 @@ void AppManager::setupMenuGui()
     m_controls.aboutmenu.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
     m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
     m_controls.aboutmenu.aboutText->setDefinedSize(true);
-    m_controls.aboutmenu.aboutText->setBackgroundPadding(8);
+    m_controls.aboutmenu.aboutText->setPadding(8);
     m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.aboutmenu.aboutText->setBackgroundMask(globalSettings.gui.maskH);
     m_controls.aboutmenu.aboutText->setTextAlign(TextBox::LEFT);
 
     m_guiManager->addLayoutStretchSpace();
@@ -441,6 +478,14 @@ void AppManager::setupMenuGui()
     m_guiManager->endLayout();
 
     m_guiManager->setSession(MENU_MAIN);
+
+    foreach(TextBox* label, labels)
+    {
+        Pencil whitepen = guiskin->pencil;
+        whitepen.setColor(1);
+
+        label->setPencil(whitepen);
+    }
 
     // Remplisage --------------------------------------------------------------
 
@@ -599,59 +644,6 @@ void AppManager::updateGuiContent()
     updateQuickPlayMapInfo();
 }
 
-void AppManager::setupBackgroundScene()
-{
-    using namespace tbe::scene;
-
-    // SCENE -------------------------------------------------------------------
-
-    m_sceneManager->clearAll();
-
-    LightParallelScene* lightScene = new LightParallelScene;
-    m_sceneManager->addParallelScene(lightScene);
-
-    MeshParallelScene* meshScene = new MeshParallelScene;
-    m_sceneManager->addParallelScene(meshScene);
-
-    DiriLight* light0 = new DiriLight(lightScene);
-    m_sceneManager->getRootNode()->addChild(light0);
-
-    m_logo = new OBJMesh(meshScene, OBJ_LOGO);
-    m_sceneManager->getRootNode()->addChild(m_logo);
-
-    m_camera = new Camera(Camera::TARGET_RELATIVE);
-    m_camera->setRotate(Vector2f(180, 5));
-    m_sceneManager->addCamera(m_camera);
-
-    m_sceneManager->setAmbientLight(0.1);
-
-    // PPE ---------------------------------------------------------------------
-
-    if(globalSettings.video.ppeUse)
-    {
-        using namespace ppe;
-
-        m_ppeManager->clearAll();
-
-        // NOTE BlurEffect
-        #if 0
-        BlurEffect* blur = new BlurEffect;
-        blur->setPasse(4);
-        m_ppeManager->addPostEffect("", blur);
-        #endif
-
-        BloomEffect* bloom = new BloomEffect;
-        bloom->setThreshold(0.1);
-        bloom->setIntensity(1.0);
-        bloom->setBlurPass(10);
-        m_ppeManager->addPostEffect("", bloom);
-
-        MotionBlurEffect* mblur = new MotionBlurEffect;
-        mblur->setRttFrameSize(math::nextPow2(globalSettings.video.screenSize) / 2);
-        m_ppeManager->addPostEffect("", mblur);
-    }
-}
-
 void AppManager::processMainMenuEvent()
 {
     if(m_controls.quickplay->isActivate())
@@ -696,7 +688,6 @@ void AppManager::processCampaignMenuEvent()
 
         executeCampaign(party);
 
-        setupBackgroundScene();
         m_guiManager->setSession(MENU_CAMPAIGN);
     }
 
@@ -729,7 +720,6 @@ void AppManager::processPlayMenuEvent()
 
         executeGame(playSetting);
 
-        setupBackgroundScene();
         m_guiManager->setSession(MENU_QUICKPLAY);
     }
 
@@ -822,27 +812,7 @@ void AppManager::executeMenu()
                     break;
             }
 
-            m_camera->setPos(-m_camera->getTarget() * 8.0f);
-
-            m_logo->getMatrix().rotate(0.01, Vector3f::Y(1));
-
             m_gameEngine->beginScene();
-
-            if(globalSettings.video.ppeUse)
-            {
-                Rtt* ppeRtt = m_ppeManager->getRtt();
-                ppeRtt->use(true);
-                ppeRtt->clear();
-                m_sceneManager->render();
-                ppeRtt->use(false);
-                m_ppeManager->render();
-            }
-
-            else
-            {
-                m_sceneManager->render();
-            }
-
             m_guiManager->render();
             m_gameEngine->endScene();
         }
