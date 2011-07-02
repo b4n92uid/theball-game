@@ -40,8 +40,6 @@ void Settings::readGui()
     binder["MASK_H"] = &gui.maskH;
     binder["MASK_V"] = &gui.maskV;
     binder["NO_PREVIEW"] = &gui.nopreview;
-    binder["GUI_SCORE"] = &gui.score;
-    binder["GUI_NOTIFY"] = &gui.notify;
     binder["GUI_PREVIEW"] = &gui.preview;
     binder["GUI_BUTTON"] = &gui.button;
     binder["GUI_GAUGE"] = &gui.gauge;

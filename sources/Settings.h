@@ -81,8 +81,6 @@ public:
         std::string maskH;
         std::string maskV;
 
-        std::string score;
-        std::string notify;
         std::string preview;
         std::string button;
         std::string gauge;

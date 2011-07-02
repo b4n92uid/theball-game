@@ -11,7 +11,6 @@
     <set name="NO_PREVIEW"         		value="data/gfxart/gui/nopreview.png" />
     <set name="MASK_H"                  value="data/gfxart/gui/horzmask.png" />
     <set name="MASK_V"                  value="data/gfxart/gui/vertmask.png" />
-    <set name="GUI_NOTIFY"              value="data/gfxart/gui/notify.png" />
     <set name="GUI_PREVIEW"             value="data/gfxart/gui/previewframe.png" />
     <set name="GUI_BUTTON"              value="data/gfxart/gui/button.png" size="128, 32" />
     <set name="GUI_GAUGE"               value="data/gfxart/gui/gauge.png" size="192, 48" />

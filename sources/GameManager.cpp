@@ -340,8 +340,8 @@ void GameManager::setupGui()
 
     hud.log = manager.gui->addTextBox("hud.log");
     hud.log->setPencil(whiteBigPen);
-    hud.log->setBackground(guisets.notify);
-    hud.log->setPadding(Vector2f(32, 16));
+    hud.log->setBackground(guisets.backgroundTextbox);
+    hud.log->setPadding(16);
     hud.log->setEnable(false);
 
     manager.gui->addLayoutStretchSpace();
