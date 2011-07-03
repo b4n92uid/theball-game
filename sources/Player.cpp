@@ -226,8 +226,6 @@ void Player::addWeapon(Weapon* weapon)
 
         m_curWeapon = --m_weaponsPack.end();
         (*m_curWeapon)->setShooter(this);
-
-        m_playManager->manager.scene->getRootNode()->addChild(weapon);
     }
 }
 
@@ -406,24 +404,18 @@ int Player::getLife() const
     return m_life;
 }
 
-void Player::takeDammage(Bullet* ammo)
+void Player::takeDammage(int dammage, Player* killer)
 {
     if(m_killed)
         return;
 
-    if(!onDammage.empty() && !onDammage(this, ammo->getWeapon()->getShooter()))
+    if(!onDammage.empty() && !onDammage(this, killer))
         return;
-
-    int dammage = ammo->getDammage();
 
     m_life = max(m_life - dammage, 0);
 
-    Weapon* wp = ammo->getWeapon();
-
-    Player* striker = wp->getShooter();
-
     if(m_life <= 0)
-        kill(striker);
+        kill(killer);
 
     if(m_playManager->getUserPlayer() == this)
         m_playManager->hudDammage(true);

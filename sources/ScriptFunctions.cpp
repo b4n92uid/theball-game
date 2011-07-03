@@ -683,9 +683,7 @@ int dammage(lua_State* lua)
     Player* player = lua_toplayer(lua, 1);
     int value = lua_tointeger(lua, 2);
 
-    Bullet b(getGameManager(lua));
-    b.setDammage(value);
-    player->takeDammage(&b);
+    player->takeDammage(value);
 
     return 0;
 }

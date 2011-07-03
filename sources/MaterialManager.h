@@ -11,6 +11,7 @@
 #include <NewtonBall/NewtonBall.h>
 
 #include "Weapon.h"
+#include "BulletWeapon.h"
 #include "Item.h"
 #include "MapElement.h"
 

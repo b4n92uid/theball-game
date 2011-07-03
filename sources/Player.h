@@ -47,7 +47,7 @@ public:
     void brake();
 
     /// Assigne les dommages et augemente le score
-    void takeDammage(Bullet* ammo);
+    void takeDammage(int dammage, Player* killer = NULL);
 
     /**
      * Routine de traitement

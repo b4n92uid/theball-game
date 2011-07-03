@@ -13,22 +13,16 @@
 #include <fmod.h>
 
 #include "Settings.h"
-#include "MapElement.h"
-#include "SoundManager.h"
 
 class GameManager;
+class SoundManager;
 class Player;
-class Bullet;
-class Weapon;
 
-class Weapon : public tbe::scene::ParticlesEmiter
+class Weapon
 {
 public:
     Weapon(GameManager* playManager);
-    Weapon(const Weapon& copy);
     virtual ~Weapon();
-
-    Weapon & operator=(const Weapon& copy);
 
     bool operator==(const Weapon& copy);
 
@@ -47,14 +41,8 @@ public:
     void setMaxAmmoCount(unsigned maxAmmoCount);
     unsigned getMaxAmmoCount() const;
 
-    void setShootSize(unsigned shootSize);
-    unsigned getShootSize() const;
-
     void setMaxAmmoDammage(unsigned maxAmmoDammage);
     unsigned getMaxAmmoDammage() const;
-
-    void setShootSpeed(float shootSpeed);
-    float getShootSpeed() const;
 
     void setFireSound(std::string fireSound);
 
@@ -65,15 +53,13 @@ public:
 
     unsigned getSlot() const;
 
-    void setupBullet(tbe::scene::Particle& p);
-
     Weapon* clone();
 
     typedef std::vector<Weapon*> Array;
 
 protected:
+    virtual void process() = 0;
     virtual void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos) = 0;
-    virtual void process();
 
 protected:
     GameManager* m_playManager;
@@ -83,8 +69,6 @@ protected:
 
     Settings::World m_worldSettings;
 
-    std::vector<Bullet*> m_bulletArray;
-
     std::string m_weaponName;
 
     unsigned m_maxAmmoDammage;
@@ -92,9 +76,6 @@ protected:
     unsigned m_ammoCount;
 
     unsigned m_slot;
-    unsigned m_shootSize;
-
-    float m_shootSpeed;
 
     unsigned m_shootCadency;
 
@@ -102,40 +83,6 @@ protected:
 
     tbe::AABB m_mapAABB;
     std::string m_soundID;
-};
-
-class WeaponBlaster : public Weapon
-{
-public:
-    WeaponBlaster(GameManager* playManager);
-
-protected:
-    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
-};
-
-class WeaponShotgun : public Weapon
-{
-public:
-    WeaponShotgun(GameManager* playManager);
-protected:
-    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
-};
-
-class WeaponFinder : public Weapon
-{
-public:
-    WeaponFinder(GameManager* playManager);
-protected:
-    void process();
-    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
-};
-
-class WeaponBomb : public Weapon
-{
-public:
-    WeaponBomb(GameManager* playManager);
-protected:
-    void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };
 
 #endif	/* _WEAPONENGINE_H */

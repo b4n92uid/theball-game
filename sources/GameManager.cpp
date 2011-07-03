@@ -420,9 +420,7 @@ void GameManager::processDevelopperCodeEvent()
         // F1 : Dammage 10%
         if(event->keyState[EventManager::KEY_F1])
         {
-            Bullet b(this);
-            b.setDammage(10);
-            m_userPlayer->takeDammage(&b);
+            m_userPlayer->takeDammage(10);
         }
 
         // F2 : Kill

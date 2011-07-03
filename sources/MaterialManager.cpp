@@ -246,7 +246,7 @@ int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material,
     if(striked == striker)
         return 0;
 
-    striked->takeDammage(bullet);
+    striked->takeDammage(bullet->getDammage(), striker);
 
     bullet->setLife(0);
 
