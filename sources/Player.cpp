@@ -164,8 +164,17 @@ inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
     return (contactPoint > 0 && dot > 0.25);
 }
 
+void Player::move(tbe::Vector3f force)
+{
+    force.normalize() *= m_worldSettings.playerMoveSpeed;
+
+    if(onMove.empty() || !onMove(this, force))
+        m_physicBody->setApplyForce(force);
+}
+
 void Player::jump()
 {
+    bool allowed = false;
 
     foreach(MapElement* elem, m_playManager->map.mapElements)
     {
@@ -173,11 +182,18 @@ void Player::jump()
 
         if(nnode && playerCanJump(nnode, m_physicBody))
         {
-            NewtonBodyAddImpulse(m_physicBody->getBody(),
-                                 Vector3f(0, m_worldSettings.playerJumpForce, 0),
-                                 m_visualBody->getMatrix().getPos());
+            allowed = true;
             break;
         }
+    }
+
+    allowed = !onJump.empty() && onJump(this, allowed);
+
+    if(allowed)
+    {
+        NewtonBodyAddImpulse(m_physicBody->getBody(),
+                             Vector3f(0, m_worldSettings.playerJumpForce, 0),
+                             m_visualBody->getMatrix().getPos());
     }
 }
 

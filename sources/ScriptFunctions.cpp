@@ -16,6 +16,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
+#include <boost/lambda/lambda.hpp>
 
 #define foreach BOOST_FOREACH
 
@@ -203,6 +204,28 @@ int impulse(lua_State* lua)
     NewtonBodyAddImpulse(elem->getPhysicBody()->getBody(),
                          vec*force,
                          elem->getPhysicBody()->getPos());
+
+    return 0;
+}
+
+int freeze(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
+
+    elem->getPhysicBody()->setVelocity(0);
+    elem->getPhysicBody()->setOmega(0);
+    elem->getPhysicBody()->setApplyForce(0);
+    elem->getPhysicBody()->setApplyTorque(0);
+    elem->getPhysicBody()->setApplyGravity(false);
+
+    return 0;
+}
+
+int unfreeze(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
+
+    elem->getPhysicBody()->setApplyGravity(true);
 
     return 0;
 }
@@ -669,6 +692,16 @@ int shoot(lua_State* lua)
     return 0;
 }
 
+int move(lua_State* lua)
+{
+    Player* player = lua_toplayer(lua, 1);
+    Vector3f direction = lua_tovector3(lua, 2);
+
+    player->move(direction);
+
+    return 0;
+}
+
 int jump(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
@@ -1092,7 +1125,55 @@ struct AIHook
         lua_getglobal(lua, callback.c_str());
 
         lua_pushinteger(lua, (lua_Integer)player);
-        lua_call(lua, 1, 1);
+        lua_call(lua, 1, 0);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct JumpHook
+{
+
+    JumpHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player* player, bool allowed)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushplayer(lua, player);
+        lua_pushboolean(lua, allowed);
+        lua_call(lua, 2, 1);
+
+        return lua_toboolean(lua, -1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
+struct MoveHook
+{
+
+    MoveHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player* player, Vector3f force)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushplayer(lua, player);
+        lua_pushvector3(lua, force);
+        lua_call(lua, 2, 1);
+
+        return lua_toboolean(lua, -1);
     }
 
     string callback;
@@ -1142,12 +1223,11 @@ int registerPlayerHook(lua_State* lua)
         else if(type == "power")
             player->onPower.connect(PowerHook(lua, func));
 
-        /*
-        if(type == "jump")
-            player->onJump.connect();
-        if(type == "move")
-            player->onMove.connect();
-         */
+        else if(type == "jump")
+            player->onJump.connect(JumpHook(lua, func));
+
+        else if(type == "move")
+            player->onMove.connect(MoveHook(lua, func));
     }
 
     return 0;

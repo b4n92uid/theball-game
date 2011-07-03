@@ -91,27 +91,22 @@ bool UserControl::isActionStateDown(std::string name)
 
 void UserControl::process(Player* player)
 {
-    scene::Camera* playerCam = m_playManager->manager.scene->getCurCamera();
+    scene::Camera* camera = m_playManager->manager.scene->getCurCamera();
 
     // Move
-    Vector3f addForce;
+    Vector3f force;
 
     if(isActionStateDown("forward"))
-        addForce += playerCam->getTarget();
+        force += camera->getTarget();
     if(isActionStateDown("backward"))
-        addForce -= playerCam->getTarget();
+        force -= camera->getTarget();
     if(isActionStateDown("strafLeft"))
-        addForce += playerCam->getLeft();
+        force += camera->getLeft();
     if(isActionStateDown("strafRight"))
-        addForce -= playerCam->getLeft();
+        force -= camera->getLeft();
 
-    addForce.y = 0;
-
-    if(!math::isZero(addForce))
-    {
-        addForce.normalize() *= m_worldSettings.playerMoveSpeed;
-        player->getPhysicBody()->setApplyForce(addForce);
-    }
+    if(!math::isZero(force))
+        player->move(force);
 
     // Jump
     if(isActionStateDown("jump"))

@@ -37,6 +37,9 @@ public:
      */
     void reBorn();
 
+    /// Mouvements
+    void move(tbe::Vector3f force);
+
     /// Saut
     void jump();
 
@@ -130,6 +133,8 @@ public:
     boost::signal<bool(Player*, bool, tbe::Vector3f) > onPower;
     boost::signal<bool(Player*, Player*) > onDammage;
     boost::signal<bool(Player*, Player*) > onKilled;
+    boost::signal<bool(Player*, bool) > onJump;
+    boost::signal<bool(Player*, tbe::Vector3f) > onMove;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;

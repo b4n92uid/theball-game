@@ -30,6 +30,9 @@ int getForce(lua_State* lua);
 
 int impulse(lua_State* lua);
 
+int freeze(lua_State* lua);
+int unfreeze(lua_State* lua);
+
 // Player Stat
 
 int getNickName(lua_State* lua);
@@ -96,6 +99,7 @@ int getSceneData(lua_State* lua);
 
 // Actions
 
+int move(lua_State* lua);
 int jump(lua_State* lua);
 int shoot(lua_State* lua);
 int power(lua_State* lua);

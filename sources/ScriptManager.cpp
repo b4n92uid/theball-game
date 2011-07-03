@@ -36,6 +36,8 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "getForce", script::getForce);
 
     lua_register(m_lua, "impulse", script::impulse);
+    lua_register(m_lua, "unfreeze", script::unfreeze);
+    lua_register(m_lua, "freeze", script::freeze);
 
     lua_register(m_lua, "getNickName", script::getNickName);
 
@@ -97,6 +99,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "getSceneData", script::getSceneData);
 
 
+    lua_register(m_lua, "move", script::move);
     lua_register(m_lua, "jump", script::jump);
     lua_register(m_lua, "shoot", script::shoot);
     lua_register(m_lua, "power", script::power);
