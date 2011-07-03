@@ -3,8 +3,8 @@
 
     <set name="World.Gravity" value="6" />
 
-    <set name="Camera.Back" value="3" />
-    <set name="Camera.Up" value="1" />
+    <set name="Camera.Back" value="4" />
+    <set name="Camera.Up" value="2" />
 
     <set name="Player.MoveSpeed" value="512" />
     <set name="Player.JumpForce" value="16" />

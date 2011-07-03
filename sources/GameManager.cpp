@@ -250,6 +250,9 @@ void GameManager::setupGui()
     Pencil whiteBigPen(guisets.font, guisets.fontSize * 1.5);
     whiteBigPen.setColor(1);
 
+    Pencil blackBigPen(guisets.font, guisets.fontSize * 1.5);
+    blackBigPen.setColor(Vector4f(0, 0, 0, 1));
+
     // GameOver ----------------------------------------------------------------
 
     manager.gui->setSession(SCREEN_GAMEOVER, ingame_skin);
@@ -340,7 +343,7 @@ void GameManager::setupGui()
     manager.gui->addLayoutStretchSpace();
 
     hud.log = manager.gui->addTextBox("hud.log");
-    hud.log->setPencil(whiteBigPen);
+    hud.log->setPencil(blackBigPen);
     hud.log->setBackground(guisets.backgroundTextbox);
     hud.log->setPadding(16);
     hud.log->setEnable(false);

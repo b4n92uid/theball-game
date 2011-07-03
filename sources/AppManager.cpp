@@ -289,7 +289,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.playmenu.preview = m_guiManager->addImage("preview");
-    m_controls.playmenu.preview->setSize(Vector2f(256, 256));
+    m_controls.playmenu.preview->setSize(Vector2f(389, 256));
 
     m_guiManager->addLayoutSpace(16);
 
