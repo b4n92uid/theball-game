@@ -35,6 +35,8 @@ ParticlesEmiter(gameManager->parallelscene.particles)
     m_shootSize = 1;
     m_shootSpeed = 0;
 
+    setBulletSize(0.75);
+
     m_playManager->manager.scene->getRootNode()->addChild(this);
 }
 
