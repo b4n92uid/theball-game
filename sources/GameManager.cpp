@@ -760,8 +760,8 @@ void GameManager::render()
     // Positionement camera ----------------------------------------------------
 
     /*
-     * La position de la camera est caluclé a partir
-     * de la position du joueur, et en reculant de 4 unité vers l'arrier.
+     * La position de la camera est caluclé a partir de la position du joueur,
+     * et en reculant de quelques unités vers l'arrier.
      *
      * Un lancé de rayon est éffectuer pour savoir si la position de la camera
      * entre en collision avec un objet, si c'est le cas alors la position

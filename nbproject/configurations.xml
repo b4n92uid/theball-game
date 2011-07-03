@@ -29,6 +29,8 @@
       <logicalFolder name="f4" displayName="Weapons" projectFiles="true">
         <itemPath>sources/Bullet.cpp</itemPath>
         <itemPath>sources/Bullet.h</itemPath>
+        <itemPath>sources/BulletWeapon.cpp</itemPath>
+        <itemPath>sources/BulletWeapon.h</itemPath>
         <itemPath>sources/Weapon.cpp</itemPath>
         <itemPath>sources/Weapon.h</itemPath>
       </logicalFolder>
