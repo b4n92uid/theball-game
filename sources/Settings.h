@@ -40,6 +40,9 @@ public:
     {
         float gravity;
 
+        float cameraBack;
+        float cameraUp;
+
         float playerMoveSpeed;
         float playerJumpForce;
         float playerSize;

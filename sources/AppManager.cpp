@@ -147,9 +147,6 @@ void AppManager::setupMenuGui()
     guiskin->switchBoxSize(globalSettings.gui.switchBoxSize);
     guiskin->switchBoxMetaCount = 4;
 
-    //    guiskin->vectorBox(globalSettings.gui.vectorBox);
-    //    guiskin->vectorBoxSize(globalSettings.gui.vectorBoxSize);
-
     guiskin->stateShowSize(Vector2f(48, 48));
 
     guiskin->pencil(globalSettings.gui.font, globalSettings.gui.fontSize);

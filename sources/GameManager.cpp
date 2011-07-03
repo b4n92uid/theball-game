@@ -109,7 +109,6 @@ GameManager::~GameManager()
     manager.gui->destroySession(SCREEN_GAMEOVER);
     manager.gui->destroySession(SCREEN_PAUSEMENU);
     manager.gui->destroySession(SCREEN_HUD);
-    manager.gui->destroySession(SCREEN_PLAYERSLIST);
 
     delete manager.sound;
     delete manager.material;
@@ -227,29 +226,33 @@ void GameManager::setupGui()
     Settings::Gui& guisets = manager.app->globalSettings.gui;
     Settings::Video& vidsets = manager.app->globalSettings.video;
 
+    GuiSkin* ingame_skin = new GuiSkin;
+
+    ingame_skin->button(guisets.button);
+    ingame_skin->buttonSize(guisets.buttonSize);
+    ingame_skin->buttonMetaCount = 4;
+
+    ingame_skin->gauge(guisets.gauge);
+    ingame_skin->gaugeSize(guisets.gaugeSize);
+    ingame_skin->gaugeMetaCount = 2;
+
+    ingame_skin->editBox(guisets.editBox);
+    ingame_skin->editBoxSize(guisets.editBoxSize);
+    ingame_skin->editBoxMetaCount = 4;
+
+    ingame_skin->switchBox(guisets.switchBox);
+    ingame_skin->switchBoxSize(guisets.switchBoxSize);
+    ingame_skin->switchBoxMetaCount = 4;
+
+    ingame_skin->pencil(guisets.font, guisets.fontSize);
+    ingame_skin->pencil.setColor(1);
+
     Pencil whiteBigPen(guisets.font, guisets.fontSize * 1.5);
     whiteBigPen.setColor(1);
 
-    Pencil whitePen(guisets.font, guisets.fontSize);
-    whitePen.setColor(1);
-
-    // Tabaleau des joueur ------------------------------------------------------
-
-    manager.gui->setSession(SCREEN_PLAYERSLIST);
-
-    manager.gui->addLayout(Layout::Vertical);
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->addLayout(Layout::Horizental);
-    manager.gui->addLayoutStretchSpace();
-
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-
     // GameOver ----------------------------------------------------------------
 
-    manager.gui->setSession(SCREEN_GAMEOVER);
+    manager.gui->setSession(SCREEN_GAMEOVER, ingame_skin);
 
     Texture black;
     black.build(128, Vector4f(0, 0, 0, 1));
@@ -303,7 +306,7 @@ void GameManager::setupGui()
 
     // HUD ---------------------------------------------------------------------
 
-    manager.gui->setSession(SCREEN_HUD);
+    manager.gui->setSession(SCREEN_HUD, ingame_skin);
 
     hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", guisets.backgroundDammage);
     hud.background.dammage->setSize(vidsets.screenSize);
@@ -350,7 +353,6 @@ void GameManager::setupGui()
 
     // -------- State
     hud.state = manager.gui->addTextBox("hud.state");
-    hud.state->setPencil(whitePen);
     // --------
 
     manager.gui->endLayout();
@@ -772,17 +774,15 @@ void GameManager::render()
 
     m_playerPosRec.push_back(setPos);
 
-    float cameraback = 4.0f;
-
-    Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.playerSize * 1.5, 0);
-    Vector3f camendpos = camzeropos + (-camtar) * cameraback;
+    Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.cameraUp, 0);
+    Vector3f camendpos = camzeropos + (-camtar) * worldSettings.cameraBack;
 
     float hit = 1;
     NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
 
-    hit = hit * cameraback;
+    hit = hit * worldSettings.cameraBack;
 
-    campos = camzeropos - camtar * min(hit, cameraback);
+    campos = camzeropos - camtar * min(hit, worldSettings.cameraBack);
 
     m_camera->setPos(campos);
 

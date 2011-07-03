@@ -158,6 +158,9 @@ void Settings::readWorld()
 
     floatbinder["World.Gravity"] = &world.gravity;
 
+    floatbinder["Camera.Back"] = &world.cameraBack;
+    floatbinder["Camera.Up"] = &world.cameraUp;
+
     floatbinder["Player.MoveSpeed"] = &world.playerMoveSpeed;
     floatbinder["Player.JumpForce"] = &world.playerJumpForce;
     floatbinder["Player.Size"] = &world.playerSize;
