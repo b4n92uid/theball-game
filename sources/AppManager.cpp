@@ -717,8 +717,6 @@ void AppManager::updateGuiContent()
 
     // Carte a jouer
 
-    cout << "Check" << endl;
-
     m_controls.mapmenu.mapSelect->deleteAll();
 
     for(unsigned i = 0; i < globalSettings.availableMap.size(); i++)
@@ -727,8 +725,6 @@ void AppManager::updateGuiContent()
     }
 
     m_controls.mapmenu.mapSelect->setCurrent(math::rand(0, globalSettings.availableMap.size()));
-
-    cout << "Check" << endl;
 
     updateQuickPlayMapInfo();
 }
