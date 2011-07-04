@@ -29,31 +29,30 @@ void Settings::readGui()
 {
     map<string, string*> binder;
 
-    binder["BACKGROUND_MAINMENU"] = &gui.backgroundMainmenu;
-    binder["BACKGROUND_DAMMAGE"] = &gui.backgroundDammage;
-    binder["BACKGROUND_PAUSE"] = &gui.backgroundPause;
-    binder["BACKGROUND_TEXTBOX"] = &gui.backgroundTextbox;
-    binder["BACKGROUND_TEXTBOX_ARR"] = &gui.backgroundTextboxArr;
-    binder["BACKGROUND_LISTBOX"] = &gui.backgroundListbox;
-    binder["BACKGROUND_LOGO"] = &gui.backgroundLogo;
+    binder["MAINMENU"] = &gui.backgroundMainmenu;
+    binder["DAMMAGE"] = &gui.backgroundDammage;
+    binder["PAUSE"] = &gui.backgroundPause;
+    binder["TEXTBOX"] = &gui.backgroundTextbox;
+    binder["UDARROW"] = &gui.backgroundUpDownArrow;
+    binder["LISTBOX"] = &gui.backgroundListbox;
+
     binder["MASK_H"] = &gui.maskH;
     binder["MASK_V"] = &gui.maskV;
-    binder["NO_PREVIEW"] = &gui.nopreview;
-    binder["GUI_PREVIEW"] = &gui.preview;
-    binder["GUI_BUTTON"] = &gui.button;
-    binder["GUI_GAUGE"] = &gui.gauge;
-    binder["GUI_EDIT"] = &gui.editBox;
-    binder["GUI_SWITCH"] = &gui.switchBox;
-    binder["GUI_VECTOR"] = &gui.vectorBox;
-    binder["GUI_FONT"] = &gui.font;
+
+    binder["BUTTON"] = &gui.button;
+    binder["GAUGE"] = &gui.gauge;
+    binder["EDIT"] = &gui.editBox;
+    binder["SWITCH"] = &gui.switchBox;
+    binder["VECTOR"] = &gui.vectorBox;
+    binder["FONT"] = &gui.font;
 
     map<string, tbe::Vector2f*> binderSize;
 
-    binderSize["GUI_BUTTON"] = &gui.buttonSize;
-    binderSize["GUI_GAUGE"] = &gui.gaugeSize;
-    binderSize["GUI_EDIT"] = &gui.editBoxSize;
-    binderSize["GUI_SWITCH"] = &gui.switchBoxSize;
-    binderSize["GUI_VECTOR"] = &gui.vectorBoxSize;
+    binderSize["BUTTON"] = &gui.buttonSize;
+    binderSize["GAUGE"] = &gui.gaugeSize;
+    binderSize["EDIT"] = &gui.editBoxSize;
+    binderSize["SWITCH"] = &gui.switchBoxSize;
+    binderSize["VECTOR"] = &gui.vectorBoxSize;
 
     TiXmlDocument config("gui.xml");
 
@@ -66,7 +65,7 @@ void Settings::readGui()
     {
         string name = node2->Attribute("name");
 
-        if(name == "GUI_FONTSIZE")
+        if(name == "FONTSIZE")
             node2->Attribute("value", &gui.fontSize);
         else
         {

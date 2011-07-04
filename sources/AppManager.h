@@ -54,6 +54,9 @@ protected:
     /// Initialise les options audio
     void setupSound();
 
+    ///
+    void setupBackgroundScene();
+
     void processMainMenuEvent();
     void processCampaignMenuEvent();
     void processPlayMenuEvent();
@@ -72,6 +75,8 @@ protected:
     tbe::scene::SceneManager* m_sceneManager;
     tbe::ppe::PostProcessManager* m_ppeManager;
     tbe::ticks::FpsManager* m_fpsMng;
+
+    tbe::scene::Camera* m_camera;
 
     tbe::ticks::Clock m_screenWaitClock;
 

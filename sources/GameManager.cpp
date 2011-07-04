@@ -277,7 +277,7 @@ void GameManager::setupGui()
     hud.gameover->setBackground(guisets.backgroundTextbox);
     hud.gameover->setPadding(16);
     hud.gameover->setBackgroundMask(guisets.maskH);
-    hud.gameover->setArrowTexture(guisets.backgroundTextboxArr);
+    hud.gameover->setArrowTexture(guisets.backgroundUpDownArrow);
     hud.gameover->setTextAlign(TextBox::LEFT);
 
     manager.gui->addLayoutStretchSpace();
@@ -498,7 +498,7 @@ void GameManager::eventProcess()
         if(event->notify == EventManager::EVENT_MOUSE_MOVE)
             manager.scene->getCurCamera()->rotate(event->mousePosRel);
 
-        // Séléction d'amre
+        // Séléction d'arme
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
             if(m_numslot.count(event->lastActiveKey.first))

@@ -74,16 +74,12 @@ public:
         std::string backgroundDammage;
         std::string backgroundPause;
         std::string backgroundTextbox;
-        std::string backgroundTextboxArr;
+        std::string backgroundUpDownArrow;
         std::string backgroundListbox;
-        std::string backgroundLogo;
-
-        std::string nopreview;
 
         std::string maskH;
         std::string maskV;
 
-        std::string preview;
         std::string button;
         std::string gauge;
         std::string editBox;

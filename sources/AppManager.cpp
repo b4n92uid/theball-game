@@ -67,6 +67,8 @@ void AppManager::setupVideoMode()
     Texture::resetCache();
 
     setupMenuGui();
+
+    setupBackgroundScene();
 }
 
 void AppManager::setupSound()
@@ -129,32 +131,37 @@ void AppManager::setupMenuGui()
 
     GuiLabel labels(m_guiManager);
 
+    float sizeFactor = 1;
+
+    if(screenSize.x < 1024)
+        sizeFactor = screenSize.x / 1024.0f + 0.1f;
+
     GuiSkin* guiskin = new GuiSkin;
 
     guiskin->button(globalSettings.gui.button);
-    guiskin->buttonSize(globalSettings.gui.buttonSize);
+    guiskin->buttonSize(globalSettings.gui.buttonSize * sizeFactor);
     guiskin->buttonMetaCount = 4;
 
     guiskin->gauge(globalSettings.gui.gauge);
-    guiskin->gaugeSize(globalSettings.gui.gaugeSize);
+    guiskin->gaugeSize(globalSettings.gui.gaugeSize * sizeFactor);
     guiskin->gaugeMetaCount = 2;
 
     guiskin->editBox(globalSettings.gui.editBox);
-    guiskin->editBoxSize(globalSettings.gui.editBoxSize);
+    guiskin->editBoxSize(globalSettings.gui.editBoxSize * sizeFactor);
     guiskin->editBoxMetaCount = 4;
 
     guiskin->switchBox(globalSettings.gui.switchBox);
-    guiskin->switchBoxSize(globalSettings.gui.switchBoxSize);
+    guiskin->switchBoxSize(globalSettings.gui.switchBoxSize * sizeFactor);
     guiskin->switchBoxMetaCount = 4;
 
     guiskin->stateShowSize(Vector2f(48, 48));
 
-    guiskin->pencil(globalSettings.gui.font, globalSettings.gui.fontSize);
-    guiskin->pencil.setColor(Vector4f(0, 0, 0, 1));
+    guiskin->pencil(globalSettings.gui.font, globalSettings.gui.fontSize * sizeFactor);
+    guiskin->pencil.setColor(Vector4f(1, 1, 1, 1));
 
     m_guiManager->setSkin(guiskin);
 
-    Pencil bigpen(globalSettings.gui.font, globalSettings.gui.fontSize * 1.5);
+    Pencil bigpen(globalSettings.gui.font, globalSettings.gui.fontSize * sizeFactor * 1.5);
 
     // Construction ------------------------------------------------------------
 
@@ -167,14 +174,18 @@ void AppManager::setupMenuGui()
     m_guiManager->addImage("", background)
             ->setSize(screenSize);
 
-    m_guiManager->addLayout(Layout::Horizental);
-    m_guiManager->addLayoutStretchSpace();
+    Image* version = m_guiManager->addImage("", "data/gfxart/gui/version.png");
+    version->setPos(Vector2f(screenSize.x - version->getSize().x - 10, 10));
 
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addLayout(Layout::Vertical, 10);
+    m_guiManager->addLayout(Layout::Horizental);
+
+    m_guiManager->addLayoutSpace(64);
+
+    m_guiManager->addLayout(Layout::Vertical, 4);
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.quit = m_guiManager->addButton("quit", "Quitter");
+    m_guiManager->addLayoutSpace(32);
     m_controls.about = m_guiManager->addButton("about", "A Propos");
     m_controls.settings = m_guiManager->addButton("settings", "Options");
     m_controls.quickplay = m_guiManager->addButton("quickplay", "Partie rapide");
@@ -182,7 +193,7 @@ void AppManager::setupMenuGui()
 
     m_guiManager->addLayoutSpace(64);
 
-    m_guiManager->addImage("logo", globalSettings.gui.backgroundLogo);
+    m_guiManager->addImage("logo", "data/gfxart/gui/logo.png");
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -270,8 +281,6 @@ void AppManager::setupMenuGui()
     labels << "Carte à jouer";
 
     m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
-    m_controls.playmenu.playerName->setBackground("data/gfxart/gui/editbox-profil.png");
-    m_controls.playmenu.playerName->setPadding(Vector2f(40, 1));
     labels << "Pseudo";
 
     m_guiManager->addLayoutSpace(16);
@@ -294,7 +303,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutSpace(16);
 
     m_controls.playmenu.description = m_guiManager->addTextBox("description");
-    m_controls.playmenu.description->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
+    m_controls.playmenu.description->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
     m_controls.playmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
     m_controls.playmenu.description->setPadding(4);
     m_controls.playmenu.description->setBackgroundMask(globalSettings.gui.maskH);
@@ -344,14 +353,20 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_guiManager->addButton("return", "Retour");
-
     m_guiManager->addButton("apply", "Appliquer");
+
+    m_guiManager->addLayoutSpace(64);
 
     m_guiManager->addButton("keySetting", "Conf. Touches");
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
     // --------
+
+    m_guiManager->addLayoutSpace(8);
+
+    Image* vline = m_guiManager->addImage("", "data/gfxart/gui/line.png");
+    vline->setSize(Vector2f(vline->getSize().x, screenSize.y - 32));
 
     m_guiManager->addLayoutStretchSpace();
 
@@ -364,16 +379,6 @@ void AppManager::setupMenuGui()
 
     m_controls.settingsmenu.antiAliasing = m_guiManager->addSwitchString("antiAliasing");
     labels << "Anti-crélénage";
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 3
-    m_guiManager->addLayout(Layout::Vertical, 8);
-    m_guiManager->addLayoutStretchSpace();
 
     m_controls.settingsmenu.fullscreen = m_guiManager->addSwitchString("fullScreen");
     labels << "Mode d'affichage";
@@ -465,7 +470,7 @@ void AppManager::setupMenuGui()
 
     m_controls.aboutmenu.aboutText = m_guiManager->addTextBox("aboutText");
     m_controls.aboutmenu.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
-    m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.backgroundTextboxArr);
+    m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
     m_controls.aboutmenu.aboutText->setDefinedSize(true);
     m_controls.aboutmenu.aboutText->setPadding(8);
     m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
@@ -579,6 +584,48 @@ void AppManager::setupMenuGui()
     updateGuiContent();
 }
 
+void AppManager::setupBackgroundScene()
+{
+    using namespace tbe::scene;
+
+    // SCENE -------------------------------------------------------------------
+
+    m_sceneManager->clearAll();
+
+    m_camera = new Camera(Camera::TARGET_RELATIVE);
+    m_camera->setRotate(Vector2f(180, 5));
+    m_sceneManager->addCamera(m_camera);
+
+    SceneParser parser(m_sceneManager);
+    parser.loadScene("data/maps/mainmenu.back");
+    parser.buildScene();
+
+    // PPE ---------------------------------------------------------------------
+
+    if(globalSettings.video.ppeUse)
+    {
+        using namespace ppe;
+
+        m_ppeManager->clearAll();
+
+        #if 0
+        BlurEffect* blur = new BlurEffect;
+        blur->setPasse(4);
+        m_ppeManager->addPostEffect("", blur);
+
+        BloomEffect* bloom = new BloomEffect;
+        bloom->setThreshold(0.1);
+        bloom->setIntensity(1.0);
+        bloom->setBlurPass(10);
+        m_ppeManager->addPostEffect("", bloom);
+
+        MotionBlurEffect* mblur = new MotionBlurEffect;
+        mblur->setRttFrameSize(math::nextPow2(globalSettings.video.screenSize) / 2);
+        m_ppeManager->addPostEffect("", mblur);
+        #endif
+    }
+}
+
 void AppManager::updateQuickPlayMapInfo()
 {
     unsigned selected = m_controls.playmenu.mapSelect->getCurrent();
@@ -602,11 +649,11 @@ void AppManager::updateQuickPlayMapInfo()
         catch(std::exception& e)
         {
             cout << e.what() << endl;
-            m_controls.playmenu.preview->setBackground(globalSettings.gui.nopreview);
+            m_controls.playmenu.preview->setBackground("data/gfxart/nopreview.png");
         }
     }
     else
-        m_controls.playmenu.preview->setBackground(globalSettings.gui.nopreview);
+        m_controls.playmenu.preview->setBackground("data/gfxart/nopreview.png");
 }
 
 void AppManager::updateGuiContent()
@@ -738,6 +785,8 @@ void AppManager::processPlayMenuEvent()
 
         executeGame(playSetting);
 
+        setupBackgroundScene();
+
         m_guiManager->setSession(MENU_QUICKPLAY);
     }
 
@@ -830,7 +879,26 @@ void AppManager::executeMenu()
                     break;
             }
 
+            m_camera->setPos(-m_camera->getTarget() * 8.0f);
+            m_camera->rotate(Vector2f::X(1));
+
             m_gameEngine->beginScene();
+
+            if(globalSettings.video.ppeUse)
+            {
+                Rtt* ppeRtt = m_ppeManager->getRtt();
+                ppeRtt->use(true);
+                ppeRtt->clear();
+                m_sceneManager->render();
+                ppeRtt->use(false);
+                m_ppeManager->render();
+            }
+
+            else
+            {
+                m_sceneManager->render();
+            }
+
             m_guiManager->render();
             m_gameEngine->endScene();
         }
