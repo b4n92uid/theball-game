@@ -101,7 +101,7 @@ GameManager::~GameManager()
 {
     cout << "--- Cleaning game manager" << endl;
 
-    manager.gui->setSession(MENU_QUICKPLAY);
+    manager.gui->setSession(MENU_MAPCHOOSE);
 
     manager.gameEngine->setGrabInput(false);
     manager.gameEngine->setMouseVisible(true);

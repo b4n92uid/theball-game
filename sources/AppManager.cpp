@@ -175,7 +175,8 @@ void AppManager::setupMenuGui()
             ->setSize(screenSize);
 
     Image* version = m_guiManager->addImage("", "data/gfxart/gui/version.png");
-    version->setPos(Vector2f(screenSize.x - version->getSize().x - 10, 10));
+    version->setSize(version->getSize() * sizeFactor);
+    version->setPos(Vector2f(screenSize.x - 256 - 10, 10));
 
     m_guiManager->addLayout(Layout::Horizental);
 
@@ -252,9 +253,58 @@ void AppManager::setupMenuGui()
     m_guiManager->endLayout();
      */
 
-    // ******** Menu Jouer
+    // ******** Choix carte
 
-    m_guiManager->setSession(MENU_QUICKPLAY);
+    m_guiManager->setSession(MENU_MAPCHOOSE);
+
+    m_guiManager->addImage("", background)
+            ->setSize(screenSize);
+
+    m_controls.mapmenu.prev = m_guiManager->addButton("return", "");
+    m_controls.mapmenu.prev->setMetaCount(4);
+    m_controls.mapmenu.prev->setSize(64);
+    m_controls.mapmenu.prev->setBackground("data/gfxart/gui/arrow-left.png");
+    m_controls.mapmenu.prev->setPos(16);
+
+    m_controls.mapmenu.next = m_guiManager->addButton("play", "");
+    m_controls.mapmenu.next->setMetaCount(4);
+    m_controls.mapmenu.next->setSize(64);
+    m_controls.mapmenu.next->setBackground("data/gfxart/gui/arrow-right.png");
+    m_controls.mapmenu.next->setPos(Vector2f(screenSize.x - 64 - 16, 16));
+
+    m_guiManager->addLayout(Layout::Horizental, 10, 10);
+
+    m_guiManager->addLayoutStretchSpace();
+
+    // -------- Collone 1
+    m_guiManager->addLayout(Layout::Vertical, 16)->setAlign(Layout::MIDDLE);
+    m_guiManager->addLayoutStretchSpace();
+
+    m_controls.mapmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
+
+    m_controls.mapmenu.description = m_guiManager->addTextBox("description");
+    m_controls.mapmenu.description->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
+    m_controls.mapmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.mapmenu.description->setPadding(4);
+    m_controls.mapmenu.description->setBackgroundMask(globalSettings.gui.maskH);
+    m_controls.mapmenu.description->setSize(Vector2f(389, 128));
+    m_controls.mapmenu.description->setDefinedSize(true);
+    m_controls.mapmenu.description->setTextAlign(TextBox::LEFT);
+
+    m_controls.mapmenu.preview = m_guiManager->addImage("preview");
+    m_controls.mapmenu.preview->setSize(256);
+
+
+    m_guiManager->addLayoutStretchSpace();
+    m_guiManager->endLayout();
+    // --------
+
+    m_guiManager->addLayoutStretchSpace();
+    m_guiManager->endLayout();
+
+    // ******** Choix joueur
+
+    m_guiManager->setSession(MENU_PLAYERCHOOSE);
 
     m_guiManager->addImage("", background)
             ->setSize(screenSize);
@@ -267,49 +317,22 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayout(Layout::Vertical, 5);
     m_guiManager->addLayoutStretchSpace();
 
-    m_controls.playmenu.ret = m_guiManager->addButton("return", "");
-    m_controls.playmenu.ret->setMetaCount(4);
-    m_controls.playmenu.ret->setSize(64);
-    m_controls.playmenu.ret->setBackground("data/gfxart/gui/button-arrow.png");
+    m_controls.playmenu.prev = m_guiManager->addButton("return", "");
+    m_controls.playmenu.prev->setMetaCount(4);
+    m_controls.playmenu.prev->setSize(64);
+    m_controls.playmenu.prev->setBackground("data/gfxart/gui/arrow-left.png");
 
     m_guiManager->addLayoutSpace(32);
 
     m_controls.playmenu.playerSelect = m_guiManager->addSwitchString("playerSelect");
     labels << "Personnage";
 
-    m_controls.playmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
-    labels << "Carte à jouer";
-
     m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
     labels << "Pseudo";
 
     m_guiManager->addLayoutSpace(16);
 
-    m_controls.playmenu.play = m_guiManager->addButton("play", "Jouer");
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 2
-    m_guiManager->addLayout(Layout::Vertical, 5);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.playmenu.preview = m_guiManager->addImage("preview");
-    m_controls.playmenu.preview->setSize(Vector2f(389, 256));
-
-    m_guiManager->addLayoutSpace(16);
-
-    m_controls.playmenu.description = m_guiManager->addTextBox("description");
-    m_controls.playmenu.description->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
-    m_controls.playmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
-    m_controls.playmenu.description->setPadding(4);
-    m_controls.playmenu.description->setBackgroundMask(globalSettings.gui.maskH);
-    m_controls.playmenu.description->setSize(Vector2f(389, 128));
-    m_controls.playmenu.description->setDefinedSize(true);
-    m_controls.playmenu.description->setTextAlign(TextBox::LEFT);
+    m_controls.playmenu.next = m_guiManager->addButton("play", "Jouer");
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -404,7 +427,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     // -------- Collone 1
-    m_guiManager->addLayout(Layout::Vertical, 2);
+    m_guiManager->addLayout(Layout::Vertical, 8);
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->addKeyConfig("forward");
     labels << "Avancer";
@@ -423,7 +446,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     // -------- Collone 2
-    m_guiManager->addLayout(Layout::Vertical, 2);
+    m_guiManager->addLayout(Layout::Vertical, 8);
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->addKeyConfig("brake");
     labels << "Brake";
@@ -628,11 +651,11 @@ void AppManager::setupBackgroundScene()
 
 void AppManager::updateQuickPlayMapInfo()
 {
-    unsigned selected = m_controls.playmenu.mapSelect->getCurrent();
+    unsigned selected = m_controls.mapmenu.mapSelect->getCurrent();
 
     Settings::MapInfo& mapinfo = globalSettings.availableMap[selected];
 
-    m_controls.playmenu.description
+    m_controls.mapmenu.description
             ->write(gui::GuiString("Carte: %s\n"
                                    "Par: %s\n\n"
                                    "%s",
@@ -644,16 +667,16 @@ void AppManager::updateQuickPlayMapInfo()
     {
         try
         {
-            m_controls.playmenu.preview->setBackground(mapinfo.screen);
+            m_controls.mapmenu.preview->setBackground(mapinfo.screen);
         }
         catch(std::exception& e)
         {
             cout << e.what() << endl;
-            m_controls.playmenu.preview->setBackground("data/gfxart/nopreview.png");
+            m_controls.mapmenu.preview->setBackground("data/gfxart/nopreview.png");
         }
     }
     else
-        m_controls.playmenu.preview->setBackground("data/gfxart/nopreview.png");
+        m_controls.mapmenu.preview->setBackground("data/gfxart/nopreview.png");
 }
 
 void AppManager::updateGuiContent()
@@ -694,14 +717,18 @@ void AppManager::updateGuiContent()
 
     // Carte a jouer
 
-    m_controls.playmenu.mapSelect->deleteAll();
+    cout << "Check" << endl;
+
+    m_controls.mapmenu.mapSelect->deleteAll();
 
     for(unsigned i = 0; i < globalSettings.availableMap.size(); i++)
     {
-        m_controls.playmenu.mapSelect->push(globalSettings.availableMap[i].name, i);
+        m_controls.mapmenu.mapSelect->push(globalSettings.availableMap[i].name, i);
     }
 
-    m_controls.playmenu.mapSelect->setCurrent(math::rand(0, globalSettings.availableMap.size()));
+    m_controls.mapmenu.mapSelect->setCurrent(math::rand(0, globalSettings.availableMap.size()));
+
+    cout << "Check" << endl;
 
     updateQuickPlayMapInfo();
 }
@@ -709,7 +736,7 @@ void AppManager::updateGuiContent()
 void AppManager::processMainMenuEvent()
 {
     if(m_controls.quickplay->isActivate())
-        m_guiManager->setSession(MENU_QUICKPLAY);
+        m_guiManager->setSession(MENU_MAPCHOOSE);
 
         //    else if(m_controls.campaign->isActivate())
         //        m_guiManager->setSession(MENU_CAMPAIGN);
@@ -763,17 +790,20 @@ void AppManager::processCampaignMenuEvent()
 
 void AppManager::processPlayMenuEvent()
 {
-    if(m_controls.playmenu.mapSelect->isActivate())
+    if(m_controls.mapmenu.mapSelect->isActivate())
     {
         updateQuickPlayMapInfo();
-        m_controls.playmenu.mapSelect->setActivate(false);
+        m_controls.mapmenu.mapSelect->setActivate(false);
     }
+    else if(m_controls.mapmenu.next->isActivate())
+        m_guiManager->setSession(MENU_PLAYERCHOOSE);
 
-    else if(m_controls.playmenu.playerSelect->isActivate());
+    else if(m_controls.mapmenu.prev->isActivate())
+        m_guiManager->setSession(MENU_MAIN);
 
-    else if(m_controls.playmenu.play->isActivate())
+    else if(m_controls.playmenu.next->isActivate())
     {
-        unsigned indexOfLevel = m_controls.playmenu.mapSelect->getData().getValue<unsigned>();
+        unsigned indexOfLevel = m_controls.mapmenu.mapSelect->getData().getValue<unsigned>();
         unsigned indexOfPlayer = m_controls.playmenu.playerSelect->getData().getValue<unsigned>();
 
         Settings::PartySetting playSetting;
@@ -787,14 +817,18 @@ void AppManager::processPlayMenuEvent()
 
         setupBackgroundScene();
 
-        m_guiManager->setSession(MENU_QUICKPLAY);
+        m_guiManager->setSession(MENU_MAIN);
+    }
+
+    else if(m_controls.playmenu.playerSelect->isActivate())
+    {
     }
 
     else if(m_controls.playmenu.playerName->isActivate())
         globalSettings.profile.name = m_controls.playmenu.playerName->getLabel();
 
-    else if(m_controls.playmenu.ret->isActivate())
-        m_guiManager->setSession(MENU_MAIN);
+    else if(m_controls.playmenu.prev->isActivate())
+        m_guiManager->setSession(MENU_MAPCHOOSE);
 }
 
 void AppManager::processSettingMenuEvent()
@@ -874,7 +908,8 @@ void AppManager::executeMenu()
                         m_guiManager->setSession(MENU_MAIN);
                     break;
 
-                case MENU_QUICKPLAY:
+                case MENU_MAPCHOOSE:
+                case MENU_PLAYERCHOOSE:
                     processPlayMenuEvent();
                     break;
             }

@@ -340,13 +340,12 @@ void Settings::saveVideo()
     {
         string name = node2->Attribute("name");
 
-        if(name == "width") node2->SetAttribute("value", video.screenSize.x);
-        if(name == "height") node2->SetAttribute("value", video.screenSize.y);
+        if(name == "size") node2->SetAttribute("value", video.screenSize.toStr());
         if(name == "bits") node2->SetAttribute("value", *reinterpret_cast<const int*>(&video.bits));
         if(name == "antialiasing") node2->SetAttribute("value", *reinterpret_cast<const int*>(&video.antialiasing));
         if(name == "fullscreen") node2->SetAttribute("value", video.fullScreen);
 
-        if(name == "useppe") node2->SetAttribute("value", video.ppeUse);
+        if(name == "ppeuse") node2->SetAttribute("value", video.ppeUse);
     }
 
     config.SaveFile();

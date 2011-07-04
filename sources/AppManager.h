@@ -101,17 +101,25 @@ protected:
 
         struct
         {
-            tbe::gui::SwitchString* mapSelect;
             tbe::gui::SwitchString* playerSelect;
             tbe::gui::EditBox* playerName;
+
+            tbe::gui::Button* next;
+            tbe::gui::Button* prev;
+
+        } playmenu;
+
+        struct
+        {
+            tbe::gui::SwitchString* mapSelect;
             tbe::gui::TextBox* description;
 
             tbe::gui::Image* preview;
 
-            tbe::gui::Button* play;
-            tbe::gui::Button* ret;
+            tbe::gui::Button* next;
+            tbe::gui::Button* prev;
 
-        } playmenu;
+        } mapmenu;
 
         struct
         {
