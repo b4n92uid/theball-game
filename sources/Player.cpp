@@ -171,10 +171,8 @@ inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
 
 void Player::move(tbe::Vector3f force)
 {
-    force.normalize() *= m_worldSettings.playerMoveSpeed;
-
-    if(onMove.empty() || !onMove(this, force))
-        m_physicBody->setApplyForce(force);
+    if(onMove.empty() || onMove(this, force))
+        m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
 }
 
 void Player::jump()

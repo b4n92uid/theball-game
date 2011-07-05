@@ -9,15 +9,16 @@
 
 #include "Define.h"
 
-#include "Player.h"
 #include "GameManager.h"
 #include "SoundManager.h"
+#include "MapElement.h"
+#include "Player.h"
 
 using namespace tbe;
 using namespace tbe::scene;
 
-tbe::gui::Image* BulletTime::m_screeneffect = NULL;
-tbe::ppe::ColorEffect* BulletTime::m_ppeffect = NULL;
+gui::Image* BulletTime::m_screeneffect = NULL;
+ppe::ColorEffect* BulletTime::m_ppeffect = NULL;
 
 BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 {

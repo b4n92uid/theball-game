@@ -21,6 +21,8 @@
         <itemPath>sources/StaticElement.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="Powers" projectFiles="true">
+        <itemPath>sources/Boost.cpp</itemPath>
+        <itemPath>sources/Boost.h</itemPath>
         <itemPath>sources/BulletTime.cpp</itemPath>
         <itemPath>sources/BulletTime.h</itemPath>
         <itemPath>sources/Power.cpp</itemPath>
