@@ -88,7 +88,6 @@ public:
     void switchDownWeapon();
 
     /// Armes
-    void setCurWeapon(unsigned slot);
     Weapon* getCurWeapon() const;
 
     /**
@@ -145,10 +144,10 @@ protected:
     int m_energy;
 
     Weapon::Array::iterator m_curWeapon;
-    Weapon::Array m_weaponsPack;
+    Weapon::Array m_weaponsInventory;
 
     Power::Array::iterator m_curPower;
-    Power::Array m_powerPack;
+    Power::Array m_powersInventory;
 
     Controller* m_attachedCotroller;
 

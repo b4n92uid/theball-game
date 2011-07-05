@@ -22,6 +22,7 @@ ppe::ColorEffect* BulletTime::m_ppeffect = NULL;
 
 BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 {
+    m_slot = 1;
     m_name = "BulletTime";
 
     m_usedWeapon = NULL;

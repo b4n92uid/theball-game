@@ -25,8 +25,8 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     m_nickname = name;
     m_id = "player";
     m_playManager = playManager;
-    m_curWeapon = m_weaponsPack.end();
-    m_curPower = m_powerPack.end();
+    m_curWeapon = m_weaponsInventory.end();
+    m_curPower = m_powersInventory.end();
     m_killed = false;
     m_life = 100;
     m_energy = 100;
@@ -76,17 +76,17 @@ Player::~Player()
 
 void Player::free()
 {
-    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
-        delete m_weaponsPack[i];
+    for(unsigned i = 0; i < m_weaponsInventory.size(); i++)
+        delete m_weaponsInventory[i];
 
-    m_weaponsPack.clear();
-    m_curWeapon = m_weaponsPack.end();
+    m_weaponsInventory.clear();
+    m_curWeapon = m_weaponsInventory.end();
 
-    for(unsigned i = 0; i < m_powerPack.size(); i++)
-        delete m_powerPack[i];
+    for(unsigned i = 0; i < m_powersInventory.size(); i++)
+        delete m_powersInventory[i];
 
-    m_powerPack.clear();
-    m_curPower = m_powerPack.end();
+    m_powersInventory.clear();
+    m_curPower = m_powersInventory.end();
 }
 
 void Player::setInLastSpawnPoint()
@@ -124,7 +124,7 @@ void Player::process()
     if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->process(this);
 
-    if(m_energy > 0 && !m_energyVoid && m_curPower != m_powerPack.end())
+    if(m_energy > 0 && !m_energyVoid && m_curPower != m_powersInventory.end())
     {
         (*m_curPower)->process();
 
@@ -146,7 +146,7 @@ void Player::process()
 
 bool Player::shoot(Vector3f targetpos)
 {
-    if(m_curWeapon == m_weaponsPack.end())
+    if(m_curWeapon == m_weaponsInventory.end())
         return false;
 
     if(!onShoot.empty() && !onShoot(this, targetpos))
@@ -212,7 +212,7 @@ void Player::brake()
 
 bool Player::power(bool stat, tbe::Vector3f targetpos)
 {
-    if(m_curPower == m_powerPack.end())
+    if(m_curPower == m_powersInventory.end())
         return false;
 
     if(!onPower.empty() && !onPower(this, stat, targetpos))
@@ -233,10 +233,10 @@ inline bool isWeaponSameName(Weapon* w1, Weapon* w2)
 
 void Player::addWeapon(Weapon* weapon)
 {
-    Weapon::Array::iterator select = find_if(m_weaponsPack.begin(), m_weaponsPack.end(),
+    Weapon::Array::iterator select = find_if(m_weaponsInventory.begin(), m_weaponsInventory.end(),
                                              bind2nd(ptr_fun(isWeaponSameName), weapon));
 
-    if(select != m_weaponsPack.end())
+    if(select != m_weaponsInventory.end())
     {
         (*select)->UpAmmoCount(weapon->getAmmoCount());
         delete weapon;
@@ -244,19 +244,19 @@ void Player::addWeapon(Weapon* weapon)
 
     else
     {
-        m_weaponsPack.push_back(weapon);
+        m_weaponsInventory.push_back(weapon);
 
-        m_curWeapon = --m_weaponsPack.end();
+        m_curWeapon = --m_weaponsInventory.end();
         (*m_curWeapon)->setShooter(this);
     }
 }
 
 void Player::slotWeapon(unsigned slot)
 {
-    for(unsigned i = 0; i < m_weaponsPack.size(); i++)
-        if(m_weaponsPack[i]->getSlot() == slot)
+    for(unsigned i = 0; i < m_weaponsInventory.size(); i++)
+        if(m_weaponsInventory[i]->getSlot() == slot)
         {
-            m_curWeapon = m_weaponsPack.begin() + i;
+            m_curWeapon = m_weaponsInventory.begin() + i;
             break;
         }
 }
@@ -265,29 +265,21 @@ void Player::switchUpWeapon()
 {
     m_curWeapon++;
 
-    if(m_curWeapon >= m_weaponsPack.end())
-        m_curWeapon = m_weaponsPack.begin();
+    if(m_curWeapon >= m_weaponsInventory.end())
+        m_curWeapon = m_weaponsInventory.begin();
 }
 
 void Player::switchDownWeapon()
 {
     m_curWeapon--;
 
-    if(m_curWeapon < m_weaponsPack.begin())
-        m_curWeapon = --m_weaponsPack.end();
-}
-
-void Player::setCurWeapon(unsigned slot)
-{
-    if(slot >= m_weaponsPack.size())
-        throw tbe::Exception("PlayerEngine::setCurWeapon; Invalid weapon slot (%d)", slot);
-
-    m_curWeapon = m_weaponsPack.begin() + slot;
+    if(m_curWeapon < m_weaponsInventory.begin())
+        m_curWeapon = --m_weaponsInventory.end();
 }
 
 Weapon* Player::getCurWeapon() const
 {
-    if(m_curWeapon == m_weaponsPack.end())
+    if(m_curWeapon == m_weaponsInventory.end())
         return NULL;
     else
         return (*m_curWeapon);
@@ -300,37 +292,47 @@ inline bool isPowerSameName(Power* w1, Power* w2)
 
 void Player::addPower(Power* power)
 {
-    Power::Array::iterator select = find_if(m_powerPack.begin(), m_powerPack.end(),
+    Power::Array::iterator select = find_if(m_powersInventory.begin(), m_powersInventory.end(),
                                             bind2nd(ptr_fun(isPowerSameName), power));
 
-    if(select == m_powerPack.end())
+    if(select == m_powersInventory.end())
     {
-        m_powerPack.push_back(power);
+        m_powersInventory.push_back(power);
 
-        m_curPower = --m_powerPack.end();
+        m_curPower = --m_powersInventory.end();
         (*m_curPower)->setOwner(this);
     }
 }
 
 void Player::slotPower(unsigned slot)
 {
+    for(unsigned i = 0; i < m_powersInventory.size(); i++)
+        if(m_powersInventory[i]->getSlot() == slot)
+        {
+            m_curPower = m_powersInventory.begin() + i;
+            break;
+        }
 }
 
 void Player::switchUpPower()
 {
+    m_curPower++;
+
+    if(m_curPower >= m_powersInventory.end())
+        m_curPower = m_powersInventory.begin();
 }
 
 void Player::switchDownPower()
 {
-}
+    m_curPower--;
 
-void Player::setCurPower(unsigned slot)
-{
+    if(m_curPower < m_powersInventory.begin())
+        m_curPower = --m_powersInventory.end();
 }
 
 Power* Player::getCurPower() const
 {
-    if(m_curPower != m_powerPack.end())
+    if(m_curPower != m_powersInventory.end())
         return *m_curPower;
     else
         return NULL;

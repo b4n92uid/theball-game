@@ -12,6 +12,7 @@
 
 Power::Power(GameManager* gameManager)
 {
+    m_slot = 0;
     m_name = "Power";
 
     m_active = false;
@@ -57,4 +58,9 @@ void Power::setName(std::string name)
 std::string Power::getName() const
 {
     return m_name;
+}
+
+unsigned Power::getSlot() const
+{
+    return m_slot;
 }

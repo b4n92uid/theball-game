@@ -23,6 +23,7 @@ ppe::MotionBlurEffect* Boost::m_ppeffect = NULL;
 
 Boost::Boost(GameManager* gameManager) : Power(gameManager)
 {
+    m_slot = 2;
     m_name = "Boost";
 
     Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;

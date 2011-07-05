@@ -36,10 +36,13 @@ public:
     void setName(std::string name);
     std::string getName() const;
 
+    unsigned getSlot() const;
+
     typedef std::vector<Power*> Array;
 
 protected:
     bool m_active;
+    unsigned m_slot;
 
 protected:
     Player* m_owner;
