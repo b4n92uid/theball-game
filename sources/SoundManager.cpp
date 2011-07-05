@@ -27,18 +27,11 @@ SoundManager::SoundManager(GameManager* gameManager)
     map<string, string> soundPaths;
 
     soundPaths["stop"] = "data/sfxart/stop.wav";
-    soundPaths["bullettime"] = "data/sfxart/bullettime.wav";
     soundPaths["hit"] = "data/sfxart/hit.wav";
-    soundPaths["jumper"] = "data/sfxart/jumper.wav";
     soundPaths["kill"] = "data/sfxart/kill.wav";
     soundPaths["noAvailable"] = "data/sfxart/noAvailable.wav";
     soundPaths["notime"] = "data/sfxart/notime.wav";
     soundPaths["respawn"] = "data/sfxart/respawn.wav";
-    soundPaths["takeammo"] = "data/sfxart/takeammo.wav";
-    soundPaths["takefatalshot"] = "data/sfxart/takefatalshot.wav";
-    soundPaths["takelife"] = "data/sfxart/takelife.wav";
-    soundPaths["takesuperlife"] = "data/sfxart/takesuperlife.wav";
-    soundPaths["teleport"] = "data/sfxart/teleport.wav";
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
         registerSound(it->first, it->second);
@@ -82,7 +75,7 @@ void SoundManager::registerSound(std::string name, std::string filename)
     FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
 }
 
-void SoundManager::playSound(std::string soundName, MapElement* object)
+void SoundManager::playSound(std::string soundName, MapElement* object, int loop)
 {
     if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
@@ -90,6 +83,8 @@ void SoundManager::playSound(std::string soundName, MapElement* object)
     FMOD_CHANNEL* channel;
 
     FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
+
+    FMOD_Channel_SetLoopCount(channel, loop);
 
     FMOD_Channel_Set3DAttributes(channel,
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),

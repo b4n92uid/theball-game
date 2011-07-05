@@ -31,7 +31,7 @@ public:
     void registerSound(std::string name, std::string filename);
 
     /// Jouer un son
-    void playSound(std::string soundName, MapElement* object);
+    void playSound(std::string soundName, MapElement* object, int loop = 1);
 
     void playMusic(std::string soundName);
     void pauseMusic(std::string soundName);
@@ -41,7 +41,7 @@ public:
 
     typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > MusicMap;
 
-    boost::signal<void (FMOD_CHANNEL*)> processSoundEffect;
+    boost::signal<void (FMOD_CHANNEL*) > processSoundEffect;
 
 protected:
     GameManager* m_gameManager;

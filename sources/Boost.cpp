@@ -35,6 +35,8 @@ Boost::Boost(GameManager* gameManager) : Power(gameManager)
         m_ppeffect->setIntensity(0.75);
         m_gameManager->manager.ppe->addPostEffect("boost", m_ppeffect);
     }
+
+    m_gameManager->manager.sound->registerSound("boost", "data/sfxart/boost.wav");
 }
 
 Boost::~Boost()
@@ -48,7 +50,7 @@ void Boost::process()
         int value = m_owner->getEnergy();
 
         if(value > 0)
-            value -= 2;
+            value -= 4;
 
         else
             m_active = false;
@@ -65,6 +67,8 @@ bool Boost::boostForce(Player* player, tbe::Vector3f direction)
 
     if(moveforce > 2048)
         moveforce.normalize() *= 2048;
+
+    moveforce.y = 0;
 
     player->getPhysicBody()->setApplyForce(moveforce);
 
@@ -84,6 +88,12 @@ void Boost::activate(tbe::Vector3f target)
         m_ppeffect->setEnable(true);
 
     m_owner->onMove.connect(boost::bind(&Boost::boostForce, this, _1, _2));
+
+    NewtonNode* pbody = m_owner->getPhysicBody();
+
+    Vector3f veloc = pbody->getApplyForce().normalize()*64;
+
+    NewtonBodyAddImpulse(pbody->getBody(), veloc, pbody->getPos());
 }
 
 void Boost::diactivate()

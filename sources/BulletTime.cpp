@@ -48,7 +48,10 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
         m_screeneffect->setOpacity(0.5);
         m_screeneffect->setSize(vidsets.screenSize);
         m_screeneffect->setEnable(false);
+
     }
+
+    m_gameManager->manager.sound->registerSound("bullettime", "data/sfxart/bullettime.wav");
 }
 
 BulletTime::~BulletTime()

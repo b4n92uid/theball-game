@@ -155,6 +155,12 @@ bool Player::shoot(Vector3f targetpos)
     return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
+void Player::move(tbe::Vector3f force)
+{
+    if(onMove.empty() || onMove(this, force))
+        m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
+}
+
 inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
 {
     Vector3f contact, normal, penetration;
@@ -167,12 +173,6 @@ inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
     float dot = Vector3f::dot(normal, Vector3f(0, 1, 0));
 
     return (contactPoint > 0 && dot > 0.25);
-}
-
-void Player::move(tbe::Vector3f force)
-{
-    if(onMove.empty() || onMove(this, force))
-        m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
 }
 
 void Player::jump()
@@ -190,13 +190,14 @@ void Player::jump()
         }
     }
 
-    allowed = !onJump.empty() && onJump(this, allowed);
+    if(!onJump.empty())
+        allowed = onJump(this, allowed);
 
     if(allowed)
     {
         NewtonBodyAddImpulse(m_physicBody->getBody(),
                              Vector3f(0, m_worldSettings.playerJumpForce, 0),
-                             m_visualBody->getMatrix().getPos());
+                             m_physicBody->getPos());
     }
 }
 
