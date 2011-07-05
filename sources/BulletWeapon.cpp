@@ -170,7 +170,7 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
         Bullet * fire = new Bullet(m_playManager);
         fire->setWeapon(this);
         fire->setDammage(math::rand(1, m_maxAmmoDammage));
-        fire->shoot(startpos, targetpos, m_shootSpeed, 0.1);
+        fire->shoot(startpos, targetpos, m_shootSpeed, 0.2);
 
         m_bulletArray.push_back(fire);
     }

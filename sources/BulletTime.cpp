@@ -84,7 +84,7 @@ void BulletTime::process()
     {
         if(value > 0)
         {
-            if(m_owner->getCurWeapon() != m_usedWeapon)
+            if(m_owner->getCurWeapon() && m_owner->getCurWeapon() != m_usedWeapon)
             {
                 m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
                 m_usedWeapon = m_owner->getCurWeapon();

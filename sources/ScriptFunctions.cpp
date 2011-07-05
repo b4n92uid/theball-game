@@ -13,6 +13,8 @@
 #include "MapElement.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "BulletWeapon.h"
+#include "BulletTime.h"
 
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
@@ -293,7 +295,8 @@ int setAmmo(lua_State* lua)
     Player* player = lua_toplayer(lua, 1);
     int value = lua_tointeger(lua, 2);
 
-    player->getCurWeapon()->setAmmoCount(value);
+    if(player->getCurWeapon())
+        player->getCurWeapon()->setAmmoCount(value);
 
     return 0;
 }
@@ -303,6 +306,7 @@ int upAmmo(lua_State* lua)
     Player* player = lua_toplayer(lua, 1);
     int value = lua_tointeger(lua, 2);
 
+    if(player->getCurWeapon())
     player->getCurWeapon()->UpAmmoCount(value);
 
     return 0;
@@ -312,9 +316,23 @@ int getAmmo(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
 
+    if(player->getCurWeapon())
     lua_pushinteger(lua, player->getCurWeapon()->getAmmoCount());
 
     return 1;
+}
+
+int attachPower(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    Player* player = lua_toplayer(lua, 1);
+    string id = lua_tostring(lua, 2);
+
+    if(id == "BulletTime")
+        player->addPower(new BulletTime(gm));
+
+    return 0;
 }
 
 int selectPower(lua_State* lua)
@@ -329,6 +347,25 @@ int switchPower(lua_State* lua)
 
 int getSelectedPower(lua_State* lua)
 {
+    return 0;
+}
+
+int attachWeapon(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    Player* player = lua_toplayer(lua, 1);
+    string id = lua_tostring(lua, 2);
+
+    if(id == "Blaster")
+        player->addWeapon(new WeaponBlaster(gm));
+    else if(id == "Shotgun")
+        player->addWeapon(new WeaponShotgun(gm));
+    else if(id == "Finder")
+        player->addWeapon(new WeaponFinder(gm));
+    else if(id == "Bomb")
+        player->addWeapon(new WeaponBomb(gm));
+
     return 0;
 }
 

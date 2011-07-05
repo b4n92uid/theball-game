@@ -45,17 +45,30 @@ int setEnergy(lua_State* lua);
 int upEnergy(lua_State* lua);
 int getEnergy(lua_State* lua);
 
-int selectPower(lua_State* lua);
-int switchPower(lua_State* lua);
-int getSelectedPower(lua_State* lua);
-
 int setAmmo(lua_State* lua);
 int upAmmo(lua_State* lua);
 int getAmmo(lua_State* lua);
 
+int attachPower(lua_State* lua);
+int selectPower(lua_State* lua);
+int switchPower(lua_State* lua);
+int getSelectedPower(lua_State* lua);
+
+int attachWeapon(lua_State* lua);
 int selectWeapon(lua_State* lua);
 int getSelectedWeapon(lua_State* lua);
 int switchWeapon(lua_State* lua);
+
+int move(lua_State* lua);
+int jump(lua_State* lua);
+int shoot(lua_State* lua);
+int power(lua_State* lua);
+int dammage(lua_State* lua);
+
+int createPlayers(lua_State* lua);
+int killPlayer(lua_State* lua);
+int isKilledPlayer(lua_State* lua);
+int deletePlayer(lua_State* lua);
 
 // Audio
 
@@ -96,19 +109,6 @@ int setElemDataV(lua_State* lua);
 int getElemDataV(lua_State* lua);
 
 int getSceneData(lua_State* lua);
-
-// Actions
-
-int move(lua_State* lua);
-int jump(lua_State* lua);
-int shoot(lua_State* lua);
-int power(lua_State* lua);
-int dammage(lua_State* lua);
-
-int createPlayers(lua_State* lua);
-int killPlayer(lua_State* lua);
-int isKilledPlayer(lua_State* lua);
-int deletePlayer(lua_State* lua);
 
 // HUD
 

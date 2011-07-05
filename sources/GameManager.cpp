@@ -328,8 +328,8 @@ void GameManager::setupGui()
     hud.life->setSmooth(true, 1);
     hud.ammo = manager.gui->addGauge("hud.ammo", "Munition");
     hud.ammo->setSmooth(true, 1);
-    hud.bullettime = manager.gui->addGauge("hud.bullettime", "Bulettime");
-    hud.bullettime->setSmooth(true, 1);
+    hud.power = manager.gui->addGauge("hud.bullettime", "Bulettime");
+    hud.power->setSmooth(true, 1);
 
     manager.gui->addLayoutStretchSpace();
     manager.gui->endLayout();
@@ -519,7 +519,8 @@ void GameManager::eventProcess()
             manager.gameEngine->setGrabInput(false);
             manager.gameEngine->setMouseVisible(true);
 
-            m_userPlayer->getCurPower()->diactivate();
+            if(m_userPlayer->getCurPower())
+                m_userPlayer->getCurPower()->diactivate();
 
             m_timeTo = TIME_TO_PAUSE;
         }
@@ -655,29 +656,50 @@ void GameManager::hudProcess()
 
         manager.gui->setSession(SCREEN_HUD);
 
-        const Weapon* curWeapon = m_userPlayer->getCurWeapon();
-
-        const int &ammoCount = curWeapon->getAmmoCount(),
-                &ammoCountMax = curWeapon->getMaxAmmoCount(),
-                &life = m_userPlayer->getLife(),
-                &energy = m_userPlayer->getEnergy();
+        // Mise a jour des bar de progression (Vie, Muinition, Bullettime)
 
         if(!m_userPlayer->isKilled())
         {
-            // Mise a jour des bar de progression (Vie, Muinition, Bullettime)
+            const Weapon* curWeapon = m_userPlayer->getCurWeapon();
 
-            hud.ammo->setLabel((format("%1% %2%/%3%")
-                               % curWeapon->getWeaponName() % ammoCount % ammoCountMax).str());
+            if(curWeapon)
+            {
+                const int &ammoCount = curWeapon->getAmmoCount(),
+                        &ammoCountMax = curWeapon->getMaxAmmoCount();
 
-            hud.ammo->setValue(ammoCount * 100 / ammoCountMax);
+                format weaponGaugeFormat = format("%1% %2%/%3%")
+                        % curWeapon->getWeaponName()
+                        % ammoCount % ammoCountMax;
 
+                hud.ammo->setLabel(weaponGaugeFormat.str());
+                hud.ammo->setValue(ammoCount * 100 / ammoCountMax);
+            }
+            else
+            {
+                hud.ammo->setLabel("Pas d'armes :(");
+                hud.ammo->setValue(0);
+            }
+
+            const Power* curPower = m_userPlayer->getCurPower();
+
+            if(curPower)
+            {
+                const int &energy = m_userPlayer->getEnergy();
+
+                format powerGaugeFormat = format("%1% %2%/100") % curPower->getName() % energy;
+
+                hud.power->setLabel(powerGaugeFormat.str());
+                hud.power->setValue(energy);
+            }
+            else
+            {
+                hud.ammo->setLabel("Pas de pouvoir :(");
+                hud.ammo->setValue(0);
+            }
+
+            const int &life = m_userPlayer->getLife();
             hud.life->setLabel((format("Santé %1%/100") % life).str());
-
             hud.life->setValue(life);
-
-            hud.bullettime->setLabel((format("Energie %1%/100") % energy).str());
-
-            hud.bullettime->setValue(energy);
 
             // Affichage de l'ecran de dommage si besoins
 
@@ -831,7 +853,7 @@ void GameManager::render()
 
     m_shootTarget = parallelscene.newton->findAnyBody(campos, endray);
 
-    AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb();
+    AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
 
     if(useraabb.isInner(campos))
     {

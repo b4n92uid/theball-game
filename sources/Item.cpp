@@ -90,6 +90,9 @@ ItemAddAmmo::ItemAddAmmo(GameManager* gameManager, tbe::Matrix4 pos) : Item(game
 
 void ItemAddAmmo::modifPlayer(Player* player)
 {
+    if(!player->getCurWeapon())
+        return;
+
     GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)
@@ -186,6 +189,9 @@ public:
 
 void ItemFatalShot::modifPlayer(Player* player)
 {
+    if(!player->getCurWeapon())
+        return;
+
     GameManager* playManager = player->getGameManager();
 
     if(playManager->getUserPlayer() == player)

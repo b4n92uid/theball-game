@@ -119,7 +119,7 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
     m_shootDiri = (targetpos - startpos).normalize();
     m_shootSpeed = shootspeed;
 
-    m_shootDiri += AABB(-accuracy, accuracy).randPos();
+    m_shootDiri += AABB(accuracy).randPos();
 
     BullNode* placehold = new BullNode;
     setVisualBody(placehold);

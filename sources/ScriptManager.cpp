@@ -49,17 +49,19 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "upEnergy", script::upEnergy);
     lua_register(m_lua, "getEnergy", script::getEnergy);
 
+    lua_register(m_lua, "attachPower", script::attachPower);
     lua_register(m_lua, "selectPower", script::selectPower);
     lua_register(m_lua, "switchPower", script::switchPower);
     lua_register(m_lua, "getSelectedPower", script::getSelectedPower);
 
-    lua_register(m_lua, "setAmmo", script::setAmmo);
-    lua_register(m_lua, "upAmmo", script::upAmmo);
-    lua_register(m_lua, "getAmmo", script::getAmmo);
-
+    lua_register(m_lua, "attachWeapon", script::attachWeapon);
     lua_register(m_lua, "selectWeapon", script::selectWeapon);
     lua_register(m_lua, "getSelectedWeapon", script::getSelectedWeapon);
     lua_register(m_lua, "switchWeapon", script::switchWeapon);
+
+    lua_register(m_lua, "setAmmo", script::setAmmo);
+    lua_register(m_lua, "upAmmo", script::upAmmo);
+    lua_register(m_lua, "getAmmo", script::getAmmo);
 
 
     lua_register(m_lua, "loadSound", script::loadSound);

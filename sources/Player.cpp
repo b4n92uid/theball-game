@@ -80,11 +80,13 @@ void Player::free()
         delete m_weaponsPack[i];
 
     m_weaponsPack.clear();
+    m_curWeapon = m_weaponsPack.end();
 
     for(unsigned i = 0; i < m_powerPack.size(); i++)
         delete m_powerPack[i];
 
     m_powerPack.clear();
+    m_curPower = m_powerPack.end();
 }
 
 void Player::setInLastSpawnPoint()
@@ -122,7 +124,7 @@ void Player::process()
     if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->process(this);
 
-    if(m_energy > 0 && !m_energyVoid)
+    if(m_energy > 0 && !m_energyVoid && m_curPower != m_powerPack.end())
     {
         (*m_curPower)->process();
 
@@ -144,6 +146,9 @@ void Player::process()
 
 bool Player::shoot(Vector3f targetpos)
 {
+    if(m_curWeapon == m_weaponsPack.end())
+        return false;
+
     if(!onShoot.empty() && !onShoot(this, targetpos))
         return false;
 
@@ -209,6 +214,9 @@ void Player::brake()
 
 bool Player::power(bool stat, tbe::Vector3f targetpos)
 {
+    if(m_curPower == m_powerPack.end())
+        return false;
+
     if(!onPower.empty() && !onPower(this, stat, targetpos))
         return false;
 
@@ -281,7 +289,10 @@ void Player::setCurWeapon(unsigned slot)
 
 Weapon* Player::getCurWeapon() const
 {
-    return (*m_curWeapon);
+    if(m_curWeapon == m_weaponsPack.end())
+        return NULL;
+    else
+        return (*m_curWeapon);
 }
 
 inline bool isPowerSameName(Power* w1, Power* w2)
@@ -321,7 +332,10 @@ void Player::setCurPower(unsigned slot)
 
 Power* Player::getCurPower() const
 {
-    return *m_curPower;
+    if(m_curPower != m_powerPack.end())
+        return *m_curPower;
+    else
+        return NULL;
 }
 
 void Player::reBorn()
@@ -336,14 +350,6 @@ void Player::reBorn()
     m_physicBody->setApplyGravity(true);
 
     free();
-
-    // Arme principale
-    WeaponBlaster* blaster = new WeaponBlaster(m_playManager);
-    addWeapon(blaster);
-
-    // Pouvoir principale
-    BulletTime* btime = new BulletTime(m_playManager);
-    addPower(btime);
 
     onRespawn(this);
 
