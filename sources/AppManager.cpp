@@ -140,21 +140,26 @@ void AppManager::setupMenuGui()
 
     guiskin->button(globalSettings.gui.button);
     guiskin->buttonSize(globalSettings.gui.buttonSize * sizeFactor);
+    math::round(guiskin->buttonSize);
     guiskin->buttonMetaCount = 4;
 
     guiskin->gauge(globalSettings.gui.gauge);
     guiskin->gaugeSize(globalSettings.gui.gaugeSize * sizeFactor);
+    math::round(guiskin->gaugeSize);
     guiskin->gaugeMetaCount = 2;
 
     guiskin->editBox(globalSettings.gui.editBox);
     guiskin->editBoxSize(globalSettings.gui.editBoxSize * sizeFactor);
+    math::round(guiskin->editBoxSize);
     guiskin->editBoxMetaCount = 4;
 
     guiskin->switchBox(globalSettings.gui.switchBox);
     guiskin->switchBoxSize(globalSettings.gui.switchBoxSize * sizeFactor);
+    math::round(guiskin->switchBoxSize);
     guiskin->switchBoxMetaCount = 4;
 
-    guiskin->stateShowSize(Vector2f(48, 48));
+    guiskin->stateShowSize(Vector2f(48, 48) * sizeFactor);
+    math::round(guiskin->stateShowSize);
 
     guiskin->pencil(globalSettings.gui.font, globalSettings.gui.fontSize * sizeFactor);
     guiskin->pencil.setColor(Vector4f(1, 1, 1, 1));
@@ -260,13 +265,13 @@ void AppManager::setupMenuGui()
     m_guiManager->addImage("", background)
             ->setSize(screenSize);
 
-    m_controls.mapmenu.prev = m_guiManager->addButton("return", "");
+    m_controls.mapmenu.prev = m_guiManager->addButton("prev", "");
     m_controls.mapmenu.prev->setMetaCount(4);
     m_controls.mapmenu.prev->setSize(64);
     m_controls.mapmenu.prev->setBackground("data/gfxart/gui/arrow-left.png");
     m_controls.mapmenu.prev->setPos(16);
 
-    m_controls.mapmenu.next = m_guiManager->addButton("play", "");
+    m_controls.mapmenu.next = m_guiManager->addButton("next", "");
     m_controls.mapmenu.next->setMetaCount(4);
     m_controls.mapmenu.next->setSize(64);
     m_controls.mapmenu.next->setBackground("data/gfxart/gui/arrow-right.png");
@@ -333,6 +338,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutSpace(16);
 
     m_controls.playmenu.next = m_guiManager->addButton("play", "Jouer");
+    m_controls.playmenu.next->setBackground("data/gfxart/gui/play.png");
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
