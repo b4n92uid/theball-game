@@ -87,6 +87,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 
         NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
         NewtonBodySetUserData(m_physicBody->getBody(), this);
+        NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
     }
 }
 

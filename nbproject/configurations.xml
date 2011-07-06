@@ -25,6 +25,8 @@
         <itemPath>sources/Boost.h</itemPath>
         <itemPath>sources/BulletTime.cpp</itemPath>
         <itemPath>sources/BulletTime.h</itemPath>
+        <itemPath>sources/GravityGun.cpp</itemPath>
+        <itemPath>sources/GravityGun.h</itemPath>
         <itemPath>sources/Power.cpp</itemPath>
         <itemPath>sources/Power.h</itemPath>
       </logicalFolder>

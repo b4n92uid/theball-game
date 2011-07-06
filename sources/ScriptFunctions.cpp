@@ -16,6 +16,7 @@
 #include "Bullet.h"
 #include "BulletWeapon.h"
 
+#include "GravityGun.h"
 #include "BulletTime.h"
 #include "Boost.h"
 
@@ -346,6 +347,9 @@ int attachPower(lua_State* lua)
 
     else if(id == "Boost")
         player->addPower(new Boost(gm));
+
+    else if(id == "GravityGun")
+        player->addPower(new GravityGun(gm));
 
     return 0;
 }

@@ -137,8 +137,7 @@ void Player::process()
             }
         }
     }
-
-    if(m_energy < 100)
+    else if(m_energy < 100)
     {
         m_energy++;
 
