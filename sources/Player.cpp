@@ -91,13 +91,13 @@ void Player::free()
 
 void Player::setInLastSpawnPoint()
 {
-    m_physicBody->setVelocity(0);
+    stop();
     m_physicBody->setMatrix(m_lastSpawnPoint);
 }
 
 void Player::randomPosOnFloor()
 {
-    m_physicBody->setVelocity(0);
+    stop();
     m_physicBody->setMatrix(m_playManager->getRandomPosOnTheFloor());
 }
 

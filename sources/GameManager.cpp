@@ -581,6 +581,14 @@ void GameManager::gameProcess()
     if(m_gameOver)
         return;
 
+    for(unsigned i = 0; i < map.mapElements.size(); i++)
+    {
+        MapElement* elem = map.mapElements[i];
+
+        if(!map.aabb.isInner(elem->getVisualBody()))
+            elem->resetInitialMatrix();
+    }
+
     /*
      * Pour chaque joueurs
      *  - les joueurs mort pour les reconstruires

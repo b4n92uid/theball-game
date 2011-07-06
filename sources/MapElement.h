@@ -34,6 +34,10 @@ public:
     void setId(std::string id);
     std::string getId() const;
 
+    void resetInitialMatrix();
+
+    void stop();
+
     typedef std::map<std::string, MapElement*> Map;
     typedef std::vector<MapElement*> Array;
 
@@ -49,6 +53,8 @@ protected:
 
     tbe::scene::NewtonNode* m_physicBody;
     tbe::scene::Node* m_visualBody;
+
+    tbe::Matrix4 m_initialMatrix;
 
     std::string m_id;
 };

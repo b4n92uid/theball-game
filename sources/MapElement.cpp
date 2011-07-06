@@ -53,6 +53,25 @@ std::string MapElement::getId() const
     return m_id;
 }
 
+void MapElement::resetInitialMatrix()
+{
+    if(m_physicBody)
+    {
+        stop();
+        m_physicBody->setMatrix(m_initialMatrix);
+    }
+    else if(m_visualBody)
+        m_visualBody->setMatrix(m_initialMatrix);
+}
+
+void MapElement::stop()
+{
+    m_physicBody->setVelocity(0);
+    m_physicBody->setOmega(0);
+    m_physicBody->setApplyForce(0);
+    m_physicBody->setApplyTorque(0);
+}
+
 bool MapElement::isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects)
 {
     for(unsigned i = 0; i < staticObjects.size(); i++)

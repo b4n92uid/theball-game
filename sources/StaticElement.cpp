@@ -18,6 +18,8 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 {
     MapElement::m_visualBody = m_visualBody = body;
 
+    m_initialMatrix = body->getMatrix();
+
     m_id = body->getName();
 
     string physic = "convex";
@@ -59,7 +61,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     float masse = 0;
 
     if(body->hasUserData("masse"))
-        masse = body->getUserData("masse").getValue<float> ();
+        masse = tools::strToNum<float>(body->getUserData("masse").getValue<string > ());
 
     if(physic != "ghost")
     {
@@ -73,7 +75,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
             m_physicBody->buildSphereNode(size, masse);
 
         else if(physic == "convex")
-            m_physicBody->buildConvexNode(body->getHardwareBuffer().getAllVertex(), masse);
+            m_physicBody->buildConvexNode(body->getHardwareBuffer().getAllVertex(true), masse);
 
         else if(physic == "tree")
             m_physicBody->buildTreeNode(body->getHardwareBuffer().getAllFace());
@@ -83,6 +85,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 
         body->addChild(m_physicBody);
 
+        NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
         NewtonBodySetUserData(m_physicBody->getBody(), this);
     }
 }
