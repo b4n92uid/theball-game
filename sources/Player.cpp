@@ -134,8 +134,6 @@ void Player::process()
             {
                 m_energyVoid = true;
                 (*m_curPower)->diactivate();
-
-                m_soundManager->playSound("power.shutdown", this);
             }
         }
     }
