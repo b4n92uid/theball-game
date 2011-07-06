@@ -63,14 +63,22 @@ void SoundManager::registerSound(std::string name, std::string filename)
     cout << "Load sound : " << filename << endl;
 
     FMOD_RESULT res = FMOD_System_CreateSound(m_fmodsys, filename.c_str(),
-                                              FMOD_LOOP_OFF | FMOD_3D | FMOD_HARDWARE,
-                                              0, &m_sounds[name]);
+                                              FMOD_LOOP_NORMAL | FMOD_3D | FMOD_HARDWARE,
+                                              0, &m_sounds[name].first);
 
     if(res != FMOD_OK)
         throw tbe::Exception("SoundManager::registerSound; %s (%s)",
                              FMOD_ErrorString(res), filename.c_str());
 
-    FMOD_Sound_Set3DMinMaxDistance(m_sounds[name], 8, 128);
+    FMOD_Sound_Set3DMinMaxDistance(m_sounds[name].first, 8, 128);
+}
+
+void SoundManager::stopSound(std::string soundName)
+{
+    if(m_gameManager->manager.app->globalSettings.noaudio)
+        return;
+
+    FMOD_Channel_Stop(m_sounds[soundName].second);
 }
 
 void SoundManager::playSound(std::string soundName, MapElement* object, int loop)
@@ -78,20 +86,20 @@ void SoundManager::playSound(std::string soundName, MapElement* object, int loop
     if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
 
-    FMOD_CHANNEL* channel;
+    FMOD_Sound_SetLoopCount(m_sounds[soundName].first, loop);
 
-    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_sounds[soundName], true, &channel);
+    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE,
+                          m_sounds[soundName].first, true,
+                          &m_sounds[soundName].second);
 
-    FMOD_Channel_SetLoopCount(channel, loop);
-
-    FMOD_Channel_Set3DAttributes(channel,
+    FMOD_Channel_Set3DAttributes(m_sounds[soundName].second,
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),
                                  (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
 
 
-    processSoundEffect(channel);
+    processSoundEffect(m_sounds[soundName].second);
 
-    FMOD_Channel_SetPaused(channel, false);
+    FMOD_Channel_SetPaused(m_sounds[soundName].second, false);
 }
 
 void SoundManager::registerMusic(std::string name, std::string filename)

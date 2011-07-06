@@ -31,15 +31,14 @@ public:
     void registerSound(std::string name, std::string filename);
 
     /// Jouer un son
-    void playSound(std::string soundName, MapElement* object, int loop = 1);
+    void playSound(std::string soundName, MapElement* object, int loop = 0);
+    void stopSound(std::string soundName);
 
     void playMusic(std::string soundName);
     void pauseMusic(std::string soundName);
     void stopMusic(std::string soundName);
 
-    typedef std::map<std::string, FMOD_SOUND*> SoundMap;
-
-    typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > MusicMap;
+    typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > SfxMap;
 
     boost::signal<void (FMOD_CHANNEL*) > processSoundEffect;
 
@@ -47,8 +46,8 @@ protected:
     GameManager* m_gameManager;
     FMOD_SYSTEM* m_fmodsys;
     FMOD_CHANNELGROUP* m_musicGroupe;
-    SoundMap m_sounds;
-    MusicMap m_musics;
+    SfxMap m_sounds;
+    SfxMap m_musics;
 };
 
 #endif	/* _SOUNDMANAGER_H */
