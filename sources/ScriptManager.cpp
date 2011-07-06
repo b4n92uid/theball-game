@@ -38,6 +38,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "impulse", script::impulse);
     lua_register(m_lua, "unfreeze", script::unfreeze);
     lua_register(m_lua, "freeze", script::freeze);
+    lua_register(m_lua, "stopMotion", script::stopMotion);
 
     lua_register(m_lua, "getNickName", script::getNickName);
 

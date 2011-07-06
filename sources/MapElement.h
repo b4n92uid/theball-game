@@ -36,7 +36,7 @@ public:
 
     void resetInitialMatrix();
 
-    void stop();
+    void stopMotion();
 
     typedef std::map<std::string, MapElement*> Map;
     typedef std::vector<MapElement*> Array;

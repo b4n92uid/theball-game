@@ -235,6 +235,15 @@ int unfreeze(lua_State* lua)
     return 0;
 }
 
+int stopMotion(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
+
+    elem->stopMotion();
+
+    return 0;
+}
+
 int getNickName(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);

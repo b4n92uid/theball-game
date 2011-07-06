@@ -57,14 +57,14 @@ void MapElement::resetInitialMatrix()
 {
     if(m_physicBody)
     {
-        stop();
+        stopMotion();
         m_physicBody->setMatrix(m_initialMatrix);
     }
     else if(m_visualBody)
         m_visualBody->setMatrix(m_initialMatrix);
 }
 
-void MapElement::stop()
+void MapElement::stopMotion()
 {
     m_physicBody->setVelocity(0);
     m_physicBody->setOmega(0);

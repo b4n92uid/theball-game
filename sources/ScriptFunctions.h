@@ -33,6 +33,8 @@ int impulse(lua_State* lua);
 int freeze(lua_State* lua);
 int unfreeze(lua_State* lua);
 
+int stopMotion(lua_State* lua);
+
 // Player Stat
 
 int getNickName(lua_State* lua);
