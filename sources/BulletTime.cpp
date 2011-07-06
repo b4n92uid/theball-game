@@ -51,7 +51,7 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 
     }
 
-    m_gameManager->manager.sound->registerSound("bullettime", "data/sfxart/bullettime.wav");
+    m_gameManager->manager.sound->registerSound("bullettime", "data/sfxart/powers/bullettime.wav");
 }
 
 BulletTime::~BulletTime()

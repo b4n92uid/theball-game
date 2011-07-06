@@ -92,13 +92,13 @@ void Player::free()
 void Player::setInLastSpawnPoint()
 {
     stopMotion();
-    m_physicBody->setMatrix(m_lastSpawnPoint);
+    m_physicBody->setPos(m_lastSpawnPoint);
 }
 
 void Player::randomPosOnFloor()
 {
     stopMotion();
-    m_physicBody->setMatrix(m_playManager->getRandomPosOnTheFloor());
+    m_physicBody->setPos(m_playManager->getRandomPosOnTheFloor());
 }
 
 void Player::attachItem(Item* item)
@@ -134,6 +134,8 @@ void Player::process()
             {
                 m_energyVoid = true;
                 (*m_curPower)->diactivate();
+
+                m_soundManager->playSound("power.shutdown", this);
             }
         }
     }
@@ -198,7 +200,7 @@ void Player::move(tbe::Vector3f force)
     /*
      * Diminue la force de mouvement dans les aires
      */
-    if(collideStatic)
+    if(!collideStatic)
         force /= 2.0f;
 
     if(onMove.empty() || onMove(this, force))

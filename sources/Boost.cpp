@@ -36,7 +36,7 @@ Boost::Boost(GameManager* gameManager) : Power(gameManager)
         m_gameManager->manager.ppe->addPostEffect("boost", m_ppeffect);
     }
 
-    m_gameManager->manager.sound->registerSound("boost", "data/sfxart/boost.wav");
+    m_gameManager->manager.sound->registerSound("boost", "data/sfxart/powers/boost.wav");
 }
 
 Boost::~Boost()
