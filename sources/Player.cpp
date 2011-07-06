@@ -157,6 +157,9 @@ bool Player::shoot(Vector3f targetpos)
 
 void Player::move(tbe::Vector3f force)
 {
+    // Remove Y axis force for avoiding flying player !
+    force.y = 0;
+
     if(onMove.empty() || onMove(this, force))
         m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
 }
