@@ -454,8 +454,6 @@ void AppManager::setupMenuGui()
     // -------- Collone 2
     m_guiManager->addLayout(Layout::Vertical, 8);
     m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addKeyConfig("brake");
-    labels << "Brake";
     m_guiManager->addKeyConfig("shoot");
     labels << "Tirer";
     m_guiManager->addKeyConfig("power");

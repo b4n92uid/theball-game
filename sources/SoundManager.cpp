@@ -26,11 +26,9 @@ SoundManager::SoundManager(GameManager* gameManager)
 
     map<string, string> soundPaths;
 
-    soundPaths["stop"] = "data/sfxart/stop.wav";
     soundPaths["hit"] = "data/sfxart/hit.wav";
     soundPaths["kill"] = "data/sfxart/kill.wav";
     soundPaths["noAvailable"] = "data/sfxart/noAvailable.wav";
-    soundPaths["notime"] = "data/sfxart/notime.wav";
     soundPaths["respawn"] = "data/sfxart/respawn.wav";
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)

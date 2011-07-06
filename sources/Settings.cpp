@@ -367,7 +367,6 @@ void Settings::saveControl()
     actions.push_back("strafRight");
     actions.push_back("strafLeft");
     actions.push_back("jump");
-    actions.push_back("brake");
     actions.push_back("shoot");
     actions.push_back("power");
     actions.push_back("switchUpWeapon");
@@ -450,7 +449,6 @@ void Settings::fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
     actions.push_back("strafRight");
     actions.push_back("strafLeft");
     actions.push_back("jump");
-    actions.push_back("brake");
     actions.push_back("shoot");
     actions.push_back("power");
     actions.push_back("switchUpWeapon");

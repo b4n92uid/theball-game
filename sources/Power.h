@@ -23,6 +23,11 @@ public:
     Power(GameManager* gameManager);
     virtual ~Power();
 
+    /**
+     * Cette fonction agis pandant l'état actife du pouvoir
+     * elle est aussi en charge de la consomation d'energie (ex:value -= 2)
+     * et la désactivation de celui ci dans le cas d'épuisement de l'énergie
+     */
     virtual void process() = 0;
 
     virtual void activate(tbe::Vector3f target);

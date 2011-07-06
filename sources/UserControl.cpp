@@ -112,9 +112,6 @@ void UserControl::process(Player* player)
     if(isActionStateDown("jump"))
         player->jump();
 
-    if(isActionStateDown("brake"))
-        player->brake();
-
     // Change weapons
     if(isActionStateDown("switchUpWeapon"))
     {

@@ -46,9 +46,6 @@ public:
     /// Accéleration
     bool power(bool stat, tbe::Vector3f targetpos = 0);
 
-    /// Freinage
-    void brake();
-
     /// Assigne les dommages et augemente le score
     void takeDammage(int dammage, Player* killer = NULL);
 

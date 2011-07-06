@@ -204,16 +204,6 @@ void Player::jump()
     }
 }
 
-void Player::brake()
-{
-    if(!clocks.brake.isEsplanedTime(500))
-        return;
-
-    m_physicBody->setOmega(0);
-    m_physicBody->setVelocity(0);
-    m_soundManager->playSound("stop", this);
-}
-
 bool Player::power(bool stat, tbe::Vector3f targetpos)
 {
     if(m_curPower == m_powersInventory.end())
