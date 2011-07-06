@@ -10,7 +10,7 @@
     <set name="Player.JumpForce" value="16" />
     <set name="Player.Size" value="0.5" />
     <set name="Player.Masse" value="2" />
-    <set name="Player.LinearDamping" value="4" />
+    <set name="Player.LinearDamping" value="2" />
     <set name="Player.AngularDamping" value="0,0,0" />
 
     <set name="Weapon.Size" value="0.001" />
