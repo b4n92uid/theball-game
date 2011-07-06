@@ -45,19 +45,10 @@ Boost::~Boost()
 
 void Boost::process()
 {
-    if(m_active)
-    {
-        int value = m_owner->getEnergy();
+    int value = m_owner->getEnergy();
+    value -= 4;
 
-        if(value > 0)
-            value -= 4;
-
-        else
-            m_active = false;
-
-        m_owner->setEnergy(value);
-    }
-
+    m_owner->setEnergy(value);
 }
 
 bool Boost::boostForce(Player* player, tbe::Vector3f direction)

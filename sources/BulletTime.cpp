@@ -84,51 +84,41 @@ void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 void BulletTime::process()
 {
     int value = m_owner->getEnergy();
-
-    if(m_active)
-    {
-        if(value > 0)
-        {
-            if(m_owner->getCurWeapon() && m_owner->getCurWeapon() != m_usedWeapon)
-            {
-                m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
-                m_usedWeapon = m_owner->getCurWeapon();
-                m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
-            }
-
-            NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
-            NewtonBody* body = NewtonWorldGetFirstBody(nworld);
-
-            while(body)
-            {
-                NewtonApplyForceAndTorque callback = NewtonBodyGetForceAndTorqueCallback(body);
-
-                if(!m_callbacks.count(body) && callback)
-                {
-                    Vector3f vel, omg;
-                    NewtonBodyGetVelocity(body, vel);
-                    NewtonBodyGetOmega(body, omg);
-
-                    vel *= 0.1;
-                    omg *= 0.1;
-                    NewtonBodySetVelocity(body, vel);
-                    NewtonBodySetOmega(body, omg);
-
-                    m_callbacks[body] = callback;
-                    NewtonBodySetForceAndTorqueCallback(body, applyForceAndTorqueCallback);
-                }
-
-                body = NewtonWorldGetNextBody(nworld, body);
-            }
-
-            value -= 2;
-        }
-
-        else
-            m_active = false;
-    }
+    value -= 2;
 
     m_owner->setEnergy(value);
+
+    if(m_owner->getCurWeapon() && m_owner->getCurWeapon() != m_usedWeapon)
+    {
+        m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
+        m_usedWeapon = m_owner->getCurWeapon();
+        m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
+    }
+
+    NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
+    NewtonBody* body = NewtonWorldGetFirstBody(nworld);
+
+    while(body)
+    {
+        NewtonApplyForceAndTorque callback = NewtonBodyGetForceAndTorqueCallback(body);
+
+        if(!m_callbacks.count(body) && callback)
+        {
+            Vector3f vel, omg;
+            NewtonBodyGetVelocity(body, vel);
+            NewtonBodyGetOmega(body, omg);
+
+            vel *= 0.1;
+            omg *= 0.1;
+            NewtonBodySetVelocity(body, vel);
+            NewtonBodySetOmega(body, omg);
+
+            m_callbacks[body] = callback;
+            NewtonBodySetForceAndTorqueCallback(body, applyForceAndTorqueCallback);
+        }
+
+        body = NewtonWorldGetNextBody(nworld, body);
+    }
 }
 
 void BulletTime::soundEffect(FMOD_CHANNEL* channel)

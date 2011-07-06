@@ -124,14 +124,17 @@ void Player::process()
     if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->process(this);
 
-    if(m_energy > 0 && !m_energyVoid && m_curPower != m_powersInventory.end())
+    if(m_curPower != m_powersInventory.end() && (*m_curPower)->isActive() && !m_energyVoid)
     {
-        (*m_curPower)->process();
-
-        if(m_energy <= 0)
+        if(m_energy > 0)
         {
-            m_energyVoid = true;
-            (*m_curPower)->diactivate();
+            (*m_curPower)->process();
+
+            if(m_energy <= 0)
+            {
+                m_energyVoid = true;
+                (*m_curPower)->diactivate();
+            }
         }
     }
 
@@ -155,16 +158,7 @@ bool Player::shoot(Vector3f targetpos)
     return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
-void Player::move(tbe::Vector3f force)
-{
-    // Remove Y axis force for avoiding flying player !
-    force.y = 0;
-
-    if(onMove.empty() || onMove(this, force))
-        m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
-}
-
-inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
+inline bool isBodyContact(scene::NewtonNode* node1, scene::NewtonNode* node2)
 {
     Vector3f contact, normal, penetration;
 
@@ -178,23 +172,52 @@ inline bool playerCanJump(scene::NewtonNode* node1, scene::NewtonNode* node2)
     return (contactPoint > 0 && dot > 0.25);
 }
 
-void Player::jump()
+inline bool isPlayerCollidStaticElement(Player* player, const MapElement::Array& elems)
 {
-    bool allowed = false;
 
-    foreach(MapElement* elem, m_playManager->map.mapElements)
+    foreach(MapElement* elem, elems)
     {
         NewtonNode* nnode = elem->getPhysicBody();
 
-        if(nnode && playerCanJump(nnode, m_physicBody))
-        {
-            allowed = true;
-            break;
-        }
+        if(nnode && isBodyContact(nnode, player->getPhysicBody()))
+            return true;
     }
+
+    return false;
+}
+
+void Player::move(tbe::Vector3f force)
+{
+    bool collideStatic = isPlayerCollidStaticElement(this, m_playManager->map.mapElements);
+
+    /*
+     * Enleve la force appliquer sur l'axe Y (Vertical)
+     * pour eviter au joueur de voller
+     */
+    force.y = 0;
+
+    /*
+     * Diminue la force de mouvement dans les aires
+     */
+    if(collideStatic)
+        force /= 2.0f;
+
+    if(onMove.empty() || onMove(this, force))
+        m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
+}
+
+void Player::jump()
+{
+    bool allowed = isPlayerCollidStaticElement(this, m_playManager->map.mapElements);
 
     if(!onJump.empty())
         allowed = onJump(this, allowed);
+
+    /*
+     * Le joueur peut sauter seulement quand il est en contact avec
+     * un élement statique et que le produit scalair entre le vecteur (0,1,0)
+     * et la normal de contact soit inferieur a 0.25
+     */
 
     if(allowed)
     {
