@@ -31,7 +31,9 @@ public:
 
 private:
     MapElement* m_attached;
+    MapElement* m_lastAttached;
     float m_internalEnergy;
+    tbe::scene::ParticlesEmiter* m_highlighter;
 };
 
 #endif	/* GRAVITYGUN_H */
