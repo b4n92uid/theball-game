@@ -833,6 +833,8 @@ void GameManager::render()
 
     if(!manager.app->globalSettings.noaudio)
     {
+        manager.sound->syncronizeSoundsPosition();
+
         FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)campos, 0,
                                             (FMOD_VECTOR*)(float*)camtar,
                                             (FMOD_VECTOR*)(float*)m_camera->getUp());

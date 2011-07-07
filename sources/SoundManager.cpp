@@ -81,6 +81,19 @@ void SoundManager::stopSound(std::string soundName)
     FMOD_Channel_Stop(m_sounds[soundName].second);
 }
 
+void SoundManager::syncronizeSoundsPosition()
+{
+
+    foreach(SoundPosMap::value_type & i, m_soundPosMap)
+    {
+        MapElement* object = i.first;
+
+        FMOD_Channel_Set3DAttributes(i.second,
+                                     (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),
+                                     (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
+    }
+}
+
 void SoundManager::playSound(std::string soundName, MapElement* object, int loop)
 {
     if(m_gameManager->manager.app->globalSettings.noaudio)
@@ -92,10 +105,8 @@ void SoundManager::playSound(std::string soundName, MapElement* object, int loop
                           m_sounds[soundName].first, true,
                           &m_sounds[soundName].second);
 
-    FMOD_Channel_Set3DAttributes(m_sounds[soundName].second,
-                                 (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),
-                                 (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
-
+    if(object)
+        m_soundPosMap[object] = m_sounds[soundName].second;
 
     processSoundEffect(m_sounds[soundName].second);
 

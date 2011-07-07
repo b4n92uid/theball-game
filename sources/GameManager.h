@@ -94,7 +94,6 @@ public:
 
         Item::Array items;
         MapElement::Array mapElements;
-        tbe::scene::Light::Array lights;
 
         tbe::AABB aabb;
 

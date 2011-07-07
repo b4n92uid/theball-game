@@ -38,11 +38,16 @@ public:
     void pauseMusic(std::string soundName);
     void stopMusic(std::string soundName);
 
-    typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > SfxMap;
 
     boost::signal<void (FMOD_CHANNEL*) > processSoundEffect;
 
+    void syncronizeSoundsPosition();
+
 protected:
+    typedef std::map<MapElement*, FMOD_CHANNEL*> SoundPosMap;
+    typedef std::map<std::string, std::pair<FMOD_SOUND*, FMOD_CHANNEL*> > SfxMap;
+
+    SoundPosMap m_soundPosMap;
     GameManager* m_gameManager;
     FMOD_SYSTEM* m_fmodsys;
     FMOD_CHANNELGROUP* m_musicGroupe;
