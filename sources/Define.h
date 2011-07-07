@@ -41,7 +41,7 @@
 #define WEAPON_FINDER   "data/weapons/finder.bmp"
 
 // SOUND & MUSIC ---------------------------------------------------------------
-#define SOUND_MAINTHEME "data/music/research2.ogg"
+#define SOUND_MAINTHEME "data/music/research3.ogg"
 #define SOUND_GONG      "data/sfxart/gong.ogg"
 
 #define SOUND_BLASTER   "data/sfxart/weapons/blaster.wav"
