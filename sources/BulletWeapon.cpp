@@ -147,7 +147,7 @@ WeaponShotgun::WeaponShotgun(GameManager* playManager) : BulletWeapon(playManage
 {
     setMaxAmmoCount(50);
     setAmmoCount(40);
-    setMaxAmmoDammage(75);
+    setMaxAmmoDammage(25);
     setShootCadency(512);
     setShootSpeed(64);
     setFireSound(SOUND_SHOTGUN);
