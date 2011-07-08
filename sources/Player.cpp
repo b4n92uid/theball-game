@@ -220,9 +220,12 @@ void Player::jump()
 
     if(allowed)
     {
-        NewtonBodyAddImpulse(m_physicBody->getBody(),
-                             Vector3f(0, m_worldSettings.playerJumpForce, 0),
-                             m_physicBody->getPos());
+        Vector3f deltaVeloc(0, m_worldSettings.playerJumpForce, 0);
+        deltaVeloc += m_physicBody->getApplyForce().normalize() * m_worldSettings.playerJumpForce / 2;
+
+        Vector3f pointPos = m_physicBody->getPos();
+
+        NewtonBodyAddImpulse(m_physicBody->getBody(), deltaVeloc, pointPos);
     }
 }
 
