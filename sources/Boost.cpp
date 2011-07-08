@@ -41,6 +41,7 @@ Boost::Boost(GameManager* gameManager) : Power(gameManager)
 
 Boost::~Boost()
 {
+    diactivate();
 }
 
 void Boost::process()
@@ -66,13 +67,8 @@ bool Boost::boostForce(Player* player, tbe::Vector3f direction)
     return false;
 }
 
-void Boost::activate(tbe::Vector3f target)
+void Boost::internalActivate(tbe::Vector3f target)
 {
-    if(m_active)
-        return;
-
-    Power::activate(target);
-
     m_soundManager->playSound("boost", m_owner);
 
     if(m_ppeffect)
@@ -87,13 +83,8 @@ void Boost::activate(tbe::Vector3f target)
     NewtonBodyAddImpulse(pbody->getBody(), veloc, pbody->getPos());
 }
 
-void Boost::diactivate()
+void Boost::internalDiactivate()
 {
-    if(!m_active)
-        return;
-
-    Power::diactivate();
-
     if(m_ppeffect)
         m_ppeffect->setEnable(false);
 

@@ -26,8 +26,9 @@ public:
 
     void process();
 
-    virtual void activate(tbe::Vector3f target);
-    virtual void diactivate();
+protected:
+    void internalActivate(tbe::Vector3f target);
+    void internalDiactivate();
 
 protected:
     static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);

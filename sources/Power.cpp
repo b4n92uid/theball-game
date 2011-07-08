@@ -27,12 +27,22 @@ Power::~Power()
 
 void Power::activate(tbe::Vector3f target)
 {
+    if(m_active)
+        return;
+
     m_active = true;
+
+    internalActivate(target);
 }
 
 void Power::diactivate()
 {
+    if(!m_active)
+        return;
+
     m_active = false;
+
+    internalDiactivate();
 }
 
 bool Power::isActive() const

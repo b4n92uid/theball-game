@@ -56,6 +56,7 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 
 BulletTime::~BulletTime()
 {
+    diactivate();
 }
 
 void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
@@ -126,13 +127,8 @@ void BulletTime::soundEffect(FMOD_CHANNEL* channel)
     FMOD_Channel_SetFrequency(channel, 22050);
 }
 
-void BulletTime::activate(tbe::Vector3f target)
+void BulletTime::internalActivate(tbe::Vector3f target)
 {
-    if(m_active)
-        return;
-
-    Power::activate(target);
-
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
     m_soundManager->processSoundEffect.connect(soundEffect);
     m_soundManager->playSound("bullettime", m_owner);
@@ -173,13 +169,8 @@ void BulletTime::activate(tbe::Vector3f target)
     }
 }
 
-void BulletTime::diactivate()
+void BulletTime::internalDiactivate()
 {
-    if(!m_active)
-        return;
-
-    Power::diactivate();
-
     m_soundManager->processSoundEffect.disconnect(soundEffect);
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);
 

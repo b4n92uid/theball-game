@@ -38,8 +38,8 @@ GravityGun::GravityGun(GameManager* gameManager) : Power(gameManager)
 
 GravityGun::~GravityGun()
 {
-    if(!m_highlighter->isAttached())
-        delete m_highlighter;
+    diactivate();
+    delete m_highlighter;
 }
 
 void GravityGun::process()
@@ -80,17 +80,12 @@ void GravityGun::process()
     attachpbody->setApplyForce(force);
 }
 
-void GravityGun::activate(tbe::Vector3f target)
+void GravityGun::internalActivate(tbe::Vector3f target)
 {
-    if(m_active)
-        return;
-
     NewtonNode* ownerpbody = m_owner->getPhysicBody();
 
     if(target - ownerpbody->getPos() > 32)
         return;
-
-    Power::activate(target);
 
     m_internalEnergy = m_owner->getEnergy();
 
@@ -126,13 +121,8 @@ void GravityGun::activate(tbe::Vector3f target)
     }
 }
 
-void GravityGun::diactivate()
+void GravityGun::internalDiactivate()
 {
-    if(!m_active)
-        return;
-
-    Power::diactivate();
-
     if(!m_attached)
         return;
 

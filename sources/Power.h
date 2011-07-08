@@ -30,10 +30,10 @@ public:
      */
     virtual void process() = 0;
 
-    virtual void activate(tbe::Vector3f target);
-    virtual void diactivate();
+    void activate(tbe::Vector3f target);
+    void diactivate();
 
-    virtual bool isActive() const;
+    bool isActive() const;
 
     void setOwner(Player* owner);
     Player* getOwner() const;
@@ -44,6 +44,10 @@ public:
     unsigned getSlot() const;
 
     typedef std::vector<Power*> Array;
+
+protected:
+    virtual void internalActivate(tbe::Vector3f target) = 0;
+    virtual void internalDiactivate() = 0;
 
 protected:
     bool m_active;
