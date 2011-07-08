@@ -1,9 +1,20 @@
-theBall est un jeu de shoot en arène,
+theBall v1.5
 Opens-Sources sous licence GPL
 
+http://theball.tuxfamily.org
+
 Programmation :
-BELDJOUHRI Abdelghani (b4n92uid)
+Abdelghani Beldjouhri (b4n92uid)
 b4n92uid@live.fr
+
+Designer:
+Honoré Jaussoin (Newin)
+big.newin@gmail.com
+
+Bibliothèques utiliser:
+
+TheBall Engine:
+b4n92uid.tuxfamily.org
 
 Boost
 www.boost.org
@@ -31,9 +42,6 @@ http://www.fmod.org
 
 TinyXML
 www.sourceforge.net/projects/tinyxml
-
-Echantillions sonore
-http://www.loopreman.com
 
 Skybox
 http://www.alusion-fr.com/
