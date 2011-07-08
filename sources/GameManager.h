@@ -16,6 +16,8 @@
 
 #include "ScriptManager.h"
 
+#include <boost/signals.hpp>
+
 class UserControl;
 class MaterialManager;
 

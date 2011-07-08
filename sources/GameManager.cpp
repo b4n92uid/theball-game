@@ -292,18 +292,25 @@ void GameManager::setupGui()
     Image* backPause = manager.gui->addImage("00:background", guisets.backgroundPause);
     backPause->setSize(vidsets.screenSize);
 
-    manager.gui->addLayout(Layout::Vertical, 0, 10);
-
-    manager.gui->addLayout(Layout::Horizental, 10);
-    hud.playmenu.ret = manager.gui->addButton("hud.playmenu.ret", "Retour");
-    hud.playmenu.quit = manager.gui->addButton("hud.playmenu.quit", "Quitter");
-    manager.gui->endLayout();
-
+    manager.gui->addLayout(Layout::Horizental, 10, 10);
     manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Vertical, 10, 10)->setAlign(Layout::MIDDLE);
+    manager.gui->addLayoutStretchSpace();
+
+    hud.playmenu.quit = manager.gui->addButton("hud.playmenu.quit", "Quitter");
+
+    hud.playmenu.ret = manager.gui->addButton("hud.playmenu.ret", "Retour");
+
+    manager.gui->addLayoutSpace(64);
 
     TextBox* pauseLabel = manager.gui->addTextBox("hud.pauseLabel");
     pauseLabel->setPencil(whiteBigPen);
     pauseLabel->write("Menu Pause !");
+
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
 
     manager.gui->endLayout();
 
@@ -343,7 +350,7 @@ void GameManager::setupGui()
     manager.gui->addLayoutStretchSpace();
 
     hud.log = manager.gui->addTextBox("hud.log");
-    hud.log->setPencil(blackBigPen);
+    hud.log->setPencil(whiteBigPen);
     hud.log->setBackground(guisets.backgroundTextbox);
     hud.log->setPadding(16);
     hud.log->setEnable(false);
