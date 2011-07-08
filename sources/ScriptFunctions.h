@@ -12,9 +12,12 @@
 
 #define GAMEMANAGER_INTERNALE_NAME "_gameManager"
 #define SCRIPTMANAGER_INTERNALE_NAME "_scriptManager"
+#define SCRIPTPATH_INTERNALE_NAME "_scriptPath"
 
 namespace script
 {
+
+int include(lua_State* lua);
 
 // Translation
 
@@ -34,6 +37,8 @@ int freeze(lua_State* lua);
 int unfreeze(lua_State* lua);
 
 int stopMotion(lua_State* lua);
+
+int setOpacity(lua_State* lua);
 
 // Player Stat
 
@@ -101,16 +106,16 @@ int normalize(lua_State* lua);
 
 // User data
 
-int setElemDataS(lua_State* lua);
-int getElemDataS(lua_State* lua);
+int setString(lua_State* lua);
+int getString(lua_State* lua);
 
-int setElemDataN(lua_State* lua);
-int getElemDataN(lua_State* lua);
+int setNumber(lua_State* lua);
+int getNumber(lua_State* lua);
 
-int setElemDataV(lua_State* lua);
-int getElemDataV(lua_State* lua);
+int setVector(lua_State* lua);
+int getVector(lua_State* lua);
 
-int getSceneData(lua_State* lua);
+int getSceneString(lua_State* lua);
 
 // HUD
 
@@ -133,6 +138,7 @@ int gameover(lua_State* lua);
 
 int ghost(lua_State* lua);
 
+int setTimeout(lua_State* lua);
 int setInterval(lua_State* lua);
 
 }

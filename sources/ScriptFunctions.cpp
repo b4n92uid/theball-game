@@ -20,6 +20,7 @@
 #include "BulletTime.h"
 #include "Boost.h"
 
+#include <boost/signals.hpp>
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -31,6 +32,15 @@ using namespace tbe;
 
 namespace script
 {
+
+inline string getScriptPath(lua_State* lua)
+{
+    lua_getglobal(lua, SCRIPTPATH_INTERNALE_NAME);
+
+    string path = lua_tostring(lua, -1);
+
+    return path;
+}
 
 inline GameManager* getGameManager(lua_State* lua)
 {
@@ -123,6 +133,17 @@ inline Vector3f lua_tovector3(lua_State* lua, int argpos)
 void lua_pushstring(lua_State *L, string s)
 {
     lua_pushstring(L, s.c_str());
+}
+
+int include(lua_State* lua)
+{
+    string scriptpath = getScriptPath(lua);
+
+    string include = tools::pathScope(scriptpath, lua_tostring(lua, 1), true);
+
+    luaL_dofile(lua, include.c_str());
+
+    return 0;
 }
 
 int setPosition(lua_State* lua)
@@ -241,6 +262,19 @@ int stopMotion(lua_State* lua)
     MapElement* elem = lua_toelem(lua, 1);
 
     elem->stopMotion();
+
+    return 0;
+}
+
+int setOpacity(lua_State* lua)
+{
+    Player* player = lua_toplayer(lua, 1);
+    float value = lua_tonumber(lua, 2);
+
+    if(value < 1)
+        player->makeTransparent(true, value);
+    else
+        player->makeTransparent(false);
 
     return 0;
 }
@@ -641,7 +675,7 @@ int normalize(lua_State* lua)
     return 1;
 }
 
-int setElemDataS(lua_State* lua)
+int setString(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
@@ -653,7 +687,7 @@ int setElemDataS(lua_State* lua)
     return 0;
 }
 
-int getElemDataS(lua_State* lua)
+int getString(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
     string key = lua_tostring(lua, 2);
@@ -669,7 +703,7 @@ int getElemDataS(lua_State* lua)
     return 1;
 }
 
-int setElemDataN(lua_State* lua)
+int setNumber(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
@@ -681,7 +715,7 @@ int setElemDataN(lua_State* lua)
     return 0;
 }
 
-int getElemDataN(lua_State* lua)
+int getNumber(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
     string key = lua_tostring(lua, 2);
@@ -697,7 +731,7 @@ int getElemDataN(lua_State* lua)
     return 1;
 }
 
-int setElemDataV(lua_State* lua)
+int setVector(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
@@ -709,7 +743,7 @@ int setElemDataV(lua_State* lua)
     return 0;
 }
 
-int getElemDataV(lua_State* lua)
+int getVector(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
     string key = lua_tostring(lua, 2);
@@ -725,7 +759,7 @@ int getElemDataV(lua_State* lua)
     return 1;
 }
 
-int getSceneData(lua_State* lua)
+int getSceneString(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
 
@@ -1315,30 +1349,51 @@ int ghost(lua_State* lua)
     return 0;
 }
 
-struct Interval
+struct Timer
 {
 
-    Interval(lua_State* l, string c, int t)
+    Timer(lua_State* l, string c, int t)
     {
         lua = l;
         callback = c;
         time = t;
+        oneshot = false;
+        oneshot_executed = false;
     }
 
     void operator()(Player * userplayer)
     {
+        if(oneshot && oneshot_executed)
+            return;
+
         if(clock.isEsplanedTime(time))
         {
+            GameManager* gm = getGameManager(lua);
+
             lua_getglobal(lua, callback.c_str());
-            lua_pushplayer(lua, userplayer);
-            lua_call(lua, 1, 0);
+
+            foreach(int v, objects)
+            lua_pushinteger(lua, v);
+
+            lua_call(lua, objects.size(), 0);
+
+            if(oneshot)
+                oneshot_executed = true;
         }
     }
 
-    ticks::Clock clock;
     lua_State* lua;
+
+    ticks::Clock clock;
+
     string callback;
     int time;
+    vector<int> objects;
+
+    bool oneshot;
+
+private:
+    bool oneshot_executed;
 };
 
 int setInterval(lua_State* lua)
@@ -1348,7 +1403,31 @@ int setInterval(lua_State* lua)
     string callback = lua_tostring(lua, 1);
     int time = lua_tointeger(lua, 2);
 
-    gm->onEachFrame.connect(Interval(lua, callback, time));
+    Timer slot(lua, callback, time);
+    slot.oneshot = false;
+
+    for(int i = 3; lua_isnumber(lua, i); i++)
+        slot.objects.push_back(lua_tointeger(lua, i));
+
+    gm->onEachFrame.connect(slot);
+
+    return 0;
+}
+
+int setTimeout(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    string callback = lua_tostring(lua, 1);
+    int time = lua_tointeger(lua, 2);
+
+    Timer slot(lua, callback, time);
+    slot.oneshot = true;
+
+    for(int i = 3; lua_isnumber(lua, i); i++)
+        slot.objects.push_back(lua_tointeger(lua, i));
+
+    gm->onEachFrame.connect(slot);
 
     return 0;
 }

@@ -25,6 +25,8 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     luaL_openlibs(m_lua);
 
+    lua_register(m_lua, "include", script::include);
+
     lua_register(m_lua, "setPosition", script::setPosition);
     lua_register(m_lua, "getPosition", script::getPosition);
 
@@ -39,6 +41,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "unfreeze", script::unfreeze);
     lua_register(m_lua, "freeze", script::freeze);
     lua_register(m_lua, "stopMotion", script::stopMotion);
+    lua_register(m_lua, "setOpacity", script::setOpacity);
 
     lua_register(m_lua, "getNickName", script::getNickName);
 
@@ -90,16 +93,16 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "length", script::length);
 
 
-    lua_register(m_lua, "setElemDataS", script::setElemDataS);
-    lua_register(m_lua, "getElemDataS", script::getElemDataS);
+    lua_register(m_lua, "setString", script::setString);
+    lua_register(m_lua, "getString", script::getString);
 
-    lua_register(m_lua, "setElemDataN", script::setElemDataN);
-    lua_register(m_lua, "getElemDataN", script::getElemDataN);
+    lua_register(m_lua, "setNumber", script::setNumber);
+    lua_register(m_lua, "getNumber", script::getNumber);
 
-    lua_register(m_lua, "setElemDataV", script::setElemDataV);
-    lua_register(m_lua, "getElemDataV", script::getElemDataV);
+    lua_register(m_lua, "setVector", script::setVector);
+    lua_register(m_lua, "getVector", script::getVector);
 
-    lua_register(m_lua, "getSceneData", script::getSceneData);
+    lua_register(m_lua, "getSceneString", script::getSceneString);
 
 
     lua_register(m_lua, "move", script::move);
@@ -133,6 +136,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "ghost", script::ghost);
 
     lua_register(m_lua, "setInterval", script::setInterval);
+    lua_register(m_lua, "setTimeout", script::setTimeout);
 }
 
 ScriptManager::~ScriptManager()
@@ -185,6 +189,9 @@ void ScriptManager::load(std::string scriptpath)
 
     lua_pushinteger(m_lua, (lua_Integer)this);
     lua_setglobal(m_lua, SCRIPTMANAGER_INTERNALE_NAME);
+
+    lua_pushstring(m_lua, scriptpath.c_str());
+    lua_setglobal(m_lua, SCRIPTPATH_INTERNALE_NAME);
 
     if(luaL_dofile(m_lua, scriptpath.c_str()) != 0)
         throw tbe::Exception("ScriptManager::load; %s (%s)", lua_tostring(m_lua, -1), scriptpath.c_str());
