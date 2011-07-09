@@ -777,11 +777,8 @@ float rayFilter(const NewtonBody* body, const float*, int, void* userData, float
 
     float& hit = *static_cast<float*>(userData);
 
-    if(!(masse > 0.0f))
-    {
+    if(intersectParam < hit)
         hit = intersectParam;
-        return 0.0;
-    }
 
     return intersectParam;
 }
