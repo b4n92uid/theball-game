@@ -233,6 +233,8 @@ void GameManager::setupGui()
     Settings::Gui& guisets = manager.app->globalSettings.gui;
     Settings::Video& vidsets = manager.app->globalSettings.video;
 
+    Vector2i screenSize = vidsets.screenSize;
+
     GuiSkin* ingame_skin = new GuiSkin;
 
     ingame_skin->button(guisets.button);
@@ -251,14 +253,13 @@ void GameManager::setupGui()
     ingame_skin->switchBoxSize(guisets.switchBoxSize);
     ingame_skin->switchBoxMetaCount = 4;
 
-    ingame_skin->pencil(guisets.font, guisets.fontSize);
+    int fontsize = 18;
+
+    ingame_skin->pencil("data/gfxart/gui/bebas.ttf", fontsize);
     ingame_skin->pencil.setColor(1);
 
-    Pencil whiteBigPen(guisets.font, guisets.fontSize * 1.5);
+    Pencil whiteBigPen("data/gfxart/gui/bebas.ttf", fontsize * 2.0);
     whiteBigPen.setColor(1);
-
-    Pencil blackBigPen(guisets.font, guisets.fontSize * 1.5);
-    blackBigPen.setColor(Vector4f(0, 0, 0, 1));
 
     // GameOver ----------------------------------------------------------------
 
@@ -329,31 +330,51 @@ void GameManager::setupGui()
     hud.background.dammage->setSize(vidsets.screenSize);
     hud.background.dammage->setEnable(false);
 
-    Image* croshair = manager.gui->addImage("1:croshair", GUI_CROSHAIR);
-    croshair->setPos(Vector2f(vidsets.screenSize) / 2.0f - croshair->getSize() / 2.0f);
+    StateShow* croshair = manager.gui->addStateShow("0:croshair", "data/gfxart/gui/hud-crosshair.png", 4);
+    croshair->setPos(Vector2f(vidsets.screenSize) / 2.0f - Vector2f(64) / 2.0f);
+    croshair->setSize(64);
 
-    manager.gui->addLayout(Layout::Vertical, 10, 10);
+    Image* core_weapon = manager.gui->addImage("core_ammo", "data/gfxart/gui/hud-core-weapon.png");
+    Vector2f weaponParentPos(16);
+    core_weapon->setPos(weaponParentPos);
 
-    // -------- Barre des gauges
-    manager.gui->addLayout(Layout::Horizental, 10);
-    manager.gui->addLayoutStretchSpace();
+    Image* core_power = manager.gui->addImage("core_power", "data/gfxart/gui/hud-core-power.png");
+    Vector2f powerParentPos(screenSize.x - core_power->getSize().x - 16, 16);
+    core_power->setPos(powerParentPos);
 
-    hud.life = manager.gui->addGauge("hud.life", "Vie");
-    hud.life->setSmooth(true, 1);
-    hud.ammo = manager.gui->addGauge("hud.ammo", "Munition");
-    hud.ammo->setSmooth(true, 1);
-    hud.power = manager.gui->addGauge("hud.bullettime", "Bulettime");
-    hud.power->setSmooth(true, 1);
+    hud.ammoGauge = manager.gui->addGauge("hud.ammoGauge", "");
+    hud.ammoGauge->setBackground("data/gfxart/gui/hud-ammo.png");
+    hud.ammoGauge->setSmooth(true, 1);
+    hud.ammoGauge->setSize(Vector2f(256, 32));
+    hud.ammoGauge->setPos(weaponParentPos + Vector2f(0, 32));
 
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-    // --------
+    hud.ammo = manager.gui->addTextBox("hud.ammo");
+    hud.ammo->setPos(weaponParentPos + Vector2f(128, 9.6));
 
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->addLayoutStretchSpace();
+    hud.weaponIcon = manager.gui->addStateShow("hud.weaponIcon", "data/gfxart/gui/hud-weapon.png", 4);
+    hud.weaponIcon->setSize(96);
+    hud.weaponIcon->setPos(weaponParentPos);
+
+    hud.energyGauge = manager.gui->addGauge("hud.energyGauge", "");
+    hud.energyGauge->setBackground("data/gfxart/gui/hud-energy.png");
+    hud.energyGauge->setSize(Vector2f(256, 32));
+    hud.energyGauge->setSmooth(true, 2);
+    hud.energyGauge->setPos(powerParentPos + Vector2f(0, 32));
+    hud.energyGauge->setReverse(true);
+
+    hud.life = manager.gui->addTextBox("hud.life");
+    hud.life->setPos(powerParentPos + Vector2f(64, 9.6));
+
+    hud.powerIcon = manager.gui->addStateShow("hud.powerIcon", "data/gfxart/gui/hud-power.png", 4);
+    hud.powerIcon->setSize(96);
+    hud.powerIcon->setPos(powerParentPos + Vector2f(160, 0));
 
     // -------- Log
-    manager.gui->addLayout(Layout::Horizental);
+    manager.gui->addLayout(Layout::Horizental, 0, 10);
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayout(Layout::Vertical, 0, 10);
+    manager.gui->addLayoutStretchSpace();
+    manager.gui->addLayoutStretchSpace();
     manager.gui->addLayoutStretchSpace();
 
     hud.log = manager.gui->addTextBox("hud.log");
@@ -361,18 +382,20 @@ void GameManager::setupGui()
     hud.log->setBackground(guisets.backgroundTextbox);
     hud.log->setPadding(16);
     hud.log->setEnable(false);
+    hud.log->setPos(false);
 
     manager.gui->addLayoutStretchSpace();
     manager.gui->endLayout();
-    // --------
-
     manager.gui->addLayoutStretchSpace();
+    manager.gui->endLayout();
+    // --------
 
     // -------- State
+    manager.gui->addLayout(Layout::Vertical, 0, 10);
+    manager.gui->addLayoutStretchSpace();
     hud.state = manager.gui->addTextBox("hud.state");
-    // --------
-
     manager.gui->endLayout();
+    // --------
 }
 
 void GameManager::onStartGame()
@@ -689,17 +712,16 @@ void GameManager::hudProcess()
                 const int &ammoCount = curWeapon->getAmmoCount(),
                         &ammoCountMax = curWeapon->getMaxAmmoCount();
 
-                format weaponGaugeFormat = format("%1% %2%/%3%")
-                        % curWeapon->getWeaponName()
+                format weaponGaugeFormat = format("%1%/%2%")
                         % ammoCount % ammoCountMax;
 
-                hud.ammo->setLabel(weaponGaugeFormat.str());
-                hud.ammo->setValue(ammoCount * 100 / ammoCountMax);
+                hud.ammo->write(weaponGaugeFormat.str());
+                hud.ammoGauge->setValue(ammoCount * 100 / ammoCountMax);
             }
             else
             {
-                hud.ammo->setLabel("Pas d'armes :(");
-                hud.ammo->setValue(0);
+                hud.ammo->write("X/X");
+                hud.ammoGauge->setValue(0);
             }
 
             const Power* curPower = m_userPlayer->getCurPower();
@@ -708,20 +730,20 @@ void GameManager::hudProcess()
             {
                 const int &energy = m_userPlayer->getEnergy();
 
-                format powerGaugeFormat = format("%1% %2%/100") % curPower->getName() % energy;
+                // format powerGaugeFormat = format("%1% %2%/100") % curPower->getName() % energy;
 
-                hud.power->setLabel(powerGaugeFormat.str());
-                hud.power->setValue(energy);
+                //hud.energy->write(powerGaugeFormat.str());
+                hud.energyGauge->setValue(energy);
             }
             else
             {
-                hud.ammo->setLabel("Pas de pouvoir :(");
-                hud.ammo->setValue(0);
+                // hud.energy->write("Pas de pouvoir :(");
+                hud.energyGauge->setValue(0);
             }
 
             const int &life = m_userPlayer->getLife();
-            hud.life->setLabel((format("Santé %1%/100") % life).str());
-            hud.life->setValue(life);
+            hud.life->write((format("%1%/100") % life).str());
+            // hud.life->setValue(life);
 
             // Affichage de l'ecran de dommage si besoins
 
@@ -755,8 +777,8 @@ void GameManager::hudProcess()
         }
         else
         {
-            hud.life->setLabel("Mort !");
-            hud.life->setValue(0);
+            hud.life->write("Mort !");
+            //hud.life->setValue(0);
         }
     }
 

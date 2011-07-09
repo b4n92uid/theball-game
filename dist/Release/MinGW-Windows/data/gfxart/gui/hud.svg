@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="64"
+   id="svg4226"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="hud.svg"
+   inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-core-power.png"
+   inkscape:export-xdpi="180"
+   inkscape:export-ydpi="180"
+   style="display:inline">
+  <defs
+     id="defs4228">
+    <linearGradient
+       id="linearGradient5039">
+      <stop
+         id="stop5041"
+         offset="0"
+         style="stop-color:#d73200;stop-opacity:1;" />
+      <stop
+         id="stop5043"
+         offset="1"
+         style="stop-color:#ff6600;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4074">
+      <stop
+         style="stop-color:#008eb2;stop-opacity:1"
+         offset="0"
+         id="stop4076" />
+      <stop
+         style="stop-color:#00ccff;stop-opacity:1"
+         offset="1"
+         id="stop4078" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4074"
+       id="linearGradient4961"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,128,-318.88)"
+       x1="61.439999"
+       y1="359.40338"
+       x2="128"
+       y2="359.40338" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4074"
+       id="linearGradient4963"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,128,-318.88)"
+       x1="61.439999"
+       y1="359.40338"
+       x2="128"
+       y2="359.40338" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5039"
+       id="linearGradient5037"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-318.88)"
+       x1="61.439999"
+       y1="359.40338"
+       x2="128"
+       y2="359.40338" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.9445436"
+     inkscape:cx="210.02825"
+     inkscape:cy="-67.666879"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1037"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1"
+     borderlayer="true"
+     inkscape:showpageshadow="false"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4234"
+       empspacing="4"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       spacingx="0.8px"
+       spacingy="0.8px" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="32,32"
+       id="guide4882" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,48"
+       id="guide4884" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,16"
+       id="guide4886" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="48,0"
+       id="guide4894" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="0,64"
+       id="guide4896" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="16,48"
+       id="guide4903" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="32,48"
+       id="guide4905" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="80,64"
+       id="guide4965" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="96,64"
+       id="guide4967" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="112,64"
+       id="guide4969" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,-32"
+       id="guide3933" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,-96"
+       id="guide3935" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4231">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="background"
+     inkscape:groupmode="layer"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:#808080;stroke:#00dbfe;stroke-width:1.30087066;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0;stroke-dasharray:none;stroke-dashoffset:0.5"
+       id="rect4236"
+       width="739.20001"
+       height="915.20001"
+       x="-176"
+       y="-83.199997"
+       rx="19.388853" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="super-power"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <rect
+       y="32"
+       x="0"
+       height="32"
+       width="128"
+       id="rect3851"
+       style="opacity:0;fill:#ffffff;fill-opacity:0;fill-rule:nonzero;stroke:none"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="96"
+       x="0"
+       height="32"
+       width="128"
+       id="rect3865"
+       style="opacity:0;fill:#ffffff;fill-opacity:0;fill-rule:nonzero;stroke:none"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="opacity:0;fill:#ffffff;fill-opacity:0;fill-rule:nonzero;stroke:none"
+       id="rect3811"
+       width="128"
+       height="32"
+       x="0"
+       y="160"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       rx="10.24"
+       y="32"
+       x="0"
+       height="32"
+       width="128"
+       id="rect3853"
+       style="opacity:0;fill:#ffffff;fill-opacity:0;fill-rule:nonzero;stroke:none" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       rx="10.24"
+       y="96"
+       x="0"
+       height="32"
+       width="128"
+       id="rect3867"
+       style="opacity:0;fill:#ffffff;fill-opacity:0;fill-rule:nonzero;stroke:none" />
+    <rect
+       style="opacity:0;fill:#ffffff;fill-opacity:0;fill-rule:nonzero;stroke:none"
+       id="rect3813"
+       width="128"
+       height="32"
+       x="0"
+       y="160"
+       rx="10.24"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path3863"
+       d="M 32,0 C 14.272,0 0,14.272 0,32 0,49.728 14.272,64 32,64 l 64,0 C 113.728,64 128,49.728 128,32 128,14.272 113.728,0 96,0 L 32,0 z m 6.40625,6.40625 51.1875,0 c 14.1824,0 25.59375,11.41135 25.59375,25.59375 0,14.1824 -11.41135,25.59375 -25.59375,25.59375 l -51.1875,0 C 24.22385,57.59375 12.8125,46.1824 12.8125,32 12.8125,17.8176 24.22385,6.40625 38.40625,6.40625 z"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3877"
+       d="M 32,64 C 14.272,64 0,78.272 0,96 c 0,17.728 14.272,32 32,32 l 64,0 c 17.728,0 32,-14.272 32,-32 0,-17.728 -14.272,-32 -32,-32 l -64,0 z m 6.40625,6.40625 51.1875,0 c 14.1824,0 25.59375,11.41135 25.59375,25.59375 0,14.1824 -11.41135,25.59375 -25.59375,25.59375 l -51.1875,0 C 24.22385,121.59375 12.8125,110.1824 12.8125,96 c 0,-14.1824 11.41135,-25.59375 25.59375,-25.59375 z"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3937"
+       d="m 32,128 c -17.728,0 -32,14.272 -32,32 0,17.728 14.272,32 32,32 l 64,0 c 17.728,0 32,-14.272 32,-32 0,-17.728 -14.272,-32 -32,-32 l -64,0 z m 6.40625,6.40625 51.1875,0 c 14.1824,0 25.59375,11.41135 25.59375,25.59375 0,14.1824 -11.41135,25.59375 -25.59375,25.59375 l -51.1875,0 C 24.22385,185.59375 12.8125,174.1824 12.8125,160 c 0,-14.1824 11.41135,-25.59375 25.59375,-25.59375 z"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 32,192 c -17.728,0 -32,14.272 -32,32 0,17.728 14.272,32 32,32 l 64,0 c 17.728,0 32,-14.272 32,-32 0,-17.728 -14.272,-32 -32,-32 l -64,0 z m 6.40625,6.40625 51.1875,0 c 14.1824,0 25.59375,11.41135 25.59375,25.59375 0,14.1824 -11.41135,25.59375 -25.59375,25.59375 l -51.1875,0 C 24.22385,249.59375 12.8125,238.1824 12.8125,224 c 0,-14.1824 11.41135,-25.59375 25.59375,-25.59375 z"
+       id="rect3844"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ssccccccccccss"
+       inkscape:connector-curvature="0"
+       id="path3899"
+       d="m 47.375963,86.916779 c 2.339977,2.339976 1.333701,5.102396 -1.055947,7.391624 l -9.503512,9.503507 -2.111892,-2.11189 -2.111895,2.1119 2.111892,2.11189 -2.111894,2.11189 -6.335677,-6.33567 2.111895,-2.111898 2.111892,2.111888 2.111895,-2.11189 -2.111893,-2.111893 9.503512,-9.503511 c 2.339976,-2.339976 5.051647,-3.395924 7.391624,-1.055947 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       inkscape:connector-curvature="0"
+       id="path3915"
+       d="m 25.6,147.2 c 6.4,1.6 6.4,1.6 12.8,0 6.4,1.6 6.4,1.6 12.8,0 0,12.8 -6.4,22.4 -12.8,25.6 C 32,169.6 25.6,160 25.6,147.2 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       d="m 25.6,23.2 c 0,-3.2 2.4,-6.4 5.6,-6.4 4,0 6.34865,2.194601 7.2,5.6 0.871228,-3.48491 3.2,-5.6 7.2,-5.6 3.2,0 5.6,3.2 5.6,6.4 0,8.8 -6.4,12 -12.8,21.6 C 32,35.2 25.6,32 25.6,23.2 z"
+       id="path3913"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="sscsscs"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g3917"
+       transform="matrix(1.1874996,0,0,1.1874996,-90.479956,-393.31986)"
+       style="fill:#ffffff;fill-opacity:1;display:inline"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         style="fill:#ffffff;fill-opacity:1"
+         transform="translate(2.6947389,0)"
+         id="g3919">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="rect3921"
+           width="10.778945"
+           height="2.6947377"
+           x="109.8779"
+           y="367.59579"
+           rx="0.00012174332"
+           ry="6.1909918e-006" />
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="rect3923"
+           width="2.6947401"
+           height="10.778957"
+           x="113.92"
+           y="363.55368"
+           rx="0.00012174332"
+           ry="6.1909918e-006" />
+      </g>
+    </g>
+    <g
+       id="g3925"
+       transform="matrix(1.1874996,0,0,1.1874996,-90.479954,-329.31986)"
+       style="fill:#ffffff;fill-opacity:1;display:inline"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         style="fill:#ffffff;fill-opacity:1"
+         transform="translate(2.6947389,0)"
+         id="g3927">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="rect3929"
+           width="10.778945"
+           height="2.6947377"
+           x="109.8779"
+           y="367.59579"
+           rx="0.00012174332"
+           ry="6.1909918e-006" />
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="rect3931"
+           width="2.6947401"
+           height="10.778957"
+           x="113.92"
+           y="363.55368"
+           rx="0.00012174332"
+           ry="6.1909918e-006" />
+      </g>
+    </g>
+    <g
+       style="fill:#ffffff;fill-opacity:1;display:inline"
+       transform="matrix(1.1874996,0,0,1.1874996,-90.479956,-265.31986)"
+       id="g3905"
+       inkscape:export-filename="C:\Documents and Settings\Newin\Bureau\Ball\GUI\HUD\hud-super-power.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g3907"
+         transform="translate(2.6947389,0)"
+         style="fill:#ffffff;fill-opacity:1">
+        <rect
+           ry="6.1909918e-006"
+           rx="0.00012174332"
+           y="367.59579"
+           x="109.8779"
+           height="2.6947377"
+           width="10.778945"
+           id="rect3909"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+        <rect
+           ry="6.1909918e-006"
+           rx="0.00012174332"
+           y="363.55368"
+           x="113.92"
+           height="10.778957"
+           width="2.6947401"
+           id="rect3911"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+      </g>
+    </g>
+  </g>
+  <g
+     style="display:none"
+     inkscape:label="right"
+     id="g4971"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
+    <path
+       inkscape:connector-curvature="0"
+       id="path4973"
+       d="m 12.8125,38.375 68.78125,0.03125 0.8125,4.78125 1.59375,8 7.1875,8 12.8125,4.84375 -20.15625,0 -71.03125,0 C 5.75676,64.03125 -3.3205851e-8,58.243242 -3.3205851e-8,51.1875 -3.3205851e-8,44.131748 5.75676,38.375 12.8125,38.375 z m 0,3.21875 c -5.30193,0 -9.625,4.291816 -9.625,9.59375 0,5.301934 4.32307,9.625 9.625,9.625 5.30193,0 9.59375,-4.323066 9.59375,-9.625 0,-5.301934 -4.29182,-9.59375 -9.59375,-9.59375 z"
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:0.39215686;fill-rule:nonzero;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" />
+    <g
+       id="g4977"
+       style="display:inline"
+       transform="matrix(-1,0,0,1,128,-317.76)">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="rect4979"
+         width="12.800006"
+         height="3.1999753"
+         x="108.8"
+         y="367.35999"
+         rx="0.00012174332"
+         ry="6.1909918e-006" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="rect4981"
+         width="3.200002"
+         height="12.800002"
+         x="113.6"
+         y="362.56"
+         rx="0.00012174332"
+         ry="6.1909918e-006" />
+    </g>
+    <path
+       transform="matrix(-1,0,0,1,128,0)"
+       d="m 44.800001,41.599998 a 19.200001,19.200001 0 1 1 -38.4000014,0 19.200001,19.200001 0 1 1 38.4000014,0 z"
+       sodipodi:ry="19.200001"
+       sodipodi:rx="19.200001"
+       sodipodi:cy="41.599998"
+       sodipodi:cx="25.6"
+       id="path5009"
+       style="fill:none;stroke:#00dbfe;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0;stroke-dasharray:none;stroke-dashoffset:0.5"
+       sodipodi:type="arc" />
+    <path
+       transform="matrix(-1.0833333,0,0,1.0833333,131.73333,-1.6000003)"
+       d="m 46.276924,38.400002 a 20.676924,20.676924 0 1 1 -41.3538474,0 20.676924,20.676924 0 1 1 41.3538474,0 z"
+       sodipodi:ry="20.676924"
+       sodipodi:rx="20.676924"
+       sodipodi:cy="38.400002"
+       sodipodi:cx="25.6"
+       id="path5011"
+       style="fill:none;stroke:#ffffff;stroke-width:2.95384622;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0.5"
+       sodipodi:type="arc" />
+  </g>
+  <g
+     inkscape:label="right-gauge"
+     id="g4907"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true"
+     style="display:none">
+    <path
+       d="m 44.800001,41.599998 a 19.200001,19.200001 0 1 1 -38.4000014,0 19.200001,19.200001 0 1 1 38.4000014,0 z"
+       sodipodi:ry="19.200001"
+       sodipodi:rx="19.200001"
+       sodipodi:cy="41.599998"
+       sodipodi:cx="25.6"
+       id="path4945"
+       style="fill:none;stroke:#00dbfe;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0;stroke-dasharray:none;stroke-dashoffset:0.5"
+       sodipodi:type="arc"
+       transform="matrix(-1,0,0,1,128,0)" />
+    <path
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:url(#linearGradient4961);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       d="m 80.65625,34.40625 c -0.247896,1.034374 -0.422538,2.106359 -0.53125,3.1875 l -67.96875,0 c -7.04,0 -11.03011,5.05108 -12.15625003320585,9.15625 l 0,-6.75 C 1.9975,36.49064 6.72771,34.40625 10.40625,34.40625 l 70.25,0 z"
+       id="path4911"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="display:none"
+     inkscape:groupmode="layer"
+     id="g5031"
+     inkscape:label="Copie de right-gauge"
+     sodipodi:insensitive="true">
+    <path
+       transform="matrix(-1,0,0,1,128,0)"
+       sodipodi:type="arc"
+       style="fill:none;stroke:#00dbfe;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0;stroke-dasharray:none;stroke-dashoffset:0.5"
+       id="path5033"
+       sodipodi:cx="25.6"
+       sodipodi:cy="41.599998"
+       sodipodi:rx="19.200001"
+       sodipodi:ry="19.200001"
+       d="m 44.800001,41.599998 a 19.200001,19.200001 0 1 1 -38.4000014,0 19.200001,19.200001 0 1 1 38.4000014,0 z" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path5035"
+       d="m 47.34375,34.40625 c 0.247896,1.034374 0.422538,2.106359 0.53125,3.1875 l 67.96875,0 c 7.04,0 11.03011,5.05108 12.15625,9.15625 L 128,40 c -1.9975,-3.50936 -6.72771,-5.59375 -10.40625,-5.59375 l -70.25,0 z"
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:url(#linearGradient5037);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="g5013"
+     inkscape:label="left"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <path
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:0.39215686;fill-rule:nonzero;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       d="m 115.1875,38.4 -68.781253,0.03125 -0.8125,4.78125 -1.59375,8 -7.1875,8 -12.8125,4.84375 20.15625,0 71.031253,0 C 122.24324,64.05625 128,58.268242 128,51.2125 128,44.156748 122.24324,38.4 115.1875,38.4 z m 0,3.21875 c 5.30193,0 9.625,4.291816 9.625,9.59375 0,5.301934 -4.32307,9.625 -9.625,9.625 -5.30193,0 -9.59375,-4.323066 -9.59375,-9.625 0,-5.301934 4.29182,-9.59375 9.59375,-9.59375 z"
+       id="path5015"
+       inkscape:connector-curvature="0" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#00dbfe;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0;stroke-dasharray:none;stroke-dashoffset:0.5"
+       id="path5023"
+       sodipodi:cx="25.6"
+       sodipodi:cy="41.599998"
+       sodipodi:rx="19.200001"
+       sodipodi:ry="19.200001"
+       d="m 44.800001,41.599998 a 19.200001,19.200001 0 1 1 -38.4000014,0 19.200001,19.200001 0 1 1 38.4000014,0 z"
+       transform="translate(-2.9e-6,0)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#ffffff;stroke-width:2.95384622;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0.5"
+       id="path5025"
+       sodipodi:cx="25.6"
+       sodipodi:cy="38.400002"
+       sodipodi:rx="20.676924"
+       sodipodi:ry="20.676924"
+       d="m 46.276924,38.400002 a 20.676924,20.676924 0 1 1 -41.3538474,0 20.676924,20.676924 0 1 1 41.3538474,0 z"
+       transform="matrix(1.0833333,0,0,1.0833333,-3.7333329,-1.6000003)" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 115.2,44 c 1.7728,0 2.43804,1.427609 2.4,3.200001 l 0,7.199998 -1.6,10e-7 0,1.6 1.6,0 0,1.6 -4.8,0 0,-1.6 1.6,0 0,-1.6 -1.6,-10e-7 0,-7.199998 C 112.8,45.427201 113.4272,44 115.2,44 z"
+       id="rect5027"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ssccccccccccss" />
+  </g>
+</svg>

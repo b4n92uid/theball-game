@@ -197,9 +197,14 @@ protected:
         tbe::gui::TextBox* gameover;
         tbe::gui::TextBox* log;
 
-        tbe::gui::Gauge* ammo;
-        tbe::gui::Gauge* life;
-        tbe::gui::Gauge* power;
+        tbe::gui::Gauge* ammoGauge;
+        tbe::gui::Gauge* energyGauge;
+
+        tbe::gui::TextBox* life;
+        tbe::gui::TextBox* ammo;
+
+        tbe::gui::StateShow* powerIcon;
+        tbe::gui::StateShow* weaponIcon;
 
         struct
         {
