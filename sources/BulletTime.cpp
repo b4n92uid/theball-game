@@ -59,6 +59,15 @@ BulletTime::~BulletTime()
     diactivate();
 }
 
+void BulletTime::clearSingleTone(GameManager* gm)
+{
+    gm->manager.ppe->deletePostEffect(m_ppeffect);
+    gm->manager.gui->deleteControls(m_screeneffect);
+
+    m_ppeffect = NULL;
+    m_screeneffect = NULL;
+}
+
 void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 {
     MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));

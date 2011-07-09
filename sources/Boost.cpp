@@ -44,6 +44,13 @@ Boost::~Boost()
     diactivate();
 }
 
+void Boost::clearSingleTone(GameManager* gm)
+{
+    gm->manager.ppe->deletePostEffect(m_ppeffect);
+
+    m_ppeffect = NULL;
+}
+
 void Boost::process()
 {
     int value = m_owner->getEnergy();

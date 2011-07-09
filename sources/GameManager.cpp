@@ -5,15 +5,19 @@
 #include "MaterialManager.h"
 #include "UserControl.h"
 
+#include "StaticElement.h"
 #include "Player.h"
 #include "Item.h"
 
 #include "Define.h"
 #include "Tools.h"
+
 #include "Weapon.h"
 #include "Bullet.h"
-#include "SoundManager.h"
-#include "StaticElement.h"
+
+#include "Power.h"
+#include "BulletTime.h"
+#include "Boost.h"
 
 #include <boost/format.hpp>
 
@@ -114,6 +118,9 @@ GameManager::~GameManager()
     delete manager.material;
     delete manager.script;
     delete manager.parser;
+
+    Boost::clearSingleTone(this);
+    BulletTime::clearSingleTone(this);
 
     manager.scene->clearAll();
 }

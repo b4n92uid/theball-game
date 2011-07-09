@@ -26,6 +26,8 @@ public:
 
     void process();
 
+    static void clearSingleTone(GameManager* gm);
+
 protected:
     void internalActivate(tbe::Vector3f target);
     void internalDiactivate();
