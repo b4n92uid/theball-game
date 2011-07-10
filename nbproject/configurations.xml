@@ -11,8 +11,6 @@
         <itemPath>sources/UserControl.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Elements" projectFiles="true">
-        <itemPath>sources/Item.cpp</itemPath>
-        <itemPath>sources/Item.h</itemPath>
         <itemPath>sources/MapElement.cpp</itemPath>
         <itemPath>sources/MapElement.h</itemPath>
         <itemPath>sources/Player.cpp</itemPath>

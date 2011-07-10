@@ -12,7 +12,6 @@
 
 #include "Weapon.h"
 #include "BulletWeapon.h"
-#include "Item.h"
 #include "MapElement.h"
 
 class GameManager;
@@ -28,18 +27,15 @@ public:
     void addBullet(Bullet* body);
     void addPlayer(Player* body);
     void addElement(MapElement* body);
-    void addItem(Item* body);
 
     int getPlayersGroupe() const;
     int getWeaponsGroupe() const;
-    int getItemGroupe() const;
     int getElementsGroupe() const;
 
 protected:
 
     void mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int);
     int mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
-    int mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
     void mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex);
 
     static MaterialManager* getMaterialManager(const NewtonJoint* contact)
@@ -79,16 +75,6 @@ protected:
             return 0;
     }
 
-    static int PlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int i)
-    {
-        MaterialManager* matmanager = getMaterialManager(body0, body1);
-
-        if(matmanager)
-            return matmanager->mPlayerOnItemsAABBOverlape(material, body0, body1, i);
-        else
-            return 0;
-    }
-
     static void PlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
     {
         MaterialManager* matmanager = getMaterialManager(contact);
@@ -103,7 +89,6 @@ protected:
     int m_elementsGroupe;
     int m_bulletGroupe;
     int m_playersGroupe;
-    int m_itemGroupe;
     int m_ghostGroupe;
 
     std::map<tbe::scene::NewtonNode*, int> m_ghostState;

@@ -25,15 +25,15 @@ GravityGun::GravityGun(GameManager* gameManager) : Power(gameManager)
     m_attached = NULL;
     m_lastAttached = NULL;
 
-    m_soundManager->registerSound("power.gravitygun.catch", "data/sfxart/powers/gravitygun-catch.wav");
-    m_soundManager->registerSound("power.gravitygun.throw", "data/sfxart/powers/gravitygun-throw.wav");
+    m_soundManager->registerSound("power.gravitygun.catch", m_settings("audio.gravitygun-catch"));
+    m_soundManager->registerSound("power.gravitygun.throw", m_settings("audio.gravitygun-throw"));
 
     m_highlighter = new ParticlesEmiter(gameManager->parallelscene.particles);
     m_highlighter->setFreeMove(0.5);
     m_highlighter->setLifeDown(0.5);
     m_highlighter->setNumber(64);
     m_highlighter->setContinousMode(true);
-    m_highlighter->setTexture("data/gfxart/particles/gravitygun.bmp");
+    m_highlighter->setTexture(m_settings("powers.gravitygun"));
 }
 
 GravityGun::~GravityGun()

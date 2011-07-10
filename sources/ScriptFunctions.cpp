@@ -1368,8 +1368,6 @@ struct Timer
 
         if(clock.isEsplanedTime(time))
         {
-            GameManager* gm = getGameManager(lua);
-
             lua_getglobal(lua, callback.c_str());
 
             foreach(int v, objects)

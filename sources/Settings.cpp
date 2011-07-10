@@ -12,9 +12,14 @@
 #include <tinyxml.h>
 #include <fstream>
 
+#include <boost/property_tree/ini_parser.hpp>
+
 using namespace std;
 using namespace tbe;
-using namespace tbe::gui;
+using namespace gui;
+using namespace boost;
+
+namespace pt = property_tree;
 
 Settings::Settings()
 {
@@ -25,96 +30,53 @@ Settings::~Settings()
 {
 }
 
+const char* Settings::operator()(std::string key) const
+{
+    return paths.get<std::string > (key).c_str();
+}
+
 void Settings::readGui()
 {
-    map<string, string*> binder;
+    pt::ptree parser;
 
-    binder["MAINMENU"] = &gui.backgroundMainmenu;
-    binder["DAMMAGE"] = &gui.backgroundDammage;
-    binder["PAUSE"] = &gui.backgroundPause;
-    binder["TEXTBOX"] = &gui.backgroundTextbox;
-    binder["UDARROW"] = &gui.backgroundUpDownArrow;
-    binder["LISTBOX"] = &gui.backgroundListbox;
+    pt::read_ini("gui.ini", parser);
 
-    binder["MASK_H"] = &gui.maskH;
-    binder["MASK_V"] = &gui.maskV;
+    gui.button = parser.get<string > ("menu.button");
+    gui.gauge = parser.get<string > ("menu.gauge");
+    gui.editbox = parser.get<string > ("menu.editbox");
+    gui.switchbox = parser.get<string > ("menu.switchbox");
+    gui.textbox = parser.get<string > ("menu.textbox");
+    gui.udarrow = parser.get<string > ("menu.udarrow");
 
-    binder["BUTTON"] = &gui.button;
-    binder["GAUGE"] = &gui.gauge;
-    binder["EDIT"] = &gui.editBox;
-    binder["SWITCH"] = &gui.switchBox;
-    binder["VECTOR"] = &gui.vectorBox;
-    binder["FONT"] = &gui.font;
+    gui.maskH = parser.get<string > ("menu.mask_h");
+    gui.maskV = parser.get<string > ("menu.mask_v");
 
-    map<string, tbe::Vector2f*> binderSize;
+    gui.fontpath = parser.get<string > ("menu.fontpath");
+    gui.fontSize = parser.get<int>("menu.fontsize");
 
-    binderSize["BUTTON"] = &gui.buttonSize;
-    binderSize["GAUGE"] = &gui.gaugeSize;
-    binderSize["EDIT"] = &gui.editBoxSize;
-    binderSize["SWITCH"] = &gui.switchBoxSize;
-    binderSize["VECTOR"] = &gui.vectorBoxSize;
-
-    TiXmlDocument config("gui.xml");
-
-    if(!config.LoadFile())
-        throw tbe::Exception("readGui; Open file error");
-
-    TiXmlNode* root = config.FirstChildElement();
-
-    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
-    {
-        string name = node2->Attribute("name");
-
-        if(name == "FONTSIZE")
-            node2->Attribute("value", &gui.fontSize);
-        else
-        {
-            *binder[name] = node2->Attribute("value");
-
-            if(binderSize.count(name))
-            {
-                const char* data = node2->Attribute("size");
-                binderSize[name]->fromStr(data, true);
-            }
-        }
-    }
+    gui.mainmenu = parser.get<string > ("menu.mainmenu");
+    gui.arrowleft = parser.get<string > ("menu.arrowleft");
+    gui.arrowright = parser.get<string > ("menu.arrowright");
+    gui.playbutton = parser.get<string > ("menu.playbutton");
+    gui.vertline = parser.get<string > ("menu.vertline");
+    gui.logo = parser.get<string > ("menu.logo");
+    gui.version = parser.get<string > ("menu.version");
 }
 
 void Settings::readVideo()
 {
-    TiXmlDocument config("video.xml");
+    pt::ptree parser;
 
-    if(!config.LoadFile())
-        throw tbe::Exception("ReadVideo; Open file error");
+    pt::read_ini("video.ini", parser);
 
-    map<string, bool*> bolbinder;
-    map<string, int*> intbinder;
-    map<string, Vector2i*> vec2binder;
+    video.bits = parser.get<int>("window.bits");
+    video.antialiasing = parser.get<int>("window.antialiasing");
 
-    intbinder["bits"] = &video.bits;
-    intbinder["antialiasing"] = &video.antialiasing;
+    video.fullScreen = parser.get<bool>("window.fullscreen");
+    video.screenSize = parser.get<Vector2i > ("window.size");
 
-    bolbinder["fullscreen"] = &video.fullScreen;
-    bolbinder["ppeuse"] = &video.ppeUse;
-
-    vec2binder["size"] = &video.screenSize;
-    vec2binder["ppesize"] = &video.ppeSize;
-
-    TiXmlNode* root = config.FirstChildElement();
-
-    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
-    {
-        string name = node2->Attribute("name");
-
-        if(intbinder.count(name))
-            node2->Attribute("value", intbinder[name]);
-
-        else if(bolbinder.count(name))
-            node2->QueryValueAttribute<bool>("value", bolbinder[name]);
-
-        else if(vec2binder.count(name))
-            node2->QueryValueAttribute<Vector2i > ("value", vec2binder[name]);
-    }
+    video.ppeUse = parser.get<bool>("ppe.use");
+    video.ppeSize = parser.get<Vector2i > ("ppe.size");
 }
 
 void Settings::readControl()
@@ -149,53 +111,24 @@ void Settings::readControl()
 
 void Settings::readWorld()
 {
-    map<string, int*> intbinder;
-    map<string, float*> floatbinder;
-    map<string, Vector2f*> vec2fbinder;
-    map<string, Vector3f*> vec3fbinder;
-    map<string, Vector4f*> vec4fbinder;
+    pt::ptree parser;
 
-    floatbinder["World.Gravity"] = &world.gravity;
+    pt::read_ini("world.ini", parser);
 
-    floatbinder["Camera.Back"] = &world.cameraBack;
-    floatbinder["Camera.Up"] = &world.cameraUp;
+    world.gravity = parser.get<float>("general.gravity");
 
-    floatbinder["Player.MoveSpeed"] = &world.playerMoveSpeed;
-    floatbinder["Player.JumpForce"] = &world.playerJumpForce;
-    floatbinder["Player.Size"] = &world.playerSize;
-    floatbinder["Player.Masse"] = &world.playerMasse;
-    floatbinder["Player.LinearDamping"] = &world.playerLinearDamping;
-    vec3fbinder["Player.AngularDamping"] = &world.playerAngularDamping;
+    world.cameraBack = parser.get<float>("camera.back");
+    world.cameraUp = parser.get<float>("camera.up");
 
-    floatbinder["Weapon.Size"] = &world.weaponSize;
-    floatbinder["Weapon.Masse"] = &world.weaponMasse;
+    world.playerMoveSpeed = parser.get<float>("player.movespeed");
+    world.playerJumpForce = parser.get<float>("player.jumpforce");
+    world.playerSize = parser.get<float>("player.size");
+    world.playerMasse = parser.get<float>("player.masse");
+    world.playerLinearDamping = parser.get<float>("player.lineardamping");
+    world.playerAngularDamping = parser.get<Vector3f > ("player.angulardamping");
 
-    TiXmlDocument config("world.xml");
-
-    if(!config.LoadFile())
-        throw tbe::Exception("ReadPhysic; Open file error");
-
-    TiXmlNode* root = config.FirstChildElement();
-
-    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
-    {
-        const char* name = node2->Attribute("name");
-
-        if(floatbinder.count(name))
-            node2->QueryFloatAttribute("value", floatbinder[name]);
-
-        else if(vec2fbinder.count(name))
-            node2->QueryValueAttribute<Vector2f > ("value", vec2fbinder[name]);
-
-        else if(vec3fbinder.count(name))
-            node2->QueryValueAttribute<Vector3f > ("value", vec3fbinder[name]);
-
-        else if(vec4fbinder.count(name))
-            node2->QueryValueAttribute<Vector4f > ("value", vec4fbinder[name]);
-
-        else if(intbinder.count(name))
-            node2->QueryValueAttribute<int>("value", intbinder[name]);
-    }
+    world.weaponSize = parser.get<float>("weapon.size");
+    world.weaponMasse = parser.get<float>("weapon.masse");
 }
 
 void Settings::readPlayerInfo()
@@ -214,7 +147,7 @@ void Settings::readPlayerInfo()
     availablePlayer.clear();
 
     directory_iterator end;
-    for(directory_iterator it(PLAYERS_DIR); it != end; it++)
+    for(directory_iterator it(paths.get<string > ("dirs.players")); it != end; it++)
     {
         const path& filename = it->path();
 
@@ -301,7 +234,7 @@ void Settings::readMapInfo()
     availableMap.clear();
 
     directory_iterator end;
-    for(directory_iterator it(MAPS_DIR); it != end; it++)
+    for(directory_iterator it(paths.get<string > ("dirs.maps")); it != end; it++)
     {
         const path& filename = it->path();
 
@@ -316,6 +249,8 @@ void Settings::readMapInfo()
 
 void Settings::readSetting()
 {
+    boost::property_tree::read_ini("paths.ini", paths);
+
     readGui();
     // readCampaign();
     readProfiles();
@@ -329,26 +264,18 @@ void Settings::readSetting()
 
 void Settings::saveVideo()
 {
-    TiXmlDocument config("video.xml");
+    pt::ptree parser;
 
-    if(!config.LoadFile())
-        throw tbe::Exception("SaveVideo; Open file error");
+    parser.put("window.size", video.screenSize);
+    parser.put("window.bits", video.bits);
 
-    TiXmlNode * root = config.FirstChildElement();
+    parser.put("window.fullscreen", video.fullScreen);
+    parser.put("window.antialiasing", video.antialiasing);
 
-    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
-    {
-        string name = node2->Attribute("name");
+    parser.put("ppe.use", video.ppeUse);
+    parser.put("ppe.size", video.ppeSize);
 
-        if(name == "size") node2->SetAttribute("value", video.screenSize.toStr());
-        if(name == "bits") node2->SetAttribute("value", *reinterpret_cast<const int*>(&video.bits));
-        if(name == "antialiasing") node2->SetAttribute("value", *reinterpret_cast<const int*>(&video.antialiasing));
-        if(name == "fullscreen") node2->SetAttribute("value", video.fullScreen);
-
-        if(name == "ppeuse") node2->SetAttribute("value", video.ppeUse);
-    }
-
-    config.SaveFile();
+    pt::write_ini("video.ini", parser);
 }
 
 void Settings::saveControl()
@@ -542,3 +469,4 @@ Settings::PartySetting::PartySetting()
 {
     curLevel = 0;
 }
+

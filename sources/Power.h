@@ -11,6 +11,8 @@
 #include <vector>
 #include <string>
 
+#include "Settings.h"
+
 #include <Tbe.h>
 
 class Player;
@@ -58,6 +60,7 @@ protected:
     GameManager* m_gameManager;
     SoundManager* m_soundManager;
     std::string m_name;
+    Settings& m_settings;
 };
 
 #endif	/* POWER_H */

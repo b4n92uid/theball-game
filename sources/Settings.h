@@ -10,6 +10,8 @@
 
 #include <Tbe.h>
 
+#include <boost/property_tree/ptree.hpp>
+
 class Settings
 {
 public:
@@ -35,6 +37,8 @@ public:
 
     void fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager);
     void fillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager);
+
+    const char* operator()(std::string key) const;
 
     struct World
     {
@@ -70,30 +74,26 @@ public:
 
     struct Gui
     {
-        std::string backgroundMainmenu;
-        std::string backgroundDammage;
-        std::string backgroundPause;
-        std::string backgroundTextbox;
-        std::string backgroundUpDownArrow;
-        std::string backgroundListbox;
+        std::string button;
+        std::string gauge;
+        std::string editbox;
+        std::string switchbox;
+        std::string textbox;
+        std::string udarrow;
 
         std::string maskH;
         std::string maskV;
 
-        std::string button;
-        std::string gauge;
-        std::string editBox;
-        std::string switchBox;
-        std::string vectorBox;
-
-        tbe::Vector2f buttonSize;
-        tbe::Vector2f gaugeSize;
-        tbe::Vector2f editBoxSize;
-        tbe::Vector2f switchBoxSize;
-        tbe::Vector2f vectorBoxSize;
-
-        std::string font;
+        std::string fontpath;
         int fontSize;
+
+        std::string mainmenu;
+        std::string arrowleft;
+        std::string arrowright;
+        std::string playbutton;
+        std::string vertline;
+        std::string logo;
+        std::string version;
 
     } gui;
 
@@ -159,6 +159,8 @@ public:
     std::vector<PlayerInfo> availablePlayer;
 
     std::vector<std::string> botNames;
+
+    boost::property_tree::ptree paths;
 };
 
 

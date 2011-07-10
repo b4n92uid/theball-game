@@ -44,14 +44,13 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
     }
     else if(!m_screeneffect)
     {
-        m_screeneffect = m_gameManager->manager.gui->addImage("blettimeEffect", "data/gfxart/gui/bullettime.png");
+        m_screeneffect = m_gameManager->manager.gui->addImage("blettimeEffect", m_settings("scrfx.bullettime"));
         m_screeneffect->setOpacity(0.5);
         m_screeneffect->setSize(vidsets.screenSize);
         m_screeneffect->setEnable(false);
-
     }
 
-    m_gameManager->manager.sound->registerSound("bullettime", "data/sfxart/powers/bullettime.wav");
+    m_gameManager->manager.sound->registerSound("bullettime", m_settings("audio.bullettime"));
 }
 
 BulletTime::~BulletTime()

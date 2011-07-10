@@ -67,8 +67,6 @@ protected:
 
     Player* m_shooter;
 
-    Settings::World m_worldSettings;
-
     std::string m_weaponName;
 
     unsigned m_maxAmmoDammage;
@@ -83,6 +81,8 @@ protected:
 
     tbe::AABB m_mapAABB;
     std::string m_soundID;
+
+    const Settings& m_settings;
 };
 
 #endif	/* _WEAPONENGINE_H */

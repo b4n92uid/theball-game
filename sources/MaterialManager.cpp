@@ -11,7 +11,6 @@
 #include "GameManager.h"
 #include "ScriptManager.h"
 
-#include "Item.h"
 #include "Weapon.h"
 #include "Bullet.h"
 #include "Player.h"
@@ -26,34 +25,25 @@ MaterialManager::MaterialManager(GameManager * gameManager)
 
     m_world = m_gameManager->parallelscene.newton->getNewtonWorld();
 
-    Settings::World& worldSettings = m_gameManager->worldSettings;
-
     m_bulletGroupe = NewtonMaterialCreateGroupID(m_world);
     m_playersGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_itemGroupe = NewtonMaterialCreateGroupID(m_world);
     m_elementsGroupe = NewtonMaterialCreateGroupID(m_world);
     m_ghostGroupe = NewtonMaterialCreateGroupID(m_world);
 
     NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, this, NULL, PlayerOnStaticContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_itemGroupe, this, PlayerOnItemsAABBOverlape, NULL);
 
     NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_itemGroupe, this, NULL, BulletOnMapContactsProcess);
     NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
 
     NewtonMaterialSetCollisionCallback(m_world, m_ghostGroupe, m_ghostGroupe, this, NULL, NULL);
     NewtonMaterialSetCollisionCallback(m_world, m_ghostGroupe, m_bulletGroupe, this, NULL, NULL);
     NewtonMaterialSetCollisionCallback(m_world, m_ghostGroupe, m_playersGroupe, this, NULL, NULL);
-    NewtonMaterialSetCollisionCallback(m_world, m_ghostGroupe, m_itemGroupe, this, NULL, NULL);
     NewtonMaterialSetCollisionCallback(m_world, m_ghostGroupe, m_elementsGroupe, this, NULL, NULL);
 
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_ghostGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_itemGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_elementsGroupe, false);
-
-    NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_itemGroupe, false);
 
     NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_elementsGroupe, 256, 512);
 }
@@ -102,11 +92,6 @@ void MaterialManager::addPlayer(Player* body)
     NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_playersGroupe);
 }
 
-void MaterialManager::addItem(Item* body)
-{
-    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_itemGroupe);
-}
-
 int MaterialManager::getPlayersGroupe() const
 {
     return m_playersGroupe;
@@ -115,11 +100,6 @@ int MaterialManager::getPlayersGroupe() const
 int MaterialManager::getWeaponsGroupe() const
 {
     return m_bulletGroupe;
-}
-
-int MaterialManager::getItemGroupe() const
-{
-    return m_itemGroupe;
 }
 
 int MaterialManager::getElementsGroupe() const
@@ -161,34 +141,6 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
     GameManager* ge = player->getGameManager();
 
     ge->manager.script->processCollid(player, elem);
-}
-
-int MaterialManager::mPlayerOnItemsAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
-{
-    int group0 = NewtonBodyGetMaterialGroupID(body0);
-    int group1 = NewtonBodyGetMaterialGroupID(body1);
-
-    if(group0 == group1 || group0 == m_ghostGroupe || group1 == m_ghostGroupe)
-        return 0;
-
-    Player* player = NULL;
-    Item* item = NULL;
-
-    if(group0 == m_itemGroupe)
-    {
-        item = getUserData<Item*>(body0);
-        player = getUserData<Player*>(body1);
-    }
-
-    else if(group1 == m_itemGroupe)
-    {
-        item = getUserData<Item*>(body1);
-        player = getUserData<Player*>(body0);
-    }
-
-    player->attachItem(item);
-
-    return 0;
 }
 
 void MaterialManager::mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int)

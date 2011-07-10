@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Platform.h
  * Author: b4n92uid
  *
@@ -16,7 +16,7 @@
 #define COMPILE_FOR_LINUX
 
 #else
-#error Platform not suported
+#error "Platform not suported"
 
 #endif
 

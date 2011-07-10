@@ -10,7 +10,6 @@
 #include "AppManager.h"
 
 #include "Player.h"
-#include "Item.h"
 #include "MapElement.h"
 #include "AIControl.h"
 
@@ -24,7 +23,6 @@ class MaterialManager;
 class BulletTime;
 
 class Player;
-class Item;
 class SoundManager;
 
 class GameManager
@@ -83,18 +81,15 @@ public:
     // Enregistrement des entités ----------------------------------------------
 
     void registerPlayer(Player* player);
-    void registerItem(Item* item);
     void registerElement(MapElement* staticObject);
 
     void unregisterPlayer(Player* player);
-    void unregisterItem(Item* item);
     void unregisterElement(MapElement* staticObject);
 
     struct
     {
         std::string name;
 
-        Item::Array items;
         MapElement::Array mapElements;
 
         tbe::AABB aabb;

@@ -6,7 +6,6 @@
 
 #include "MapElement.h"
 #include "Weapon.h"
-#include "Item.h"
 #include "Settings.h"
 #include "Controller.h"
 #include "Power.h"
@@ -59,9 +58,6 @@ public:
     bool isKilled() const;
 
     void makeTransparent(bool enable, float alpha = 0.25);
-
-    /// Attache un élément au joueur
-    void attachItem(Item* item);
 
     /// Attache une source de controlle au joueurs
     void attachController(Controller* controller);
@@ -158,6 +154,8 @@ protected:
     std::string m_nickname;
 
     tbe::Vector3f m_lastSpawnPoint;
+
+    const Settings& m_settings;
 
 private:
     bool m_energyVoid;

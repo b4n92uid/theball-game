@@ -7,7 +7,6 @@
 
 #include "StaticElement.h"
 #include "Player.h"
-#include "Item.h"
 
 #include "Define.h"
 #include "Tools.h"
@@ -20,6 +19,8 @@
 #include "Boost.h"
 
 #include <boost/format.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 #include <tinyxml.h>
 #include <cmath>
@@ -226,43 +227,33 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
 void GameManager::setupGui()
 {
+    using namespace boost;
     using namespace tbe::gui;
 
     cout << "--- Loading GUI" << endl;
 
     Settings::Gui& guisets = manager.app->globalSettings.gui;
-    Settings::Video& vidsets = manager.app->globalSettings.video;
 
-    Vector2i screenSize = vidsets.screenSize;
+    Vector2i screenSize = manager.app->globalSettings.video.screenSize;
+
+    property_tree::ptree parser;
+
+    property_tree::read_ini("gui.ini", parser);
 
     GuiSkin* ingame_skin = new GuiSkin;
 
     ingame_skin->button(guisets.button);
-    ingame_skin->buttonSize(guisets.buttonSize);
+    ingame_skin->buttonSize(ingame_skin->button.getSize());
     ingame_skin->buttonMetaCount = 4;
 
-    ingame_skin->gauge(guisets.gauge);
-    ingame_skin->gaugeSize(guisets.gaugeSize);
-    ingame_skin->gaugeMetaCount = 2;
-
-    ingame_skin->editBox(guisets.editBox);
-    ingame_skin->editBoxSize(guisets.editBoxSize);
-    ingame_skin->editBoxMetaCount = 4;
-
-    ingame_skin->switchBox(guisets.switchBox);
-    ingame_skin->switchBoxSize(guisets.switchBoxSize);
-    ingame_skin->switchBoxMetaCount = 4;
-
-    int fontsize = 18;
-
-    ingame_skin->pencil("data/gfxart/gui/bebas.ttf", fontsize);
+    ingame_skin->pencil(parser.get<string > ("game.fontpath"), parser.get<int>("game.fontsize"));
     ingame_skin->pencil.setColor(1);
 
-    Pencil whiteSmlPen("data/gfxart/gui/bebas.ttf", 14);
-    whiteSmlPen.setColor(1);
+    Pencil whiteSmlPen(parser.get<string > ("game.fontpath"), parser.get<int>("game.statusfontsize"));
+    whiteSmlPen.setColor(parser.get<Vector4f > ("game.statusfontcolor"));
 
-    Pencil whiteBigPen("data/gfxart/gui/bebas.ttf", 24);
-    whiteBigPen.setColor(1);
+    Pencil whiteBigPen(parser.get<string > ("game.fontpath"), parser.get<int>("game.msgfontsize"));
+    whiteBigPen.setColor(parser.get<Vector4f > ("game.statusfontcolor"));
 
     // GameOver ----------------------------------------------------------------
 
@@ -272,7 +263,7 @@ void GameManager::setupGui()
     black.build(128, Vector4f(0, 0, 0, 1));
 
     hud.background.gameover = manager.gui->addImage("hud.background.gameover", black);
-    hud.background.gameover->setSize(vidsets.screenSize);
+    hud.background.gameover->setSize(screenSize);
     hud.background.gameover->setOpacity(0);
     hud.background.gameover->setEnable(false);
 
@@ -282,13 +273,13 @@ void GameManager::setupGui()
     manager.gui->addLayoutStretchSpace();
 
     hud.gameover = manager.gui->addTextBox("hud.gameover");
-    hud.gameover->setSize(Vector2f(vidsets.screenSize) * Vector2f(0.75, 0.75));
+    hud.gameover->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.75));
     hud.gameover->setDefinedSize(true);
     hud.gameover->setPencil(whiteBigPen);
-    hud.gameover->setBackground(guisets.backgroundTextbox);
+    hud.gameover->setBackground(guisets.textbox);
     hud.gameover->setTextPadding(16);
     hud.gameover->setBackgroundMask(guisets.maskH);
-    hud.gameover->setArrowTexture(guisets.backgroundUpDownArrow);
+    hud.gameover->setArrowTexture(guisets.udarrow);
     hud.gameover->setTextAlign(gui::LEFT | gui::TOP);
 
     manager.gui->addLayoutStretchSpace();
@@ -300,8 +291,8 @@ void GameManager::setupGui()
 
     manager.gui->setSession(SCREEN_PAUSEMENU);
 
-    Image* backPause = manager.gui->addImage("00:background", guisets.backgroundPause);
-    backPause->setSize(vidsets.screenSize);
+    Image* backPause = manager.gui->addImage("00:background", parser.get<string > ("game.pausemenu"));
+    backPause->setSize(screenSize);
 
     manager.gui->addLayout(Layout::Horizental, 10, 10);
     manager.gui->addLayoutStretchSpace();
@@ -329,12 +320,12 @@ void GameManager::setupGui()
 
     manager.gui->setSession(SCREEN_HUD, ingame_skin);
 
-    hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", guisets.backgroundDammage);
-    hud.background.dammage->setSize(vidsets.screenSize);
+    hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", parser.get<string > ("game.dammage"));
+    hud.background.dammage->setSize(screenSize);
     hud.background.dammage->setEnable(false);
 
     StateShow* croshair = manager.gui->addStateShow("0:croshair", "data/gfxart/gui/hud-crosshair.png", 4);
-    croshair->setPos(Vector2f(vidsets.screenSize) / 2.0f - Vector2f(64) / 2.0f);
+    croshair->setPos(Vector2f(screenSize) / 2.0f - Vector2f(64) / 2.0f);
     croshair->setSize(64);
 
     Image* core_weapon = manager.gui->addImage("core_ammo", "data/gfxart/gui/hud-core-weapon.png");
@@ -382,7 +373,7 @@ void GameManager::setupGui()
 
     hud.log = manager.gui->addTextBox("hud.log");
     hud.log->setPencil(whiteBigPen);
-    hud.log->setBackground(guisets.backgroundTextbox);
+    hud.log->setBackground(guisets.textbox);
     hud.log->setBackgroundMask("data/gfxart/gui/msgmask.png");
     hud.log->setTextPadding(16);
     hud.log->setEnable(false);
@@ -399,7 +390,7 @@ void GameManager::setupGui()
     manager.gui->addLayoutStretchSpace();
     hud.state = manager.gui->addTextBox("hud.state");
     hud.state->setPencil(whiteSmlPen);
-    hud.state->setBackground(guisets.backgroundTextbox);
+    hud.state->setBackground(guisets.textbox);
     hud.state->setBackgroundMask(guisets.maskH);
     hud.state->setTextPadding(8);
     manager.gui->endLayout();
@@ -672,25 +663,6 @@ void GameManager::gameProcess()
                     player->setInLastSpawnPoint();
             }
         }
-    }
-
-    /*
-     * Pour chaque Items
-     * - les items pris pour les remplacer
-     * - les items hors-aréne
-     */
-    for(unsigned i = 0; i < map.items.size(); i++)
-    {
-        Item*& item = map.items[i];
-
-        if(item->isTaked())
-        {
-            if(item->isReadyToReborn())
-                item->reborn();
-        }
-
-        else if(!map.aabb.isInner(item->getVisualBody()))
-            item->resetPosition();
     }
 
     if(hud.log->isEnable() && m_logClock.isEsplanedTime(3000))
@@ -1069,18 +1041,4 @@ void GameManager::unregisterPlayer(Player* player)
     Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
 
     m_players.erase(it);
-}
-
-void GameManager::registerItem(Item* item)
-{
-    manager.material->addItem(item);
-    map.items.push_back(item);
-}
-
-void GameManager::unregisterItem(Item* item)
-{
-    Item::Array::iterator it = find(map.items.begin(),
-                                    map.items.end(), item);
-
-    map.items.erase(it);
 }

@@ -19,19 +19,20 @@ using namespace tbe::scene;
 
 // PlayerEngine ----------------------------------------------------------------
 
-Player::Player(GameManager* playManager, std::string name, std::string model) : MapElement(playManager)
+Player::Player(GameManager* gameManager, std::string name, std::string model)
+: MapElement(gameManager), m_settings(gameManager->manager.app->globalSettings)
 {
     // Attributes
     m_nickname = name;
     m_id = "player";
-    m_playManager = playManager;
+    m_playManager = gameManager;
     m_curWeapon = m_weaponsInventory.end();
     m_curPower = m_powersInventory.end();
     m_killed = false;
     m_life = 100;
     m_energy = 100;
     m_attachedCotroller = NULL;
-    m_soundManager = playManager->manager.sound;
+    m_soundManager = gameManager->manager.sound;
 
     // Rendue
     m_visualBody = new OBJMesh(m_gameManager->parallelscene.meshs);
@@ -40,8 +41,8 @@ Player::Player(GameManager* playManager, std::string name, std::string model) : 
     MapElement::m_visualBody = m_visualBody;
 
     // Effet explosion
-    m_deadExplode = new ParticlesEmiter(playManager->parallelscene.particles);
-    m_deadExplode->setTexture(PARTICLE_EXPLODE);
+    m_deadExplode = new ParticlesEmiter(gameManager->parallelscene.particles);
+    m_deadExplode->setTexture(m_settings("particles.explosion"));
     m_deadExplode->setLifeInit(1.0);
     m_deadExplode->setLifeDown(1.0);
     m_deadExplode->setFreeMove(0.8);
@@ -99,11 +100,6 @@ void Player::randomPosOnFloor()
 {
     stopMotion();
     m_physicBody->setPos(m_playManager->getRandomPosOnTheFloor());
-}
-
-void Player::attachItem(Item* item)
-{
-    item->modifPlayer(this);
 }
 
 void Player::attachController(Controller* controller)

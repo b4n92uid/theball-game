@@ -13,7 +13,6 @@
 
 #include "MapElement.h"
 #include "Player.h"
-#include "Item.h"
 #include "Bullet.h"
 
 #include "Define.h"
@@ -28,10 +27,9 @@ using namespace tbe::scene;
 
 // Weapon ----------------------------------------------------------------------
 
-Weapon::Weapon(GameManager* playManager)
+Weapon::Weapon(GameManager* playManager) : m_settings(playManager->manager.app->globalSettings)
 {
     m_playManager = playManager;
-    m_worldSettings = m_playManager->manager.app->globalSettings.world;
     m_soundManager = m_playManager->manager.sound;
 
     m_shooter = NULL;

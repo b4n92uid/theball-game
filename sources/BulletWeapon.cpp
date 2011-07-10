@@ -15,7 +15,6 @@
 
 #include "MapElement.h"
 #include "Player.h"
-#include "Item.h"
 #include "Bullet.h"
 
 #include "Define.h"
@@ -116,9 +115,9 @@ WeaponBlaster::WeaponBlaster(GameManager* playManager) : BulletWeapon(playManage
     setMaxAmmoDammage(10);
     setShootCadency(64);
     setShootSpeed(64);
-    setFireSound(SOUND_BLASTER);
+    setFireSound(m_settings("audio.blaster"));
 
-    setTexture(WEAPON_BLASTER);
+    setTexture(m_settings("weapons.blaster"));
     setNumber(200);
     build();
 
@@ -129,8 +128,8 @@ WeaponBlaster::WeaponBlaster(GameManager* playManager) : BulletWeapon(playManage
 
 void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
-    startpos += math::rand(Vector3f(-m_worldSettings.playerSize * 0.5),
-                           Vector3f(m_worldSettings.playerSize * 0.5));
+    startpos += math::rand(Vector3f(-m_settings.world.playerSize * 0.5),
+                           Vector3f(m_settings.world.playerSize * 0.5));
 
     // Creation du tire
     Bullet* fire = new Bullet(m_playManager);
@@ -150,10 +149,10 @@ WeaponShotgun::WeaponShotgun(GameManager* playManager) : BulletWeapon(playManage
     setMaxAmmoDammage(25);
     setShootCadency(512);
     setShootSpeed(64);
-    setFireSound(SOUND_SHOTGUN);
+    setFireSound(m_settings("audio.shotgun"));
     setShootSize(7);
 
-    setTexture(WEAPON_SHOTGUN);
+    setTexture(m_settings("weapons.shotgun"));
     setNumber(50 * 7);
     build();
 
@@ -185,10 +184,10 @@ WeaponBomb::WeaponBomb(GameManager* playManager) : BulletWeapon(playManager)
     setMaxAmmoDammage(100);
     setShootCadency(512);
     setShootSpeed(8);
-    setFireSound(SOUND_BOMB);
+    setFireSound(m_settings("audio.bomb"));
     setShootSize(8);
 
-    setTexture(WEAPON_BOMB);
+    setTexture(m_settings("weapons.bomb"));
     setNumber(m_maxAmmoCount * m_shootSize);
     build();
 
@@ -223,9 +222,9 @@ WeaponFinder::WeaponFinder(GameManager* playManager) : BulletWeapon(playManager)
     setMaxAmmoDammage(50);
     setShootCadency(64);
     setShootSpeed(64);
-    setFireSound(SOUND_FINDER);
+    setFireSound(m_settings("audio.finder"));
 
-    setTexture(WEAPON_FINDER);
+    setTexture(m_settings("weapons.finder"));
     setNumber(200);
     build();
 
@@ -293,4 +292,3 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
     m_bulletArray.push_back(fire);
 }
-

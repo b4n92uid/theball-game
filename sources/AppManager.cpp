@@ -81,23 +81,23 @@ void AppManager::setupSound()
         FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
         FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
 
-        FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, SOUND_GONG,
+        FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, globalSettings("audio.gong"),
                                                    FMOD_LOOP_OFF | FMOD_2D | FMOD_HARDWARE,
                                                    0, &m_gongSound);
 
         if(res != FMOD_OK)
             throw tbe::Exception("AppManager::AppManager; %s (%s)",
                                  FMOD_ErrorString(res),
-                                 SOUND_MAINTHEME);
+                                 globalSettings("audio.gong"));
 
-        res = FMOD_System_CreateStream(m_fmodsys, SOUND_MAINTHEME,
+        res = FMOD_System_CreateStream(m_fmodsys, globalSettings("audio.maintheme"),
                                        FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
                                        0, &m_mainMusic);
 
         if(res != FMOD_OK)
             throw tbe::Exception("AppManager::AppManager; %s (%s)",
                                  FMOD_ErrorString(res),
-                                 SOUND_MAINTHEME);
+                                 globalSettings("audio.maintheme"));
     }
 }
 
@@ -139,38 +139,40 @@ void AppManager::setupMenuGui()
     GuiSkin* guiskin = new GuiSkin;
 
     guiskin->button(globalSettings.gui.button);
-    guiskin->buttonSize(globalSettings.gui.buttonSize * sizeFactor);
+    guiskin->buttonSize(Vector2f(256, 32) * sizeFactor);
     math::round(guiskin->buttonSize);
     guiskin->buttonMetaCount = 4;
 
     guiskin->gauge(globalSettings.gui.gauge);
-    guiskin->gaugeSize(globalSettings.gui.gaugeSize * sizeFactor);
+    guiskin->gaugeSize(Vector2f(256, 32) * sizeFactor);
     math::round(guiskin->gaugeSize);
     guiskin->gaugeMetaCount = 2;
 
-    guiskin->editBox(globalSettings.gui.editBox);
-    guiskin->editBoxSize(globalSettings.gui.editBoxSize * sizeFactor);
+    guiskin->editBox(globalSettings.gui.editbox);
+    guiskin->editBoxSize(Vector2f(256, 32) * sizeFactor);
     math::round(guiskin->editBoxSize);
     guiskin->editBoxMetaCount = 4;
 
-    guiskin->switchBox(globalSettings.gui.switchBox);
-    guiskin->switchBoxSize(globalSettings.gui.switchBoxSize * sizeFactor);
+    guiskin->switchBox(globalSettings.gui.switchbox);
+    guiskin->switchBoxSize(Vector2f(256, 32) * sizeFactor);
     math::round(guiskin->switchBoxSize);
     guiskin->switchBoxMetaCount = 4;
 
     guiskin->stateShowSize(Vector2f(48, 48) * sizeFactor);
     math::round(guiskin->stateShowSize);
 
-    guiskin->pencil(globalSettings.gui.font, globalSettings.gui.fontSize * sizeFactor);
+    guiskin->pencil(globalSettings.gui.fontpath, globalSettings.gui.fontSize * sizeFactor);
     guiskin->pencil.setColor(Vector4f(1, 1, 1, 1));
 
     m_guiManager->setSkin(guiskin);
 
-    Pencil bigpen(globalSettings.gui.font, globalSettings.gui.fontSize * sizeFactor * 1.5);
-
     // Construction ------------------------------------------------------------
 
-    Texture background(globalSettings.gui.backgroundMainmenu);
+    const Settings& gs = globalSettings;
+
+    Pencil bigpen(gs.gui.fontpath, gs.gui.fontSize * sizeFactor * 1.5);
+
+    Texture background(gs.gui.mainmenu);
 
     // Menu Principale
 
@@ -179,7 +181,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addImage("", background)
             ->setSize(screenSize);
 
-    Image* version = m_guiManager->addImage("", "data/gfxart/gui/version.png");
+    Image* version = m_guiManager->addImage("", gs.gui.version);
     version->setSize(version->getSize() * sizeFactor);
     version->setPos(Vector2f(screenSize.x - 256 - 10, 10));
 
@@ -199,7 +201,7 @@ void AppManager::setupMenuGui()
 
     m_guiManager->addLayoutSpace(64);
 
-    m_guiManager->addImage("logo", "data/gfxart/gui/logo.png");
+    m_guiManager->addImage("logo", gs.gui.logo);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -245,7 +247,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutStretchSpace();
 
     m_controls.campaign.description = m_guiManager->addTextBox("description");
-    m_controls.campaign.description->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.campaign.description->setBackground();
     m_controls.campaign.description->setBackgroundPadding(16);
     m_controls.campaign.description->setSize(Vector2f(384, 256));
     m_controls.campaign.description->setDefinedSize(true);
@@ -268,13 +270,13 @@ void AppManager::setupMenuGui()
     m_controls.mapmenu.prev = m_guiManager->addButton("prev", "");
     m_controls.mapmenu.prev->setMetaCount(4);
     m_controls.mapmenu.prev->setSize(64);
-    m_controls.mapmenu.prev->setBackground("data/gfxart/gui/arrow-left.png");
+    m_controls.mapmenu.prev->setBackground(gs.gui.arrowleft);
     m_controls.mapmenu.prev->setPos(16);
 
     m_controls.mapmenu.next = m_guiManager->addButton("next", "");
     m_controls.mapmenu.next->setMetaCount(4);
     m_controls.mapmenu.next->setSize(64);
-    m_controls.mapmenu.next->setBackground("data/gfxart/gui/arrow-right.png");
+    m_controls.mapmenu.next->setBackground(gs.gui.arrowright);
     m_controls.mapmenu.next->setPos(Vector2f(screenSize.x - 64 - 16, 16));
 
     m_guiManager->addLayout(Layout::Horizental, 10, 10);
@@ -288,8 +290,8 @@ void AppManager::setupMenuGui()
     m_controls.mapmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
 
     m_controls.mapmenu.description = m_guiManager->addTextBox("description");
-    m_controls.mapmenu.description->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
-    m_controls.mapmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.mapmenu.description->setArrowTexture(globalSettings.gui.udarrow);
+    m_controls.mapmenu.description->setBackground(globalSettings.gui.textbox);
     m_controls.mapmenu.description->setTextPadding(4);
     m_controls.mapmenu.description->setBackgroundMask(globalSettings.gui.maskH);
     m_controls.mapmenu.description->setSize(Vector2f(389, 128));
@@ -325,7 +327,7 @@ void AppManager::setupMenuGui()
     m_controls.playmenu.prev = m_guiManager->addButton("return", "");
     m_controls.playmenu.prev->setMetaCount(4);
     m_controls.playmenu.prev->setSize(64);
-    m_controls.playmenu.prev->setBackground("data/gfxart/gui/arrow-left.png");
+    m_controls.playmenu.prev->setBackground(gs.gui.arrowleft);
 
     m_guiManager->addLayoutSpace(32);
 
@@ -338,7 +340,7 @@ void AppManager::setupMenuGui()
     m_guiManager->addLayoutSpace(16);
 
     m_controls.playmenu.next = m_guiManager->addButton("play", "Jouer");
-    m_controls.playmenu.next->setBackground("data/gfxart/gui/play.png");
+    m_controls.playmenu.next->setBackground(gs.gui.playbutton);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
@@ -351,7 +353,7 @@ void AppManager::setupMenuGui()
 
     m_guiManager->setSession(MENU_LOAD);
 
-    m_guiManager->addImage("", globalSettings.gui.backgroundMainmenu)
+    m_guiManager->addImage("", background)
             ->setSize(screenSize);
 
     m_guiManager->addLayout(Layout::Horizental, 0, 10);
@@ -394,7 +396,7 @@ void AppManager::setupMenuGui()
 
     m_guiManager->addLayoutSpace(8);
 
-    Image* vline = m_guiManager->addImage("", "data/gfxart/gui/line.png");
+    Image* vline = m_guiManager->addImage("", gs.gui.vertline);
     vline->setSize(Vector2f(vline->getSize().x, screenSize.y - 32));
 
     m_guiManager->addLayoutStretchSpace();
@@ -497,10 +499,10 @@ void AppManager::setupMenuGui()
 
     m_controls.aboutmenu.aboutText = m_guiManager->addTextBox("aboutText");
     m_controls.aboutmenu.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
-    m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
+    m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.udarrow);
     m_controls.aboutmenu.aboutText->setDefinedSize(true);
     m_controls.aboutmenu.aboutText->setTextPadding(8);
-    m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
+    m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.textbox);
     m_controls.aboutmenu.aboutText->setBackgroundMask(globalSettings.gui.maskH);
     m_controls.aboutmenu.aboutText->setTextAlign(gui::LEFT | gui::VCENTER);
 
@@ -624,7 +626,7 @@ void AppManager::setupBackgroundScene()
     m_sceneManager->addCamera(m_camera);
 
     SceneParser parser(m_sceneManager);
-    parser.loadScene("data/maps/mainmenu.back");
+    parser.loadScene(globalSettings("scenes.mainmenu"));
     parser.buildScene();
 
     // PPE ---------------------------------------------------------------------

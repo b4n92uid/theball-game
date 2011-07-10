@@ -11,6 +11,7 @@
 #include "SoundManager.h"
 
 Power::Power(GameManager* gameManager)
+: m_settings(gameManager->manager.app->globalSettings)
 {
     m_slot = 0;
     m_name = "Power";
