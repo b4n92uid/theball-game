@@ -38,13 +38,14 @@ public:
 
     void stopMotion();
 
+    GameManager* getGameManager() const;
+
     typedef std::map<std::string, MapElement*> Map;
     typedef std::vector<MapElement*> Array;
 
     static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
 
     static bool isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects);
-
 
 protected:
     GameManager* m_gameManager;

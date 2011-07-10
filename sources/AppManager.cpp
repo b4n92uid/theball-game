@@ -290,11 +290,11 @@ void AppManager::setupMenuGui()
     m_controls.mapmenu.description = m_guiManager->addTextBox("description");
     m_controls.mapmenu.description->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
     m_controls.mapmenu.description->setBackground(globalSettings.gui.backgroundTextbox);
-    m_controls.mapmenu.description->setPadding(4);
+    m_controls.mapmenu.description->setTextPadding(4);
     m_controls.mapmenu.description->setBackgroundMask(globalSettings.gui.maskH);
     m_controls.mapmenu.description->setSize(Vector2f(389, 128));
     m_controls.mapmenu.description->setDefinedSize(true);
-    m_controls.mapmenu.description->setTextAlign(TextBox::LEFT);
+    m_controls.mapmenu.description->setTextAlign(gui::LEFT | gui::VCENTER);
 
     m_controls.mapmenu.preview = m_guiManager->addImage("preview");
     m_controls.mapmenu.preview->setSize(256);
@@ -499,10 +499,10 @@ void AppManager::setupMenuGui()
     m_controls.aboutmenu.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
     m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.backgroundUpDownArrow);
     m_controls.aboutmenu.aboutText->setDefinedSize(true);
-    m_controls.aboutmenu.aboutText->setPadding(8);
+    m_controls.aboutmenu.aboutText->setTextPadding(8);
     m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.backgroundTextbox);
     m_controls.aboutmenu.aboutText->setBackgroundMask(globalSettings.gui.maskH);
-    m_controls.aboutmenu.aboutText->setTextAlign(TextBox::LEFT);
+    m_controls.aboutmenu.aboutText->setTextAlign(gui::LEFT | gui::VCENTER);
 
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();

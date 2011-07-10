@@ -43,6 +43,9 @@ protected:
 protected:
     static tbe::gui::Image* m_screeneffect;
     static tbe::ppe::ColorEffect* m_ppeffect;
+
+private :
+    float m_internalEnergy;
 };
 
 #endif	/* BULLETTIME_H */

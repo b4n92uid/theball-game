@@ -258,7 +258,10 @@ void GameManager::setupGui()
     ingame_skin->pencil("data/gfxart/gui/bebas.ttf", fontsize);
     ingame_skin->pencil.setColor(1);
 
-    Pencil whiteBigPen("data/gfxart/gui/bebas.ttf", fontsize * 2.0);
+    Pencil whiteSmlPen("data/gfxart/gui/bebas.ttf", 14);
+    whiteSmlPen.setColor(1);
+
+    Pencil whiteBigPen("data/gfxart/gui/bebas.ttf", 24);
     whiteBigPen.setColor(1);
 
     // GameOver ----------------------------------------------------------------
@@ -283,10 +286,10 @@ void GameManager::setupGui()
     hud.gameover->setDefinedSize(true);
     hud.gameover->setPencil(whiteBigPen);
     hud.gameover->setBackground(guisets.backgroundTextbox);
-    hud.gameover->setPadding(16);
+    hud.gameover->setTextPadding(16);
     hud.gameover->setBackgroundMask(guisets.maskH);
     hud.gameover->setArrowTexture(guisets.backgroundUpDownArrow);
-    hud.gameover->setTextAlign(TextBox::LEFT);
+    hud.gameover->setTextAlign(gui::LEFT | gui::TOP);
 
     manager.gui->addLayoutStretchSpace();
     manager.gui->endLayout();
@@ -380,7 +383,8 @@ void GameManager::setupGui()
     hud.log = manager.gui->addTextBox("hud.log");
     hud.log->setPencil(whiteBigPen);
     hud.log->setBackground(guisets.backgroundTextbox);
-    hud.log->setPadding(16);
+    hud.log->setBackgroundMask("data/gfxart/gui/msgmask.png");
+    hud.log->setTextPadding(16);
     hud.log->setEnable(false);
     hud.log->setPos(false);
 
@@ -394,6 +398,10 @@ void GameManager::setupGui()
     manager.gui->addLayout(Layout::Vertical, 0, 10);
     manager.gui->addLayoutStretchSpace();
     hud.state = manager.gui->addTextBox("hud.state");
+    hud.state->setPencil(whiteSmlPen);
+    hud.state->setBackground(guisets.backgroundTextbox);
+    hud.state->setBackgroundMask(guisets.maskH);
+    hud.state->setTextPadding(8);
     manager.gui->endLayout();
     // --------
 }
@@ -801,8 +809,10 @@ void GameManager::hudProcess()
 
 float rayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
 {
-    float inertia[3], masse;
-    NewtonBodyGetMassMatrix(body, &masse, &inertia[0], &inertia[1], &inertia[2]);
+    MapElement* elem = (MapElement*)NewtonBodyGetUserData(body);
+
+    if(elem == elem->getGameManager()->getUserPlayer())
+        return intersectParam;
 
     float& hit = *static_cast<float*>(userData);
 

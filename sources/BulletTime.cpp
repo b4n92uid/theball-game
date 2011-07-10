@@ -44,7 +44,7 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
     }
     else if(!m_screeneffect)
     {
-        m_screeneffect = m_gameManager->manager.gui->addImage("blettimeEffect", GUI_BULLETTIME);
+        m_screeneffect = m_gameManager->manager.gui->addImage("blettimeEffect", "data/gfxart/gui/bullettime.png");
         m_screeneffect->setOpacity(0.5);
         m_screeneffect->setSize(vidsets.screenSize);
         m_screeneffect->setEnable(false);
@@ -93,10 +93,9 @@ void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 
 void BulletTime::process()
 {
-    int value = m_owner->getEnergy();
-    value -= 2;
+    m_internalEnergy -= 0.5;
 
-    m_owner->setEnergy(value);
+    m_owner->setEnergy(m_internalEnergy);
 
     if(m_owner->getCurWeapon() && m_owner->getCurWeapon() != m_usedWeapon)
     {
@@ -138,6 +137,8 @@ void BulletTime::soundEffect(FMOD_CHANNEL* channel)
 
 void BulletTime::internalActivate(tbe::Vector3f target)
 {
+    m_internalEnergy = m_owner->getEnergy();
+
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
     m_soundManager->processSoundEffect.connect(soundEffect);
     m_soundManager->playSound("bullettime", m_owner);

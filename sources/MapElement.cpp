@@ -81,6 +81,11 @@ bool MapElement::isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array sta
     return false;
 }
 
+GameManager* MapElement::getGameManager() const
+{
+    return m_gameManager;
+}
+
 void MapElement::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 {
     MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
