@@ -488,10 +488,10 @@ void Player::makeTransparent(bool enable, float alpha)
 
     if(enable)
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->enable(Material::BLEND_MOD);
+            mats[i]->enable(Material::BLEND_ADD);
     else
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->disable(Material::BLEND_MOD);
+            mats[i]->disable(Material::BLEND_ADD);
 }
 
 /*
