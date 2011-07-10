@@ -12,6 +12,7 @@ syntax: glob
 **.pdf
 **.log
 **.xml
+**.ini
 **.bash
 **.mk
 **.blend1
