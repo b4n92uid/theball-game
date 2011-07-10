@@ -67,7 +67,21 @@ void Settings::readVideo()
 {
     pt::ptree parser;
 
-    pt::read_ini("video.ini", parser);
+    try
+    {
+        pt::read_ini("video.ini", parser);
+    }
+    catch(...)
+    {
+        parser.put("window.bits", 32);
+        parser.put("window.antialiasing", 2);
+
+        parser.put("window.fullscreen", true);
+        parser.put("window.size", Vector2i(1024, 768));
+
+        parser.put("ppe.use", true);
+        parser.put("ppe.size", Vector2i(512));
+    }
 
     video.bits = parser.get<int>("window.bits");
     video.antialiasing = parser.get<int>("window.antialiasing");

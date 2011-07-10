@@ -173,7 +173,6 @@ protected:
     {
         tbe::ppe::BloomEffect* bloom;
         tbe::ppe::BlurEffect* gameover;
-        tbe::ppe::ColorEffect* power;
         tbe::ppe::ColorEffect* dammage;
 
     } ppe;
