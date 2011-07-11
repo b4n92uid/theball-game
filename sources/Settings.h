@@ -99,8 +99,10 @@ public:
 
     struct Control
     {
-        std::map<std::string, int> mouse;
-        std::map<std::string, int> keyboard;
+        typedef std::map<std::string, int> InputMap;
+
+        InputMap mouse;
+        InputMap keyboard;
 
     } control;
 

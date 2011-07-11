@@ -19,8 +19,6 @@ using namespace tbe;
 using namespace gui;
 using namespace boost;
 
-namespace pt = property_tree;
-
 Settings::Settings()
 {
     noaudio = false;
@@ -37,9 +35,9 @@ const char* Settings::operator()(std::string key) const
 
 void Settings::readGui()
 {
-    pt::ptree parser;
+    property_tree::ptree parser;
 
-    pt::read_ini("gui.ini", parser);
+    property_tree::read_ini("gui.ini", parser);
 
     gui.button = parser.get<string > ("menu.button");
     gui.gauge = parser.get<string > ("menu.gauge");
@@ -65,11 +63,11 @@ void Settings::readGui()
 
 void Settings::readVideo()
 {
-    pt::ptree parser;
+    property_tree::ptree parser;
 
     try
     {
-        pt::read_ini("video.ini", parser);
+        property_tree::read_ini("video.ini", parser);
     }
     catch(...)
     {
@@ -98,36 +96,26 @@ void Settings::readControl()
     control.keyboard.clear();
     control.mouse.clear();
 
-    TiXmlDocument config("control.xml");
+    property_tree::ptree parser;
 
-    if(!config.LoadFile())
-        throw tbe::Exception("ReadControl; nOpen file error");
+    property_tree::read_ini("control.ini", parser);
 
-    TiXmlNode* root = config.FirstChildElement();
-
-    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
+    foreach(property_tree::ptree::value_type &i, parser.get_child("keyboard"))
     {
-        string name = node2->Attribute("name");
+        control.keyboard[i.first] = i.second.get_value<int>();
+    }
 
-        int key = -1;
-        node2->QueryIntAttribute("key", &key);
-
-        if(key != -1)
-            control.keyboard[name] = key;
-
-        int mouse = -1;
-        node2->QueryIntAttribute("mouse", &mouse);
-
-        if(mouse != -1)
-            control.mouse[name] = mouse;
+    foreach(property_tree::ptree::value_type &i, parser.get_child("mouse"))
+    {
+        control.mouse[i.first] = i.second.get_value<int>();
     }
 }
 
 void Settings::readWorld()
 {
-    pt::ptree parser;
+    property_tree::ptree parser;
 
-    pt::read_ini("world.ini", parser);
+    property_tree::read_ini("world.ini", parser);
 
     world.gravity = parser.get<float>("general.gravity");
 
@@ -278,7 +266,7 @@ void Settings::readSetting()
 
 void Settings::saveVideo()
 {
-    pt::ptree parser;
+    property_tree::ptree parser;
 
     parser.put("window.size", video.screenSize);
     parser.put("window.bits", video.bits);
@@ -289,58 +277,24 @@ void Settings::saveVideo()
     parser.put("ppe.use", video.ppeUse);
     parser.put("ppe.size", video.ppeSize);
 
-    pt::write_ini("video.ini", parser);
+    property_tree::write_ini("video.ini", parser);
 }
 
 void Settings::saveControl()
 {
-    TiXmlDocument config("control.xml");
+    property_tree::ptree parser;
 
-    if(!config.LoadFile())
-        throw tbe::Exception("SaveControl; Open file error");
-
-    TiXmlNode * root = config.FirstChildElement();
-
-    vector<string> actions;
-
-    actions.push_back("forward");
-    actions.push_back("backward");
-    actions.push_back("strafRight");
-    actions.push_back("strafLeft");
-    actions.push_back("jump");
-    actions.push_back("shoot");
-    actions.push_back("power");
-    actions.push_back("switchUpWeapon");
-    actions.push_back("switchDownWeapon");
-
-    for(TiXmlElement* node2 = root->FirstChildElement(); node2; node2 = node2->NextSiblingElement())
+    foreach(Control::InputMap::value_type &i, control.keyboard)
     {
-        string name = node2->Attribute("name");
-
-        for(unsigned i = 0; i < actions.size(); i++)
-        {
-            if(name == actions[i])
-            {
-                map<string, int>::const_iterator keyItt = control.keyboard.find(actions[i]);
-                map<string, int>::const_iterator mouseItt = control.mouse.find(actions[i]);
-
-                node2->RemoveAttribute("key");
-                node2->RemoveAttribute("mouse");
-
-                if(keyItt != control.keyboard.end())
-                    node2->SetAttribute("key", keyItt->second);
-
-                else
-
-                    if(mouseItt != control.mouse.end())
-                    node2->SetAttribute("mouse", mouseItt->second);
-
-                break;
-            }
-        }
+        parser.put("keyboard." + i.first, i.second);
     }
 
-    config.SaveFile();
+    foreach(Control::InputMap::value_type &i, control.mouse)
+    {
+        parser.put("mouse." + i.first, i.second);
+    }
+
+    property_tree::write_ini("control.ini", parser);
 }
 
 void Settings::saveProfiles()
