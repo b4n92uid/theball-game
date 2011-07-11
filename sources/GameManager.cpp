@@ -240,19 +240,21 @@ void GameManager::setupGui()
 
     property_tree::read_ini("gui.ini", parser);
 
+    #define path(s) parser.get<string>(s)
+
     GuiSkin* ingame_skin = new GuiSkin;
 
     ingame_skin->button(guisets.button);
     ingame_skin->buttonSize(ingame_skin->button.getSize());
     ingame_skin->buttonMetaCount = 4;
 
-    ingame_skin->pencil(parser.get<string > ("game.fontpath"), parser.get<int>("game.fontsize"));
+    ingame_skin->pencil(path("game.fontpath"), parser.get<int>("game.fontsize"));
     ingame_skin->pencil.setColor(1);
 
-    Pencil whiteSmlPen(parser.get<string > ("game.fontpath"), parser.get<int>("game.statusfontsize"));
+    Pencil whiteSmlPen(path("game.fontpath"), parser.get<int>("game.statusfontsize"));
     whiteSmlPen.setColor(parser.get<Vector4f > ("game.statusfontcolor"));
 
-    Pencil whiteBigPen(parser.get<string > ("game.fontpath"), parser.get<int>("game.msgfontsize"));
+    Pencil whiteBigPen(path("game.fontpath"), parser.get<int>("game.msgfontsize"));
     whiteBigPen.setColor(parser.get<Vector4f > ("game.statusfontcolor"));
 
     // GameOver ----------------------------------------------------------------
@@ -291,7 +293,7 @@ void GameManager::setupGui()
 
     manager.gui->setSession(SCREEN_PAUSEMENU);
 
-    Image* backPause = manager.gui->addImage("00:background", parser.get<string > ("game.pausemenu"));
+    Image* backPause = manager.gui->addImage("00:background", path("game.pausemenu"));
     backPause->setSize(screenSize);
 
     manager.gui->addLayout(Layout::Horizental, 10, 10);
@@ -323,49 +325,49 @@ void GameManager::setupGui()
 
     manager.gui->setSession(SCREEN_HUD, ingame_skin);
 
-    hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", parser.get<string > ("game.dammage"));
+    hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", path("game.dammage"));
     hud.background.dammage->setSize(screenSize);
     hud.background.dammage->setEnable(false);
 
-    hud.background.flash = manager.gui->addImage("1:hud.background.flash", parser.get<string > ("game.flash"));
+    hud.background.flash = manager.gui->addImage("1:hud.background.flash", path("game.flash"));
     hud.background.flash->setSize(screenSize);
     hud.background.flash->setEnable(false);
 
-    StateShow* croshair = manager.gui->addStateShow("0:croshair", "data/gfxart/gui/hud-crosshair.png", 4);
+    StateShow* croshair = manager.gui->addStateShow("0:croshair", path("game.crosshair"), 4);
     croshair->setPos(Vector2f(screenSize) / 2.0f - Vector2f(64) / 2.0f);
     croshair->setSize(64);
 
-    Image* core_weapon = manager.gui->addImage("core_ammo", "data/gfxart/gui/hud-core-weapon.png");
+    Image* core_weapon = manager.gui->addImage("core_weapon", path("game.weaponicon"));
     Vector2f weaponParentPos(16);
     core_weapon->setPos(weaponParentPos);
 
-    Image* core_power = manager.gui->addImage("core_power", "data/gfxart/gui/hud-core-power.png");
+    Image* core_power = manager.gui->addImage("core_power", path("game.corepower"));
     Vector2f powerParentPos(screenSize.x - core_power->getSize().x - 16, 16);
     core_power->setPos(powerParentPos);
 
     hud.ammoGauge = manager.gui->addGauge("hud.ammoGauge", "");
     hud.ammoGauge->setPos(weaponParentPos + Vector2f(96, 32));
     hud.ammoGauge->setSize(Vector2f(256 - 96, 32));
-    hud.ammoGauge->setBackground("data/gfxart/gui/hud-ammo.png");
+    hud.ammoGauge->setBackground(path("game.ammogauge"));
     hud.ammoGauge->setSmooth(true, 1);
 
     hud.ammo = manager.gui->addTextBox("hud.ammo");
     hud.ammo->setPos(weaponParentPos + Vector2f(128, 9.6));
 
-    hud.weaponIcon = manager.gui->addStateShow("hud.weaponIcon", "data/gfxart/gui/hud-weapon.png", 4);
+    hud.weaponIcon = manager.gui->addStateShow("hud.weaponIcon", path("game.weaponicon"), 4);
     hud.weaponIcon->setSize(96);
     hud.weaponIcon->setPos(weaponParentPos);
 
     hud.energyGauge = manager.gui->addGauge("hud.energyGauge", "");
     hud.energyGauge->setPos(powerParentPos + Vector2f(0, 32));
     hud.energyGauge->setSize(Vector2f(256 - 96, 32));
-    hud.energyGauge->setBackground("data/gfxart/gui/hud-energy.png");
+    hud.energyGauge->setBackground(path("game.energygauge"));
     hud.energyGauge->setReverse(true);
 
     hud.life = manager.gui->addTextBox("hud.life");
     hud.life->setPos(powerParentPos + Vector2f(64, 9.6));
 
-    hud.powerIcon = manager.gui->addStateShow("hud.powerIcon", "data/gfxart/gui/hud-power.png", 4);
+    hud.powerIcon = manager.gui->addStateShow("hud.powerIcon", path("game.powericon"), 4);
     hud.powerIcon->setSize(96);
     hud.powerIcon->setPos(powerParentPos + Vector2f(160, 0));
 
@@ -401,6 +403,8 @@ void GameManager::setupGui()
     hud.state->setTextPadding(8);
     manager.gui->endLayout();
     // --------
+
+    #undef path
 }
 
 void GameManager::onStartGame()
