@@ -153,7 +153,7 @@ void Settings::readPlayerInfo()
     {
         const path& filename = it->path();
 
-        if(filename.extension() == ".bpd")
+        if(filename.extension() == ".player")
         {
             Settings::PlayerInfo pi(filename.file_string());
 
