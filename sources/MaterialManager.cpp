@@ -140,6 +140,20 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
 
     GameManager* ge = player->getGameManager();
 
+    Vector3f veloc = elem->getPhysicBody()->getVelocity() * elem->getPhysicBody()->getMasse();
+
+    Vector3f cveloc = player->getPhysicBody()->getVelocity() * player->getPhysicBody()->getMasse();
+
+    if(veloc > cveloc)
+    {
+        veloc -= cveloc;
+
+        cout << veloc.getMagnitude() << endl;
+
+        if(veloc > 200)
+            player->takeDammage(veloc.getMagnitude() - 200);
+    }
+
     ge->manager.script->processCollid(player, elem);
 }
 

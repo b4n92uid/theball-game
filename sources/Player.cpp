@@ -379,6 +379,8 @@ void Player::kill(Player* killer)
     m_killed = true;
     m_life = 0;
 
+    stopMotion();
+
     m_deadExplode->build();
 
     m_playManager->manager.material->setGhost(this, true);
@@ -387,10 +389,6 @@ void Player::kill(Player* killer)
 
     m_visualBody->setVisible(false);
 
-    m_physicBody->setVelocity(0);
-    m_physicBody->setOmega(0);
-    m_physicBody->setApplyForce(0);
-    m_physicBody->setApplyTorque(0);
     m_physicBody->setApplyGravity(false);
 
     m_soundManager->playSound("kill", this);
