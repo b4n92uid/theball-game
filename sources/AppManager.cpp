@@ -523,7 +523,18 @@ void AppManager::setupMenuGui()
 
     // Remplisage --------------------------------------------------------------
 
-    m_controls.playmenu.playerName->setLabel(globalSettings.profile.name);
+    string username = "Joueur#1";
+
+    #ifdef COMPILE_FOR_WINDOWS
+    {
+        DWORD bufSize = 255;
+        char userName[bufSize];
+        GetUserName(userName, &bufSize);
+        username = userName;
+    }
+    #endif
+
+    m_controls.playmenu.playerName->setLabel(username);
 
     // A propos
     {
@@ -822,12 +833,9 @@ void AppManager::processPlayMenuEvent()
         m_guiManager->setSession(MENU_MAIN);
     }
 
-    else if(m_controls.playmenu.playerSelect->isActivate())
-    {
-    }
+    else if(m_controls.playmenu.playerSelect->isActivate());
 
-    else if(m_controls.playmenu.playerName->isActivate())
-        globalSettings.profile.name = m_controls.playmenu.playerName->getLabel();
+    else if(m_controls.playmenu.playerName->isActivate());
 
     else if(m_controls.playmenu.prev->isActivate())
         m_guiManager->setSession(MENU_MAPCHOOSE);
@@ -1026,169 +1034,6 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 
 void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
 {
-    Settings::PartySetting curPlaySetting = playSetting;
-
-    bool done = false;
-
-    do
-    {
-        cout << "ExecuteCampaign :" << endl
-                << "playLevel = " << curPlaySetting.map.name << endl
-                << "playerModel = " << curPlaySetting.player.file << endl
-                << "playerName = " << curPlaySetting.player.name << endl;
-
-        m_sceneManager->clearAll();
-        m_ppeManager->clearAll();
-
-        if(!globalSettings.noaudio)
-            FMOD_Channel_Stop(m_mainMusicCh);
-
-        // Affichage de l'ecran de chargement --------------------------------------
-
-        m_guiManager->setSession(MENU_LOAD);
-
-        m_guiManager->getControl<gui::TextBox > ("load:stateText")
-                ->write(gui::GuiString("Chargement en cours..."));
-
-        m_guiManager->updateLayout();
-
-        m_gameEngine->beginScene();
-        m_guiManager->render();
-        m_gameEngine->endScene();
-
-        // Chargement de la carte --------------------------------------------------
-
-        GameManager* gameManager = new GameManager(this);
-
-        gameManager->setupMap(curPlaySetting);
-        gameManager->setupGui();
-
-        // Attente de réponse ------------------------------------------------------
-
-        m_guiManager->setSession(MENU_LOAD);
-
-        m_guiManager->getControl<gui::TextBox > ("load:stateText")
-                ->write(gui::GuiString("Appuyer sur \"Espace\" pour continuer..."));
-
-        m_eventMng->keyState[EventManager::KEY_SPACE] = false;
-
-        while(!m_eventMng->keyState[EventManager::KEY_SPACE])
-        {
-            m_gameEngine->pollEvent();
-            m_gameEngine->beginScene();
-            m_guiManager->render();
-            m_gameEngine->endScene();
-        }
-
-        // Début du jeu ------------------------------------------------------------
-
-        cout << "Start game" << endl;
-
-        gameManager->onStartGame();
-
-        while(gameManager->isRunning())
-        {
-            if(m_fpsMng->doRender())
-            {
-                gameManager->eventProcess();
-                gameManager->gameProcess();
-                gameManager->hudProcess();
-
-                gameManager->render();
-            }
-
-            m_fpsMng->update();
-        }
-
-        cout << "End game" << endl;
-
-        done = !gameManager->isGameOver();
-
-        bool haswin = gameManager->getWinnerPlayer() == gameManager->getUserPlayer();
-
-        delete gameManager;
-
-        if(!done && haswin)
-        {
-            if(curPlaySetting.curLevel + 1 < globalSettings.campaign.maps.size())
-            {
-                // *** Pre-Load next level
-
-                cout << "Next level available" << endl;
-
-                if(curPlaySetting.curLevel >= globalSettings.profile.index)
-                {
-                    globalSettings.profile.index++;
-                    curPlaySetting.curLevel = globalSettings.profile.index;
-                }
-                else
-                    curPlaySetting.curLevel++;
-
-                Settings::PartySetting nextParty = globalSettings.campaign.maps[curPlaySetting.curLevel];
-
-                curPlaySetting.map = nextParty.map;
-
-                m_guiManager->setSession(MENU_LOAD);
-
-                m_guiManager->getControl<gui::TextBox > ("load:stateText")
-                        ->write(gui::GuiString("Nouveau niveau déploqué !\n"
-                                               "Appuyer sur \"Espace\" pour continuer..."));
-
-                if(!globalSettings.noaudio)
-                    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
-
-                m_screenWaitClock.snapShoot();
-
-                m_eventMng->keyState[EventManager::KEY_SPACE] = false;
-                while(!m_eventMng->keyState[EventManager::KEY_SPACE]
-                      || !m_screenWaitClock.isEsplanedTime(1000))
-                {
-                    m_gameEngine->pollEvent();
-                    m_gameEngine->beginScene();
-                    m_guiManager->render();
-                    m_gameEngine->endScene();
-                }
-            }
-
-            else
-            {
-                // *** Game complete !!!
-
-                cout << "Game complete !!!" << endl;
-
-                m_guiManager->setSession(MENU_LOAD);
-
-                m_guiManager->getControl<gui::TextBox > ("load:stateText")
-                        ->write(gui::GuiString("FELECITATION JEU TERMINER !!!\n"
-                                               "Appuyer sur \"Espace\" pour continuer..."));
-
-                if(!globalSettings.noaudio)
-                    FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_gongSound, false, 0);
-
-                m_screenWaitClock.snapShoot();
-
-                m_eventMng->keyState[EventManager::KEY_SPACE] = false;
-                while(!m_eventMng->keyState[EventManager::KEY_SPACE]
-                      || !m_screenWaitClock.isEsplanedTime(1000))
-                {
-                    m_gameEngine->pollEvent();
-                    m_gameEngine->beginScene();
-                    m_guiManager->render();
-                    m_gameEngine->endScene();
-                }
-
-                done = true;
-            }
-        }
-
-        globalSettings.saveProfiles();
-
-        updateGuiContent();
-    }
-    while(!done);
-
-    if(!globalSettings.noaudio)
-        FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 
 tbe::EventManager* AppManager::getEventMng() const

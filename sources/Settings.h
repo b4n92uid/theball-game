@@ -23,7 +23,6 @@ public:
 
     void readGui();
     void readAi();
-    void readProfiles();
     void readCampaign();
     void readVideo();
     void readControl();
@@ -141,13 +140,6 @@ public:
 
         unsigned curLevel;
     };
-
-    struct Profile
-    {
-        std::string name;
-        unsigned index;
-
-    } profile;
 
     struct Campaign
     {
