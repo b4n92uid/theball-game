@@ -455,7 +455,7 @@ void Player::takeDammage(int dammage, Player* killer)
         kill(killer);
 
     if(m_playManager->getUserPlayer() == this)
-        m_playManager->hudDammage(true);
+        m_playManager->dammageEffect();
 
     m_soundManager->playSound("hit", this);
 }

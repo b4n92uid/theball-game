@@ -67,7 +67,8 @@ public:
     bool isGameOver() const;
     bool isRunning() const;
 
-    void hudDammage(bool status);
+    void dammageEffect();
+    void flashEffect();
 
     virtual tbe::Vector3f getShootTarget() const;
 
@@ -202,9 +203,8 @@ protected:
 
         struct
         {
-            tbe::gui::Image* background;
             tbe::gui::Image* dammage;
-            tbe::gui::Image* bullettime;
+            tbe::gui::Image* flash;
             tbe::gui::Image* gameover;
 
         } background;

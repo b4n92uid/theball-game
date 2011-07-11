@@ -318,11 +318,18 @@ void GameManager::setupGui()
 
     // HUD ---------------------------------------------------------------------
 
+    Texture white;
+    white.build(512, 1);
+
     manager.gui->setSession(SCREEN_HUD, ingame_skin);
 
     hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", parser.get<string > ("game.dammage"));
     hud.background.dammage->setSize(screenSize);
     hud.background.dammage->setEnable(false);
+
+    hud.background.flash = manager.gui->addImage("1:hud.background.flash", parser.get<string > ("game.flash"));
+    hud.background.flash->setSize(screenSize);
+    hud.background.flash->setEnable(false);
 
     StateShow* croshair = manager.gui->addStateShow("0:croshair", "data/gfxart/gui/hud-crosshair.png", 4);
     croshair->setPos(Vector2f(screenSize) / 2.0f - Vector2f(64) / 2.0f);
@@ -510,6 +517,11 @@ void GameManager::processDevelopperCodeEvent()
         if(event->keyState[EventManager::KEY_F9])
         {
             setGameOver(m_userPlayer, "Next Level >>");
+        }
+
+        if(event->keyState[EventManager::KEY_RETURN])
+        {
+            flashEffect();
         }
     }
 }
@@ -758,6 +770,16 @@ void GameManager::hudProcess()
                         hud.background.dammage->setEnable(false);
                 }
             }
+
+            if(hud.background.flash->isEnable())
+            {
+                float opacity = hud.background.flash->getOpacity();
+
+                if(opacity > 0)
+                    hud.background.flash->setOpacity(opacity - 0.05f);
+                else
+                    hud.background.flash->setEnable(false);
+            }
         }
         else
         {
@@ -989,21 +1011,28 @@ bool GameManager::isRunning() const
     return m_running;
 }
 
-void GameManager::hudDammage(bool status)
+void GameManager::flashEffect()
+{
+    hud.background.flash->setEnable(true);
+
+    hud.background.flash->setOpacity(1);
+
+    manager.sound->playSound("flash");
+}
+
+void GameManager::dammageEffect()
 {
     if(manager.app->globalSettings.video.ppeUse)
     {
-        ppe.dammage->setEnable(status);
+        ppe.dammage->setEnable(true);
 
-        if(status)
-            ppe.dammage->setColor(Vector4f(1, 0, 0, 0.5));
+        ppe.dammage->setColor(Vector4f(1, 0, 0, 0.5));
     }
     else
     {
-        hud.background.dammage->setEnable(status);
+        hud.background.dammage->setEnable(true);
 
-        if(status)
-            hud.background.dammage->setOpacity(0.75);
+        hud.background.dammage->setOpacity(0.75);
     }
 }
 

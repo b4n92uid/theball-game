@@ -26,10 +26,13 @@ SoundManager::SoundManager(GameManager* gameManager)
 
     map<string, string> soundPaths;
 
+    const Settings& gs = gameManager->manager.app->globalSettings;
+
     soundPaths["hit"] = "data/sfxart/hit.wav";
     soundPaths["kill"] = "data/sfxart/kill.wav";
     soundPaths["noAvailable"] = "data/sfxart/noAvailable.wav";
     soundPaths["respawn"] = "data/sfxart/respawn.wav";
+    soundPaths["flash"] = gs("audio.flash");
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
         registerSound(it->first, it->second);

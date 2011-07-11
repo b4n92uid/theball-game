@@ -31,7 +31,7 @@ public:
     void registerSound(std::string name, std::string filename);
 
     /// Jouer un son
-    void playSound(std::string soundName, MapElement* object, int loop = 0);
+    void playSound(std::string soundName, MapElement* object = NULL, int loop = 0);
     void stopSound(std::string soundName);
 
     void playMusic(std::string soundName);

@@ -46,11 +46,9 @@
     <logicalFolder name="f2" displayName="Config" projectFiles="true">
       <itemPath>sources/Define.h</itemPath>
       <itemPath>sources/Platform.h</itemPath>
-      <itemPath>dist/Release/MinGW-Windows/campaign.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/control.ini</itemPath>
       <itemPath>dist/Release/MinGW-Windows/gui.ini</itemPath>
       <itemPath>dist/Release/MinGW-Windows/paths.ini</itemPath>
-      <itemPath>dist/Release/MinGW-Windows/profiles.xml</itemPath>
       <itemPath>dist/Release/MinGW-Windows/video.ini</itemPath>
       <itemPath>dist/Release/MinGW-Windows/world.ini</itemPath>
     </logicalFolder>
