@@ -10,6 +10,8 @@
 #include "Controller.h"
 #include "Power.h"
 
+#include "Define.h"
+
 class GameManager;
 
 class SoundManager;
@@ -121,12 +123,12 @@ public:
     } clocks;
 
     boost::signal<void(Player*) > onRespawn;
-    boost::signal<bool(Player*, tbe::Vector3f) > onShoot;
-    boost::signal<bool(Player*, bool, tbe::Vector3f) > onPower;
-    boost::signal<bool(Player*, Player*) > onDammage;
-    boost::signal<bool(Player*, Player*) > onKilled;
-    boost::signal<bool(Player*, bool) > onJump;
-    boost::signal<bool(Player*, tbe::Vector3f) > onMove;
+    boost::signal<bool(Player*, tbe::Vector3f), alltrue> onShoot;
+    boost::signal<bool(Player*, bool, tbe::Vector3f), alltrue> onPower;
+    boost::signal<bool(Player*, Player*), alltrue> onDammage;
+    boost::signal<bool(Player*, Player*), alltrue> onKilled;
+    boost::signal<bool(Player*, bool), alltrue> onJump;
+    boost::signal<bool(Player*, tbe::Vector3f), alltrue> onMove;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;

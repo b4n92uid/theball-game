@@ -23,5 +23,25 @@ enum GuiSess
     SCREEN_PAUSEMENU,
 };
 
+struct alltrue
+{
+    typedef bool result_type;
+
+    template<typename InputIterator>
+            bool operator()(InputIterator first, InputIterator last) const
+    {
+        if(first == last)
+            return false;
+
+        for(; first != last; ++first)
+        {
+            if(!*first)
+                return false;
+        }
+
+        return true;
+    }
+};
+
 #endif	/* _DEFINE_H */
 

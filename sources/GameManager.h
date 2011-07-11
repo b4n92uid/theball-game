@@ -15,6 +15,8 @@
 
 #include "ScriptManager.h"
 
+#include "Define.h"
+
 #include <boost/signals.hpp>
 
 class UserControl;
@@ -131,7 +133,7 @@ public:
     Settings::World worldSettings;
 
     boost::signal<void(Player*) > onEachFrame;
-    boost::signal<bool(Player*) > onOutOfArena;
+    boost::signal<bool(Player*), alltrue> onOutOfArena;
 
 protected:
 
