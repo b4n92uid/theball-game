@@ -344,10 +344,10 @@ void GameManager::setupGui()
     core_power->setPos(powerParentPos);
 
     hud.ammoGauge = manager.gui->addGauge("hud.ammoGauge", "");
+    hud.ammoGauge->setPos(weaponParentPos + Vector2f(96, 32));
+    hud.ammoGauge->setSize(Vector2f(256 - 96, 32));
     hud.ammoGauge->setBackground("data/gfxart/gui/hud-ammo.png");
     hud.ammoGauge->setSmooth(true, 1);
-    hud.ammoGauge->setSize(Vector2f(256, 32));
-    hud.ammoGauge->setPos(weaponParentPos + Vector2f(0, 32));
 
     hud.ammo = manager.gui->addTextBox("hud.ammo");
     hud.ammo->setPos(weaponParentPos + Vector2f(128, 9.6));
@@ -357,10 +357,9 @@ void GameManager::setupGui()
     hud.weaponIcon->setPos(weaponParentPos);
 
     hud.energyGauge = manager.gui->addGauge("hud.energyGauge", "");
-    hud.energyGauge->setBackground("data/gfxart/gui/hud-energy.png");
-    hud.energyGauge->setSize(Vector2f(256, 32));
-    hud.energyGauge->setSmooth(true, 2);
     hud.energyGauge->setPos(powerParentPos + Vector2f(0, 32));
+    hud.energyGauge->setSize(Vector2f(256 - 96, 32));
+    hud.energyGauge->setBackground("data/gfxart/gui/hud-energy.png");
     hud.energyGauge->setReverse(true);
 
     hud.life = manager.gui->addTextBox("hud.life");
