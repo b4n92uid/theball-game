@@ -33,6 +33,7 @@ SoundManager::SoundManager(GameManager* gameManager)
     soundPaths["noAvailable"] = "data/sfxart/noAvailable.wav";
     soundPaths["respawn"] = "data/sfxart/respawn.wav";
     soundPaths["flash"] = gs("audio.flash");
+    soundPaths["quake"] = gs("audio.quake");
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
         registerSound(it->first, it->second);

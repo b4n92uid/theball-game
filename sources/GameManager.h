@@ -168,6 +168,13 @@ protected:
     bool m_gameOver;
     bool m_running;
 
+    struct
+    {
+        float intensity;
+        bool physical;
+
+    } m_eartquake;
+
     std::map<unsigned, unsigned> m_numslot;
 
     struct

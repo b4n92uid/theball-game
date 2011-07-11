@@ -519,7 +519,15 @@ void GameManager::processDevelopperCodeEvent()
             setGameOver(m_userPlayer, "Next Level >>");
         }
 
-        if(event->keyState[EventManager::KEY_RETURN])
+        if(event->keyState['p'])
+        {
+            m_eartquake.intensity = 1.0;
+            m_eartquake.physical = true;
+
+            manager.sound->playSound("quake");
+        }
+
+        if(event->keyState['o'])
         {
             flashEffect();
         }
@@ -621,6 +629,19 @@ void GameManager::eventProcess()
     }
 }
 
+void EarthQuakeProcess(const NewtonBody* body, void* userData)
+{
+    MapElement* elem = (MapElement*)NewtonBodyGetUserData(body);
+
+    scene::NewtonNode* pbody = elem->getPhysicBody();
+
+    float intensity = *(float*)userData;
+
+    Vector3f pointPos = pbody->getPos() + AABB(1).randPos();
+
+    NewtonBodyAddImpulse(body, AABB(intensity * 4).randPos().normalize(), pointPos);
+}
+
 void GameManager::gameProcess()
 {
     using namespace tbe;
@@ -635,6 +656,28 @@ void GameManager::gameProcess()
 
         if(!map.aabb.isInner(elem->getVisualBody()))
             elem->resetInitialMatrix();
+    }
+
+    /*
+     * Gestion de l'effet tremblement de terre :(
+     */
+    if(m_eartquake.intensity > 0)
+    {
+
+        foreach(Vector3f& pos, m_playerPosRec)
+        {
+            Vector3f quake = AABB(0.5).randPos();
+
+            pos += quake * m_eartquake.intensity;
+        }
+
+        if(m_eartquake.physical)
+        {
+            NewtonWorldForEachBodyInAABBDo(parallelscene.newton->getNewtonWorld(),
+                                           map.aabb.min, map.aabb.max,
+                                           EarthQuakeProcess, &m_eartquake.intensity);
+        }
+        m_eartquake.intensity -= 0.01;
     }
 
     /*
