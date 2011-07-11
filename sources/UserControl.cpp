@@ -114,7 +114,7 @@ void UserControl::process(Player* player)
     // Change weapons
     if(isActionStateDown("switchUpWeapon"))
     {
-        if(m_eventManager->keyState[EventManager::KEY_LSHIFT])
+        if(m_eventManager->keyState[EventManager::KEY_LCTRL])
             player->switchUpPower();
         else
             player->switchUpWeapon();
@@ -122,7 +122,7 @@ void UserControl::process(Player* player)
 
     if(isActionStateDown("switchDownWeapon"))
     {
-        if(m_eventManager->keyState[EventManager::KEY_LSHIFT])
+        if(m_eventManager->keyState[EventManager::KEY_LCTRL])
             player->switchDownPower();
         else
             player->switchDownWeapon();

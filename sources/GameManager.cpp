@@ -689,6 +689,8 @@ void GameManager::hudProcess()
 
             if(curWeapon)
             {
+                hud.weaponIcon->setCurState(curWeapon->getSlot() - 1);
+
                 const int &ammoCount = curWeapon->getAmmoCount(),
                         &ammoCountMax = curWeapon->getMaxAmmoCount();
 
@@ -708,6 +710,8 @@ void GameManager::hudProcess()
 
             if(curPower)
             {
+                hud.powerIcon->setCurState(curPower->getSlot() - 1);
+
                 const int &energy = m_userPlayer->getEnergy();
 
                 // format powerGaugeFormat = format("%1% %2%/100") % curPower->getName() % energy;
