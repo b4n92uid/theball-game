@@ -93,6 +93,7 @@ public:
         std::string vertline;
         std::string logo;
         std::string version;
+        std::string nopreview;
 
     } gui;
 

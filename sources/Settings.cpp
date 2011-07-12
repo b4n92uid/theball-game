@@ -60,6 +60,7 @@ void Settings::readGui()
     gui.vertline = parser.get<string > ("menu.vertline");
     gui.logo = parser.get<string > ("menu.logo");
     gui.version = parser.get<string > ("menu.version");
+    gui.nopreview = parser.get<string > ("menu.nopreview");
 }
 
 void Settings::readVideo()

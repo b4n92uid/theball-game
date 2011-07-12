@@ -689,11 +689,11 @@ void AppManager::updateQuickPlayMapInfo()
         catch(std::exception& e)
         {
             cout << e.what() << endl;
-            m_controls.mapmenu.preview->setBackground("data/gfxart/nopreview.png");
+            m_controls.mapmenu.preview->setBackground(globalSettings.gui.nopreview);
         }
     }
     else
-        m_controls.mapmenu.preview->setBackground("data/gfxart/nopreview.png");
+        m_controls.mapmenu.preview->setBackground(globalSettings.gui.nopreview);
 }
 
 void AppManager::updateGuiContent()

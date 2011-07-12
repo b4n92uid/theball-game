@@ -106,6 +106,9 @@ GameManager::GameManager(AppManager* appManager)
     m_numslot[95] = 8;
     m_numslot[231] = 9;
     m_numslot[224] = 0;
+
+    m_earthquake.intensity = 0;
+    m_earthquake.physical = false;
 }
 
 GameManager::~GameManager()
@@ -358,7 +361,10 @@ void GameManager::setupGui()
     hud.ammoGauge->setSmooth(true, 1);
 
     hud.ammo = manager.gui->addTextBox("hud.ammo");
-    hud.ammo->setPos(weaponParentPos + Vector2f(128, 9.6));
+    hud.ammo->setPos(weaponParentPos + Vector2f(105, 8));
+    hud.ammo->setSize(Vector2f(96, 32));
+    hud.ammo->setTextAlign(gui::HCENTER | gui::VCENTER);
+    hud.ammo->setDefinedSize(true);
 
     hud.weaponIcon = manager.gui->addStateShow("hud.weaponIcon", path("game.weaponicon"), 4);
     hud.weaponIcon->setSize(96);
@@ -371,7 +377,8 @@ void GameManager::setupGui()
     hud.energyGauge->setReverse(true);
 
     hud.life = manager.gui->addTextBox("hud.life");
-    hud.life->setPos(powerParentPos + Vector2f(64, 9.6));
+    hud.life->setPos(powerParentPos + Vector2f(64, 14));
+    hud.life->setTextAlign(gui::HCENTER);
 
     hud.powerIcon = manager.gui->addStateShow("hud.powerIcon", path("game.powericon"), 4);
     hud.powerIcon->setSize(96);
@@ -530,8 +537,8 @@ void GameManager::processDevelopperCodeEvent()
 
         if(event->keyState['p'])
         {
-            m_eartquake.intensity = 1.0;
-            m_eartquake.physical = true;
+            m_earthquake.intensity = 1.0;
+            m_earthquake.physical = true;
 
             manager.sound->playSound("quake");
         }
@@ -670,23 +677,23 @@ void GameManager::gameProcess()
     /*
      * Gestion de l'effet tremblement de terre :(
      */
-    if(m_eartquake.intensity > 0)
+    if(m_earthquake.intensity > 0)
     {
 
         foreach(Vector3f& pos, m_playerPosRec)
         {
             Vector3f quake = AABB(0.5).randPos();
 
-            pos += quake * m_eartquake.intensity;
+            pos += quake * m_earthquake.intensity;
         }
 
-        if(m_eartquake.physical)
+        if(m_earthquake.physical)
         {
             NewtonWorldForEachBodyInAABBDo(parallelscene.newton->getNewtonWorld(),
                                            map.aabb.min, map.aabb.max,
-                                           EarthQuakeProcess, &m_eartquake.intensity);
+                                           EarthQuakeProcess, &m_earthquake.intensity);
         }
-        m_eartquake.intensity -= 0.01;
+        m_earthquake.intensity -= 0.01;
     }
 
     /*
@@ -753,6 +760,7 @@ void GameManager::hudProcess()
 
             if(curWeapon)
             {
+                hud.weaponIcon->setEnable(true);
                 hud.weaponIcon->setCurState(curWeapon->getSlot() - 1);
 
                 const int &ammoCount = curWeapon->getAmmoCount(),
@@ -766,14 +774,16 @@ void GameManager::hudProcess()
             }
             else
             {
-                hud.ammo->write("X/X");
+                hud.ammo->write("xx/xx");
                 hud.ammoGauge->setValue(0);
+                hud.weaponIcon->setEnable(false);
             }
 
             const Power* curPower = m_userPlayer->getCurPower();
 
             if(curPower)
             {
+                hud.powerIcon->setEnable(true);
                 hud.powerIcon->setCurState(curPower->getSlot() - 1);
 
                 const int &energy = m_userPlayer->getEnergy();
@@ -786,6 +796,7 @@ void GameManager::hudProcess()
             else
             {
                 // hud.energy->write("Pas de pouvoir :(");
+                hud.powerIcon->setEnable(false);
                 hud.energyGauge->setValue(0);
             }
 

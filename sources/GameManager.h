@@ -182,7 +182,7 @@ protected:
         float intensity;
         bool physical;
 
-    } m_eartquake;
+    } m_earthquake;
 
     std::map<unsigned, unsigned> m_numslot;
 
