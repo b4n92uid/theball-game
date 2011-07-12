@@ -96,3 +96,44 @@ StaticElement::~StaticElement()
 
 }
 
+void StaticElement::makeTransparent(bool enable, float alpha)
+{
+    using namespace tbe;
+    using namespace scene;
+
+    HardwareBuffer& hardbuf = m_visualBody->getHardwareBuffer();
+
+    Vertex* vs = hardbuf.lock();
+
+    if(enable)
+        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
+            vs[i].color.w = alpha;
+    else
+        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
+            vs[i].color.w = 1;
+
+    hardbuf.unlock();
+
+    Material::Array mats = m_visualBody->getAllMaterial();
+
+    if(enable)
+        for(unsigned i = 0; i < mats.size(); i++)
+            mats[i]->enable(Material::BLEND_ADD);
+    else
+        for(unsigned i = 0; i < mats.size(); i++)
+            mats[i]->disable(Material::BLEND_ADD);
+}
+
+void StaticElement::makeLighted(bool enable)
+{
+    using namespace tbe;
+    using namespace scene;
+
+    if(enable)
+        foreach(Material * mat, m_visualBody->getAllMaterial())
+        mat->enable(Material::LIGHTED);
+
+    else
+        foreach(Material* mat, m_visualBody->getAllMaterial())
+        mat->disable(Material::LIGHTED);
+}

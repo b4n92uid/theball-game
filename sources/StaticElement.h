@@ -16,9 +16,13 @@ public:
     StaticElement(GameManager* gameManager, tbe::scene::Mesh* body);
     virtual ~StaticElement();
 
+    void makeTransparent(bool enable, float alpha = 1);
+    void makeLighted(bool enable);
+
+    typedef std::vector<StaticElement*> Array;
+
 private:
     tbe::scene::Mesh* m_visualBody;
 };
 
 #endif	/* STATICELEMENT_H */
-
