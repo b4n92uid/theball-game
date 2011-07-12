@@ -12,6 +12,7 @@
 #include "GameManager.h"
 #include "SoundManager.h"
 #include "MapElement.h"
+#include "StaticElement.h"
 #include "Player.h"
 
 using namespace tbe;
@@ -29,9 +30,9 @@ GravityGun::GravityGun(GameManager* gameManager) : Power(gameManager)
     m_soundManager->registerSound("power.gravitygun.throw", m_settings("audio.gravitygun-throw"));
 
     m_highlighter = new ParticlesEmiter(gameManager->parallelscene.particles);
-    m_highlighter->setFreeMove(0.5);
-    m_highlighter->setLifeDown(0.5);
-    m_highlighter->setNumber(64);
+    m_highlighter->setLifeDown(0.8);
+    m_highlighter->setNumber(8);
+    m_highlighter->setGravity(Vector3f(0, 0.01, 0));
     m_highlighter->setContinousMode(true);
     m_highlighter->setTexture(m_settings("powers.gravitygun"));
 }
@@ -55,29 +56,23 @@ void GravityGun::process()
     NewtonNode* attachpbody = m_attached->getPhysicBody();
 
     Vector3f stay = ownerpbody->getPos();
-    //    stay += (m_gameManager->getShootTarget() - ownerpbody->getPos())
-    //            .normalize() * m_attached->getVisualBody()->getAabb().getLength();
-    stay.y += m_attached->getVisualBody()->getAabb().getLength();
+
+    stay.y += m_attached->getVisualBody()->getAabb().getLength() / 2;
+    stay.y += m_owner->getVisualBody()->getAabb().getLength() / 2;
 
     Vector3f direction = stay - attachpbody->getPos();
-
     Vector3f velocity = attachpbody->getVelocity();
 
     float magnitude = direction.getMagnitude();
 
-    direction.normalize();
-
-    if(magnitude < 4)
-    {
-        float factor = magnitude / 4;
-        attachpbody->setVelocity(velocity * factor);
-    }
-
     // Application de la force de mouvement
+    Vector3f force = direction.normalize() * attachpbody->getMasse() * 128;
+    force -= velocity.normalize() * attachpbody->getMasse() * 64;
 
-    Vector3f force = direction * 16 * magnitude;
-    force += ownerpbody->getApplyForce();
     attachpbody->setApplyForce(force);
+
+    if(magnitude < 1)
+        attachpbody->setVelocity(velocity * magnitude);
 }
 
 void GravityGun::internalActivate(tbe::Vector3f target)
@@ -89,7 +84,7 @@ void GravityGun::internalActivate(tbe::Vector3f target)
 
     m_internalEnergy = m_owner->getEnergy();
 
-    foreach(MapElement* elem, m_gameManager->map.mapElements)
+    foreach(StaticElement* elem, m_gameManager->map.staticElements)
     {
         NewtonNode* elempbody = elem->getPhysicBody();
 
@@ -101,7 +96,10 @@ void GravityGun::internalActivate(tbe::Vector3f target)
 
             elempbody->setApplyGravity(false);
 
-            NewtonBodyAddImpulse(elempbody->getBody(), Vector3f::Y(4), elempbody->getPos());
+            if(elempbody->getPos() - ownerpbody->getPos() > 8)
+                NewtonBodyAddImpulse(elempbody->getBody(),
+                                     Vector3f::Y(4) * elempbody->getMasse(),
+                                     elempbody->getPos());
 
             if(m_lastAttached)
                 NewtonBodySetContinuousCollisionMode(m_lastAttached->getPhysicBody()->getBody(), false);
@@ -112,8 +110,10 @@ void GravityGun::internalActivate(tbe::Vector3f target)
 
             m_highlighter->setBoxSize(m_attached->getVisualBody()->getAabb().getSize());
             m_highlighter->setPos(-m_attached->getVisualBody()->getAabb().getSize() / 2.0f);
-            m_highlighter->build();
+            //            m_highlighter->build();
 
+            m_attached->makeTransparent(true, 0.5);
+            m_attached->makeLighted(false);
             m_attached->getVisualBody()->addChild(m_highlighter);
 
             break;
@@ -126,11 +126,13 @@ void GravityGun::internalDiactivate()
     if(!m_attached)
         return;
 
-    NewtonNode* attachpbody = m_attached->getPhysicBody();
+    m_attached->getVisualBody()->releaseChild(m_highlighter);
 
+    NewtonNode* attachpbody = m_attached->getPhysicBody();
     attachpbody->setApplyGravity(true);
 
-    m_attached->getVisualBody()->releaseChild(m_highlighter);
+    m_attached->makeTransparent(false);
+    m_attached->makeLighted(true);
 
     if(m_internalEnergy > 1)
     {

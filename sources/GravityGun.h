@@ -15,7 +15,7 @@
 #include "Power.h"
 
 class GameManager;
-class MapElement;
+class StaticElement;
 class Player;
 
 class GravityGun : public Power
@@ -31,8 +31,8 @@ protected:
     void internalDiactivate();
 
 private:
-    MapElement* m_attached;
-    MapElement* m_lastAttached;
+    StaticElement* m_attached;
+    StaticElement* m_lastAttached;
     float m_internalEnergy;
     tbe::scene::ParticlesEmiter* m_highlighter;
 };
