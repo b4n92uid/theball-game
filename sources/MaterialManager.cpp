@@ -148,8 +148,6 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
     {
         veloc -= cveloc;
 
-        cout << veloc.getMagnitude() << endl;
-
         if(veloc > 200)
             player->takeDammage(veloc.getMagnitude() - 200);
     }
