@@ -668,7 +668,7 @@ void GameManager::gameProcess()
 
     for(unsigned i = 0; i < map.staticElements.size(); i++)
     {
-        StaticElement* elem = map.staticElementss[i];
+        StaticElement* elem = map.staticElements[i];
 
         if(!map.aabb.isInner(elem->getVisualBody()))
             elem->resetInitialMatrix();
