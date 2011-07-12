@@ -6,6 +6,7 @@
 #include "GameManager.h"
 #include "MaterialManager.h"
 #include "MapElement.h"
+#include "StaticElement.h"
 #include "SoundManager.h"
 #include "BulletTime.h"
 #include "Weapon.h"
@@ -167,10 +168,10 @@ inline bool isBodyContact(scene::NewtonNode* node1, scene::NewtonNode* node2)
     return (contactPoint > 0 && dot > 0.25);
 }
 
-inline bool isPlayerCollidStaticElement(Player* player, const MapElement::Array& elems)
+inline bool isPlayerCollidStaticElement(Player* player, const StaticElement::Array& elems)
 {
 
-    foreach(MapElement* elem, elems)
+    foreach(StaticElement* elem, elems)
     {
         NewtonNode* nnode = elem->getPhysicBody();
 
@@ -183,13 +184,18 @@ inline bool isPlayerCollidStaticElement(Player* player, const MapElement::Array&
 
 void Player::move(tbe::Vector3f force)
 {
-    bool collideStatic = isPlayerCollidStaticElement(this, m_playManager->map.mapElements);
+    bool collideStatic = isPlayerCollidStaticElement(this, m_playManager->map.staticElements);
 
     /*
      * Enleve la force appliquer sur l'axe Y (Vertical)
      * pour eviter au joueur de voller
      */
     force.y = 0;
+
+    /*
+     * Normaliser le vecteur de force pour avoir une poussé uniforme
+     */
+    force.normalize();
 
     /*
      * Diminue la force de mouvement dans les aires
@@ -203,7 +209,7 @@ void Player::move(tbe::Vector3f force)
 
 void Player::jump()
 {
-    bool allowed = isPlayerCollidStaticElement(this, m_playManager->map.mapElements);
+    bool allowed = isPlayerCollidStaticElement(this, m_playManager->map.staticElements);
 
     if(!onJump.empty())
         allowed = onJump(this, allowed);

@@ -16,9 +16,10 @@
 
 #include "AppManager.h"
 
+#include "AIControl.h"
 #include "Player.h"
 #include "MapElement.h"
-#include "AIControl.h"
+#include "StaticElement.h"
 
 #include "ScriptManager.h"
 
@@ -92,14 +93,17 @@ public:
 
     void registerPlayer(Player* player);
     void registerElement(MapElement* staticObject);
+    void registerElement(StaticElement* staticObject);
 
     void unregisterPlayer(Player* player);
     void unregisterElement(MapElement* staticObject);
+    void unregisterElement(StaticElement* staticObject);
 
     struct
     {
         std::string name;
 
+        StaticElement::Array staticElements;
         MapElement::Array mapElements;
 
         tbe::AABB aabb;

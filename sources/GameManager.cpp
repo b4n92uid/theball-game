@@ -666,9 +666,9 @@ void GameManager::gameProcess()
     if(m_gameOver)
         return;
 
-    for(unsigned i = 0; i < map.mapElements.size(); i++)
+    for(unsigned i = 0; i < map.staticElements.size(); i++)
     {
-        MapElement* elem = map.mapElements[i];
+        StaticElement* elem = map.staticElementss[i];
 
         if(!map.aabb.isInner(elem->getVisualBody()))
             elem->resetInitialMatrix();
@@ -877,7 +877,7 @@ float rayFilter(const NewtonBody* body, const float*, int, void* userData, float
 
     float& hit = *static_cast<float*>(userData);
 
-    if(intersectParam < hit)
+    if(intersectParam > 0.2 && intersectParam < hit)
         hit = intersectParam;
 
     return intersectParam;
@@ -1105,6 +1105,25 @@ const Player::Array GameManager::getTargetsOf(Player* player) const
     array.erase(find(array.begin(), array.end(), player));
 
     return array;
+}
+
+void GameManager::registerElement(StaticElement* elem)
+{
+    if(elem->getPhysicBody())
+        manager.material->addElement(elem);
+
+    map.staticElements.push_back(elem);
+
+    if(elem->getVisualBody())
+        map.aabb.count(elem->getVisualBody());
+}
+
+void GameManager::unregisterElement(StaticElement* staticObject)
+{
+    StaticElement::Array::iterator it = find(map.staticElements.begin(),
+                                             map.staticElements.end(), staticObject);
+
+    map.staticElements.erase(it);
 }
 
 void GameManager::registerElement(MapElement* elem)
