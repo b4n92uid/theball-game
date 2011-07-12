@@ -110,20 +110,20 @@ void BulletWeapon::process()
 
 WeaponBlaster::WeaponBlaster(GameManager* playManager) : BulletWeapon(playManager)
 {
-    setMaxAmmoCount(200);
-    setAmmoCount(180);
-    setMaxAmmoDammage(10);
-    setShootCadency(64);
-    setShootSpeed(64);
-    setFireSound(m_settings("audio.blaster"));
+    m_slot = m_settings.weapons.get<int>("blaster.slot");
+    setWeaponName(m_settings.weapons.get<string > ("blaster.name"));
 
-    setTexture(m_settings("weapons.blaster"));
-    setNumber(200);
+    setMaxAmmoCount(m_settings.weapons.get<int>("blaster.maxAmmoCount"));
+    setAmmoCount(m_settings.weapons.get<int>("blaster.ammoCount"));
+    setMaxAmmoDammage(m_settings.weapons.get<int>("blaster.maxAmmoDammage"));
+    setShootCadency(m_settings.weapons.get<int>("blaster.shootCadency"));
+    setShootSpeed(m_settings.weapons.get<int>("blaster.shootSpeed"));
+    setFireSound(m_settings.weapons.get<string > ("blaster.fireSound"));
+    setTexture(m_settings.weapons.get<string > ("blaster.texture"));
+
+    setNumber(m_maxAmmoCount * m_shootSize);
     build();
 
-    setWeaponName("Blaster");
-
-    m_slot = 1;
 }
 
 void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -144,21 +144,20 @@ void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
 WeaponShotgun::WeaponShotgun(GameManager* playManager) : BulletWeapon(playManager)
 {
-    setMaxAmmoCount(50);
-    setAmmoCount(40);
-    setMaxAmmoDammage(25);
-    setShootCadency(512);
-    setShootSpeed(64);
-    setFireSound(m_settings("audio.shotgun"));
-    setShootSize(7);
+    m_slot = m_settings.weapons.get<int>("shotgun.slot");
+    setWeaponName(m_settings.weapons.get<string > ("shotgun.name"));
 
-    setTexture(m_settings("weapons.shotgun"));
-    setNumber(50 * 7);
+    setMaxAmmoCount(m_settings.weapons.get<int>("shotgun.maxAmmoCount"));
+    setAmmoCount(m_settings.weapons.get<int>("shotgun.ammoCount"));
+    setMaxAmmoDammage(m_settings.weapons.get<int>("shotgun.maxAmmoDammage"));
+    setShootCadency(m_settings.weapons.get<int>("shotgun.shootCadency"));
+    setShootSpeed(m_settings.weapons.get<int>("shotgun.shootSpeed"));
+    setFireSound(m_settings.weapons.get<string > ("shotgun.fireSound"));
+    setTexture(m_settings.weapons.get<string > ("shotgun.texture"));
+    setShootSize(m_settings.weapons.get<int>("shotgun.shootSize"));
+
+    setNumber(m_maxAmmoCount * m_shootSize);
     build();
-
-    setWeaponName("Shotgun");
-
-    m_slot = 2;
 }
 
 void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -179,21 +178,20 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
 WeaponBomb::WeaponBomb(GameManager* playManager) : BulletWeapon(playManager)
 {
-    setMaxAmmoCount(80);
-    setAmmoCount(60);
-    setMaxAmmoDammage(100);
-    setShootCadency(512);
-    setShootSpeed(8);
-    setFireSound(m_settings("audio.bomb"));
-    setShootSize(8);
+    m_slot = m_settings.weapons.get<int>("bomb.slot");
+    setWeaponName(m_settings.weapons.get<string > ("bomb.name"));
 
-    setTexture(m_settings("weapons.bomb"));
+    setMaxAmmoCount(m_settings.weapons.get<int>("bomb.maxAmmoCount"));
+    setAmmoCount(m_settings.weapons.get<int>("bomb.ammoCount"));
+    setMaxAmmoDammage(m_settings.weapons.get<int>("bomb.maxAmmoDammage"));
+    setShootCadency(m_settings.weapons.get<int>("bomb.shootCadency"));
+    setShootSpeed(m_settings.weapons.get<int>("bomb.shootSpeed"));
+    setFireSound(m_settings.weapons.get<string > ("bomb.fireSound"));
+    setTexture(m_settings.weapons.get<string > ("bomb.texture"));
+    setShootSize(m_settings.weapons.get<int>("bomb.shootSize"));
+
     setNumber(m_maxAmmoCount * m_shootSize);
     build();
-
-    setWeaponName("Bomb");
-
-    m_slot = 4;
 }
 
 void WeaponBomb::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
@@ -217,20 +215,19 @@ void WeaponBomb::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
 WeaponFinder::WeaponFinder(GameManager* playManager) : BulletWeapon(playManager)
 {
-    setMaxAmmoCount(200);
-    setAmmoCount(180);
-    setMaxAmmoDammage(50);
-    setShootCadency(64);
-    setShootSpeed(64);
-    setFireSound(m_settings("audio.finder"));
+    m_slot = m_settings.weapons.get<int>("finder.slot");
+    setWeaponName(m_settings.weapons.get<string > ("finder.name"));
 
-    setTexture(m_settings("weapons.finder"));
-    setNumber(200);
+    setMaxAmmoCount(m_settings.weapons.get<int>("finder.maxAmmoCount"));
+    setAmmoCount(m_settings.weapons.get<int>("finder.ammoCount"));
+    setMaxAmmoDammage(m_settings.weapons.get<int>("finder.maxAmmoDammage"));
+    setShootCadency(m_settings.weapons.get<int>("finder.shootCadency"));
+    setShootSpeed(m_settings.weapons.get<int>("finder.shootSpeed"));
+    setFireSound(m_settings.weapons.get<string > ("finder.fireSound"));
+    setTexture(m_settings.weapons.get<string > ("finder.texture"));
+
+    setNumber(m_maxAmmoCount * m_shootSize);
     build();
-
-    setWeaponName("Finder");
-
-    m_slot = 3;
 }
 
 void WeaponFinder::process()

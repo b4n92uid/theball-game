@@ -38,6 +38,8 @@ void Settings::readGui()
 
     property_tree::read_ini("gui.ini", parser);
 
+    property_tree::read_ini("weapons.ini", weapons);
+
     gui.button = parser.get<string > ("menu.button");
     gui.gauge = parser.get<string > ("menu.gauge");
     gui.editbox = parser.get<string > ("menu.editbox");

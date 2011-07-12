@@ -155,6 +155,8 @@ public:
     std::vector<std::string> botNames;
 
     boost::property_tree::ptree paths;
+
+    boost::property_tree::ptree weapons;
 };
 
 
