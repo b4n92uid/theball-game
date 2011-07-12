@@ -337,7 +337,7 @@ void GameManager::setupGui()
     croshair->setPos(Vector2f(screenSize) / 2.0f - Vector2f(64) / 2.0f);
     croshair->setSize(64);
 
-    Image* core_weapon = manager.gui->addImage("core_weapon", path("game.weaponicon"));
+    Image* core_weapon = manager.gui->addImage("core_weapon", path("game.coreweapon"));
     Vector2f weaponParentPos(16);
     core_weapon->setPos(weaponParentPos);
 
@@ -382,7 +382,7 @@ void GameManager::setupGui()
     hud.log = manager.gui->addTextBox("hud.log");
     hud.log->setPencil(whiteBigPen);
     hud.log->setBackground(guisets.textbox);
-    hud.log->setBackgroundMask("data/gfxart/gui/msgmask.png");
+    hud.log->setBackgroundMask(path("game.msgmask"));
     hud.log->setTextPadding(16);
     hud.log->setEnable(false);
     hud.log->setPos(false);
@@ -399,7 +399,7 @@ void GameManager::setupGui()
     hud.state = manager.gui->addTextBox("hud.state");
     hud.state->setPencil(whiteSmlPen);
     hud.state->setBackground(guisets.textbox);
-    hud.state->setBackgroundMask(guisets.maskH);
+    hud.state->setBackgroundMask(path("game.statemask"));
     hud.state->setTextPadding(8);
     manager.gui->endLayout();
     // --------
