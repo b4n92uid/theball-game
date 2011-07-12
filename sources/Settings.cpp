@@ -9,7 +9,6 @@
 #include "AppManager.h"
 #include "Weapon.h"
 
-#include <tinyxml.h>
 #include <fstream>
 
 #include <boost/property_tree/ini_parser.hpp>

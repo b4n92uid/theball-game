@@ -1,3 +1,10 @@
+/*
+ * File:   Settings.cpp
+ * Author: b4n92uid
+ *
+ * Created on 15 juillet 2009, 22:23
+ */
+
 #ifndef _GAMEMANAGER_H
 #define _GAMEMANAGER_H
 

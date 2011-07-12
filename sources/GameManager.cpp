@@ -1,3 +1,10 @@
+/*
+ * File:   Settings.cpp
+ * Author: b4n92uid
+ *
+ * Created on 01 février 2010, 20:34
+ */
+
 #include "GameManager.h"
 
 #include "AppManager.h"
@@ -22,7 +29,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
-#include <tinyxml.h>
 #include <cmath>
 
 using namespace std;

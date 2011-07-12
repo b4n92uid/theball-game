@@ -104,7 +104,6 @@
           <incDir>
             <pElem>D:/librairies/cpp/sdl/SDL/SDL-1.2.14/include</pElem>
             <pElem>D:/librairies/cpp/newton/newton-dynamics-2.32/coreLibrary_200/source/newton</pElem>
-            <pElem>D:/librairies/cpp/Tinyxml/tinyxml</pElem>
             <pElem>D:/librairies/cpp/boost/boost_1_44_0</pElem>
             <pElem>D:/projets/cpp/tbengine/sources</pElem>
             <pElem>D:/projets/cpp/tbengine/plugins</pElem>
@@ -112,29 +111,36 @@
             <pElem>D:/librairies/cpp/lua/lua-5.1.4/src</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>TIXML_USE_STL</Elem>
             <Elem>THEBALL_COMPILE_DEBUG</Elem>
           </preprocessorList>
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
+          <linkerAddLib>
+            <pElem>D:/projets/cpp/tbengine/dist/Debug/MinGW-Windows/</pElem>
+            <pElem>D:/librairies/cpp/devil/DevIL-SDK-x86-1.7.8/lib/</pElem>
+            <pElem>D:/librairies/cpp/Freetype/freetype-2.3.9/objs/.libs</pElem>
+            <pElem>D:/librairies/cpp/Sdl/SDL/SDL-1.2.14/lib/</pElem>
+            <pElem>D:/librairies/cpp/newton/newton-dynamics-2.32/packages/Win32/releaseDll/</pElem>
+            <pElem>C:/fmodex/api/lib/</pElem>
+            <pElem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/</pElem>
+            <pElem>D:/librairies/cpp/lua/lua-5.1.4/src/</pElem>
+          </linkerAddLib>
           <additionalDep>build/ressource.o</additionalDep>
           <linkerLibItems>
-            <linkerLibLibItem>mingw32</linkerLibLibItem>
-            <linkerLibFileItem>D:/projets/cpp/tbengine/dist/Debug/MinGW-Windows/libtbengine.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/devil/DevIL-SDK-x86-1.7.8/lib/DevIL.lib</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Freetype/freetype-2.3.9/objs/.libs/libfreetype.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Sdl/SDL/SDL-1.2.14/lib/libSDLmain.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Sdl/SDL/SDL-1.2.14/lib/libSDL.dll.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/newton/newton-dynamics-2.32/packages/Win32/releaseDll/newton.lib</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Tinyxml/tinyxml/libtinyxml.a</linkerLibFileItem>
-            <linkerLibFileItem>C:/fmodex/api/lib/libfmodex.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_system-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_date_time-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_filesystem-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_signals-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_regex-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/lua/lua-5.1.4/src/liblua.a</linkerLibFileItem>
+            <linkerLibLibItem>tbengine</linkerLibLibItem>
+            <linkerLibLibItem>DevIL</linkerLibLibItem>
+            <linkerLibLibItem>freetype</linkerLibLibItem>
+            <linkerLibLibItem>SDLmain</linkerLibLibItem>
+            <linkerLibLibItem>SDL.dll</linkerLibLibItem>
+            <linkerLibLibItem>newton</linkerLibLibItem>
+            <linkerLibLibItem>fmodex</linkerLibLibItem>
+            <linkerLibLibItem>boost_system-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_date_time-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_filesystem-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_signals-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_regex-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>lua</linkerLibLibItem>
             <linkerLibLibItem>opengl32</linkerLibLibItem>
             <linkerLibLibItem>glu32</linkerLibLibItem>
             <linkerLibLibItem>gcc</linkerLibLibItem>
@@ -172,32 +178,37 @@
             <pElem>C:/fmodex/api/inc</pElem>
             <pElem>D:/librairies/cpp/lua/lua-5.1.4/src</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>TIXML_USE_STL</Elem>
-          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
         </fortranCompilerTool>
         <linkerTool>
+          <linkerAddLib>
+            <pElem>D:/projets/cpp/tbengine/dist/Release/MinGW-Windows/</pElem>
+            <pElem>D:/librairies/cpp/devil/DevIL-SDK-x86-1.7.8/lib/</pElem>
+            <pElem>D:/librairies/cpp/Freetype/freetype-2.3.9/objs/.libs</pElem>
+            <pElem>D:/librairies/cpp/Sdl/SDL/SDL-1.2.14/lib/</pElem>
+            <pElem>D:/librairies/cpp/newton/newton-dynamics-2.32/packages/Win32/releaseDll/</pElem>
+            <pElem>C:/fmodex/api/lib/</pElem>
+            <pElem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/</pElem>
+            <pElem>D:/librairies/cpp/lua/lua-5.1.4/src/</pElem>
+          </linkerAddLib>
           <stripSymbols>true</stripSymbols>
           <additionalDep>build/ressource.o</additionalDep>
           <linkerLibItems>
-            <linkerLibLibItem>mingw32</linkerLibLibItem>
-            <linkerLibFileItem>D:/projets/cpp/tbengine/dist/Debug/MinGW-Windows/libtbengine.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Devil/DevIL-SDK-x86-1.7.8/lib/DevIL.lib</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Freetype/freetype-2.3.9/objs/.libs/libfreetype.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Sdl/SDL/SDL-1.2.14/lib/libSDLmain.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Sdl/SDL/SDL-1.2.14/lib/libSDL.dll.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/newton/newton-dynamics-2.32/packages/Win32/releaseDll/newton.lib</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/Tinyxml/tinyxml/libtinyxml.a</linkerLibFileItem>
-            <linkerLibFileItem>C:/fmodex/api/lib/libfmodex.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_date_time-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_filesystem-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_system-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_signals-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/boost/boost_1_44_0/stage/lib/libboost_regex-mgw44-s-1_44.a</linkerLibFileItem>
-            <linkerLibFileItem>D:/librairies/cpp/lua/lua-5.1.4/src/liblua.a</linkerLibFileItem>
+            <linkerLibLibItem>tbengine</linkerLibLibItem>
+            <linkerLibLibItem>DevIL</linkerLibLibItem>
+            <linkerLibLibItem>freetype</linkerLibLibItem>
+            <linkerLibLibItem>SDLmain</linkerLibLibItem>
+            <linkerLibLibItem>SDL.dll</linkerLibLibItem>
+            <linkerLibLibItem>newton</linkerLibLibItem>
+            <linkerLibLibItem>fmodex</linkerLibLibItem>
+            <linkerLibLibItem>boost_system-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_date_time-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_filesystem-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_signals-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>boost_regex-mgw44-s-1_44</linkerLibLibItem>
+            <linkerLibLibItem>lua</linkerLibLibItem>
             <linkerLibLibItem>opengl32</linkerLibLibItem>
             <linkerLibLibItem>glu32</linkerLibLibItem>
             <linkerLibLibItem>gcc</linkerLibLibItem>
