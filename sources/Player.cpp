@@ -201,7 +201,15 @@ void Player::move(tbe::Vector3f force)
      * Diminue la force de mouvement dans les aires
      */
     if(!collideStatic)
+    {
         force /= 2.0f;
+
+        Vector3f vel = m_physicBody->getVelocity();
+        vel.x *= 0.98;
+        vel.z *= 0.98;
+
+        m_physicBody->setVelocity(vel);
+    }
 
     if(onMove.empty() || onMove(this, force))
         m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
@@ -209,23 +217,25 @@ void Player::move(tbe::Vector3f force)
 
 void Player::jump()
 {
-    bool allowed = isPlayerCollidStaticElement(this, m_playManager->map.staticElements);
-
-    if(!onJump.empty())
-        allowed = onJump(this, allowed);
-
     /*
      * Le joueur peut sauter seulement quand il est en contact avec
      * un élement statique et que le produit scalair entre le vecteur (0,1,0)
      * et la normal de contact soit inferieur a 0.25
      */
 
+    bool allowed = isPlayerCollidStaticElement(this, m_playManager->map.staticElements);
+
+    if(!onJump.empty())
+        allowed = onJump(this, allowed);
+
     if(allowed)
     {
-        Vector3f deltaVeloc(0, m_worldSettings.playerJumpForce, 0);
-        deltaVeloc += m_physicBody->getApplyForce().normalize() * m_worldSettings.playerJumpForce / 2;
+        Vector3f deltaVeloc(0, 1, 0);
+        deltaVeloc *= m_worldSettings.playerJumpForce;
 
-        Vector3f pointPos = m_physicBody->getPos();
+        Vector3f pointPos = m_physicBody->getPos()
+                + m_physicBody->getVelocity()
+                / 60.0f;
 
         NewtonBodyAddImpulse(m_physicBody->getBody(), deltaVeloc, pointPos);
     }
