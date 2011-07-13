@@ -330,6 +330,7 @@ void Player::slotPower(unsigned slot)
     for(unsigned i = 0; i < m_powersInventory.size(); i++)
         if(m_powersInventory[i]->getSlot() == slot)
         {
+            (*m_curPower)->diactivate();
             m_curPower = m_powersInventory.begin() + i;
             break;
         }
@@ -337,6 +338,8 @@ void Player::slotPower(unsigned slot)
 
 void Player::switchUpPower()
 {
+    (*m_curPower)->diactivate();
+
     m_curPower++;
 
     if(m_curPower >= m_powersInventory.end())
@@ -345,6 +348,8 @@ void Player::switchUpPower()
 
 void Player::switchDownPower()
 {
+    (*m_curPower)->diactivate();
+
     m_curPower--;
 
     if(m_curPower < m_powersInventory.begin())
