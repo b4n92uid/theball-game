@@ -15,8 +15,9 @@
 #include "StaticElement.h"
 #include "Player.h"
 
+using namespace std;
 using namespace tbe;
-using namespace tbe::scene;
+using namespace scene;
 
 GravityGun::GravityGun(GameManager* gameManager) : Power(gameManager)
 {
@@ -28,19 +29,11 @@ GravityGun::GravityGun(GameManager* gameManager) : Power(gameManager)
 
     m_soundManager->registerSound("power.gravitygun.catch", m_settings("audio.gravitygun-catch"));
     m_soundManager->registerSound("power.gravitygun.throw", m_settings("audio.gravitygun-throw"));
-
-    m_highlighter = new ParticlesEmiter(gameManager->parallelscene.particles);
-    m_highlighter->setLifeDown(0.8);
-    m_highlighter->setNumber(8);
-    m_highlighter->setGravity(Vector3f(0, 0.01, 0));
-    m_highlighter->setContinousMode(true);
-    m_highlighter->setTexture(m_settings("powers.gravitygun"));
 }
 
 GravityGun::~GravityGun()
 {
     diactivate();
-    delete m_highlighter;
 }
 
 void GravityGun::process()
@@ -57,22 +50,39 @@ void GravityGun::process()
 
     Vector3f stay = ownerpbody->getPos();
 
-    stay.y += m_attached->getVisualBody()->getAabb().getLength() / 2;
-    stay.y += m_owner->getVisualBody()->getAabb().getLength() / 2;
+    float length = m_owner->getVisualBody()->getAabb().getLength() / 2
+            + m_attached->getVisualBody()->getAabb().getLength() / 2;
+
+    stay += Quaternion(Vector3f(0, -M_PI_2, 0)) * m_gameManager->getViewDirection() * length;
+
+    stay.y += length;
 
     Vector3f direction = stay - attachpbody->getPos();
     Vector3f velocity = attachpbody->getVelocity();
 
     float magnitude = direction.getMagnitude();
 
-    // Application de la force de mouvement
+    /*
+     * Ralentit l'objet pour eviter une trop grande vittese
+     * quand celui ci est pret du joueur
+     */
+    if(magnitude < 2)
+        attachpbody->setVelocity(velocity * (magnitude / 2));
+
+    // Calcule de la force de mouvement
     Vector3f force = direction.normalize() * attachpbody->getMasse() * 128;
+
+    // Calcule de la contre force
     force -= velocity.normalize() * attachpbody->getMasse() * 64;
 
-    attachpbody->setApplyForce(force);
+    /*
+     * Pour eviter le teremblement de l'objet attacher
+     * qaund la distance cible est tres petite
+     */
+    if(magnitude < 0.2)
+        force *= magnitude;
 
-    if(magnitude < 1)
-        attachpbody->setVelocity(velocity * magnitude);
+    attachpbody->setApplyForce(force);
 }
 
 void GravityGun::internalActivate(tbe::Vector3f target)
@@ -108,13 +118,8 @@ void GravityGun::internalActivate(tbe::Vector3f target)
 
             m_soundManager->playSound("power.gravitygun.catch", m_attached, -1);
 
-            m_highlighter->setBoxSize(m_attached->getVisualBody()->getAabb().getSize());
-            m_highlighter->setPos(-m_attached->getVisualBody()->getAabb().getSize() / 2.0f);
-            //            m_highlighter->build();
-
             m_attached->makeTransparent(true, 0.5);
             m_attached->makeLighted(false);
-            m_attached->getVisualBody()->addChild(m_highlighter);
 
             break;
         }
@@ -125,8 +130,6 @@ void GravityGun::internalDiactivate()
 {
     if(!m_attached)
         return;
-
-    m_attached->getVisualBody()->releaseChild(m_highlighter);
 
     NewtonNode* attachpbody = m_attached->getPhysicBody();
     attachpbody->setApplyGravity(true);

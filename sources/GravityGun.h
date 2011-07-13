@@ -34,8 +34,6 @@ private:
     StaticElement* m_attached;
     StaticElement* m_lastAttached;
     float m_internalEnergy;
-    tbe::scene::ParticlesEmiter* m_highlighter;
 };
 
 #endif	/* GRAVITYGUN_H */
-

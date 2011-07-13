@@ -1024,6 +1024,14 @@ tbe::Vector3f GameManager::getShootTarget() const
     return m_shootTarget;
 }
 
+tbe::Vector3f GameManager::getViewDirection() const
+{
+    Vector3f dir = m_camera->getTarget();
+    dir.y = 0;
+
+    return dir.normalize();
+}
+
 Player* GameManager::getUserPlayer() const
 {
     return m_userPlayer;

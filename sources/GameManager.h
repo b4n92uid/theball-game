@@ -81,6 +81,7 @@ public:
     void flashEffect();
 
     virtual tbe::Vector3f getShootTarget() const;
+    virtual tbe::Vector3f getViewDirection() const;
 
     virtual Player* getUserPlayer() const;
     Player* getWinnerPlayer() const;
