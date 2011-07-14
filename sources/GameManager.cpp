@@ -94,6 +94,7 @@ GameManager::GameManager(AppManager* appManager)
     m_winnerPlayer = NULL;
 
     m_camera = new scene::Camera(scene::Camera::TARGET_RELATIVE);
+    m_camera->rotate(0);
     manager.scene->addCamera(m_camera);
 
     m_numslot[38] = 1;
