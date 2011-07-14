@@ -138,6 +138,9 @@ void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
     fire->shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
+
+    m_playManager->backImpulseEffect(m_settings.weapons.get<float>("blaster.backIntensity"),
+                                     m_settings.weapons.get<float>("blaster.backPush"));
 }
 
 // WeaponShotgun ---------------------------------------------------------------
@@ -172,6 +175,9 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
         m_bulletArray.push_back(fire);
     }
+
+    m_playManager->backImpulseEffect(m_settings.weapons.get<float>("shotgun.backIntensity"),
+                                     m_settings.weapons.get<float>("shotgun.backPush"));
 }
 
 // WeaponBomb ------------------------------------------------------------------
@@ -288,4 +294,7 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     fire->shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
+
+    m_playManager->backImpulseEffect(m_settings.weapons.get<float>("finder.backIntensity"),
+                                     m_settings.weapons.get<float>("finder.backPush"));
 }

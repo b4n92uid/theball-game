@@ -675,6 +675,17 @@ void GameManager::gameProcess()
             elem->resetInitialMatrix();
     }
 
+    if(m_backImpulse.intensity > 0)
+    {
+
+        foreach(Vector3f & pos, m_playerPosRec)
+        {
+            pos += -m_camera->getTarget() * m_backImpulse.intensity;
+        }
+
+        m_backImpulse.intensity -= m_backImpulse.push;
+    }
+
     /*
      * Gestion de l'effet tremblement de terre :(
      */
@@ -1081,6 +1092,18 @@ bool GameManager::isGameOver() const
 bool GameManager::isRunning() const
 {
     return m_running;
+}
+
+void GameManager::backImpulseEffect(float intensity, float push)
+{
+    m_backImpulse.intensity = intensity;
+    m_backImpulse.push = push;
+}
+
+void GameManager::earthQuakeEffect(float intensity, bool physical)
+{
+    m_earthquake.intensity = intensity;
+    m_earthquake.physical = physical;
 }
 
 void GameManager::flashEffect()

@@ -77,6 +77,8 @@ public:
     bool isGameOver() const;
     bool isRunning() const;
 
+    void backImpulseEffect(float intensity, float push);
+    void earthQuakeEffect(float intensity, bool physical);
     void dammageEffect();
     void flashEffect();
 
@@ -188,6 +190,12 @@ protected:
         bool physical;
 
     } m_earthquake;
+
+    struct
+    {
+        float intensity, push;
+
+    } m_backImpulse;
 
     std::map<unsigned, unsigned> m_numslot;
 
