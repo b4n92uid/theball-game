@@ -76,6 +76,14 @@ bool Boost::boostForce(Player* player, tbe::Vector3f direction)
 
 void Boost::internalActivate(tbe::Vector3f target)
 {
+    if(math::isZero(m_owner->getPhysicBody()->getApplyForce())
+       || !m_owner->isStayDown()
+       || !m_cadency.isEsplanedTime(2000))
+    {
+        m_active = false;
+        return;
+    }
+
     m_soundManager->playSound("boost", m_owner);
 
     if(m_ppeffect)
@@ -100,4 +108,6 @@ void Boost::internalDiactivate()
 
     m_owner->onMove.disconnect(boost::bind(&Boost::boostForce, this, _1, _2));
     NewtonBodySetContinuousCollisionMode(pbody->getBody(), false);
+
+    m_cadency.snapShoot();
 }

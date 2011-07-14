@@ -112,6 +112,8 @@ public:
     void setLife(int life);
     int getLife() const;
 
+    bool isStayDown();
+
     GameManager* getGameManager() const;
 
     struct
@@ -148,7 +150,6 @@ protected:
 
     tbe::scene::ParticlesEmiter* m_deadExplode;
 
-    GameManager* m_playManager;
     SoundManager* m_soundManager;
 
     tbe::scene::OBJMesh* m_visualBody;

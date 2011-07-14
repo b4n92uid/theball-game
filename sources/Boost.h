@@ -36,6 +36,9 @@ private:
     bool boostForce(Player* player, tbe::Vector3f diriction);
 
 private:
+    tbe::ticks::Clock m_cadency;
+
+private:
     static tbe::ppe::MotionBlurEffect* m_ppeffect;
 };
 

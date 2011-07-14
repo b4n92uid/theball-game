@@ -45,8 +45,6 @@ public:
 
     static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
 
-    static bool isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects);
-
 protected:
     GameManager* m_gameManager;
     SoundManager* m_soundManager;

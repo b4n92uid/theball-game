@@ -26,7 +26,6 @@ Player::Player(GameManager* gameManager, std::string name, std::string model)
     // Attributes
     m_nickname = name;
     m_id = "player";
-    m_playManager = gameManager;
     m_curWeapon = m_weaponsInventory.end();
     m_curPower = m_powersInventory.end();
     m_killed = false;
@@ -100,7 +99,7 @@ void Player::setInLastSpawnPoint()
 void Player::randomPosOnFloor()
 {
     stopMotion();
-    m_physicBody->setPos(m_playManager->getRandomPosOnTheFloor());
+    m_physicBody->setPos(m_gameManager->getRandomPosOnTheFloor());
 }
 
 void Player::attachController(Controller* controller)
@@ -115,7 +114,7 @@ Controller* Player::getAttachedCotroller() const
 
 void Player::process()
 {
-    if(m_playManager->isGameOver())
+    if(m_gameManager->isGameOver())
         return;
 
     if(m_attachedCotroller && !m_killed)
@@ -154,28 +153,37 @@ bool Player::shoot(Vector3f targetpos)
     return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
-inline bool isBodyContact(scene::NewtonNode* node1, scene::NewtonNode* node2)
+inline bool isBodyContactOnFloor(scene::NewtonNode* node1, scene::NewtonNode* node2)
 {
-    Vector3f contact, normal, penetration;
+    const int pointCount = 2;
 
-    int contactPoint = NewtonCollisionCollide(node1->getParallelScene()->getNewtonWorld(), 1,
+    Vector3f contact[pointCount], normal[pointCount];
+    float penetration[pointCount];
+
+    int contactPoint = NewtonCollisionCollide(node1->getParallelScene()->getNewtonWorld(), pointCount,
                                               NewtonBodyGetCollision(node1->getBody()), node1->getMatrix(),
                                               NewtonBodyGetCollision(node2->getBody()), node2->getMatrix(),
-                                              contact, normal, penetration, 0);
+                                              &contact[0].x, &normal[0].x, penetration, 0);
 
-    float dot = Vector3f::dot(normal, Vector3f(0, 1, 0));
+    for(int i = 0; i < contactPoint; i++)
+    {
+        float dot = Vector3f::dot(normal[i], Vector3f(0, 1, 0));
 
-    return (contactPoint > 0 && dot > 0.25);
+        if(dot > 0.25)
+            return true;
+    }
+
+    return false;
 }
 
-inline bool isPlayerCollidStaticElement(Player* player, const StaticElement::Array& elems)
+bool Player::isStayDown()
 {
 
-    foreach(StaticElement* elem, elems)
+    foreach(StaticElement* elem, m_gameManager->map.staticElements)
     {
-        NewtonNode* nnode = elem->getPhysicBody();
+        scene::NewtonNode* nnode = elem->getPhysicBody();
 
-        if(nnode && isBodyContact(nnode, player->getPhysicBody()))
+        if(nnode && isBodyContactOnFloor(nnode, m_physicBody))
             return true;
     }
 
@@ -184,7 +192,7 @@ inline bool isPlayerCollidStaticElement(Player* player, const StaticElement::Arr
 
 void Player::move(tbe::Vector3f force)
 {
-    bool collideStatic = isPlayerCollidStaticElement(this, m_playManager->map.staticElements);
+    bool collideStatic = isStayDown();
 
     /*
      * Enleve la force appliquer sur l'axe Y (Vertical)
@@ -223,7 +231,7 @@ void Player::jump()
      * et la normal de contact soit inferieur a 0.25
      */
 
-    bool allowed = isPlayerCollidStaticElement(this, m_playManager->map.staticElements);
+    bool allowed = isStayDown();
 
     if(!onJump.empty())
         allowed = onJump(this, allowed);
@@ -379,7 +387,7 @@ void Player::reBorn()
     m_life = 100;
     m_killed = false;
 
-    m_playManager->manager.material->setGhost(this, false);
+    m_gameManager->manager.material->setGhost(this, false);
 
     m_visualBody->setVisible(true);
 
@@ -404,7 +412,7 @@ void Player::kill(Player* killer)
 
     m_deadExplode->build();
 
-    m_playManager->manager.material->setGhost(this, true);
+    m_gameManager->manager.material->setGhost(this, true);
 
     clocks.readyToDelete.snapShoot();
 
@@ -473,15 +481,15 @@ void Player::takeDammage(int dammage, Player* killer)
     if(m_life <= 0)
         kill(killer);
 
-    if(m_playManager->getUserPlayer() == this)
-        m_playManager->dammageEffect();
+    if(m_gameManager->getUserPlayer() == this)
+        m_gameManager->dammageEffect();
 
     m_soundManager->playSound("hit", this);
 }
 
 GameManager* Player::getGameManager() const
 {
-    return m_playManager;
+    return m_gameManager;
 }
 
 void Player::makeTransparent(bool enable, float alpha)
@@ -508,42 +516,3 @@ void Player::makeTransparent(bool enable, float alpha)
         for(unsigned i = 0; i < mats.size(); i++)
             mats[i]->disable(Material::BLEND_ADD);
 }
-
-/*
-Player::StartProtection::StartProtection(Player* player)
-{
-    using namespace tbe;
-    using namespace tbe::scene;
-
-    player->makeTransparent(true);
-
-    // player->setVisibleFromIA(false);
-}
-
-bool Player::StartProtection::onShoot(Player*)
-{
-    return false;
-}
-
-bool Player::StartProtection::onTakeDammage(Player*, Bullet*)
-{
-    return false;
-}
-
-bool Player::StartProtection::shutdown(Player* player)
-{
-    using namespace tbe;
-    using namespace tbe::scene;
-
-    if(m_clock.isEsplanedTime(player->m_playManager->worldSettings.playerStartImmunity))
-    {
-        player->makeTransparent(false);
-
-        // player->setVisibleFromIA(true);
-
-        return true;
-    }
-
-    return false;
-}
- */

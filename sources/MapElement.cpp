@@ -9,6 +9,8 @@
 #include "GameManager.h"
 #include "SoundManager.h"
 
+using namespace tbe;
+
 MapElement::MapElement(GameManager* gameManager)
 {
     m_gameManager = gameManager;
@@ -70,15 +72,6 @@ void MapElement::stopMotion()
     m_physicBody->setOmega(0);
     m_physicBody->setApplyForce(0);
     m_physicBody->setApplyTorque(0);
-}
-
-bool MapElement::isCollidWithStaticWorld(tbe::scene::NewtonNode* body, Array staticObjects)
-{
-    for(unsigned i = 0; i < staticObjects.size(); i++)
-        if(body->isCollidWith(staticObjects[i]->getPhysicBody()))
-            return true;
-
-    return false;
 }
 
 GameManager* MapElement::getGameManager() const
