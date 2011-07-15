@@ -262,10 +262,13 @@ void WeaponFinder::process()
 
             for(unsigned j = 0; j < targets.size(); j++)
             {
+                if(targets[j]->isKilled())
+                    continue;
+
                 Vector3f ammodiri = m_bulletArray[i]->getPhysicBody()->getVelocity().normalize();
                 Vector3f targetdiri = (targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos()).normalize();
 
-                if(Vector3f::dot(targetdiri, ammodiri) > 0.5f)
+                if(Vector3f::dot(targetdiri, ammodiri) > 0.75f)
                 {
                     minDist = min(targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos(), minDist);
                     targetLocked = true;
@@ -274,7 +277,12 @@ void WeaponFinder::process()
 
             if(targetLocked)
             {
-                m_bulletArray[i]->getPhysicBody()->setApplyForce(minDist.normalize() * m_shootSpeed / 2.0f);
+                NewtonNode* nnode = m_bulletArray[i]->getPhysicBody();
+
+                Vector3f force = minDist.normalize() * nnode->getMasse() * m_shootSpeed;
+                force -= nnode->getVelocity().normalize() * nnode->getMasse() * 256;
+
+                nnode->setApplyForce(force);
             }
         }
     }
@@ -293,7 +301,7 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     Bullet * fire = new Bullet(m_playManager);
     fire->setWeapon(this);
     fire->setDammage(math::rand(1, m_maxAmmoDammage));
-    fire->shoot(startpos, targetpos, m_shootSpeed);
+    fire->shoot(startpos, targetpos, 32);
 
     m_bulletArray.push_back(fire);
 
