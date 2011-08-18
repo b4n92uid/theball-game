@@ -1,19 +1,14 @@
-build
 ignore
-sourcesold
-private
-debug
+build
+
+nbproject
+cbproject
+
+Debug
+Release
 
 syntax: glob
 **.exe
 **.dll
 **.lnk
 **.bat
-**.pdf
-**.log
-**.xml
-**.ini
-**.bash
-**.mk
-**.blend1
-**.blend2
