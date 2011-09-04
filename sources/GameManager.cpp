@@ -228,9 +228,7 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
         ppe.bloom = new BloomEffect;
         ppe.bloom->setRttFrameSize(vidSets.ppeSize);
-        ppe.bloom->setIntensity(0.75);
-        ppe.bloom->setThreshold(0.25);
-        ppe.bloom->setBlurPass(10);
+        ppe.bloom->setEnable(false);
         manager.ppe->addPostEffect("bloomEffect", ppe.bloom);
     }
 }
@@ -534,6 +532,17 @@ void GameManager::processDevelopperCodeEvent()
         if(event->keyState[EventManager::KEY_F9])
         {
             setGameOver(m_userPlayer, "Next Level >>");
+        }
+
+        if(event->keyState['u'])
+        {
+            manager.app->globalSettings.video.ppeUse
+                    = !manager.app->globalSettings.video.ppeUse;
+        }
+
+        if(event->keyState['i'])
+        {
+            ppe.bloom->setEnable(!ppe.bloom->isEnable());
         }
 
         if(event->keyState['p'])

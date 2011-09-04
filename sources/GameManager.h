@@ -144,6 +144,14 @@ public:
 
     } parallelscene;
 
+    struct
+    {
+        tbe::ppe::BloomEffect* bloom;
+        tbe::ppe::BlurEffect* gameover;
+        tbe::ppe::ColorEffect* dammage;
+
+    } ppe;
+
     Settings::World worldSettings;
 
     boost::signal<void(Player*) > onEachFrame;
@@ -198,14 +206,6 @@ protected:
     } m_backImpulse;
 
     std::map<unsigned, unsigned> m_numslot;
-
-    struct
-    {
-        tbe::ppe::BloomEffect* bloom;
-        tbe::ppe::BlurEffect* gameover;
-        tbe::ppe::ColorEffect* dammage;
-
-    } ppe;
 
     struct
     {

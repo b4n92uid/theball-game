@@ -494,18 +494,18 @@ GameManager* Player::getGameManager() const
 
 void Player::makeTransparent(bool enable, float alpha)
 {
-    HardwareBuffer& hardbuf = m_visualBody->getHardwareBuffer();
+    HardwareBuffer* hardbuf = m_visualBody->getHardwareBuffer();
 
-    Vertex* vs = hardbuf.lock();
+    Vertex* vs = hardbuf->lock();
 
     if(enable)
-        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
+        for(unsigned i = 0; i < hardbuf->getVertexCount(); i++)
             vs[i].color.w = alpha;
     else
-        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
+        for(unsigned i = 0; i < hardbuf->getVertexCount(); i++)
             vs[i].color.w = 1;
 
-    hardbuf.unlock();
+    hardbuf->unlock();
 
     Material::Array mats = m_visualBody->getAllMaterial();
 

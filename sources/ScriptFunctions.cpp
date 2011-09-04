@@ -1394,6 +1394,38 @@ private:
     bool oneshot_executed;
 };
 
+int glowEnable(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    if(!gm->manager.app->globalSettings.video.ppeUse)
+        return 0;
+
+    bool stat = lua_toboolean(lua, 1);
+
+    gm->ppe.bloom->setEnable(stat);
+
+    return 0;
+}
+
+int glowSettings(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    if(!gm->manager.app->globalSettings.video.ppeUse)
+        return 0;
+
+    float intensity = lua_tonumber(lua, 1);
+    float thershold = lua_tonumber(lua, 2);
+    float blurpass = lua_tonumber(lua, 3);
+
+    gm->ppe.bloom->setIntensity(intensity);
+    gm->ppe.bloom->setThreshold(thershold);
+    gm->ppe.bloom->setBlurPass(blurpass);
+
+    return 0;
+}
+
 int setInterval(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);

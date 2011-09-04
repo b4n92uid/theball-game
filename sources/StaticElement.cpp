@@ -33,7 +33,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
         size.fromStr(body->getUserData("size").getValue<string > ());
 
     // Pour les corp convex a un seul coté
-    if(physic == "convex" and body->getHardwareBuffer().getVertexCount() < 18)
+    if(physic == "convex" and body->getHardwareBuffer()->getVertexCount() < 18)
     {
         physic = "box";
 
@@ -75,10 +75,10 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
             m_physicBody->buildSphereNode(size, masse);
 
         else if(physic == "convex")
-            m_physicBody->buildConvexNode(body->getHardwareBuffer().getAllVertex(true), masse);
+            m_physicBody->buildConvexNode(body->getHardwareBuffer()->getAllVertex(true), masse);
 
         else if(physic == "tree")
-            m_physicBody->buildTreeNode(body->getHardwareBuffer().getAllFace());
+            m_physicBody->buildTreeNode(body->getHardwareBuffer()->getAllFace());
 
         else
             throw Exception("StaticElement::StaticElement; unable to build (%s) physics body", physic.c_str());
@@ -101,18 +101,18 @@ void StaticElement::makeTransparent(bool enable, float alpha)
     using namespace tbe;
     using namespace scene;
 
-    HardwareBuffer& hardbuf = m_visualBody->getHardwareBuffer();
+    HardwareBuffer* hardbuf = m_visualBody->getHardwareBuffer();
 
-    Vertex* vs = hardbuf.lock();
+    Vertex* vs = hardbuf->lock();
 
     if(enable)
-        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
+        for(unsigned i = 0; i < hardbuf->getVertexCount(); i++)
             vs[i].color.w = alpha;
     else
-        for(unsigned i = 0; i < hardbuf.getVertexCount(); i++)
+        for(unsigned i = 0; i < hardbuf->getVertexCount(); i++)
             vs[i].color.w = 1;
 
-    hardbuf.unlock();
+    hardbuf->unlock();
 
     Material::Array mats = m_visualBody->getAllMaterial();
 
