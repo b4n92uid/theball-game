@@ -53,7 +53,7 @@ void GravityGun::process()
     float length = m_owner->getVisualBody()->getAabb().getLength() / 2
             + m_attached->getVisualBody()->getAabb().getLength() / 2;
 
-    stay += Quaternion(Vector3f(0, -M_PI_2, 0)) * m_gameManager->getViewDirection() * length;
+    stay += Quaternion(Vector3f(0, -M_PI_4, 0)) * m_gameManager->getViewDirection() * length;
 
     stay.y += length;
 
@@ -141,11 +141,14 @@ void GravityGun::internalDiactivate()
     {
         Vector3f targetWay = m_gameManager->getShootTarget() - attachpbody->getPos();
 
-        if(targetWay > 4)
+        if(m_owner->getPhysicBody()->getApplyForce() > 0.1)
         {
             NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 128, attachpbody->getPos());
-
             m_soundManager->playSound("power.gravitygun.throw", m_attached);
+        }
+        else
+        {
+            NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 8, attachpbody->getPos());
         }
     }
 

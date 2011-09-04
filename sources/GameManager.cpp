@@ -193,19 +193,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     manager.scene->setZFar(fog->isEnable() ? fog->getEnd() + 8 : map.aabb.getLength() * 2);
     manager.scene->updateViewParameter();
 
-    // PLAYERS -----------------------------------------------------------------
-
-    m_userPlayer = new Player(this, m_playSetting.player.nick, m_playSetting.player.model);
-    m_userPlayer->attachController(new UserControl(this));
-
-    registerPlayer(m_userPlayer);
-
-    manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
-
-    // SCRIPT ------------------------------------------------------------------
-
-    manager.script->load(m_playSetting.map.script);
-
     // PPE ---------------------------------------------------------------------
 
     const Settings::Video& vidSets = manager.app->globalSettings.video;
@@ -231,6 +218,19 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
         ppe.bloom->setEnable(false);
         manager.ppe->addPostEffect("bloomEffect", ppe.bloom);
     }
+
+    // PLAYERS -----------------------------------------------------------------
+
+    m_userPlayer = new Player(this, m_playSetting.player.nick, m_playSetting.player.model);
+    m_userPlayer->attachController(new UserControl(this));
+
+    registerPlayer(m_userPlayer);
+
+    manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
+
+    // SCRIPT ------------------------------------------------------------------
+
+    manager.script->load(m_playSetting.map.script);
 }
 
 void GameManager::setupGui()
@@ -534,6 +534,7 @@ void GameManager::processDevelopperCodeEvent()
             setGameOver(m_userPlayer, "Next Level >>");
         }
 
+        /*
         if(event->keyState['u'])
         {
             manager.app->globalSettings.video.ppeUse
@@ -544,6 +545,7 @@ void GameManager::processDevelopperCodeEvent()
         {
             ppe.bloom->setEnable(!ppe.bloom->isEnable());
         }
+         */
 
         if(event->keyState['p'])
         {
