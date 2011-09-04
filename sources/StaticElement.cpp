@@ -27,7 +27,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     if(body->hasUserData("physic"))
         physic = body->getUserData("physic").getValue<string > ();
 
-    Vector3f size = body->getAabb().getSize() / 2.0f;
+    Vector3f size = body->getAabb().getSize() / 2.0f * body->getVertexScale();
 
     if(body->hasUserData("size"))
         size.fromStr(body->getUserData("size").getValue<string > ());
@@ -55,7 +55,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
             aabb.min.z = -0.001;
         }
 
-        size = aabb.getSize() / 2.0f;
+        size = aabb.getSize() / 2.0f * body->getVertexScale();
     }
 
     float masse = 0;
@@ -75,10 +75,10 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
             m_physicBody->buildSphereNode(size, masse);
 
         else if(physic == "convex")
-            m_physicBody->buildConvexNode(body->getHardwareBuffer()->getAllVertex(true), masse);
+            m_physicBody->buildConvexNode(body, masse);
 
         else if(physic == "tree")
-            m_physicBody->buildTreeNode(body->getHardwareBuffer()->getAllFace());
+            m_physicBody->buildTreeNode(body);
 
         else
             throw Exception("StaticElement::StaticElement; unable to build (%s) physics body", physic.c_str());
