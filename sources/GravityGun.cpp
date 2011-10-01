@@ -108,7 +108,7 @@ void GravityGun::internalActivate(tbe::Vector3f target)
 
             if(elempbody->getPos() - ownerpbody->getPos() > 8)
                 NewtonBodyAddImpulse(elempbody->getBody(),
-                                     Vector3f::Y(4) * elempbody->getMasse(),
+                                     Vector3f(0, 4, 0) * elempbody->getMasse(),
                                      elempbody->getPos());
 
             if(m_lastAttached)

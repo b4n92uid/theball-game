@@ -925,7 +925,7 @@ void AppManager::executeMenu()
             }
 
             m_camera->setPos(-m_camera->getTarget() * 8.0f);
-            m_camera->rotate(Vector2f::X(1));
+            m_camera->rotate(Vector2f(1, 0));
 
             m_gameEngine->beginScene();
 
