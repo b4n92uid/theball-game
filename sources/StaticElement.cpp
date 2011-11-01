@@ -27,7 +27,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     if(body->hasUserData("physic"))
         physic = body->getUserData("physic").getValue<string > ();
 
-    Vector3f size = body->getAabb().getSize() / 2.0f * body->getVertexScale();
+    Vector3f size = body->getAabb().getSize() / 2.0f;
 
     if(body->hasUserData("size"))
         size.fromStr(body->getUserData("size").getValue<string > ());
@@ -55,7 +55,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
             aabb.min.z = -0.001;
         }
 
-        size = aabb.getSize() / 2.0f * body->getVertexScale();
+        size = aabb.getSize() / 2.0f;
     }
 
     float masse = 0;

@@ -126,7 +126,7 @@ int status(lua_State* lua);
 
 int playerList(lua_State* lua);
 
-int getElementsList(lua_State* lua);
+int getElement(lua_State* lua);
 int getElementsList(lua_State* lua);
 int getElementsRand(lua_State* lua);
 
@@ -140,6 +140,8 @@ int ghost(lua_State* lua);
 
 int glowEnable(lua_State* lua);
 int glowSettings(lua_State* lua);
+
+int flash(lua_State* lua);
 
 int setTimeout(lua_State* lua);
 int setInterval(lua_State* lua);

@@ -49,7 +49,7 @@ public:
     void setupGui();
 
     /// Appler avant le lancement du jeu
-    void onStartGame();
+    void startGameProcess();
 
     /// Traitement de l'entrer
     void eventProcess();
@@ -79,8 +79,8 @@ public:
 
     void backImpulseEffect(float intensity, float push);
     void earthQuakeEffect(float intensity, bool physical);
+    void flashEffect(float initOpacity, float downOpacity);
     void dammageEffect();
-    void flashEffect();
 
     virtual tbe::Vector3f getShootTarget() const;
     virtual tbe::Vector3f getViewDirection() const;
@@ -155,6 +155,7 @@ public:
     Settings::World worldSettings;
 
     boost::signal<void(Player*) > onEachFrame;
+    boost::signal<void(Player*) > onStartGame;
     boost::signal<bool(Player*), alltrue> onOutOfArena;
 
 protected:
@@ -198,6 +199,13 @@ protected:
         bool physical;
 
     } m_earthquake;
+
+    struct
+    {
+        float initOpacity;
+        float downOpacity;
+
+    } m_flasheffect;
 
     struct
     {

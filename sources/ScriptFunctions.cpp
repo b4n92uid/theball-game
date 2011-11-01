@@ -64,6 +64,11 @@ inline ScriptManager* getScriptManager(lua_State* lua)
     return (ScriptManager*)ptr;
 }
 
+inline void lua_pushelement(lua_State* lua, MapElement* e)
+{
+    lua_pushinteger(lua, (lua_Integer)e);
+}
+
 inline void lua_pushplayer(lua_State* lua, Player* p)
 {
     lua_pushinteger(lua, (lua_Integer)p);
@@ -921,6 +926,26 @@ int playerList(lua_State* lua)
     return 1;
 }
 
+int getElement(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+
+    BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
+    {
+        if(elem->getId() == id)
+        {
+            lua_pushelement(lua, elem);
+            return 1;
+        }
+    }
+
+    lua_pushnil(lua);
+
+    return 1;
+}
+
 int getElementsList(lua_State* lua)
 {
     using namespace boost;
@@ -1067,6 +1092,28 @@ struct OutOfArenaHook
     lua_State* lua;
 };
 
+struct StartGameHook
+{
+
+    StartGameHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player * userplayer)
+    {
+        lua_getglobal(lua, callback.c_str());
+        lua_pushplayer(lua, userplayer);
+        lua_call(lua, 1, 1);
+
+        return lua_toboolean(lua, -1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
 int registerGlobalHook(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
@@ -1076,6 +1123,9 @@ int registerGlobalHook(lua_State* lua)
 
     if(type == "frame")
         gm->onEachFrame.connect(FrameHook(lua, func));
+
+    else if(type == "start")
+        gm->onStartGame.connect(StartGameHook(lua, func));
 
     else if(type == "out")
         gm->onOutOfArena.connect(OutOfArenaHook(lua, func));
@@ -1346,6 +1396,18 @@ int gameover(lua_State* lua)
 
 int ghost(lua_State* lua)
 {
+    return 0;
+}
+
+int flash(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    float init = lua_tonumber(lua, 1);
+    float down = lua_tonumber(lua, 2);
+
+    gm->flashEffect(init, down);
+
     return 0;
 }
 

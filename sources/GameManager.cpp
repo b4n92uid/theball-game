@@ -144,6 +144,8 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     // SCENE -------------------------------------------------------------------
 
+    map.aabb.clear();
+
     manager.parser->loadScene(m_playSetting.map.filename);
     manager.parser->buildScene();
 
@@ -181,7 +183,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
         registerElement(elem);
     }
 
-    // Marge
     map.aabb.add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
 
     AABB newtonWordSize = map.aabb;
@@ -190,8 +191,8 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     scene::Fog* fog = manager.scene->getFog();
 
-    manager.scene->setZFar(fog->isEnable() ? fog->getEnd() + 8 : map.aabb.getLength() * 2);
-    manager.scene->updateViewParameter();
+    // manager.scene->setZFar(fog->isEnable() ? fog->getEnd() + 8 : map.aabb.getLength() * 2);
+    // manager.scene->updateViewParameter();
 
     // PPE ---------------------------------------------------------------------
 
@@ -419,8 +420,9 @@ void GameManager::setupGui()
     #undef path
 }
 
-void GameManager::onStartGame()
+void GameManager::startGameProcess()
 {
+    onStartGame(m_userPlayer);
 }
 
 tbe::Vector3f GameManager::getRandomPosOnTheFloor()
@@ -549,15 +551,12 @@ void GameManager::processDevelopperCodeEvent()
 
         if(event->keyState['p'])
         {
-            m_earthquake.intensity = 1.0;
-            m_earthquake.physical = true;
-
-            manager.sound->playSound("quake");
+            earthQuakeEffect(1, true);
         }
 
         if(event->keyState['o'])
         {
-            flashEffect();
+            flashEffect(1, 0.05);
         }
     }
 }
@@ -862,7 +861,7 @@ void GameManager::hudProcess()
                 float opacity = hud.background.flash->getOpacity();
 
                 if(opacity > 0)
-                    hud.background.flash->setOpacity(opacity - 0.05f);
+                    hud.background.flash->setOpacity(opacity - m_flasheffect.downOpacity);
                 else
                     hud.background.flash->setEnable(false);
             }
@@ -1115,13 +1114,18 @@ void GameManager::earthQuakeEffect(float intensity, bool physical)
 {
     m_earthquake.intensity = intensity;
     m_earthquake.physical = physical;
+
+    manager.sound->playSound("quake");
 }
 
-void GameManager::flashEffect()
+void GameManager::flashEffect(float initOpacity, float downOpacity)
 {
+    m_flasheffect.initOpacity = initOpacity;
+    m_flasheffect.downOpacity = downOpacity;
+
     hud.background.flash->setEnable(true);
 
-    hud.background.flash->setOpacity(1);
+    hud.background.flash->setOpacity(m_flasheffect.initOpacity);
 
     manager.sound->playSound("flash");
 }

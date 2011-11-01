@@ -138,6 +138,9 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
         elem = getUserData<MapElement*>(body0);
     }
 
+    else
+        return;
+
     GameManager* ge = player->getGameManager();
 
     Vector3f veloc = elem->getPhysicBody()->getVelocity() * elem->getPhysicBody()->getMasse();

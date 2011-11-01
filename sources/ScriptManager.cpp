@@ -123,7 +123,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "playerList", script::playerList);
 
-    lua_register(m_lua, "getElementsList", script::getElementsList);
+    lua_register(m_lua, "getElement", script::getElement);
     lua_register(m_lua, "getElementsList", script::getElementsList);
     lua_register(m_lua, "getElementsRand", script::getElementsRand);
 
@@ -135,9 +135,11 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "ghost", script::ghost);
 
+    lua_register(m_lua, "flash", script::flash);
+
     lua_register(m_lua, "glowEnable", script::glowEnable);
     lua_register(m_lua, "glowSettings", script::glowSettings);
-    
+
     lua_register(m_lua, "setInterval", script::setInterval);
     lua_register(m_lua, "setTimeout", script::setTimeout);
 }

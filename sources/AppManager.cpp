@@ -1008,7 +1008,7 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
 
     cout << "Start game" << endl;
 
-    gameManager->onStartGame();
+    gameManager->startGameProcess();
 
     while(gameManager->isRunning())
     {
