@@ -26,6 +26,7 @@
 #include "Define.h"
 
 #include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 
 class UserControl;
 class MaterialManager;
@@ -154,7 +155,8 @@ public:
 
     Settings::World worldSettings;
 
-    boost::signal<void(Player*) > onEachFrame;
+    boost::signals2::signal<void(Player*) > onEachFrame;
+
     boost::signal<void(Player*) > onStartGame;
     boost::signal<bool(Player*), alltrue> onOutOfArena;
 

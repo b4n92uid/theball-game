@@ -50,7 +50,7 @@ inline GameManager* getGameManager(lua_State* lua)
 
     lua_pop(lua, 1);
 
-    return (GameManager*)ptr;
+    return(GameManager*)ptr;
 }
 
 inline ScriptManager* getScriptManager(lua_State* lua)
@@ -61,7 +61,7 @@ inline ScriptManager* getScriptManager(lua_State* lua)
 
     lua_pop(lua, 1);
 
-    return (ScriptManager*)ptr;
+    return(ScriptManager*)ptr;
 }
 
 inline void lua_pushelement(lua_State* lua, MapElement* e)
@@ -1414,15 +1414,11 @@ struct Timer
         lua = l;
         callback = c;
         time = t;
-        oneshot = false;
-        oneshot_executed = false;
+        shotid = 0;
     }
 
     void operator()(Player * userplayer)
     {
-        if(oneshot && oneshot_executed)
-            return;
-
         if(clock.isEsplanedTime(time))
         {
             lua_getglobal(lua, callback.c_str());
@@ -1432,8 +1428,8 @@ struct Timer
 
             lua_call(lua, objects.size(), 0);
 
-            if(oneshot)
-                oneshot_executed = true;
+            if(shotid)
+                userplayer->getGameManager()->onEachFrame.disconnect(shotid);
         }
     }
 
@@ -1445,10 +1441,7 @@ struct Timer
     int time;
     vector<int> objects;
 
-    bool oneshot;
-
-private:
-    bool oneshot_executed;
+    int shotid;
 };
 
 int setInterval(lua_State* lua)
@@ -1459,7 +1452,6 @@ int setInterval(lua_State* lua)
     int time = lua_tointeger(lua, 2);
 
     Timer slot(lua, callback, time);
-    slot.oneshot = false;
 
     for(int i = 3; lua_isnumber(lua, i); i++)
         slot.objects.push_back(lua_tointeger(lua, i));
@@ -1477,12 +1469,12 @@ int setTimeout(lua_State* lua)
     int time = lua_tointeger(lua, 2);
 
     Timer slot(lua, callback, time);
-    slot.oneshot = true;
+    slot.shotid = std::time(0);
 
     for(int i = 3; lua_isnumber(lua, i); i++)
         slot.objects.push_back(lua_tointeger(lua, i));
 
-    gm->onEachFrame.connect(slot);
+    gm->onEachFrame.connect(slot.shotid, slot);
 
     return 0;
 }
