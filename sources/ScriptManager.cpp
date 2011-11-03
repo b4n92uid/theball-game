@@ -37,11 +37,13 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "upForce", script::upForce);
     lua_register(m_lua, "getForce", script::getForce);
 
-    lua_register(m_lua, "impulse", script::impulse);
     lua_register(m_lua, "unfreeze", script::unfreeze);
     lua_register(m_lua, "freeze", script::freeze);
+    lua_register(m_lua, "impulse", script::impulse);
     lua_register(m_lua, "stopMotion", script::stopMotion);
-    lua_register(m_lua, "setOpacity", script::setOpacity);
+
+    lua_register(m_lua, "setImmunity", script::setImmunity);
+    lua_register(m_lua, "setGhost", script::setGhost);
 
     lua_register(m_lua, "getNickName", script::getNickName);
 
@@ -67,7 +69,6 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "upAmmo", script::upAmmo);
     lua_register(m_lua, "getAmmo", script::getAmmo);
 
-
     lua_register(m_lua, "loadSound", script::loadSound);
     lua_register(m_lua, "playSound", script::playSound);
 
@@ -75,7 +76,6 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "playMusic", script::playMusic);
     lua_register(m_lua, "pauseMusic", script::pauseMusic);
     lua_register(m_lua, "stopMusic", script::stopMusic);
-
 
     lua_register(m_lua, "rayCast", script::rayCast);
 
@@ -92,7 +92,6 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "length", script::length);
 
-
     lua_register(m_lua, "setString", script::setString);
     lua_register(m_lua, "getString", script::getString);
 
@@ -103,7 +102,6 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "getVector", script::getVector);
 
     lua_register(m_lua, "getSceneString", script::getSceneString);
-
 
     lua_register(m_lua, "move", script::move);
     lua_register(m_lua, "jump", script::jump);
@@ -116,10 +114,8 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "isKilledPlayer", script::isKilledPlayer);
     lua_register(m_lua, "deletePlayer", script::deletePlayer);
 
-
     lua_register(m_lua, "display", script::display);
     lua_register(m_lua, "status", script::status);
-
 
     lua_register(m_lua, "playerList", script::playerList);
 
@@ -133,15 +129,14 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "gameover", script::gameover);
 
-    lua_register(m_lua, "ghost", script::ghost);
-
-    lua_register(m_lua, "flash", script::flash);
+    lua_register(m_lua, "setInterval", script::setInterval);
+    lua_register(m_lua, "setTimeout", script::setTimeout);
 
     lua_register(m_lua, "glowEnable", script::glowEnable);
     lua_register(m_lua, "glowSettings", script::glowSettings);
 
-    lua_register(m_lua, "setInterval", script::setInterval);
-    lua_register(m_lua, "setTimeout", script::setTimeout);
+    lua_register(m_lua, "whiteFlash", script::whiteFlash);
+    lua_register(m_lua, "earthQuake", script::earthQuake);
 }
 
 ScriptManager::~ScriptManager()

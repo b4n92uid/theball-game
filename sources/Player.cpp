@@ -33,6 +33,7 @@ Player::Player(GameManager* gameManager, std::string name, std::string model)
     m_energy = 100;
     m_attachedCotroller = NULL;
     m_soundManager = gameManager->manager.sound;
+    m_immunity = false;
 
     // Rendue
     m_visualBody = new OBJMesh(m_gameManager->parallelscene.meshs);
@@ -88,6 +89,8 @@ void Player::free()
 
     m_powersInventory.clear();
     m_curPower = m_powersInventory.end();
+    
+    setImmunity(false);
 }
 
 void Player::setInLastSpawnPoint()
@@ -150,7 +153,7 @@ bool Player::shoot(Vector3f targetpos)
     if(!onShoot.empty() && !onShoot(this, targetpos))
         return false;
 
-    return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
+    return(*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
 inline bool isBodyContactOnFloor(scene::NewtonNode* node1, scene::NewtonNode* node2)
@@ -321,7 +324,7 @@ Weapon* Player::getCurWeapon() const
     if(m_curWeapon == m_weaponsInventory.end())
         return NULL;
     else
-        return (*m_curWeapon);
+        return(*m_curWeapon);
 }
 
 inline bool isPowerSameName(Power* w1, Power* w2)
@@ -482,7 +485,7 @@ void Player::takeDammage(int dammage, Player* killer)
         kill(killer);
 
     if(m_gameManager->getUserPlayer() == this)
-        m_gameManager->dammageEffect();
+        m_gameManager->dammageScreen();
 
     m_soundManager->playSound("hit", this);
 }
@@ -492,8 +495,19 @@ GameManager* Player::getGameManager() const
     return m_gameManager;
 }
 
+void Player::setImmunity(bool enable)
+{
+    makeTransparent(enable, 0.5);
+    m_gameManager->manager.material->setImmunity(this, enable);
+
+    m_immunity = enable;
+}
+
 void Player::makeTransparent(bool enable, float alpha)
 {
+    if(m_immunity)
+        return;
+
     HardwareBuffer* hardbuf = m_visualBody->getHardwareBuffer();
 
     Vertex* vs = hardbuf->lock();

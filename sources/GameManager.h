@@ -77,10 +77,10 @@ public:
     bool isGameOver() const;
     bool isRunning() const;
 
-    void backImpulseEffect(float intensity, float push);
-    void earthQuakeEffect(float intensity, bool physical);
-    void flashEffect(float initOpacity, float downOpacity);
-    void dammageEffect();
+    void backImpulse(float intensity, float push);
+    void earthQuake(float intensity, bool physical);
+    void whiteFlash(float initOpacity, float downOpacity);
+    void dammageScreen();
 
     virtual tbe::Vector3f getShootTarget() const;
     virtual tbe::Vector3f getViewDirection() const;

@@ -9,6 +9,7 @@
 
 #include "GameManager.h"
 #include "SoundManager.h"
+#include "MaterialManager.h"
 
 using namespace std;
 using namespace tbe;
@@ -94,6 +95,12 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 StaticElement::~StaticElement()
 {
 
+}
+
+void StaticElement::setGhost(bool enable)
+{
+    makeTransparent(enable, 0.25);
+    m_gameManager->manager.material->setGhost(this, enable);
 }
 
 void StaticElement::makeTransparent(bool enable, float alpha)

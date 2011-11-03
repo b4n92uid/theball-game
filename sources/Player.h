@@ -59,6 +59,8 @@ public:
     void kill(Player* killer);
     bool isKilled() const;
 
+    void setImmunity(bool enable);
+
     void makeTransparent(bool enable, float alpha = 0.25);
 
     /// Attache une source de controlle au joueurs
@@ -138,6 +140,7 @@ public:
 protected:
     int m_life;
     bool m_killed;
+    bool m_immunity;
     int m_energy;
 
     Weapon::Array::iterator m_curWeapon;

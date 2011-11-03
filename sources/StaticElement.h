@@ -16,6 +16,8 @@ public:
     StaticElement(GameManager* gameManager, tbe::scene::Mesh* body);
     virtual ~StaticElement();
 
+    void setGhost(bool enable);
+
     void makeTransparent(bool enable, float alpha = 1);
     void makeLighted(bool enable);
 

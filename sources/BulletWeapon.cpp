@@ -140,7 +140,7 @@ void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
     m_bulletArray.push_back(fire);
 
     if(m_shooter == m_playManager->getUserPlayer())
-        m_playManager->backImpulseEffect(m_settings.weapons.get<float>("blaster.backIntensity"),
+        m_playManager->backImpulse(m_settings.weapons.get<float>("blaster.backIntensity"),
                                          m_settings.weapons.get<float>("blaster.backPush"));
 }
 
@@ -178,7 +178,7 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
     }
 
     if(m_shooter == m_playManager->getUserPlayer())
-        m_playManager->backImpulseEffect(m_settings.weapons.get<float>("shotgun.backIntensity"),
+        m_playManager->backImpulse(m_settings.weapons.get<float>("shotgun.backIntensity"),
                                          m_settings.weapons.get<float>("shotgun.backPush"));
 }
 
@@ -306,6 +306,6 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     m_bulletArray.push_back(fire);
 
     if(m_shooter == m_playManager->getUserPlayer())
-        m_playManager->backImpulseEffect(m_settings.weapons.get<float>("finder.backIntensity"),
+        m_playManager->backImpulse(m_settings.weapons.get<float>("finder.backIntensity"),
                                          m_settings.weapons.get<float>("finder.backPush"));
 }

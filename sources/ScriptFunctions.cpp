@@ -84,6 +84,11 @@ inline MapElement* lua_toelem(lua_State* lua, int argpos)
     return reinterpret_cast<MapElement*>((long)lua_tonumber(lua, argpos));
 }
 
+inline StaticElement* lua_tostatic(lua_State* lua, int argpos)
+{
+    return reinterpret_cast<StaticElement*>((long)lua_tonumber(lua, argpos));
+}
+
 template<typename T> void lua_pushtable(lua_State* lua, const vector<T>& vec)
 {
     lua_newtable(lua);
@@ -271,15 +276,22 @@ int stopMotion(lua_State* lua)
     return 0;
 }
 
-int setOpacity(lua_State* lua)
+int setGhost(lua_State* lua)
+{
+    StaticElement* elem = lua_tostatic(lua, 1);
+    bool value = lua_toboolean(lua, 2);
+
+    elem->setGhost(value);
+
+    return 0;
+}
+
+int setImmunity(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
-    float value = lua_tonumber(lua, 2);
+    bool value = lua_toboolean(lua, 2);
 
-    if(value < 1)
-        player->makeTransparent(true, value);
-    else
-        player->makeTransparent(false);
+    player->setImmunity(value);
 
     return 0;
 }
@@ -1394,23 +1406,6 @@ int gameover(lua_State* lua)
     return 0;
 }
 
-int ghost(lua_State* lua)
-{
-    return 0;
-}
-
-int flash(lua_State* lua)
-{
-    GameManager* gm = getGameManager(lua);
-
-    float init = lua_tonumber(lua, 1);
-    float down = lua_tonumber(lua, 2);
-
-    gm->flashEffect(init, down);
-
-    return 0;
-}
-
 struct Timer
 {
 
@@ -1456,38 +1451,6 @@ private:
     bool oneshot_executed;
 };
 
-int glowEnable(lua_State* lua)
-{
-    GameManager* gm = getGameManager(lua);
-
-    if(!gm->manager.app->globalSettings.video.ppeUse)
-        return 0;
-
-    bool stat = lua_toboolean(lua, 1);
-
-    gm->ppe.bloom->setEnable(stat);
-
-    return 0;
-}
-
-int glowSettings(lua_State* lua)
-{
-    GameManager* gm = getGameManager(lua);
-
-    if(!gm->manager.app->globalSettings.video.ppeUse)
-        return 0;
-
-    float intensity = lua_tonumber(lua, 1);
-    float thershold = lua_tonumber(lua, 2);
-    float blurpass = lua_tonumber(lua, 3);
-
-    gm->ppe.bloom->setIntensity(intensity);
-    gm->ppe.bloom->setThreshold(thershold);
-    gm->ppe.bloom->setBlurPass(blurpass);
-
-    return 0;
-}
-
 int setInterval(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
@@ -1520,6 +1483,62 @@ int setTimeout(lua_State* lua)
         slot.objects.push_back(lua_tointeger(lua, i));
 
     gm->onEachFrame.connect(slot);
+
+    return 0;
+}
+
+int glowEnable(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    if(!gm->manager.app->globalSettings.video.ppeUse)
+        return 0;
+
+    bool stat = lua_toboolean(lua, 1);
+
+    gm->ppe.bloom->setEnable(stat);
+
+    return 0;
+}
+
+int glowSettings(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    if(!gm->manager.app->globalSettings.video.ppeUse)
+        return 0;
+
+    float intensity = lua_tonumber(lua, 1);
+    float thershold = lua_tonumber(lua, 2);
+    float blurpass = lua_tonumber(lua, 3);
+
+    gm->ppe.bloom->setIntensity(intensity);
+    gm->ppe.bloom->setThreshold(thershold);
+    gm->ppe.bloom->setBlurPass(blurpass);
+
+    return 0;
+}
+
+int whiteFlash(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    float init = lua_tonumber(lua, 1);
+    float down = lua_tonumber(lua, 2);
+
+    gm->whiteFlash(init, down);
+
+    return 0;
+}
+
+int earthQuake(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    float init = lua_tonumber(lua, 1);
+    float down = lua_tonumber(lua, 2);
+
+    gm->earthQuake(init, down);
 
     return 0;
 }

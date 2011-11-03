@@ -551,12 +551,12 @@ void GameManager::processDevelopperCodeEvent()
 
         if(event->keyState['p'])
         {
-            earthQuakeEffect(1, true);
+            earthQuake(1, true);
         }
 
         if(event->keyState['o'])
         {
-            flashEffect(1, 0.05);
+            whiteFlash(1, 0.05);
         }
     }
 }
@@ -1104,21 +1104,21 @@ bool GameManager::isRunning() const
     return m_running;
 }
 
-void GameManager::backImpulseEffect(float intensity, float push)
+void GameManager::backImpulse(float intensity, float push)
 {
     m_backImpulse.intensity = intensity;
     m_backImpulse.push = push;
 }
 
-void GameManager::earthQuakeEffect(float intensity, bool physical)
+void GameManager::earthQuake(float intensity, bool physical)
 {
     m_earthquake.intensity = intensity;
     m_earthquake.physical = physical;
 
-    manager.sound->playSound("quake");
+    manager.sound->playSound("quake", m_userPlayer);
 }
 
-void GameManager::flashEffect(float initOpacity, float downOpacity)
+void GameManager::whiteFlash(float initOpacity, float downOpacity)
 {
     m_flasheffect.initOpacity = initOpacity;
     m_flasheffect.downOpacity = downOpacity;
@@ -1127,10 +1127,10 @@ void GameManager::flashEffect(float initOpacity, float downOpacity)
 
     hud.background.flash->setOpacity(m_flasheffect.initOpacity);
 
-    manager.sound->playSound("flash");
+    manager.sound->playSound("flash", m_userPlayer);
 }
 
-void GameManager::dammageEffect()
+void GameManager::dammageScreen()
 {
     if(manager.app->globalSettings.video.ppeUse)
     {

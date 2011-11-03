@@ -17,6 +17,8 @@
 namespace script
 {
 
+// General
+
 int include(lua_State* lua);
 
 // Translation
@@ -33,12 +35,15 @@ int getForce(lua_State* lua);
 
 int impulse(lua_State* lua);
 
+int stopMotion(lua_State* lua);
+
+// Material
+
 int freeze(lua_State* lua);
 int unfreeze(lua_State* lua);
 
-int stopMotion(lua_State* lua);
-
-int setOpacity(lua_State* lua);
+int setGhost(lua_State* lua);
+int setImmunity(lua_State* lua);
 
 // Player Stat
 
@@ -136,15 +141,18 @@ int registerPlayerHook(lua_State* lua);
 
 int gameover(lua_State* lua);
 
-int ghost(lua_State* lua);
+int setTimeout(lua_State* lua);
+int setInterval(lua_State* lua);
+
+// PPE
 
 int glowEnable(lua_State* lua);
 int glowSettings(lua_State* lua);
 
-int flash(lua_State* lua);
+// Trigger
 
-int setTimeout(lua_State* lua);
-int setInterval(lua_State* lua);
+int whiteFlash(lua_State* lua);
+int earthQuake(lua_State* lua);
 
 }
 

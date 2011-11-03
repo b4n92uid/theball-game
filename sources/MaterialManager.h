@@ -23,6 +23,7 @@ public:
     virtual ~MaterialManager();
 
     void setGhost(MapElement* body, bool state);
+    void setImmunity(Player* body, bool state);
 
     void addBullet(Bullet* body);
     void addPlayer(Player* body);
@@ -89,9 +90,11 @@ protected:
     int m_elementsGroupe;
     int m_bulletGroupe;
     int m_playersGroupe;
+    int m_immunityGroupe;
     int m_ghostGroupe;
 
     std::map<tbe::scene::NewtonNode*, int> m_ghostState;
+    std::map<tbe::scene::NewtonNode*, int> m_immunityState;
 };
 
 #endif	/* _MATERIALMANAGER_H */
