@@ -1,0 +1,13 @@
+# Blender MTL File: 'MESH 1.blend'
+# Material Count: 1
+newmtl Material_black.png
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.999970 0.012731 0.000000
+Ks 0.500000 0.493333 0.493333
+Ni 1.000000
+d 0.645455
+illum 2
+map_Kd black.png
+
+
