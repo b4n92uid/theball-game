@@ -1,0 +1,1883 @@
+v0.1 scene
+
+*general
+name=map02
+author=tbe team
+ambient=0.7, 0.7, 0.7, 1
+znear=0.1
+zfar=512
+
+*additional
+comment= First part of tutorial map.
+screenshot=prototype.png
+script=../scripts/map02.lua
+
+*fog
+color=1, 1, 1, 1
+start=0
+end=300
+
+*skybox
+front=../gfxart/skybox/white.png
+back=../gfxart/skybox/white.png
+top=../gfxart/skybox/white.png
+bottom=../gfxart/skybox/white.png
+left=../gfxart/skybox/white_grey.png
+right=../gfxart/skybox/white_grey.png
+
++node
+ambient=0,0,0,1
+class=Light
+diffuse=0.5,0.5,0.5,1
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-13.1071,21.66,-37.7893,1
+name=
+radius=1
+specular=0.05,0.05,0.05,1
+type=Diri
+
++node
+class=MapMark
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,11,0,1
+name=spawnpoint
+
++node
+class=MapMark
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+name=zone4
+{
+    !None_blackskin02.png:alpha=0
+    !None_blackskin02.png:alphaThershold=0
+    !None_blackskin02.png:backFaceCull=0
+    !None_blackskin02.png:blendAdd=0
+    !None_blackskin02.png:blendMod=1
+    !None_blackskin02.png:blendMul=0
+    !None_blackskin02.png:color=1, 1, 1, 1
+    !None_blackskin02.png:colored=1
+    !None_blackskin02.png:cullTrick=1
+    !None_blackskin02.png:foged=1
+    !None_blackskin02.png:frontFaceCull=0
+    !None_blackskin02.png:lighted=0
+    !None_blackskin02.png:texture:0=../models/pack00/blackskin004.png;modulate
+    !None_blackskin02.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack2.obj
+    matrix=1.19209e-007,1,1.19209e-007,0,-0.707107,1.19209e-007,-0.707107,0,-0.707107,1.19209e-007,0.707107,0,-5,13.5,-10,1
+    name=centerblack2
+    vertexScale=0.8,-0.8,0.8
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,5,-15,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,-80,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,-40,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-20,0,-40,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,20,0,-40,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-20,0,-60,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,20,0,-60,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,20,0,-80,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-20,0,-80,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/pack00/blackskin0004.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,10.02,-20,1
+    name=centerblack
+    vertexScale=0.2,0.2,0.2
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,5,-25,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    ambient=0,0,0,1
+    class=Light
+    diffuse=0,0,0,1
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-36.2658,45,-85.9872,1
+    name=
+    radius=20
+    specular=0.45,0.45,0.45,1
+    type=Point
+}
+{
+    class=MapMark
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,20,-20,1
+    name=
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,0,1,0,0,1,0,0,-1,0,5.96046e-008,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=-1,0,-8.74228e-008,0,0,1,0,0,8.74228e-008,-0,-1,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,-0,-1,0,0,1,-0,0,1,0,5.96046e-008,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,0,1,0,0,1,0,0,-1,0,5.96046e-008,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=-1,0,-8.74228e-008,0,0,1,0,0,8.74228e-008,-0,-1,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,-0,-1,0,0,1,-0,0,1,0,5.96046e-008,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_texture.png:alpha=0
+        !None_texture.png:alphaThershold=0
+        !None_texture.png:backFaceCull=0
+        !None_texture.png:blendAdd=0
+        !None_texture.png:blendMod=1
+        !None_texture.png:blendMul=0
+        !None_texture.png:color=1, 1, 1, 1
+        !None_texture.png:colored=1
+        !None_texture.png:cullTrick=0
+        !None_texture.png:foged=1
+        !None_texture.png:frontFaceCull=0
+        !None_texture.png:lighted=1
+        !None_texture.png:texture:0=../models/powercube/green.png;modulate
+        !None_texture.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object01_03.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,15,-60,1
+        name=object01_03
+        vertexScale=0.75,0.75,0.75
+    }
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,-60,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,20,-80,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/powercube/pc_jump.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-20,10.02,-40,1
+    name=centerblack
+    vertexScale=0.1,0.1,0.1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/powercube/pc_jump.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,20,10.02,-40,1
+    name=centerblack
+    vertexScale=0.1,0.1,0.1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/powercube/pc_jump.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,10.02,-65,1
+    name=centerblack
+    vertexScale=0.1,0.1,0.1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/pack00/blackskin0004.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,10.02,-65,1
+    name=centerblack
+    vertexScale=0.05,0.05,0.05
+}
+{
+    !None_blackskin0003.png:alpha=0
+    !None_blackskin0003.png:alphaThershold=0
+    !None_blackskin0003.png:backFaceCull=0
+    !None_blackskin0003.png:blendAdd=0
+    !None_blackskin0003.png:blendMod=1
+    !None_blackskin0003.png:blendMul=0
+    !None_blackskin0003.png:color=1, 1, 1, 1
+    !None_blackskin0003.png:colored=1
+    !None_blackskin0003.png:cullTrick=1
+    !None_blackskin0003.png:foged=1
+    !None_blackskin0003.png:frontFaceCull=0
+    !None_blackskin0003.png:lighted=1
+    !None_blackskin0003.png:texture:0=../models/pack00/blackskin12.png;modulate
+    !None_blackskin0003.png:textured=1
+    .physic=ghost
+    billBoarding=1,0
+    class=OBJMesh
+    filename=../models/pack00/plate01_horis.obj
+    matrix=0.368766,0,0.929522,0,0,1,0,0,-0.929522,0,0.368766,0,0,15,-65,1
+    name=plate01_horis
+    vertexScale=0.25,-0.25,0.25
+}
+{
+    !None_black.png:alpha=0
+    !None_black.png:alphaThershold=0
+    !None_black.png:backFaceCull=0
+    !None_black.png:blendAdd=0
+    !None_black.png:blendMod=1
+    !None_black.png:blendMul=0
+    !None_black.png:color=1, 1, 1, 1
+    !None_black.png:colored=1
+    !None_black.png:cullTrick=0
+    !None_black.png:foged=1
+    !None_black.png:frontFaceCull=0
+    !None_black.png:lighted=0
+    !None_black.png:texture:0=../models/powercube/green.png;modulate
+    !None_black.png:textured=1
+    !None_green.png:alpha=1
+    !None_green.png:alphaThershold=0
+    !None_green.png:backFaceCull=0
+    !None_green.png:blendAdd=0
+    !None_green.png:blendMod=0
+    !None_green.png:blendMul=0
+    !None_green.png:color=1, 1, 1, 0
+    !None_green.png:colored=1
+    !None_green.png:cullTrick=0
+    !None_green.png:foged=1
+    !None_green.png:frontFaceCull=0
+    !None_green.png:lighted=1
+    !None_green.png:texture:0=../models/powercube/green.png;modulate
+    !None_green.png:textured=1
+    !None_untitled.002:alpha=1
+    !None_untitled.002:alphaThershold=0
+    !None_untitled.002:backFaceCull=0
+    !None_untitled.002:blendAdd=0
+    !None_untitled.002:blendMod=1
+    !None_untitled.002:blendMul=0
+    !None_untitled.002:color=1, 1, 1, 1
+    !None_untitled.002:colored=1
+    !None_untitled.002:cullTrick=0
+    !None_untitled.002:foged=1
+    !None_untitled.002:frontFaceCull=0
+    !None_untitled.002:lighted=1
+    !None_untitled.002:texture:0=../models/powercube/trans.png;modulate
+    !None_untitled.002:textured=1
+    .masse=4
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/powercube/powercube.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,20,11,-40,1
+    name=jumper
+    vertexScale=1,1,1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/powercube/pc_jump.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,10.02,0,1
+    name=centerblack
+    vertexScale=0.2,0.2,0.2
+}
+{
+    !None_black.png:alpha=0
+    !None_black.png:alphaThershold=0
+    !None_black.png:backFaceCull=0
+    !None_black.png:blendAdd=0
+    !None_black.png:blendMod=1
+    !None_black.png:blendMul=0
+    !None_black.png:color=1, 1, 1, 1
+    !None_black.png:colored=1
+    !None_black.png:cullTrick=0
+    !None_black.png:foged=1
+    !None_black.png:frontFaceCull=0
+    !None_black.png:lighted=0
+    !None_black.png:texture:0=../models/powercube/green.png;modulate
+    !None_black.png:textured=1
+    !None_green.png:alpha=1
+    !None_green.png:alphaThershold=0
+    !None_green.png:backFaceCull=0
+    !None_green.png:blendAdd=0
+    !None_green.png:blendMod=0
+    !None_green.png:blendMul=0
+    !None_green.png:color=1, 1, 1, 0
+    !None_green.png:colored=1
+    !None_green.png:cullTrick=0
+    !None_green.png:foged=1
+    !None_green.png:frontFaceCull=0
+    !None_green.png:lighted=1
+    !None_green.png:texture:0=../models/powercube/green.png;modulate
+    !None_green.png:textured=1
+    !None_untitled.002:alpha=1
+    !None_untitled.002:alphaThershold=0
+    !None_untitled.002:backFaceCull=0
+    !None_untitled.002:blendAdd=0
+    !None_untitled.002:blendMod=1
+    !None_untitled.002:blendMul=0
+    !None_untitled.002:color=1, 1, 1, 1
+    !None_untitled.002:colored=1
+    !None_untitled.002:cullTrick=0
+    !None_untitled.002:foged=1
+    !None_untitled.002:frontFaceCull=0
+    !None_untitled.002:lighted=1
+    !None_untitled.002:texture:0=../models/powercube/trans.png;modulate
+    !None_untitled.002:textured=1
+    .masse=4
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/powercube/powercube.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-20,11,-40,1
+    name=jumper
+    vertexScale=1,1,1
+}
+
++node
+class=MapMark
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+name=zone6
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,0,0,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/powercube/pc_jump.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,10.02,0,1
+    name=centerblack
+    vertexScale=0.2,0.2,0.2
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-15,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_blackskin02.png:alpha=0
+    !None_blackskin02.png:alphaThershold=0
+    !None_blackskin02.png:backFaceCull=0
+    !None_blackskin02.png:blendAdd=0
+    !None_blackskin02.png:blendMod=1
+    !None_blackskin02.png:blendMul=0
+    !None_blackskin02.png:color=1, 1, 1, 1
+    !None_blackskin02.png:colored=1
+    !None_blackskin02.png:cullTrick=1
+    !None_blackskin02.png:foged=1
+    !None_blackskin02.png:frontFaceCull=0
+    !None_blackskin02.png:lighted=1
+    !None_blackskin02.png:texture:0=../models/pack00/blackskin006.png;modulate
+    !None_blackskin02.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack2.obj
+    matrix=1.19209e-007,1,1.19209e-007,0,-0.707107,1.19209e-007,-0.707107,0,-0.707107,1.19209e-007,0.707107,0,195,13.5,-10,1
+    name=centerblack2
+    vertexScale=0.8,-0.8,0.8
+}
+{
+    ambient=0,0,0,1
+    class=Light
+    diffuse=0,0,0,1
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,178,37.92,-68.22,1
+    name=
+    radius=20
+    specular=0.45,0.45,0.45,1
+    type=Point
+}
+{
+    class=MapMark
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,0,-85,1
+    name=
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,0,1,0,0,1,0,0,-1,0,5.96046e-008,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=-1,0,-8.74228e-008,0,0,1,0,0,8.74228e-008,-0,-1,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,-0,-1,0,0,1,-0,0,1,0,5.96046e-008,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,0,1,0,0,1,0,0,-1,0,5.96046e-008,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=-1,0,-8.74228e-008,0,0,1,0,0,8.74228e-008,-0,-1,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,-0,-1,0,0,1,-0,0,1,0,5.96046e-008,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_texture.png:alpha=0
+        !None_texture.png:alphaThershold=0
+        !None_texture.png:backFaceCull=0
+        !None_texture.png:blendAdd=0
+        !None_texture.png:blendMod=1
+        !None_texture.png:blendMul=0
+        !None_texture.png:color=1, 1, 1, 1
+        !None_texture.png:colored=1
+        !None_texture.png:cullTrick=0
+        !None_texture.png:foged=1
+        !None_texture.png:frontFaceCull=0
+        !None_texture.png:lighted=1
+        !None_texture.png:texture:0=../models/powercube/purple.png;modulate
+        !None_texture.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object01_03.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,15,-60,1
+        name=object01_03
+        vertexScale=0.75,0.75,0.75
+    }
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,0,-120,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/pack00/blackskin0004.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,10.02,-120,1
+    name=centerblack
+    vertexScale=0.2,0.2,0.2
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=0
+    !None_texture.png:blendMul=1
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/powercube/black.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,185,15.02,-95,1
+    name=object01_03
+    vertexScale=0.25,0.25,0.25
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=0
+    !None_texture.png:blendMul=1
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/powercube/black.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,215,15.02,-95,1
+    name=object01_03
+    vertexScale=0.25,0.25,0.25
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-35,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-55,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-75,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-105,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-95,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-135,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,200,5,-145,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+
++node
+!None_blackskingrille.png:alpha=0
+!None_blackskingrille.png:alphaThershold=0
+!None_blackskingrille.png:backFaceCull=0
+!None_blackskingrille.png:blendAdd=0
+!None_blackskingrille.png:blendMod=1
+!None_blackskingrille.png:blendMul=0
+!None_blackskingrille.png:color=1, 1, 1, 0.1
+!None_blackskingrille.png:colored=1
+!None_blackskingrille.png:cullTrick=1
+!None_blackskingrille.png:foged=1
+!None_blackskingrille.png:frontFaceCull=0
+!None_blackskingrille.png:lighted=1
+!None_blackskingrille.png:texture:0=../models/pack00/blackskingrille.png;modulate
+!None_blackskingrille.png:textured=1
+.physic=ghost
+billBoarding=0,0
+class=OBJMesh
+filename=../models/pack00/object_grille.obj
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,-13,-20,-12,1
+name=object_grille
+vertexScale=10,10,10
+
++node
+!None_blackskingrille.png:alpha=0
+!None_blackskingrille.png:alphaThershold=0
+!None_blackskingrille.png:backFaceCull=0
+!None_blackskingrille.png:blendAdd=0
+!None_blackskingrille.png:blendMod=1
+!None_blackskingrille.png:blendMul=0
+!None_blackskingrille.png:color=1, 1, 1, 0.1
+!None_blackskingrille.png:colored=1
+!None_blackskingrille.png:cullTrick=1
+!None_blackskingrille.png:foged=1
+!None_blackskingrille.png:frontFaceCull=0
+!None_blackskingrille.png:lighted=1
+!None_blackskingrille.png:texture:0=../models/pack00/blackskingrille.png;modulate
+!None_blackskingrille.png:textured=1
+.physic=ghost
+billBoarding=0,0
+class=OBJMesh
+filename=../models/pack00/object_grille.obj
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,12,-20,-38,1
+name=object_grille
+vertexScale=10,10,10
+
++node
+class=MapMark
+matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
+name=zone5
+{
+    !None_blackskin01.png:alpha=0
+    !None_blackskin01.png:alphaThershold=0
+    !None_blackskin01.png:backFaceCull=0
+    !None_blackskin01.png:blendAdd=0
+    !None_blackskin01.png:blendMod=1
+    !None_blackskin01.png:blendMul=0
+    !None_blackskin01.png:color=1, 1, 1, 1
+    !None_blackskin01.png:colored=1
+    !None_blackskin01.png:cullTrick=1
+    !None_blackskin01.png:foged=1
+    !None_blackskin01.png:frontFaceCull=0
+    !None_blackskin01.png:lighted=0
+    !None_blackskin01.png:texture:0=../models/powercube/pc_jump.png;modulate
+    !None_blackskin01.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,10.02,0,1
+    name=centerblack
+    vertexScale=0.2,0.2,0.2
+}
+{
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_04.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,0,0,1
+    name=object01_04
+    vertexScale=1,1,1
+}
+{
+    ambient=0,0,0,1
+    class=Light
+    diffuse=0,0,0,1
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-190.072,29.24,-67.1455,1
+    name=
+    radius=20
+    specular=0.45,0.45,0.45,1
+    type=Point
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-15,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_blackskin02.png:alpha=0
+    !None_blackskin02.png:alphaThershold=0
+    !None_blackskin02.png:backFaceCull=0
+    !None_blackskin02.png:blendAdd=0
+    !None_blackskin02.png:blendMod=1
+    !None_blackskin02.png:blendMul=0
+    !None_blackskin02.png:color=1, 1, 1, 1
+    !None_blackskin02.png:colored=1
+    !None_blackskin02.png:cullTrick=1
+    !None_blackskin02.png:foged=1
+    !None_blackskin02.png:frontFaceCull=0
+    !None_blackskin02.png:lighted=0
+    !None_blackskin02.png:texture:0=../models/pack00/blackskin005.png;modulate
+    !None_blackskin02.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/centerblack2.obj
+    matrix=1.19209e-007,1,1.19209e-007,0,-0.707107,1.19209e-007,-0.707107,0,-0.707107,1.19209e-007,0.707107,0,-205,13.5,-10,1
+    name=centerblack2
+    vertexScale=0.8,-0.8,0.8
+}
+{
+    class=MapMark
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,0,-25,1
+    name=
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,0,1,0,0,1,0,0,-1,0,5.96046e-008,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=-1,0,-8.74228e-008,0,0,1,0,0,8.74228e-008,-0,-1,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,-0,-1,0,0,1,-0,0,1,0,5.96046e-008,0,0,20,-60,1
+        name=object02_02
+        vertexScale=0.25,0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=-1,0,-8.74228e-008,0,0,1,0,0,8.74228e-008,-0,-1,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_black.png:alpha=0
+        !None_black.png:alphaThershold=0
+        !None_black.png:backFaceCull=0
+        !None_black.png:blendAdd=0
+        !None_black.png:blendMod=0
+        !None_black.png:blendMul=0
+        !None_black.png:color=1, 1, 1, 1
+        !None_black.png:colored=1
+        !None_black.png:cullTrick=0
+        !None_black.png:foged=1
+        !None_black.png:frontFaceCull=0
+        !None_black.png:lighted=0
+        !None_black.png:texture:0=../models/pack00/black.png;modulate
+        !None_black.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object02_02.obj
+        matrix=5.96046e-008,-0,-1,0,0,1,-0,0,1,0,5.96046e-008,0,0,10,-60,1
+        name=object02_02
+        vertexScale=0.25,-0.25,0.25
+    }
+    {
+        !None_texture.png:alpha=0
+        !None_texture.png:alphaThershold=0
+        !None_texture.png:backFaceCull=0
+        !None_texture.png:blendAdd=0
+        !None_texture.png:blendMod=1
+        !None_texture.png:blendMul=0
+        !None_texture.png:color=1, 1, 1, 1
+        !None_texture.png:colored=1
+        !None_texture.png:cullTrick=0
+        !None_texture.png:foged=1
+        !None_texture.png:frontFaceCull=0
+        !None_texture.png:lighted=1
+        !None_texture.png:texture:0=../models/powercube/red.png;modulate
+        !None_texture.png:textured=1
+        .physic=ghost
+        billBoarding=0,0
+        class=OBJMesh
+        filename=../models/pack00/object01_03.obj
+        matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,15,-60,1
+        name=object01_03
+        vertexScale=0.75,0.75,0.75
+    }
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=0
+    !None_texture.png:blendMul=1
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/powercube/black.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-214,15.02,-35,1
+    name=object01_03
+    vertexScale=0.1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=0
+    !None_texture.png:blendMul=1
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/powercube/black.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-212,15.02,-44.94,1
+    name=object01_03
+    vertexScale=0.1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=0
+    !None_texture.png:blendMul=1
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/powercube/black.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-210,15.02,-54.94,1
+    name=object01_03
+    vertexScale=0.1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=0
+    !None_texture.png:blendMul=1
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/powercube/black.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-208,15.02,-64.94,1
+    name=object01_03
+    vertexScale=0.1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-25,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-35,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-45,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-55,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-65,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-75,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=1
+    !None_texture.png:blendMul=0
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/pack00/img/texture.png;modulate
+    !None_texture.png:textured=1
+    .physic=box
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-200,5,-85,1
+    name=object01_03
+    vertexScale=1,1,1
+}
+{
+    !None_texture.png:alpha=0
+    !None_texture.png:alphaThershold=0
+    !None_texture.png:backFaceCull=0
+    !None_texture.png:blendAdd=0
+    !None_texture.png:blendMod=0
+    !None_texture.png:blendMul=1
+    !None_texture.png:color=1, 1, 1, 1
+    !None_texture.png:colored=1
+    !None_texture.png:cullTrick=0
+    !None_texture.png:foged=1
+    !None_texture.png:frontFaceCull=0
+    !None_texture.png:lighted=1
+    !None_texture.png:texture:0=../models/powercube/black.png;modulate
+    !None_texture.png:textured=1
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/object01_03.obj
+    matrix=1,0,0,0,0,1,0,0,0,0,1,0,-216,15.02,-25,1
+    name=object01_03
+    vertexScale=0.1,1,1
+}
+{
+    !None_blackskin0003.png:alpha=0
+    !None_blackskin0003.png:alphaThershold=0
+    !None_blackskin0003.png:backFaceCull=0
+    !None_blackskin0003.png:blendAdd=0
+    !None_blackskin0003.png:blendMod=1
+    !None_blackskin0003.png:blendMul=0
+    !None_blackskin0003.png:color=1, 1, 1, 1
+    !None_blackskin0003.png:colored=1
+    !None_blackskin0003.png:cullTrick=1
+    !None_blackskin0003.png:foged=1
+    !None_blackskin0003.png:frontFaceCull=0
+    !None_blackskin0003.png:lighted=1
+    !None_blackskin0003.png:texture:0=../models/pack00/blackskin12.png;modulate
+    !None_blackskin0003.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/plate01_horis.obj
+    matrix=1,0,0,0,0,5.96046e-008,-1,0,0,1,5.96046e-008,0,-200,10.02,-15,1
+    name=plate01_horis
+    vertexScale=0.5,-0.5,0.5
+}
+{
+    !None_blackskin0003.png:alpha=0
+    !None_blackskin0003.png:alphaThershold=0
+    !None_blackskin0003.png:backFaceCull=0
+    !None_blackskin0003.png:blendAdd=0
+    !None_blackskin0003.png:blendMod=1
+    !None_blackskin0003.png:blendMul=0
+    !None_blackskin0003.png:color=1, 1, 1, 1
+    !None_blackskin0003.png:colored=1
+    !None_blackskin0003.png:cullTrick=1
+    !None_blackskin0003.png:foged=1
+    !None_blackskin0003.png:frontFaceCull=0
+    !None_blackskin0003.png:lighted=1
+    !None_blackskin0003.png:texture:0=../models/pack00/blackskin12.png;modulate
+    !None_blackskin0003.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/plate01_horis.obj
+    matrix=1,0,0,0,0,5.96046e-008,-1,0,0,1,5.96046e-008,0,-200,10.02,-35,1
+    name=plate01_horis
+    vertexScale=0.5,-0.5,0.5
+}
+{
+    !None_blackskin0003.png:alpha=0
+    !None_blackskin0003.png:alphaThershold=0
+    !None_blackskin0003.png:backFaceCull=0
+    !None_blackskin0003.png:blendAdd=0
+    !None_blackskin0003.png:blendMod=1
+    !None_blackskin0003.png:blendMul=0
+    !None_blackskin0003.png:color=1, 1, 1, 1
+    !None_blackskin0003.png:colored=1
+    !None_blackskin0003.png:cullTrick=1
+    !None_blackskin0003.png:foged=1
+    !None_blackskin0003.png:frontFaceCull=0
+    !None_blackskin0003.png:lighted=1
+    !None_blackskin0003.png:texture:0=../models/pack00/blackskin12.png;modulate
+    !None_blackskin0003.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/plate01_horis.obj
+    matrix=1,0,0,0,0,5.96046e-008,-1,0,0,1,5.96046e-008,0,-200,10.02,-55,1
+    name=plate01_horis
+    vertexScale=0.5,-0.5,0.5
+}
+{
+    !None_blackskin0003.png:alpha=0
+    !None_blackskin0003.png:alphaThershold=0
+    !None_blackskin0003.png:backFaceCull=0
+    !None_blackskin0003.png:blendAdd=0
+    !None_blackskin0003.png:blendMod=1
+    !None_blackskin0003.png:blendMul=0
+    !None_blackskin0003.png:color=1, 1, 1, 1
+    !None_blackskin0003.png:colored=1
+    !None_blackskin0003.png:cullTrick=1
+    !None_blackskin0003.png:foged=1
+    !None_blackskin0003.png:frontFaceCull=0
+    !None_blackskin0003.png:lighted=1
+    !None_blackskin0003.png:texture:0=../models/pack00/blackskin12.png;modulate
+    !None_blackskin0003.png:textured=1
+    .physic=ghost
+    billBoarding=0,0
+    class=OBJMesh
+    filename=../models/pack00/plate01_horis.obj
+    matrix=1,0,0,0,0,5.96046e-008,-1,0,0,1,5.96046e-008,0,-200,10.02,-75,1
+    name=plate01_horis
+    vertexScale=0.5,-0.5,0.5
+}
+
