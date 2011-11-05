@@ -37,7 +37,8 @@ private:
 
 private:
     tbe::ticks::Clock m_cadency;
-
+    int m_signalid;
+    
 private:
     static tbe::ppe::MotionBlurEffect* m_ppeffect;
 };

@@ -584,8 +584,16 @@ void GameManager::eventProcess()
         // Séléction d'arme
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
-            if(m_numslot.count(event->lastActiveKey.first))
-                m_userPlayer->slotWeapon(m_numslot[event->lastActiveKey.first]);
+			if(event->keyStat[EventManager::EVENT_KEY_CTRL)
+			{
+				if(m_numslot.count(event->lastActiveKey.first))
+					m_userPlayer->slotPower(m_numslot[event->lastActiveKey.first]);
+			}
+			else
+			{
+				if(m_numslot.count(event->lastActiveKey.first))
+					m_userPlayer->slotWeapon(m_numslot[event->lastActiveKey.first]);
+			}
         }
 
         if(event->notify == EventManager::EVENT_KEY_UP

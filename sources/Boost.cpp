@@ -25,6 +25,7 @@ Boost::Boost(GameManager* gameManager) : Power(gameManager)
 {
     m_slot = 2;
     m_name = "Boost";
+    m_signalid = 0;
 
     Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;
 
@@ -77,8 +78,8 @@ bool Boost::boostForce(Player* player, tbe::Vector3f direction)
 void Boost::internalActivate(tbe::Vector3f target)
 {
     if(math::isZero(m_owner->getPhysicBody()->getApplyForce())
-       || !m_owner->isStayDown()
-       || !m_cadency.isEsplanedTime(2000))
+       // || !m_owner->isStayDown()
+       || !m_cadency.isEsplanedTime(500))
     {
         m_active = false;
         return;
@@ -89,13 +90,14 @@ void Boost::internalActivate(tbe::Vector3f target)
     if(m_ppeffect)
         m_ppeffect->setEnable(true);
 
-    m_owner->onMove.connect(boost::bind(&Boost::boostForce, this, _1, _2));
+    m_signalid = std::time(0);
+    // m_owner->onMove.connect(m_signalid, boost::bind(&Boost::boostForce, this, _1, _2));
 
     NewtonNode* pbody = m_owner->getPhysicBody();
 
     Vector3f veloc = pbody->getApplyForce().normalize()*64;
 
-    NewtonBodySetContinuousCollisionMode(pbody->getBody(), true);
+    // NewtonBodySetContinuousCollisionMode(pbody->getBody(), true);
     NewtonBodyAddImpulse(pbody->getBody(), veloc, pbody->getPos());
 }
 
@@ -106,8 +108,8 @@ void Boost::internalDiactivate()
 
     NewtonNode* pbody = m_owner->getPhysicBody();
 
-    m_owner->onMove.disconnect(boost::bind(&Boost::boostForce, this, _1, _2));
-    NewtonBodySetContinuousCollisionMode(pbody->getBody(), false);
+    // m_owner->onMove.disconnect(m_signalid);
+    // NewtonBodySetContinuousCollisionMode(pbody->getBody(), false);
 
     m_cadency.snapShoot();
 }
