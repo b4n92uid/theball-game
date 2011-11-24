@@ -145,6 +145,25 @@ void lua_pushstring(lua_State *L, string s)
     lua_pushstring(L, s.c_str());
 }
 
+bool __check(MapElement* elem, GameManager* gm)
+{
+    return tools::find(gm->map.mapElements, elem);
+}
+
+bool __check(StaticElement* elem, GameManager* gm)
+{
+    return tools::find(gm->map.staticElements, elem);
+}
+
+bool __check(Player* elem, GameManager* gm)
+{
+    return tools::find(gm->getPlayers(), elem);
+}
+
+#define check(e) if(!__check(e, getGameManager(lua))) { \
+        cout << __FUNCTION__ << ": undefined element (" << e << ")" << endl; \
+        return 0; }
+
 int include(lua_State* lua)
 {
     string scriptpath = getScriptPath(lua);
@@ -160,6 +179,8 @@ int setPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
+    check(elem);
+
     Vector3f vec = lua_tovector3(lua, 2);
 
     if(elem->getPhysicBody())
@@ -173,6 +194,8 @@ int setPosition(lua_State* lua)
 int getPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+
+    check(elem);
 
     if(elem->getPhysicBody())
         lua_pushvector3(lua, elem->getPhysicBody()->getPos());
