@@ -59,6 +59,8 @@ GameManager::GameManager(AppManager* appManager)
     manager.scene->addParallelScene(parallelscene.light);
 
     parallelscene.meshs = new scene::MeshParallelScene;
+    parallelscene.meshs->setEnableFrustumTest(true);
+    parallelscene.meshs->setTransparencySort(true);
     manager.scene->addParallelScene(parallelscene.meshs);
 
     parallelscene.newton = new scene::NewtonParallelScene;
@@ -188,11 +190,6 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
     AABB newtonWordSize = map.aabb;
     newtonWordSize.add(Vector3f(32.0f));
     parallelscene.newton->setWorldSize(newtonWordSize);
-
-    scene::Fog* fog = manager.scene->getFog();
-
-    // manager.scene->setZFar(fog->isEnable() ? fog->getEnd() + 8 : map.aabb.getLength() * 2);
-    // manager.scene->updateViewParameter();
 
     // PPE ---------------------------------------------------------------------
 

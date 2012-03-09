@@ -89,7 +89,7 @@ void Player::free()
 
     m_powersInventory.clear();
     m_curPower = m_powersInventory.end();
-    
+
     setImmunity(false);
 }
 
@@ -510,7 +510,7 @@ void Player::makeTransparent(bool enable, float alpha)
 
     HardwareBuffer* hardbuf = m_visualBody->getHardwareBuffer();
 
-    Vertex* vs = hardbuf->lock();
+    Vertex* vs = hardbuf->bindBuffer(true).lock();
 
     if(enable)
         for(unsigned i = 0; i < hardbuf->getVertexCount(); i++)
@@ -519,7 +519,7 @@ void Player::makeTransparent(bool enable, float alpha)
         for(unsigned i = 0; i < hardbuf->getVertexCount(); i++)
             vs[i].color.w = 1;
 
-    hardbuf->unlock();
+    hardbuf->unlock().bindBuffer(false);
 
     Material::Array mats = m_visualBody->getAllMaterial();
 

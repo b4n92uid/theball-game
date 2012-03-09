@@ -179,8 +179,6 @@ int setPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
 
-    check(elem);
-
     Vector3f vec = lua_tovector3(lua, 2);
 
     if(elem->getPhysicBody())
@@ -194,8 +192,6 @@ int setPosition(lua_State* lua)
 int getPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
-
-    check(elem);
 
     if(elem->getPhysicBody())
         lua_pushvector3(lua, elem->getPhysicBody()->getPos());
