@@ -1,14 +1,4 @@
-ignore
 build
-
-nbproject
-cbproject
-
 Debug
+ignore
 Release
-
-syntax: glob
-**.exe
-**.dll
-**.lnk
-**.bat
