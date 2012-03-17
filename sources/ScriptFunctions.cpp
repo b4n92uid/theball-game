@@ -147,7 +147,9 @@ void lua_pushstring(lua_State *L, string s)
 
 bool __check(MapElement* elem, GameManager* gm)
 {
-    return tools::find(gm->map.mapElements, elem);
+    return tools::find(gm->map.mapElements, elem)
+            || tools::find(gm->map.staticElements, elem)
+            || tools::find(gm->getPlayers(), elem);
 }
 
 bool __check(StaticElement* elem, GameManager* gm)
@@ -160,8 +162,8 @@ bool __check(Player* elem, GameManager* gm)
     return tools::find(gm->getPlayers(), elem);
 }
 
-#define check(e) if(!__check(e, getGameManager(lua))) { \
-        cout << __FUNCTION__ << ": undefined element (" << e << ")" << endl; \
+#define check(e) if(!e || !__check(e, getGameManager(lua))) { \
+        cout << "LUA: " << __FUNCTION__ << ": undefined element (" << e << ")" << endl; \
         return 0; }
 
 int include(lua_State* lua)
@@ -178,6 +180,7 @@ int include(lua_State* lua)
 int setPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     Vector3f vec = lua_tovector3(lua, 2);
 
@@ -192,6 +195,7 @@ int setPosition(lua_State* lua)
 int getPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     if(elem->getPhysicBody())
         lua_pushvector3(lua, elem->getPhysicBody()->getPos());
@@ -204,6 +208,7 @@ int getPosition(lua_State* lua)
 int setVelocity(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     Vector3f vec = lua_tovector3(lua, 2);
 
@@ -224,6 +229,8 @@ int getVelocity(lua_State* lua)
 int setForce(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
+
     Vector3f vec = lua_tovector3(lua, 2);
 
     elem->getPhysicBody()->setApplyForce(vec);
@@ -234,6 +241,8 @@ int setForce(lua_State* lua)
 int upForce(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
+
     Vector3f vec = lua_tovector3(lua, 2);
 
     elem->getPhysicBody()->setApplyForce(elem->getPhysicBody()->getApplyForce() + vec);
@@ -244,6 +253,8 @@ int upForce(lua_State* lua)
 int getForce(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
+
     lua_pushvector3(lua, elem->getPhysicBody()->getApplyForce());
 
     return 1;
@@ -252,6 +263,7 @@ int getForce(lua_State* lua)
 int impulse(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     Vector3f vec = lua_tovector3(lua, 2);
 
@@ -267,6 +279,7 @@ int impulse(lua_State* lua)
 int freeze(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     elem->getPhysicBody()->setVelocity(0);
     elem->getPhysicBody()->setOmega(0);
@@ -280,6 +293,7 @@ int freeze(lua_State* lua)
 int unfreeze(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     elem->getPhysicBody()->setApplyGravity(true);
 
@@ -289,6 +303,7 @@ int unfreeze(lua_State* lua)
 int stopMotion(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     elem->stopMotion();
 
@@ -313,6 +328,36 @@ int setImmunity(lua_State* lua)
     player->setImmunity(value);
 
     return 0;
+}
+
+int setTextureFrame(lua_State* lua)
+{
+    StaticElement* elem = lua_tostatic(lua, 1);
+    check(elem);
+
+    scene::Mesh* mesh = elem->getVisualBody();
+
+    Vector2i part;
+    part.x = lua_tointeger(lua, 2);
+    part.y = lua_tointeger(lua, 3);
+
+    mesh->getMaterial(0)->setTexturePart(part);
+
+    return 0;
+}
+
+int childOf(lua_State* lua)
+{
+    StaticElement* elem = lua_tostatic(lua, 1);
+    check(elem);
+
+    scene::Node* node = elem->getVisualBody()->getChild(lua_tointeger(lua, 2));
+
+    MapElement* child = getGameManager(lua)->getInterface(node);
+
+    lua_pushelement(lua, child);
+
+    return 1;
 }
 
 int getNickName(lua_State* lua)
@@ -495,6 +540,7 @@ int playSound(lua_State* lua)
     GameManager* ge = getGameManager(lua);
 
     string id = lua_tostring(lua, 1);
+
     MapElement* elem = lua_toelem(lua, 2);
 
     ge->manager.sound->playSound(id, elem);
@@ -714,6 +760,7 @@ int normalize(lua_State* lua)
 int setString(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     string key = lua_tostring(lua, 2);
     string value = lua_tostring(lua, 3);
@@ -726,6 +773,8 @@ int setString(lua_State* lua)
 int getString(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
+
     string key = lua_tostring(lua, 2);
 
     if(elem->getVisualBody()->hasUserData(key))
@@ -742,6 +791,7 @@ int getString(lua_State* lua)
 int setNumber(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     string key = lua_tostring(lua, 2);
     float value = lua_tonumber(lua, 3);
@@ -754,6 +804,8 @@ int setNumber(lua_State* lua)
 int getNumber(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
+
     string key = lua_tostring(lua, 2);
 
     if(elem->getVisualBody()->hasUserData(key))
@@ -770,6 +822,7 @@ int getNumber(lua_State* lua)
 int setVector(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
 
     string key = lua_tostring(lua, 2);
     Vector3f value = lua_tovector3(lua, 3);
@@ -782,6 +835,8 @@ int setVector(lua_State* lua)
 int getVector(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
+
     string key = lua_tostring(lua, 2);
 
     if(elem->getVisualBody()->hasUserData(key))
@@ -974,6 +1029,8 @@ int getElement(lua_State* lua)
 
     lua_pushnil(lua);
 
+    cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
+                                            \
     return 1;
 }
 

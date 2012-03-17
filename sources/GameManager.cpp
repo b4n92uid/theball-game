@@ -440,6 +440,24 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor()
     return randPos;
 }
 
+MapElement* GameManager::getInterface(tbe::scene::Node* node)
+{
+
+    BOOST_FOREACH(StaticElement* st, map.staticElements)
+    {
+        if(st->getVisualBody() == node)
+            return st;
+    }
+
+    BOOST_FOREACH(MapElement* st, map.mapElements)
+    {
+        if(st->getVisualBody() == node)
+            return st;
+    }
+
+    return NULL;
+}
+
 tbe::Vector3f GameManager::getRandomPosOnTheFloor(Vector3f pos, float radius)
 {
     Vector3f randPos;

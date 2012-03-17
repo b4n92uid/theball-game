@@ -144,3 +144,8 @@ void StaticElement::makeLighted(bool enable)
         foreach(Material* mat, m_visualBody->getAllMaterial())
         mat->disable(Material::LIGHTED);
 }
+
+tbe::scene::Mesh* StaticElement::getVisualBody()
+{
+    return m_visualBody;
+}

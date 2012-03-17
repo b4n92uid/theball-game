@@ -21,6 +21,8 @@ public:
     void makeTransparent(bool enable, float alpha = 1);
     void makeLighted(bool enable);
 
+    tbe::scene::Mesh* getVisualBody();
+    
     typedef std::vector<StaticElement*> Array;
 
 private:

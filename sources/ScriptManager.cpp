@@ -45,6 +45,9 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "setImmunity", script::setImmunity);
     lua_register(m_lua, "setGhost", script::setGhost);
 
+    lua_register(m_lua, "setTextureFrame", script::setTextureFrame);
+    lua_register(m_lua, "childOf", script::childOf);
+
     lua_register(m_lua, "getNickName", script::getNickName);
 
     lua_register(m_lua, "setHealth", script::setHealth);

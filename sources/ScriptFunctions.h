@@ -45,6 +45,10 @@ int unfreeze(lua_State* lua);
 int setGhost(lua_State* lua);
 int setImmunity(lua_State* lua);
 
+int setTextureFrame(lua_State* lua);
+
+int childOf(lua_State* lua);
+
 // Player Stat
 
 int getNickName(lua_State* lua);

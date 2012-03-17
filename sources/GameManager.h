@@ -70,6 +70,8 @@ public:
     /// Rotine d'affichage de l'état de la partie
     void status(std::string msg);
 
+    MapElement* getInterface(tbe::scene::Node* node);
+
     tbe::Vector3f getRandomPosOnTheFloor(tbe::Vector3f pos, float radius);
 
     tbe::Vector3f getRandomPosOnTheFloor();
