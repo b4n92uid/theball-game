@@ -159,6 +159,7 @@ public:
     Settings::World worldSettings;
 
     boost::signals2::signal<void(Player*) > onEachFrame;
+    boost::signals2::signal<void(Player*) > onPlayerInit;
 
     boost::signal<void(Player*) > onStartGame;
     boost::signal<bool(Player*), alltrue> onOutOfArena;

@@ -1230,6 +1230,8 @@ void GameManager::registerPlayer(Player* player)
 {
     manager.material->addPlayer(player);
     m_players.push_back(player);
+
+    onPlayerInit(player);
 }
 
 void GameManager::unregisterPlayer(Player* player)

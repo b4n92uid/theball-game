@@ -913,42 +913,22 @@ int power(lua_State* lua)
     return 0;
 }
 
-int createPlayers(lua_State* lua)
+int createPlayer(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
 
-    if(lua_isnumber(lua, 1))
-    {
-        int count = lua_tonumber(lua, 1);
+    string name = lua_tostring(lua, 1);
+    string model = lua_tostring(lua, 2);
 
-        for(int i = 0; i < count; i++)
-        {
-            unsigned selectPlayer = math::rand(0, gm->manager.app->globalSettings.availablePlayer.size());
+    Player* player = new Player(gm, name, model);
 
-            Settings::PlayerInfo& pi = gm->manager.app->globalSettings.availablePlayer[selectPlayer];
+    gm->registerPlayer(player);
 
-            unsigned selectName = math::rand(0, gm->manager.app->globalSettings.botNames.size());
+    gm->manager.scene->getRootNode()->addChild(player->getVisualBody());
 
-            Player* player = new Player(gm, gm->manager.app->globalSettings.botNames[selectName], pi.model);
+    lua_pushplayer(lua, player);
 
-            gm->registerPlayer(player);
-
-            gm->manager.scene->getRootNode()->addChild(player->getVisualBody());
-        }
-    }
-    else if(lua_isstring(lua, 1) && lua_isstring(lua, 2))
-    {
-        string name = lua_tostring(lua, 1);
-        string model = lua_tostring(lua, 2);
-
-        Player* player = new Player(gm, name, model);
-
-        gm->registerPlayer(player);
-
-        gm->manager.scene->getRootNode()->addChild(player->getVisualBody());
-    }
-
-    return 0;
+    return 1;
 }
 
 int deletePlayer(lua_State* lua)
@@ -1007,7 +987,9 @@ int playerList(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
 
-    lua_pushtable(lua, gm->getPlayers());
+    Player::Array players = gm->getPlayers();
+
+    lua_pushtable(lua, players);
 
     return 1;
 }
@@ -1030,7 +1012,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                    \
+                                                                    \
     return 1;
 }
 
@@ -1180,6 +1162,26 @@ struct OutOfArenaHook
     lua_State* lua;
 };
 
+struct PlayerInitHook
+{
+
+    PlayerInitHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player * userplayer)
+    {
+        lua_getglobal(lua, callback.c_str());
+        lua_pushplayer(lua, userplayer);
+        lua_call(lua, 1, 0);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
 struct StartGameHook
 {
 
@@ -1209,7 +1211,10 @@ int registerGlobalHook(lua_State* lua)
     string type = lua_tostring(lua, 1);
     string func = lua_tostring(lua, 2);
 
-    if(type == "frame")
+    if(type == "player")
+        gm->onPlayerInit.connect(PlayerInitHook(lua, func));
+
+    else if(type == "frame")
         gm->onEachFrame.connect(FrameHook(lua, func));
 
     else if(type == "start")
@@ -1415,7 +1420,12 @@ int registerPlayerHook(lua_State* lua)
     string type = lua_tostring(lua, 1);
     string func = lua_tostring(lua, 2);
 
-    const Player::Array& players = gm->getPlayers();
+    Player::Array players;
+
+    if(lua_isnumber(lua, 3))
+        players.push_back(lua_toplayer(lua, 3));
+    else
+        players = gm->getPlayers();
 
     BOOST_FOREACH(Player* player, players)
     {

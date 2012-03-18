@@ -112,7 +112,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "power", script::power);
     lua_register(m_lua, "dammage", script::dammage);
 
-    lua_register(m_lua, "createPlayers", script::createPlayers);
+    lua_register(m_lua, "createPlayer", script::createPlayer);
     lua_register(m_lua, "killPlayer", script::killPlayer);
     lua_register(m_lua, "isKilledPlayer", script::isKilledPlayer);
     lua_register(m_lua, "deletePlayer", script::deletePlayer);
