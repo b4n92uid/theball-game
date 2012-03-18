@@ -19,6 +19,8 @@ extern "C"
 #include <lauxlib.h>
 }
 
+#include <Tbe.h>
+
 class Player;
 class MapElement;
 class GameManager;
@@ -38,6 +40,7 @@ public:
     void processCollid(Player* player, MapElement* elem);
 
     void registerCollid(std::string id, std::string funcname);
+    void registerCollid(tbe::Vector3f pos, tbe::Vector3f size, std::string funcname);
 
 private:
     lua_State* m_lua;

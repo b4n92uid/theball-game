@@ -139,7 +139,9 @@ int getElement(lua_State* lua);
 int getElementsList(lua_State* lua);
 int getElementsRand(lua_State* lua);
 
-int registerCollid(lua_State* lua);
+int registerElementCollid(lua_State* lua);
+int registerAreaCollid(lua_State* lua);
+
 int registerGlobalHook(lua_State* lua);
 int registerPlayerHook(lua_State* lua);
 

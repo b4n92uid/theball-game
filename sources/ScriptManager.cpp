@@ -126,7 +126,9 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "getElementsList", script::getElementsList);
     lua_register(m_lua, "getElementsRand", script::getElementsRand);
 
-    lua_register(m_lua, "registerCollid", script::registerCollid);
+    lua_register(m_lua, "registerElementCollid", script::registerElementCollid);
+    lua_register(m_lua, "registerAreaCollid", script::registerAreaCollid);
+
     lua_register(m_lua, "registerGlobalHook", script::registerGlobalHook);
     lua_register(m_lua, "registerPlayerHook", script::registerPlayerHook);
 
@@ -202,5 +204,16 @@ void ScriptManager::load(std::string scriptpath)
 
 void ScriptManager::registerCollid(std::string id, std::string funcname)
 {
+    m_collidRec[id] = funcname;
+}
+
+void ScriptManager::registerCollid(tbe::Vector3f pos, tbe::Vector3f size, std::string funcname)
+{
+    string id = "dummy#" + tools::numToStr(time(0)) + tools::numToStr(rand());
+
+    DummyElement* elem = new DummyElement(m_gameManager, id, pos, size);
+
+    m_gameManager->registerElement(elem);
+
     m_collidRec[id] = funcname;
 }

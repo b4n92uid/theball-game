@@ -28,6 +28,7 @@ public:
     void addBullet(Bullet* body);
     void addPlayer(Player* body);
     void addElement(MapElement* body);
+    void addDummy(MapElement* body);
 
     int getPlayersGroupe() const;
     int getWeaponsGroupe() const;
@@ -35,9 +36,11 @@ public:
 
 protected:
 
+    int mBulletOnPlayerAABBOverlape(const NewtonMaterial*, const NewtonBody*, const NewtonBody*, int);
+    int mPlayerOnDummyAABBOverlape(const NewtonMaterial*, const NewtonBody*, const NewtonBody*, int);
+
     void mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int);
-    int mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int);
-    void mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex);
+    void mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int);
 
     static MaterialManager* getMaterialManager(const NewtonJoint* contact)
     {
@@ -55,15 +58,7 @@ protected:
         int g0 = NewtonBodyGetMaterialGroupID(body0);
         int g1 = NewtonBodyGetMaterialGroupID(body1);
 
-        return (MaterialManager*)NewtonMaterialGetUserData(NewtonBodyGetWorld(body0), g0, g1);
-    }
-
-    static void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat f, int i)
-    {
-        MaterialManager* matmanager = getMaterialManager(contact);
-
-        if(matmanager)
-            matmanager->mBulletOnMapContactsProcess(contact, f, i);
+        return(MaterialManager*)NewtonMaterialGetUserData(NewtonBodyGetWorld(body0), g0, g1);
     }
 
     static int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int i)
@@ -74,6 +69,24 @@ protected:
             return matmanager->mBulletOnPlayerAABBOverlape(material, body0, body1, i);
         else
             return 0;
+    }
+
+    static int PlayerOnDummyAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int i)
+    {
+        MaterialManager* matmanager = getMaterialManager(body0, body1);
+
+        if(matmanager)
+            return matmanager->mPlayerOnDummyAABBOverlape(material, body0, body1, i);
+        else
+            return 0;
+    }
+
+    static void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat f, int i)
+    {
+        MaterialManager* matmanager = getMaterialManager(contact);
+
+        if(matmanager)
+            matmanager->mBulletOnMapContactsProcess(contact, f, i);
     }
 
     static void PlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
@@ -92,6 +105,7 @@ protected:
     int m_playersGroupe;
     int m_immunityGroupe;
     int m_ghostGroupe;
+    int m_dummyGroupe;
 
     std::map<tbe::scene::NewtonNode*, int> m_ghostState;
     std::map<tbe::scene::NewtonNode*, int> m_immunityState;

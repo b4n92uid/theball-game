@@ -100,6 +100,7 @@ public:
     void registerPlayer(Player* player);
     void registerElement(MapElement* staticObject);
     void registerElement(StaticElement* staticObject);
+    void registerElement(DummyElement* dummyObject);
 
     void unregisterPlayer(Player* player);
     void unregisterElement(MapElement* staticObject);

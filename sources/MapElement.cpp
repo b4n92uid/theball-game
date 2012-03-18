@@ -85,3 +85,18 @@ void MapElement::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 
     elem->getPhysicBody()->applyForceAndTorque();
 }
+
+DummyElement::DummyElement(GameManager* gameManager, std::string id, tbe::Vector3f pos, tbe::Vector3f size) : MapElement(gameManager)
+{
+    m_id = id;
+
+    m_visualBody = new scene::BullNode;
+    m_visualBody->setPos(pos);
+
+    m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton, m_visualBody);
+    m_physicBody->buildSphereNode(size, 0);
+    m_physicBody->setPos(pos);
+    m_physicBody->setParent(m_visualBody);
+
+    NewtonBodySetUserData(m_physicBody->getBody(), this);
+}

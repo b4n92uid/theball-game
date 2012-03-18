@@ -135,6 +135,9 @@ GameManager::~GameManager()
     Boost::clearSingleTone(this);
     BulletTime::clearSingleTone(this);
 
+    BOOST_FOREACH(StaticElement* st, map.staticElements) delete st;
+    BOOST_FOREACH(MapElement* st, map.mapElements) delete st;
+
     manager.scene->clearAll();
 }
 
@@ -1205,6 +1208,14 @@ void GameManager::registerElement(MapElement* elem)
 
     if(elem->getVisualBody())
         map.aabb.count(elem->getVisualBody());
+}
+
+void GameManager::registerElement(DummyElement* dummyObject)
+{
+    if(dummyObject->getPhysicBody())
+        manager.material->addDummy(dummyObject);
+
+    map.mapElements.push_back(dummyObject);
 }
 
 void GameManager::unregisterElement(MapElement* staticObject)

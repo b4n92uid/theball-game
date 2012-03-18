@@ -1030,7 +1030,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                            \
+                                                    \
     return 1;
 }
 
@@ -1461,7 +1461,7 @@ int registerPlayerHook(lua_State* lua)
     return 0;
 }
 
-int registerCollid(lua_State* lua)
+int registerElementCollid(lua_State* lua)
 {
     ScriptManager* sm = getScriptManager(lua);
 
@@ -1469,6 +1469,19 @@ int registerCollid(lua_State* lua)
     string fn = lua_tostring(lua, 2);
 
     sm->registerCollid(id, fn);
+
+    return 0;
+}
+
+int registerAreaCollid(lua_State* lua)
+{
+    ScriptManager* sm = getScriptManager(lua);
+
+    Vector3f pos = lua_tovector3(lua, 1);
+    Vector3f size = lua_tonumber(lua, 2);
+    string fn = lua_tostring(lua, 3);
+
+    sm->registerCollid(pos, size, fn);
 
     return 0;
 }

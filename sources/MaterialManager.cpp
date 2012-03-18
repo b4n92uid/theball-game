@@ -30,13 +30,13 @@ MaterialManager::MaterialManager(GameManager * gameManager)
     m_immunityGroupe = NewtonMaterialCreateGroupID(m_world);
     m_elementsGroupe = NewtonMaterialCreateGroupID(m_world);
     m_ghostGroupe = NewtonMaterialCreateGroupID(m_world);
+    m_dummyGroupe = NewtonMaterialCreateGroupID(m_world);
 
-    NewtonMaterialSetCollisionCallback(m_world, m_elementsGroupe, m_playersGroupe, this, NULL, PlayerOnStaticContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_elementsGroupe, m_immunityGroupe, this, NULL, PlayerOnStaticContactsProcess);
-
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
-
+    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_dummyGroupe, this, PlayerOnDummyAABBOverlape, NULL);
     NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
+
+    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, this, NULL, PlayerOnStaticContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
 
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_ghostGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
@@ -47,6 +47,10 @@ MaterialManager::MaterialManager(GameManager * gameManager)
     NewtonMaterialSetDefaultCollidable(m_world, m_immunityGroupe, m_bulletGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_immunityGroupe, m_immunityGroupe, false);
     NewtonMaterialSetDefaultCollidable(m_world, m_immunityGroupe, m_playersGroupe, false);
+
+    NewtonMaterialSetDefaultCollidable(m_world, m_dummyGroupe, m_dummyGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_dummyGroupe, m_bulletGroupe, false);
+    NewtonMaterialSetDefaultCollidable(m_world, m_dummyGroupe, m_elementsGroupe, false);
 
     NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_elementsGroupe, 256, 512);
     NewtonMaterialSetDefaultFriction(m_world, m_immunityGroupe, m_elementsGroupe, 256, 512);
@@ -108,6 +112,11 @@ void MaterialManager::setImmunity(Player* body, bool state)
 void MaterialManager::addElement(MapElement* body)
 {
     NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_elementsGroupe);
+}
+
+void MaterialManager::addDummy(MapElement* body)
+{
+    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_dummyGroupe);
 }
 
 void MaterialManager::addBullet(Bullet* body)
@@ -184,6 +193,36 @@ void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact,
     }
 
     ge->manager.script->processCollid(player, elem);
+}
+
+int MaterialManager::mPlayerOnDummyAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
+{
+    int group0 = NewtonBodyGetMaterialGroupID(body0);
+    int group1 = NewtonBodyGetMaterialGroupID(body1);
+
+    if(group0 == group1 || group0 == m_ghostGroupe || group1 == m_ghostGroupe)
+        return 0;
+
+    Player* player = NULL;
+    MapElement* elem = NULL;
+
+    if(group0 == m_playersGroupe)
+    {
+        player = getUserData<Player*>(body0);
+        elem = getUserData<MapElement*>(body1);
+    }
+
+    else if(group1 == m_playersGroupe)
+    {
+        player = getUserData<Player*>(body1);
+        elem = getUserData<MapElement*>(body0);
+    }
+
+    GameManager* ge = player->getGameManager();
+
+    ge->manager.script->processCollid(player, elem);
+
+    return 0;
 }
 
 void MaterialManager::mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int)

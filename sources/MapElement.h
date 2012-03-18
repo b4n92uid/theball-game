@@ -58,5 +58,11 @@ protected:
     std::string m_id;
 };
 
+class DummyElement : public MapElement
+{
+public:
+    DummyElement(GameManager*, std::string, tbe::Vector3f, tbe::Vector3f);
+};
+
 #endif	/* MAPELEMENT_H */
 
