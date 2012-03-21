@@ -513,14 +513,24 @@ int attachWeapon(lua_State* lua)
     Player* player = lua_toplayer(lua, 1);
     string id = lua_tostring(lua, 2);
 
+    Weapon* weapon = NULL;
+
     if(id == "Blaster")
-        player->addWeapon(new WeaponBlaster(gm));
+        weapon= new WeaponBlaster(gm);
     else if(id == "Shotgun")
-        player->addWeapon(new WeaponShotgun(gm));
+        weapon= new WeaponShotgun(gm);
     else if(id == "Finder")
-        player->addWeapon(new WeaponFinder(gm));
+        weapon= new WeaponFinder(gm);
     else if(id == "Bomb")
-        player->addWeapon(new WeaponBomb(gm));
+        weapon= new WeaponBomb(gm);
+
+    if(lua_isnumber(lua, 3))
+        weapon->setAmmoCount(lua_tointeger(lua, 3));
+
+    if(lua_isnumber(lua, 4))
+        weapon->setMaxAmmoDammage(lua_tointeger(lua, 4));
+
+    player->addWeapon(weapon);
 
     return 0;
 }
