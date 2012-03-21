@@ -135,71 +135,14 @@ void Settings::readWorld()
     world.weaponMasse = parser.get<float>("weapon.masse");
 }
 
-void Settings::readPlayerInfo()
-{
-    using namespace boost::filesystem;
-
-    ifstream namefile("NAMES.txt");
-
-    do botNames.push_back(string());
-    while(getline(namefile, botNames.back()));
-
-    botNames.pop_back();
-
-    namefile.close();
-
-    availablePlayer.clear();
-
-    directory_iterator end;
-    for(directory_iterator it(paths.get<string > ("dirs.players")); it != end; it++)
-    {
-        const path& filename = it->path();
-
-        if(filename.extension() == ".player")
-        {
-            Settings::PlayerInfo pi(filename.file_string());
-
-            availablePlayer.push_back(pi);
-        }
-    }
-}
-
-void Settings::readCampaign()
-{
-}
-
-void Settings::readMapInfo()
-{
-    using namespace boost::filesystem;
-
-    availableMap.clear();
-
-    directory_iterator end;
-    for(directory_iterator it(paths.get<string > ("dirs.maps")); it != end; it++)
-    {
-        const path& filename = it->path();
-
-        if(filename.extension() == ".map")
-        {
-            Settings::MapInfo mi(filename.file_string());
-
-            availableMap.push_back(mi);
-        }
-    }
-}
-
 void Settings::readSetting()
 {
     boost::property_tree::read_ini("paths.ini", paths);
 
     readGui();
-    // readCampaign();
     readVideo();
     readControl();
     readWorld();
-
-    readMapInfo();
-    readPlayerInfo();
 }
 
 void Settings::saveVideo()
@@ -284,32 +227,91 @@ void Settings::fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
 
 }
 
-Settings::MapInfo::MapInfo()
+Content::Content(AppManager* appmng)
 {
-
+    m_appManager = appmng;
 }
 
-Settings::MapInfo::MapInfo(std::string path)
+Content::~Content()
 {
-    this->filename = path;
+    BOOST_FOREACH(PlayerInfo* pi, availablePlayer) delete pi;
+    BOOST_FOREACH(MapInfo* mi, availableMap) delete mi;
 
-    scene::SceneParser parser;
-    parser.loadScene(path);
+    delete mainPlayer;
+}
 
-    cout << "Load Map file: " << filename << endl;
+void Content::readPlayerInfo(std::string dir)
+{
+    using namespace boost::filesystem;
 
-    author = parser.getAuthorName();
-    name = parser.getSceneName();
+    ifstream namefile("NAMES.txt");
 
-    script = parser.getAdditionalString("script");
-    screen = parser.getAdditionalString("screenshot");
-    comment = parser.getAdditionalString("comment");
+    do botNames.push_back(string());
+    while(getline(namefile, botNames.back()));
+
+    botNames.pop_back();
+
+    namefile.close();
+
+    availablePlayer.clear();
+
+    directory_iterator end;
+    for(directory_iterator it(dir + "/pnj"); it != end; it++)
+    {
+        const path& filename = it->path();
+
+        if(filename.extension() == ".class")
+        {
+            PlayerInfo* pi = new PlayerInfo(m_appManager, filename.file_string());
+            availablePlayer.push_back(pi);
+        }
+    }
+
+    mainPlayer = new PlayerInfo(m_appManager, dir + "/eve.class");
+}
+
+void Content::readMapInfo(std::string dir)
+{
+    using namespace boost::filesystem;
+
+    availableMap.clear();
+
+    directory_iterator end;
+    for(directory_iterator it(dir); it != end; it++)
+    {
+        const path& filename = it->path();
+
+        if(filename.extension() == ".map")
+        {
+            MapInfo* mi = new MapInfo(m_appManager, filename.file_string());
+            availableMap.push_back(mi);
+        }
+    }
+}
+
+Content::MapInfo::MapInfo()
+{
+}
+
+Content::MapInfo::MapInfo(AppManager* appmng, std::string path)
+{
+    cout << "Load Map file: " << path << endl;
+
+    scene::SceneParser* loader = appmng->getSceneParser();
+    loader->load(path);
+
+    this->author = loader->getAuthorName();
+    this->name = loader->getSceneName();
+
+    this->script = loader->getAdditionalString("script");
+    this->screen = loader->getAdditionalString("screenshot");
+    this->comment = loader->getAdditionalString("comment");
 
     if(!script.empty())
-        script = tools::pathScope(filename, script, true);
+        script = tools::pathScope(path, script, true);
 
     if(!screen.empty())
-        screen = tools::pathScope(filename, screen, true);
+        screen = tools::pathScope(path, screen, true);
 
     if(author.empty())
         author = "<Inconnue>";
@@ -319,43 +321,34 @@ Settings::MapInfo::MapInfo(std::string path)
 
     if(comment.empty())
         comment = "<Pas de description>";
+
+    this->filepath = path;
 }
 
-Settings::PlayerInfo::PlayerInfo()
+Content::MapInfo::~MapInfo()
 {
-
 }
 
-Settings::PlayerInfo::PlayerInfo(std::string path)
+Content::PlayerInfo::PlayerInfo()
 {
-    this->file = path;
-
-    map<string, string> attMap;
-
-    ifstream file(path.c_str());
-
-    if(!file)
-        throw Exception("Settings::PlayerInfo::PlayerInfo; Open file error (%s)", path.c_str());
-
-    string buffer;
-
-    while(tools::getline(file, buffer))
-    {
-        if(buffer.empty() || buffer[0] == '#')
-            continue;
-
-        int eqPos = buffer.find_first_of('=');
-        string key(buffer, 0, eqPos), value(buffer, eqPos + 1);
-        attMap[key] = value;
-    }
-
-    this->name = attMap["name"];
-    this->nick = attMap["name"];
-    this->model = attMap["model"];
 }
 
-Settings::PartySetting::PartySetting()
+Content::PlayerInfo::PlayerInfo(AppManager* appmng, std::string path)
+{
+    scene::ClassParser* loader = appmng->getClassParser();
+    loader->load(path);
+
+    this->name = loader->getClassname();
+
+    this->filepath = path;
+}
+
+Content::PlayerInfo::~PlayerInfo()
+{
+}
+
+Content::PartySetting::PartySetting()
 {
     curLevel = 0;
+    nickname = "Player";
 }
-

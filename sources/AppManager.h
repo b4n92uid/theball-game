@@ -30,10 +30,7 @@ public:
     void executeMenu();
 
     /// Exécute une partie rapide
-    void executeGame(const Settings::PartySetting& playSetting);
-
-    /// Exécute la campaigne du jeu
-    void executeCampaign(const Settings::PartySetting& playSetting);
+    void executeGame(const Content::PartySetting& playSetting);
 
     tbe::EventManager* getEventMng() const;
     tbe::ticks::FpsManager* getFpsMng() const;
@@ -42,7 +39,11 @@ public:
     tbe::SDLDevice* getGameEngine() const;
     FMOD_SYSTEM* getFmodSystem() const;
 
+    tbe::scene::ClassParser* getClassParser() const;
+    tbe::scene::SceneParser* getSceneParser() const;
+
     Settings globalSettings;
+    Content* globalContent;
 
 protected:
     /// Initialise les options vidéo
@@ -58,7 +59,6 @@ protected:
     void setupBackgroundScene();
 
     void processMainMenuEvent();
-    void processCampaignMenuEvent();
     void processPlayMenuEvent();
     void processSettingMenuEvent();
     void processSettingKeyMenuEvent();
@@ -85,9 +85,11 @@ protected:
     FMOD_CHANNEL* m_mainMusicCh;
     FMOD_SOUND* m_gongSound;
 
+    tbe::scene::SceneParser* m_sceneParser;
+    tbe::scene::ClassParser* m_classParser;
+
     struct
     {
-        tbe::gui::Button* campaign;
         tbe::gui::Button* quickplay;
         tbe::gui::Button* settings;
         tbe::gui::Button* about;
@@ -101,7 +103,6 @@ protected:
 
         struct
         {
-            tbe::gui::SwitchString* playerSelect;
             tbe::gui::EditBox* playerName;
 
             tbe::gui::Button* next;
@@ -120,17 +121,6 @@ protected:
             tbe::gui::Button* prev;
 
         } mapmenu;
-
-        struct
-        {
-            // tbe::gui::SwitchString* levelSelect;
-            // tbe::gui::Button* play;
-            // tbe::gui::Button* ret;
-            // tbe::gui::SwitchString* playerSelect;
-            // tbe::gui::EditBox* playerName;
-            // tbe::gui::TextBox* description;
-
-        } campaignmenu;
 
         struct
         {

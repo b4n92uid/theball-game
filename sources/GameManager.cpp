@@ -38,7 +38,7 @@ GameManager::GameManager(AppManager* appManager)
 {
     using namespace scene;
 
-    cout << "--- Initing game manager" << endl;
+    cout << "> Initing game manager" << endl;
 
     manager.app = appManager;
 
@@ -77,12 +77,6 @@ GameManager::GameManager(AppManager* appManager)
 
     manager.fmodsys = appManager->getFmodSystem();
 
-    manager.parser = new SceneParser(manager.scene);
-    manager.parser->setMeshScene(parallelscene.meshs);
-    manager.parser->setParticlesScene(parallelscene.particles);
-    manager.parser->setLightScene(parallelscene.light);
-    manager.parser->setMarkScene(parallelscene.marks);
-
     manager.material = new MaterialManager(this);
     manager.sound = new SoundManager(this);
     manager.script = new ScriptManager(this);
@@ -116,21 +110,14 @@ GameManager::GameManager(AppManager* appManager)
 
 GameManager::~GameManager()
 {
-    cout << "--- Cleaning game manager" << endl;
-
-    manager.gui->setSession(MENU_MAPCHOOSE);
+    cout << "> Cleaning game manager" << endl;
 
     manager.gameEngine->setGrabInput(false);
     manager.gameEngine->setMouseVisible(true);
 
-    manager.gui->destroySession(SCREEN_GAMEOVER);
-    manager.gui->destroySession(SCREEN_PAUSEMENU);
-    manager.gui->destroySession(SCREEN_HUD);
-
     delete manager.sound;
     delete manager.material;
     delete manager.script;
-    delete manager.parser;
 
     Boost::clearSingleTone(this);
     BulletTime::clearSingleTone(this);
@@ -139,20 +126,27 @@ GameManager::~GameManager()
     BOOST_FOREACH(MapElement* st, map.mapElements) delete st;
 
     manager.scene->clearAll();
+
+    manager.gui->setSession(MENU_MAPCHOOSE);
+
+    manager.gui->destroySession(SCREEN_GAMEOVER);
+    manager.gui->destroySession(SCREEN_PAUSEMENU);
+    manager.gui->destroySession(SCREEN_HUD);
 }
 
-void GameManager::setupMap(const Settings::PartySetting& playSetting)
+void GameManager::setupMap(const Content::PartySetting& playSetting)
 {
-    m_playSetting = playSetting;
+    cout << "> Loading level" << endl;
 
-    cout << "--- Loading level" << endl;
+    map.settings = playSetting;
 
     // SCENE -------------------------------------------------------------------
 
     map.aabb.clear();
 
-    manager.parser->loadScene(m_playSetting.map.filename);
-    manager.parser->buildScene();
+    scene::SceneParser* loader = manager.app->getSceneParser();
+    loader->load(playSetting.map->filepath);
+    loader->build();
 
     for(Iterator<scene::Mesh*> it = parallelscene.meshs->iterator(); it; it++)
     {
@@ -222,7 +216,7 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     // PLAYERS -----------------------------------------------------------------
 
-    m_userPlayer = new Player(this, m_playSetting.player.nick, m_playSetting.player.model);
+    m_userPlayer = new Player(this, map.settings.nickname, map.settings.player);
     m_userPlayer->attachController(new UserControl(this));
 
     registerPlayer(m_userPlayer);
@@ -231,7 +225,7 @@ void GameManager::setupMap(const Settings::PartySetting& playSetting)
 
     // SCRIPT ------------------------------------------------------------------
 
-    manager.script->load(m_playSetting.map.script);
+    manager.script->load(map.settings.map->script);
 }
 
 void GameManager::setupGui()
@@ -239,7 +233,7 @@ void GameManager::setupGui()
     using namespace boost;
     using namespace tbe::gui;
 
-    cout << "--- Loading GUI" << endl;
+    cout << "> Loading GUI" << endl;
 
     Settings::Gui& guisets = manager.app->globalSettings.gui;
 
@@ -522,11 +516,11 @@ void GameManager::processDevelopperCodeEvent()
         // F6 : TEST BOT
         if(event->keyState[EventManager::KEY_F6])
         {
-            unsigned select = math::rand(0, manager.app->globalSettings.availablePlayer.size());
+            unsigned select = math::rand(0, manager.app->globalContent->availablePlayer.size());
 
-            Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
+            Content::PlayerInfo* pi = manager.app->globalContent->availablePlayer[select];
 
-            Player* player = new Player(this, "TEST_BOT", pi.model);
+            Player* player = new Player(this, "TEST_BOT", pi);
             player->attachController(NULL);
 
             registerPlayer(player);
@@ -537,11 +531,11 @@ void GameManager::processDevelopperCodeEvent()
         // F6 : TEST BOT AI
         if(event->keyState[EventManager::KEY_F7])
         {
-            unsigned select = math::rand(0, manager.app->globalSettings.availablePlayer.size());
+            unsigned select = math::rand(0, manager.app->globalContent->availablePlayer.size());
 
-            Settings::PlayerInfo& pi = manager.app->globalSettings.availablePlayer[select];
+            Content::PlayerInfo* pi = manager.app->globalContent->availablePlayer[select];
 
-            Player* player = new Player(this, "TEST_BOT_AI", pi.model);
+            Player* player = new Player(this, "TEST_BOT_AI", pi);
 
             registerPlayer(player);
 

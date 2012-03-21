@@ -44,7 +44,7 @@ public:
     virtual ~GameManager();
 
     /// Construit la map et les entités
-    void setupMap(const Settings::PartySetting& playSetting);
+    void setupMap(const Content::PartySetting& playSetting);
 
     /// Construction de l'ETH
     void setupGui();
@@ -114,27 +114,25 @@ public:
         MapElement::Array mapElements;
 
         tbe::AABB aabb;
+        
+        Content::PartySetting settings;
 
     } map;
 
     struct
     {
+        AppManager* app;
+        MaterialManager* material;
+        SoundManager* sound;
+        ScriptManager* script;
+
         tbe::SDLDevice* gameEngine;
         tbe::scene::SceneManager* scene;
         tbe::gui::GuiManager* gui;
         tbe::ppe::PostProcessManager* ppe;
         tbe::ticks::FpsManager* fps;
 
-        tbe::scene::SceneParser* parser;
-
-        MaterialManager* material;
-        SoundManager* sound;
-
-        AppManager* app;
-
         FMOD_SYSTEM* fmodsys;
-
-        ScriptManager* script;
 
     } manager;
 
@@ -179,8 +177,6 @@ protected:
     Player* m_winnerPlayer;
 
     Player::Array m_players;
-
-    Settings::PartySetting m_playSetting;
 
     tbe::ticks::Clock m_logClock;
     tbe::ticks::Clock m_newtonClock;

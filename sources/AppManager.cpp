@@ -24,6 +24,8 @@ AppManager::~AppManager()
     if(!globalSettings.noaudio)
         FMOD_System_Release(m_fmodsys);
 
+    delete globalContent;
+
     delete m_gameEngine;
 }
 
@@ -52,6 +54,12 @@ void AppManager::setupVideoMode()
     m_fpsMng = m_gameEngine->getFpsManager();
     m_ppeManager = m_gameEngine->getPostProcessManager();
 
+    m_sceneParser = new scene::SceneParser(m_sceneManager);
+    m_classParser = new scene::ClassParser(m_sceneManager);
+
+    globalContent = new Content(this);
+    globalContent->readPlayerInfo(globalSettings.paths.get<string > ("dirs.players"));
+    globalContent->readMapInfo(globalSettings.paths.get<string > ("dirs.maps"));
 
     if(globalSettings.video.ppeUse
        && globalSettings.video.antialiasing
@@ -197,7 +205,6 @@ void AppManager::setupMenuGui()
     m_controls.about = m_guiManager->addButton("about", "A Propos");
     m_controls.settings = m_guiManager->addButton("settings", "Options");
     m_controls.quickplay = m_guiManager->addButton("quickplay", "Partie rapide");
-    // m_controls.campaignmenu = m_guiManager->addButton("campaign", "Jouer");
 
     m_guiManager->addLayoutSpace(64);
 
@@ -207,58 +214,6 @@ void AppManager::setupMenuGui()
     m_guiManager->endLayout();
     m_guiManager->addLayoutStretchSpace();
     m_guiManager->endLayout();
-
-    // Menu Campaign
-
-    m_guiManager->setSession(MENU_CAMPAIGN);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    /*
-    m_guiManager->addLayout(Layout::Horizental, 10, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 1
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.campaign.ret = m_guiManager->addButton("return", "Retour");
-
-    m_controls.campaign.levelSelect = m_guiManager->addSwitchString("levelSelect");
-    labels << "Niveau";
-
-    m_controls.campaign.playerName = m_guiManager->addEditBox("playerName", "Joueur");
-    labels << "Pseudo";
-
-    m_controls.campaign.playerSelect = m_guiManager->addSwitchString("playerSelect");
-    labels << "Personnage";
-
-    m_controls.campaign.play = m_guiManager->addButton("play", "Jouer");
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // -------- Collone 1
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 2
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.campaign.description = m_guiManager->addTextBox("description");
-    m_controls.campaign.description->setBackground();
-    m_controls.campaign.description->setBackgroundPadding(16);
-    m_controls.campaign.description->setSize(Vector2f(384, 256));
-    m_controls.campaign.description->setDefinedSize(true);
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // -------- Collone 2
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-     */
 
     // ******** Choix carte
 
@@ -330,9 +285,6 @@ void AppManager::setupMenuGui()
     m_controls.playmenu.prev->setBackground(gs.gui.arrowleft);
 
     m_guiManager->addLayoutSpace(32);
-
-    m_controls.playmenu.playerSelect = m_guiManager->addSwitchString("playerSelect");
-    labels << "Personnage";
 
     m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
     labels << "Pseudo";
@@ -610,17 +562,6 @@ void AppManager::setupMenuGui()
         m_controls.settingsmenu.screenSize->setCurrent(curSizeIndex);
     }
 
-    // Menu campaign
-    /*
-    m_controls.campaign.playerName->setLabel(globalSettings.profile.name);
-
-    for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
-        m_controls.campaign.playerSelect->push(globalSettings.availablePlayer[i].name, i);
-
-    m_controls.campaign.playerSelect->setCurrent(math::rand(0, globalSettings.availablePlayer.size()));
-
-     */
-
     updateGuiContent();
 }
 
@@ -637,8 +578,8 @@ void AppManager::setupBackgroundScene()
     m_sceneManager->addCamera(m_camera);
 
     SceneParser parser(m_sceneManager);
-    parser.loadScene(globalSettings("scenes.mainmenu"));
-    parser.buildScene();
+    parser.load(globalSettings("scenes.mainmenu"));
+    parser.build();
 
     // PPE ---------------------------------------------------------------------
 
@@ -670,21 +611,21 @@ void AppManager::updateQuickPlayMapInfo()
 {
     unsigned selected = m_controls.mapmenu.mapSelect->getCurrent();
 
-    Settings::MapInfo& mapinfo = globalSettings.availableMap[selected];
+    Content::MapInfo* mapinfo = globalContent->availableMap[selected];
 
     m_controls.mapmenu.description
             ->write(gui::GuiString("Carte: %s\n"
                                    "Par: %s\n\n"
                                    "%s",
-                                   mapinfo.name.c_str(),
-                                   mapinfo.author.c_str(),
-                                   mapinfo.comment.c_str()));
+                                   mapinfo->name.c_str(),
+                                   mapinfo->author.c_str(),
+                                   mapinfo->comment.c_str()));
 
-    if(!mapinfo.screen.empty())
+    if(!mapinfo->screen.empty())
     {
         try
         {
-            m_controls.mapmenu.preview->setBackground(mapinfo.screen);
+            m_controls.mapmenu.preview->setBackground(mapinfo->screen);
         }
         catch(std::exception& e)
         {
@@ -698,50 +639,14 @@ void AppManager::updateQuickPlayMapInfo()
 
 void AppManager::updateGuiContent()
 {
-    // Campaign
-
-    /*
-    m_controls.campaign.levelSelect->deleteAll();
-
-    unsigned campMapSize = min(globalSettings.campaign.maps.size() - 1, globalSettings.profile.index);
-    for(unsigned i = 0; i <= campMapSize; i++)
-    {
-        string label = "Niveau " + tools::numToStr(i + 1);
-        m_controls.campaign.levelSelect->push(label, globalSettings.campaign.maps[i]);
-    }
-
-    {
-        Settings::PartySetting& party = globalSettings.campaign.maps[campMapSize];
-
-        m_controls.campaign.description
-                ->write(gui::GuiString("Carte: %s\n"
-                                       "Par: %s\n\n"
-                                       "%s",
-                                       party.map.name.c_str(),
-                                       party.map.author.c_str(),
-                                       party.map.comment.c_str()));
-    }
-     */
-
-    // Ball a jouer
-
-    m_controls.playmenu.playerSelect->deleteAll();
-
-    for(unsigned i = 0; i < globalSettings.availablePlayer.size(); i++)
-        m_controls.playmenu.playerSelect->push(globalSettings.availablePlayer[i].name, i);
-
-    m_controls.playmenu.playerSelect->setCurrent(math::rand(0, globalSettings.availablePlayer.size()));
-
     // Carte a jouer
 
     m_controls.mapmenu.mapSelect->deleteAll();
 
-    for(unsigned i = 0; i < globalSettings.availableMap.size(); i++)
-    {
-        m_controls.mapmenu.mapSelect->push(globalSettings.availableMap[i].name, i);
-    }
+    for(unsigned i = 0; i < globalContent->availableMap.size(); i++)
+        m_controls.mapmenu.mapSelect->push(globalContent->availableMap[i]->name, i);
 
-    m_controls.mapmenu.mapSelect->setCurrent(math::rand(0, globalSettings.availableMap.size()));
+    m_controls.mapmenu.mapSelect->setCurrent(math::rand(0, globalContent->availableMap.size()));
 
     updateQuickPlayMapInfo();
 }
@@ -751,54 +656,11 @@ void AppManager::processMainMenuEvent()
     if(m_controls.quickplay->isActivate())
         m_guiManager->setSession(MENU_MAPCHOOSE);
 
-        //    else if(m_controls.campaign->isActivate())
-        //        m_guiManager->setSession(MENU_CAMPAIGN);
-
     else if(m_controls.settings->isActivate())
         m_guiManager->setSession(MENU_SETTING);
 
     else if(m_controls.about->isActivate())
         m_guiManager->setSession(MENU_ABOUT);
-}
-
-void AppManager::processCampaignMenuEvent()
-{
-    /*
-    if(m_controls.campaign.levelSelect->isActivate())
-    {
-        Settings::PartySetting party = m_controls.campaign.levelSelect->getData()
-                .getValue<Settings::PartySetting > ();
-
-        m_controls.campaign.description
-                ->write(gui::GuiString("Carte: %s\n"
-                                       "Par: %s\n\n"
-                                       "%s",
-                                       party.map.name.c_str(),
-                                       party.map.author.c_str(),
-                                       party.map.comment.c_str()));
-    }
-
-    else if(m_controls.campaign.play->isActivate())
-    {
-        Settings::PartySetting party = m_controls.campaign.levelSelect->getData()
-                .getValue<Settings::PartySetting > ();
-
-        unsigned indexOfPlayer = m_controls.campaign.playerSelect->getData().getValue<unsigned>();
-
-        party.player = globalSettings.availablePlayer[indexOfPlayer];
-        party.player.nick = m_controls.campaign.playerName->getLabel();
-
-        executeCampaign(party);
-
-        m_guiManager->setSession(MENU_CAMPAIGN);
-    }
-
-    else if(m_controls.campaign.playerName->isActivate())
-        globalSettings.profile.name = m_controls.campaign.playerName->getLabel();
-
-    else if(m_controls.campaign.ret->isActivate())
-        m_guiManager->setSession(MENU_MAIN);
-     */
 }
 
 void AppManager::processPlayMenuEvent()
@@ -808,6 +670,7 @@ void AppManager::processPlayMenuEvent()
         updateQuickPlayMapInfo();
         m_controls.mapmenu.mapSelect->setActivate(false);
     }
+
     else if(m_controls.mapmenu.next->isActivate())
         m_guiManager->setSession(MENU_PLAYERCHOOSE);
 
@@ -817,14 +680,11 @@ void AppManager::processPlayMenuEvent()
     else if(m_controls.playmenu.next->isActivate())
     {
         unsigned indexOfLevel = m_controls.mapmenu.mapSelect->getData().getValue<unsigned>();
-        unsigned indexOfPlayer = m_controls.playmenu.playerSelect->getData().getValue<unsigned>();
 
-        Settings::PartySetting playSetting;
-
-        playSetting.map = globalSettings.availableMap[indexOfLevel];
-
-        playSetting.player = globalSettings.availablePlayer[indexOfPlayer];
-        playSetting.player.nick = m_controls.playmenu.playerName->getLabel();
+        Content::PartySetting playSetting;
+        playSetting.map = globalContent->availableMap[indexOfLevel];
+        playSetting.player = globalContent->mainPlayer;
+        playSetting.nickname = m_controls.playmenu.playerName->getLabel();
 
         executeGame(playSetting);
 
@@ -832,8 +692,6 @@ void AppManager::processPlayMenuEvent()
 
         m_guiManager->setSession(MENU_MAIN);
     }
-
-    else if(m_controls.playmenu.playerSelect->isActivate());
 
     else if(m_controls.playmenu.playerName->isActivate());
 
@@ -901,10 +759,6 @@ void AppManager::executeMenu()
                         processMainMenuEvent();
                     break;
 
-                case MENU_CAMPAIGN:
-                    processCampaignMenuEvent();
-                    break;
-
                 case MENU_SETTING_KEYS:
                     processSettingKeyMenuEvent();
                     break;
@@ -952,12 +806,9 @@ void AppManager::executeMenu()
     }
 }
 
-void AppManager::executeGame(const Settings::PartySetting& playSetting)
+void AppManager::executeGame(const Content::PartySetting& playSetting)
 {
-    cout << "--- ExecuteGame :" << endl
-            << "  playLevel = " << playSetting.map.name << endl
-            << "  playerModel = " << playSetting.player.file << endl
-            << "  playerName = " << playSetting.player.name << endl;
+    cout << "> Execute game " << playSetting.map->filepath << ", " << playSetting.player->filepath << endl;
 
     m_sceneManager->clearAll();
     m_ppeManager->clearAll();
@@ -981,6 +832,15 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
     // Chargement de la carte --------------------------------------------------
 
     GameManager* gameManager = new GameManager(this);
+
+    m_sceneParser->setMeshScene(gameManager->parallelscene.meshs);
+    m_sceneParser->setParticlesScene(gameManager->parallelscene.particles);
+    m_sceneParser->setLightScene(gameManager->parallelscene.light);
+    m_sceneParser->setMarkScene(gameManager->parallelscene.marks);
+    m_classParser->setMeshScene(gameManager->parallelscene.meshs);
+    m_classParser->setParticlesScene(gameManager->parallelscene.particles);
+    m_classParser->setLightScene(gameManager->parallelscene.light);
+    m_classParser->setMarkScene(gameManager->parallelscene.marks);
 
     gameManager->setupGui();
     gameManager->setupMap(playSetting);
@@ -1032,10 +892,6 @@ void AppManager::executeGame(const Settings::PartySetting& playSetting)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 
-void AppManager::executeCampaign(const Settings::PartySetting& playSetting)
-{
-}
-
 tbe::EventManager* AppManager::getEventMng() const
 {
     return m_eventMng;
@@ -1064,4 +920,14 @@ tbe::SDLDevice* AppManager::getGameEngine() const
 FMOD_SYSTEM* AppManager::getFmodSystem() const
 {
     return m_fmodsys;
+}
+
+tbe::scene::ClassParser* AppManager::getClassParser() const
+{
+    return m_classParser;
+}
+
+tbe::scene::SceneParser* AppManager::getSceneParser() const
+{
+    return m_sceneParser;
 }

@@ -54,9 +54,10 @@ int main(int argc, char** argv)
         {
             // NOTE play <level> <player>
 
-            Settings::PartySetting ps;
-            ps.map = Settings::MapInfo(argv[index + 1]);
-            ps.player = Settings::PlayerInfo(argv[index + 2]);
+            Content::PartySetting ps;
+
+            ps.map = new Content::MapInfo(&theBall, argv[index + 1]);
+            ps.player = new Content::PlayerInfo(&theBall, argv[index + 2]);
 
             theBall.executeGame(ps);
         }

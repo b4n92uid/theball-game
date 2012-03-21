@@ -20,11 +20,11 @@ using namespace tbe::scene;
 
 // PlayerEngine ----------------------------------------------------------------
 
-Player::Player(GameManager* gameManager, std::string name, std::string model)
+Player::Player(GameManager* gameManager, std::string nickname, Content::PlayerInfo* pinfo)
 : MapElement(gameManager), m_settings(gameManager->manager.app->globalSettings)
 {
     // Attributes
-    m_nickname = name;
+    m_nickname = nickname;
     m_id = "player";
     m_curWeapon = m_weaponsInventory.end();
     m_curPower = m_powersInventory.end();
@@ -36,10 +36,11 @@ Player::Player(GameManager* gameManager, std::string name, std::string model)
     m_immunity = false;
 
     // Rendue
-    m_visualBody = new OBJMesh(m_gameManager->parallelscene.meshs);
-    m_visualBody->open(model);
+    ClassParser* loader = gameManager->manager.app->getClassParser();
+    loader->load(pinfo->filepath);
+    loader->build();
 
-    MapElement::m_visualBody = m_visualBody;
+    MapElement::m_visualBody = m_visualBody = loader->getBuildedNode<Mesh*>()->clone();
 
     // Effet explosion
     m_deadExplode = new ParticlesEmiter(gameManager->parallelscene.particles);
@@ -52,8 +53,7 @@ Player::Player(GameManager* gameManager, std::string name, std::string model)
     m_deadExplode->setParent(m_visualBody);
 
     // Physique
-    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton);
-    m_physicBody->setUpdatedMatrix(&m_visualBody->getMatrix());
+    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton, m_visualBody);
     m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
 
     m_visualBody->addChild(m_physicBody);

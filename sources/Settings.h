@@ -12,9 +12,12 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+class AppManager;
+
 class Settings
 {
 public:
+
     Settings();
     ~Settings();
 
@@ -23,12 +26,9 @@ public:
 
     void readGui();
     void readAi();
-    void readCampaign();
     void readVideo();
     void readControl();
     void readWorld();
-    void readMapInfo();
-    void readPlayerInfo();
 
     void saveVideo();
     void saveControl();
@@ -106,60 +106,71 @@ public:
 
     } control;
 
+
+    boost::property_tree::ptree paths;
+    boost::property_tree::ptree weapons;
+
+    bool noaudio;
+
+};
+
+class Content
+{
+public:
+
+    Content(AppManager* appmng);
+    ~Content();
+
+    void readMapInfo(std::string dir);
+    void readPlayerInfo(std::string dir);
+
     struct MapInfo
     {
         MapInfo();
-        MapInfo(std::string path);
+        MapInfo(AppManager* appmng, std::string path);
+        ~MapInfo();
 
         std::string name;
         std::string author;
         std::string comment;
         std::string script;
         std::string screen;
-
-        std::string filename;
+        
+        std::string filepath;
     };
 
     struct PlayerInfo
     {
         PlayerInfo();
-        PlayerInfo(std::string path);
+        PlayerInfo(AppManager* appmng, std::string path);
+        ~PlayerInfo();
 
-        std::string nick;
         std::string name;
-        std::string model;
-        std::string file;
+        
+        std::string filepath;
     };
 
     struct PartySetting
     {
         PartySetting();
 
-        PlayerInfo player;
-
-        MapInfo map;
-
         unsigned curLevel;
+
+        std::string nickname;
+        PlayerInfo* player;
+        MapInfo* map;
     };
 
-    struct Campaign
-    {
-        std::vector<PartySetting> maps;
+    PlayerInfo* mainPlayer;
+    std::vector<PlayerInfo*> availablePlayer;
 
-    } campaign;
-
-    bool noaudio;
-
-    std::vector<MapInfo> availableMap;
-    std::vector<PlayerInfo> availablePlayer;
+    std::vector<MapInfo*> availableMap;
 
     std::vector<std::string> botNames;
 
-    boost::property_tree::ptree paths;
-
-    boost::property_tree::ptree weapons;
+private:
+    AppManager* m_appManager;
 };
-
 
 
 #endif	/* _SETTINGS_H */

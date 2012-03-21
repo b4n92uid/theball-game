@@ -22,7 +22,7 @@ class Player : public MapElement
 public:
 
     /// Constructeur
-    Player(GameManager* playManager, std::string name, std::string model);
+    Player(GameManager* gameManager, std::string nickname, Content::PlayerInfo* pinfo);
 
     /// Destructeur
     ~Player();
@@ -155,7 +155,7 @@ protected:
 
     SoundManager* m_soundManager;
 
-    tbe::scene::OBJMesh* m_visualBody;
+    tbe::scene::Mesh* m_visualBody;
 
     std::string m_nickname;
 

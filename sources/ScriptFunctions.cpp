@@ -856,7 +856,7 @@ int getSceneString(lua_State* lua)
 
     string key = lua_tostring(lua, 1);
 
-    string value = gm->manager.parser->getAdditionalString(key);
+    string value = gm->manager.app->getSceneParser()->getAdditionalString(key);
 
     lua_pushstring(lua, value);
 
@@ -920,7 +920,8 @@ int createPlayer(lua_State* lua)
     string name = lua_tostring(lua, 1);
     string model = lua_tostring(lua, 2);
 
-    Player* player = new Player(gm, name, model);
+    Content::PlayerInfo* pi = new Content::PlayerInfo(gm->manager.app, model);
+    Player* player = new Player(gm, name, pi);
 
     gm->registerPlayer(player);
 
@@ -1012,7 +1013,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                    \
+                                                                                \
     return 1;
 }
 
