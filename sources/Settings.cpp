@@ -256,7 +256,7 @@ void Content::readPlayerInfo(std::string dir)
     availablePlayer.clear();
 
     directory_iterator end;
-    for(directory_iterator it(dir + "/pnj"); it != end; it++)
+    for(directory_iterator it(dir); it != end; it++)
     {
         const path& filename = it->path();
 
