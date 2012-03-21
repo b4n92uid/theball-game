@@ -23,6 +23,8 @@ int include(lua_State* lua);
 
 // Translation
 
+int setFloorPosition(lua_State* lua);
+
 int setPosition(lua_State* lua);
 int getPosition(lua_State* lua);
 

@@ -27,6 +27,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "include", script::include);
 
+    lua_register(m_lua, "setFloorPosition", script::setFloorPosition);
     lua_register(m_lua, "setPosition", script::setPosition);
     lua_register(m_lua, "getPosition", script::getPosition);
 

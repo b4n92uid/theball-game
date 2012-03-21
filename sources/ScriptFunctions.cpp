@@ -177,6 +177,28 @@ int include(lua_State* lua)
     return 0;
 }
 
+int setFloorPosition(lua_State* lua)
+{
+    MapElement* elem = lua_toelem(lua, 1);
+    check(elem);
+
+    Vector3f vec = lua_tovector3(lua, 2);
+
+    GameManager* gm = getGameManager(lua);
+
+    if(gm->parallelscene.meshs->findFloor(vec.x, vec.y, vec.z))
+    {
+        vec.y += -elem->getVisualBody()->getAabb().min.y;
+
+        if(elem->getPhysicBody())
+            elem->getPhysicBody()->setPos(vec);
+        else if(elem->getVisualBody())
+            elem->getVisualBody()->setPos(vec);
+    }
+
+    return 0;
+}
+
 int setPosition(lua_State* lua)
 {
     MapElement* elem = lua_toelem(lua, 1);
@@ -1013,7 +1035,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                \
+                                                                                                \
     return 1;
 }
 
