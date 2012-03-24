@@ -516,13 +516,13 @@ int attachWeapon(lua_State* lua)
     Weapon* weapon = NULL;
 
     if(id == "Blaster")
-        weapon= new WeaponBlaster(gm);
+        weapon = new WeaponBlaster(gm);
     else if(id == "Shotgun")
-        weapon= new WeaponShotgun(gm);
+        weapon = new WeaponShotgun(gm);
     else if(id == "Finder")
-        weapon= new WeaponFinder(gm);
+        weapon = new WeaponFinder(gm);
     else if(id == "Bomb")
-        weapon= new WeaponBomb(gm);
+        weapon = new WeaponBomb(gm);
 
     if(lua_isnumber(lua, 3))
         weapon->setAmmoCount(lua_tointeger(lua, 3));
@@ -1002,7 +1002,10 @@ int display(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
 
-    gm->display(lua_tostring(lua, 1));
+    if(lua_isnumber(lua, 2))
+        gm->display(lua_tostring(lua, 1), lua_tointeger(lua, 2));
+    else
+        gm->display(lua_tostring(lua, 1));
 
     return 0;
 }
@@ -1045,7 +1048,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                \
+                                                                                                    \
     return 1;
 }
 
