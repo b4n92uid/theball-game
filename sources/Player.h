@@ -4,16 +4,18 @@
 #include <Tbe.h>
 #include <NewtonBall/NewtonBall.h>
 
-#include "MapElement.h"
-#include "Weapon.h"
-#include "Settings.h"
-#include "Controller.h"
-#include "Power.h"
+#include <boost/signal.hpp>
 
+#include "Settings.h"
 #include "Define.h"
+
+#include "MapElement.h"
 
 class GameManager;
 
+class Controller;
+class Weapon;
+class Power;
 class SoundManager;
 class MaterialManager;
 
@@ -33,8 +35,8 @@ public:
     bool shoot(tbe::Vector3f targetpos);
 
     /**
-     * Réunitilase les attribut de santé
-     * l'état physique, les armes et la position
+     * RÃ©unitilase les attribut de santÃ©
+     * l'Ã©tat physique, les armes et la position
      */
     void reBorn();
 
@@ -44,7 +46,7 @@ public:
     /// Saut
     void jump();
 
-    /// Accéleration
+    /// AccÃ©leration
     bool power(bool stat, tbe::Vector3f targetpos = 0);
 
     /// Assigne les dommages et augemente le score
@@ -67,7 +69,7 @@ public:
     void attachController(Controller* controller);
     Controller* getAttachedCotroller() const;
 
-    /// Assigne une position alétoire au sol
+    /// Assigne une position alÃ©toire au sol
     void randomPosOnFloor();
 
     /// Assigne la dernier position d'apparition
@@ -75,7 +77,7 @@ public:
 
     /**
      * Ajoute une arme au joueur
-     * si l'arme existe déja on ajouter les munitions puis on la supprime
+     * si l'arme existe dÃ©ja on ajouter les munitions puis on la supprime
      */
     void addWeapon(Weapon* weapon);
 
@@ -109,7 +111,7 @@ public:
     void setName(std::string name);
     std::string getName() const;
 
-    /// Santé
+    /// SantÃ©
     void upLife(int life);
     void setLife(int life);
     int getLife() const;
@@ -143,11 +145,11 @@ protected:
     bool m_immunity;
     int m_energy;
 
-    Weapon::Array::iterator m_curWeapon;
-    Weapon::Array m_weaponsInventory;
+    WeaponArray::iterator m_curWeapon;
+    WeaponArray m_weaponsInventory;
 
-    Power::Array::iterator m_curPower;
-    Power::Array m_powersInventory;
+    PowerArray::iterator m_curPower;
+    PowerArray m_powersInventory;
 
     Controller* m_attachedCotroller;
 

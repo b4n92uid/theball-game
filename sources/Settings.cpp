@@ -15,7 +15,6 @@
 
 using namespace std;
 using namespace tbe;
-using namespace gui;
 using namespace boost;
 
 Settings::Settings()
@@ -30,37 +29,6 @@ Settings::~Settings()
 const char* Settings::operator()(std::string key) const
 {
     return paths.get<std::string > (key).c_str();
-}
-
-void Settings::readGui()
-{
-    property_tree::ptree parser;
-
-    property_tree::read_ini("gui.ini", parser);
-
-    property_tree::read_ini("weapons.ini", weapons);
-
-    gui.button = parser.get<string > ("menu.button");
-    gui.gauge = parser.get<string > ("menu.gauge");
-    gui.editbox = parser.get<string > ("menu.editbox");
-    gui.switchbox = parser.get<string > ("menu.switchbox");
-    gui.textbox = parser.get<string > ("menu.textbox");
-    gui.udarrow = parser.get<string > ("menu.udarrow");
-
-    gui.maskH = parser.get<string > ("menu.mask_h");
-    gui.maskV = parser.get<string > ("menu.mask_v");
-
-    gui.fontpath = parser.get<string > ("menu.fontpath");
-    gui.fontSize = parser.get<int>("menu.fontsize");
-
-    gui.mainmenu = parser.get<string > ("menu.mainmenu");
-    gui.arrowleft = parser.get<string > ("menu.arrowleft");
-    gui.arrowright = parser.get<string > ("menu.arrowright");
-    gui.playbutton = parser.get<string > ("menu.playbutton");
-    gui.vertline = parser.get<string > ("menu.vertline");
-    gui.logo = parser.get<string > ("menu.logo");
-    gui.version = parser.get<string > ("menu.version");
-    gui.nopreview = parser.get<string > ("menu.nopreview");
 }
 
 void Settings::readVideo()
@@ -89,8 +57,16 @@ void Settings::readVideo()
     video.fullScreen = parser.get<bool>("window.fullscreen");
     video.screenSize = parser.get<Vector2i > ("window.size");
 
-    video.ppeUse = parser.get<bool>("ppe.use");
-    video.ppeSize = parser.get<Vector2i > ("ppe.size");
+    if(Shader::checkHardware())
+    {
+        video.ppeUse = parser.get<bool>("ppe.use");
+        video.ppeSize = parser.get<Vector2i > ("ppe.size");
+    }
+    else
+    {
+        video.ppeUse = false;
+        video.ppeSize = 0;
+    }
 }
 
 void Settings::readControl()
@@ -115,8 +91,9 @@ void Settings::readControl()
 
 void Settings::readWorld()
 {
-    property_tree::ptree parser;
+    property_tree::read_ini("weapons.ini", weapons);
 
+    property_tree::ptree parser;
     property_tree::read_ini("world.ini", parser);
 
     world.gravity = parser.get<float>("general.gravity");
@@ -139,7 +116,6 @@ void Settings::readSetting()
 {
     boost::property_tree::read_ini("paths.ini", paths);
 
-    readGui();
     readVideo();
     readControl();
     readWorld();
@@ -182,49 +158,6 @@ void Settings::saveSetting()
 {
     saveVideo();
     saveControl();
-}
-
-void Settings::fillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager)
-{
-    char sep;
-
-    istringstream exp(guiManager->getControl("screenSize")->getLabel());
-    exp >> video.screenSize.x >> sep >> video.screenSize.y >> sep >> video.bits;
-
-    video.ppeUse = guiManager->getControl<SwitchString > ("usePpe")->getData().getValue<bool>();
-    video.fullScreen = guiManager->getControl<SwitchString > ("fullScreen")->getData().getValue<bool>();
-    video.antialiasing = guiManager->getControl<SwitchString > ("antiAliasing")->getData().getValue<unsigned >();
-}
-
-void Settings::fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager)
-{
-    control.keyboard.clear();
-    control.mouse.clear();
-
-    vector<string> actions;
-
-    actions.push_back("forward");
-    actions.push_back("backward");
-    actions.push_back("strafRight");
-    actions.push_back("strafLeft");
-    actions.push_back("jump");
-    actions.push_back("shoot");
-    actions.push_back("power");
-    actions.push_back("switchUpWeapon");
-    actions.push_back("switchDownWeapon");
-
-    for(unsigned i = 0; i < actions.size(); i++)
-    {
-        int key = guiManager->getControl<KeyConfig > (actions[i])->getKeyCode(),
-                mouse = guiManager->getControl<KeyConfig > (actions[i])->getMouseCode();
-
-        if(key != -1)
-            control.keyboard[actions[i]] = key;
-
-        else if(mouse != -1)
-            control.mouse[actions[i]] = mouse;
-    }
-
 }
 
 Content::Content(AppManager* appmng)
@@ -304,14 +237,16 @@ Content::MapInfo::MapInfo(AppManager* appmng, std::string path)
     this->name = loader->getSceneName();
 
     this->script = loader->getAdditionalString("script");
-    this->screen = loader->getAdditionalString("screenshot");
+    this->preview = loader->getAdditionalString("preview");
     this->comment = loader->getAdditionalString("comment");
 
+    /*
     if(!script.empty())
         script = tools::pathScope(path, script, true);
 
-    if(!screen.empty())
-        screen = tools::pathScope(path, screen, true);
+    if(!preview.empty())
+        preview = tools::pathScope(path, preview, true);
+     */
 
     if(author.empty())
         author = "<Inconnue>";

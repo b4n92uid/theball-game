@@ -7,8 +7,6 @@
 
 #include "BulletWeapon.h"
 
-#include "Weapon.h"
-
 #include "GameManager.h"
 #include "MaterialManager.h"
 #include "SoundManager.h"

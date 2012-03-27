@@ -1,8 +1,8 @@
 /*
- * File:   Settings.cpp
+ * File:   GameManager.cpp
  * Author: b4n92uid
  *
- * Created on 01 février 2010, 20:34
+ * Created on 01 janvier 2010, 20:34
  */
 
 #include "GameManager.h"
@@ -44,16 +44,18 @@ GameManager::GameManager(AppManager* appManager)
 
     worldSettings = manager.app->globalSettings.world;
 
-    m_running = true;
+    m_gameRunning = true;
+    m_pauseRunning = false;
 
     manager.gameEngine = manager.app->getGameEngine();
     manager.gameEngine->setGrabInput(true);
     manager.gameEngine->setMouseVisible(false);
 
     manager.fps = manager.gameEngine->getFpsManager();
-    manager.gui = manager.gameEngine->getGuiManager();
     manager.scene = manager.gameEngine->getSceneManager();
     manager.ppe = manager.gameEngine->getPostProcessManager();
+
+    manager.gui = manager.app->getGuiMng();
 
     parallelscene.light = new scene::LightParallelScene;
     manager.scene->addParallelScene(parallelscene.light);
@@ -81,8 +83,6 @@ GameManager::GameManager(AppManager* appManager)
     manager.sound = new SoundManager(this);
     manager.script = new ScriptManager(this);
 
-    m_timeTo = TIME_TO_PLAY;
-
     m_gameOver = false;
 
     m_cursorOnPlayer = false;
@@ -93,16 +93,16 @@ GameManager::GameManager(AppManager* appManager)
     m_camera->rotate(0);
     manager.scene->addCamera(m_camera);
 
-    m_numslot[38] = 1;
-    m_numslot[233] = 2;
-    m_numslot[34] = 3;
-    m_numslot[39] = 4;
-    m_numslot[40] = 5;
-    m_numslot[45] = 6;
-    m_numslot[232] = 7;
-    m_numslot[95] = 8;
-    m_numslot[231] = 9;
-    m_numslot[224] = 0;
+    m_weaponSlot[38] = 1;
+    m_weaponSlot[233] = 2;
+    m_weaponSlot[34] = 3;
+    m_weaponSlot[39] = 4;
+    m_weaponSlot[40] = 5;
+    m_weaponSlot[45] = 6;
+    m_weaponSlot[232] = 7;
+    m_weaponSlot[95] = 8;
+    m_weaponSlot[231] = 9;
+    m_weaponSlot[224] = 0;
 
     m_earthquake.intensity = 0;
     m_earthquake.physical = false;
@@ -127,11 +127,7 @@ GameManager::~GameManager()
 
     manager.scene->clearAll();
 
-    manager.gui->setSession(MENU_MAPCHOOSE);
-
-    manager.gui->destroySession(SCREEN_GAMEOVER);
-    manager.gui->destroySession(SCREEN_PAUSEMENU);
-    manager.gui->destroySession(SCREEN_HUD);
+    manager.gui->getContext()->UnloadDocument(m_gui.hud);
 }
 
 void GameManager::setupMap(const Content::PartySetting& playSetting)
@@ -228,194 +224,73 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
     manager.script->load(map.settings.map->script);
 }
 
+typedef void (GameManager::*ActionMethod)();
+
+class EventListner :
+public Rocket::Core::EventListener,
+public std::map<Rocket::Core::String, ActionMethod>
+{
+public:
+
+    EventListner(GameManager* appm) : m_gamem(appm)
+    {
+    }
+
+    void ProcessEvent(Rocket::Core::Event& e)
+    {
+        if(!this->count(e.GetCurrentElement()->GetId()))
+            return;
+
+        ActionMethod f = this->at(e.GetCurrentElement()->GetId());
+        (m_gamem->*f)();
+    }
+
+private:
+    GameManager* m_gamem;
+};
+
 void GameManager::setupGui()
 {
     using namespace boost;
     using namespace tbe::gui;
+    using namespace Rocket::Core;
 
     cout << "> Loading GUI" << endl;
 
-    Settings::Gui& guisets = manager.app->globalSettings.gui;
+    Context* context = manager.gui->getContext();
 
-    Vector2i screenSize = manager.app->globalSettings.video.screenSize;
+    #define guidir(file) (manager.app->globalSettings.paths.get<string > \
+                            ("dirs.gui") + "/" + file).c_str()
 
-    property_tree::ptree parser;
+    m_gui.hud = context->LoadDocument(guidir("hud.rml"));
+    m_gui.pause = context->LoadDocument(guidir("pausemenu.rml"));
 
-    property_tree::read_ini("gui.ini", parser);
+    #undef guidir
 
-    #define path(s) parser.get<string>(s)
+    m_gui.background.gameover = m_gui.hud->GetElementById("gameover");
+    m_gui.background.flash = m_gui.hud->GetElementById("flash");
+    m_gui.background.dammage = m_gui.hud->GetElementById("dammage");
 
-    GuiSkin* ingame_skin = new GuiSkin;
+    m_gui.objective = m_gui.hud->GetElementById("objective");
+    m_gui.message = m_gui.hud->GetElementById("message");
 
-    ingame_skin->button(guisets.button);
-    ingame_skin->buttonSize(ingame_skin->button.getSize());
-    ingame_skin->buttonMetaCount = 4;
+    m_gui.life = m_gui.hud->GetElementById("health");
+    m_gui.ammo = m_gui.hud->GetElementById("ammo");
 
-    ingame_skin->pencil(path("game.fontpath"), parser.get<int>("game.fontsize"));
-    ingame_skin->pencil.setColor(1);
+    m_gui.powerIcon = m_gui.hud->GetElementById("power-icon");
+    m_gui.weaponIcon = m_gui.hud->GetElementById("weapon-icon");
 
-    Pencil whiteSmlPen(path("game.fontpath"), parser.get<int>("game.statusfontsize"));
-    whiteSmlPen.setColor(parser.get<Vector4f > ("game.statusfontcolor"));
+    EventListner* elister = new EventListner(this);
+    (*elister)["return"] = &GameManager::onPauseMenuReturn;
+    (*elister)["quit"] = &GameManager::onPauseMenuQuit;
 
-    Pencil whiteBigPen(path("game.fontpath"), parser.get<int>("game.msgfontsize"));
-    whiteBigPen.setColor(parser.get<Vector4f > ("game.statusfontcolor"));
-
-    // GameOver ----------------------------------------------------------------
-
-    manager.gui->setSession(SCREEN_GAMEOVER, ingame_skin);
-
-    Texture black;
-    black.build(128, Vector4f(0, 0, 0, 1));
-
-    hud.background.gameover = manager.gui->addImage("hud.background.gameover", black);
-    hud.background.gameover->setSize(screenSize);
-    hud.background.gameover->setOpacity(0);
-    hud.background.gameover->setEnable(false);
-
-    manager.gui->addLayout(Layout::Vertical, 10, 10);
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->addLayout(Layout::Horizental, 10, 10);
-    manager.gui->addLayoutStretchSpace();
-
-    hud.gameover = manager.gui->addTextBox("hud.gameover");
-    hud.gameover->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.75));
-    hud.gameover->setDefinedSize(true);
-    hud.gameover->setPencil(whiteBigPen);
-    hud.gameover->setBackground(guisets.textbox);
-    hud.gameover->setTextPadding(16);
-    hud.gameover->setBackgroundMask(guisets.maskH);
-    hud.gameover->setArrowTexture(guisets.udarrow);
-    hud.gameover->setTextAlign(gui::LEFT | gui::TOP);
-
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-
-    // Pause Menu --------------------------------------------------------------
-
-    manager.gui->setSession(SCREEN_PAUSEMENU);
-
-    Image* backPause = manager.gui->addImage("00:background", path("game.pausemenu"));
-    backPause->setSize(screenSize);
-
-    manager.gui->addLayout(Layout::Horizental, 10, 10);
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->addLayout(Layout::Vertical, 10, 10)->setAlign(Layout::MIDDLE);
-    manager.gui->addLayoutStretchSpace();
-
-    hud.playmenu.quit = manager.gui->addButton("hud.playmenu.quit", "Quitter");
-
-    hud.playmenu.ret = manager.gui->addButton("hud.playmenu.ret", "Retour");
-
-    manager.gui->addLayoutSpace(64);
-
-    TextBox* pauseLabel = manager.gui->addTextBox("hud.pauseLabel");
-    pauseLabel->setPencil(whiteBigPen);
-    pauseLabel->write("Menu Pause !");
-
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-
-    manager.gui->endLayout();
-
-    // HUD ---------------------------------------------------------------------
-
-    Texture white;
-    white.build(512, 1);
-
-    manager.gui->setSession(SCREEN_HUD, ingame_skin);
-
-    hud.background.dammage = manager.gui->addImage("0:hud.background.dammage", path("game.dammage"));
-    hud.background.dammage->setSize(screenSize);
-    hud.background.dammage->setEnable(false);
-
-    hud.background.flash = manager.gui->addImage("1:hud.background.flash", path("game.flash"));
-    hud.background.flash->setSize(screenSize);
-    hud.background.flash->setEnable(false);
-
-    StateShow* croshair = manager.gui->addStateShow("0:croshair", path("game.crosshair"), 4);
-    croshair->setPos(Vector2f(screenSize) / 2.0f - Vector2f(64) / 2.0f);
-    croshair->setSize(64);
-
-    Image* core_weapon = manager.gui->addImage("core_weapon", path("game.coreweapon"));
-    Vector2f weaponParentPos(16);
-    core_weapon->setPos(weaponParentPos);
-
-    Image* core_power = manager.gui->addImage("core_power", path("game.corepower"));
-    Vector2f powerParentPos(screenSize.x - core_power->getSize().x - 16, 16);
-    core_power->setPos(powerParentPos);
-
-    hud.ammoGauge = manager.gui->addGauge("hud.ammoGauge", "");
-    hud.ammoGauge->setPos(weaponParentPos + Vector2f(96, 32));
-    hud.ammoGauge->setSize(Vector2f(256 - 96, 32));
-    hud.ammoGauge->setBackground(path("game.ammogauge"));
-    hud.ammoGauge->setSmooth(true, 1);
-
-    hud.ammo = manager.gui->addTextBox("hud.ammo");
-    hud.ammo->setPos(weaponParentPos + Vector2f(105, 8));
-    hud.ammo->setSize(Vector2f(96, 32));
-    hud.ammo->setTextAlign(gui::HCENTER | gui::VCENTER);
-    hud.ammo->setDefinedSize(true);
-
-    hud.weaponIcon = manager.gui->addStateShow("hud.weaponIcon", path("game.weaponicon"), 4);
-    hud.weaponIcon->setSize(96);
-    hud.weaponIcon->setPos(weaponParentPos);
-
-    hud.energyGauge = manager.gui->addGauge("hud.energyGauge", "");
-    hud.energyGauge->setPos(powerParentPos + Vector2f(0, 32));
-    hud.energyGauge->setSize(Vector2f(256 - 96, 32));
-    hud.energyGauge->setBackground(path("game.energygauge"));
-    hud.energyGauge->setReverse(true);
-
-    hud.life = manager.gui->addTextBox("hud.life");
-    hud.life->setPos(powerParentPos + Vector2f(64, 14));
-    hud.life->setTextAlign(gui::HCENTER);
-
-    hud.powerIcon = manager.gui->addStateShow("hud.powerIcon", path("game.powericon"), 4);
-    hud.powerIcon->setSize(96);
-    hud.powerIcon->setPos(powerParentPos + Vector2f(160, 0));
-
-    // -------- Log
-    manager.gui->addLayout(Layout::Horizental, 0, 10);
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->addLayout(Layout::Vertical, 0, 10);
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->addLayoutStretchSpace();
-
-    hud.log = manager.gui->addTextBox("hud.log");
-    hud.log->setPencil(whiteBigPen);
-    hud.log->setBackground(guisets.textbox);
-    hud.log->setBackgroundMask(path("game.msgmask"));
-    hud.log->setTextPadding(16);
-    hud.log->setEnable(false);
-    hud.log->setPos(false);
-
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-    manager.gui->addLayoutStretchSpace();
-    manager.gui->endLayout();
-    // --------
-
-    // -------- State
-    manager.gui->addLayout(Layout::Vertical, 0, 10);
-    manager.gui->addLayoutStretchSpace();
-    hud.state = manager.gui->addTextBox("hud.state");
-    hud.state->setPencil(whiteSmlPen);
-    hud.state->setBackground(guisets.textbox);
-    hud.state->setBackgroundMask(path("game.statemask"));
-    hud.state->setTextPadding(8);
-    manager.gui->endLayout();
-    // --------
-
-    #undef path
+    m_gui.pause->AddEventListener("click", elister);
 }
 
 void GameManager::startGameProcess()
 {
+    m_gui.hud->Show();
+
     onStartGame(m_userPlayer);
 }
 
@@ -423,7 +298,7 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor()
 {
     Vector3f randPos;
 
-    // Réduit le champs d'application de 5%
+    // RÃ©duit le champs d'application de 5%
     float factor = 5 * map.aabb.getLength() / 100;
 
     do
@@ -470,17 +345,19 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor(Vector3f pos, float radius)
     return randPos;
 }
 
-void GameManager::display(std::string msg)
+void GameManager::display(std::string msg, unsigned duration)
 {
-    hud.log->write(msg);
-    hud.log->setEnable(true);
+    m_gui.message->SetInnerRML(msg.c_str());
+    m_gui.message->SetProperty("visibility", "visible");
 
     m_logClock.snapShoot();
+    m_logClockOff = duration;
 }
 
 void GameManager::status(std::string msg)
 {
-    hud.state->write(msg);
+    m_gui.objective->SetInnerRML(msg.c_str());
+    m_gui.objective->SetProperty("visibility", "visible");
 }
 
 void GameManager::processDevelopperCodeEvent()
@@ -581,11 +458,15 @@ void GameManager::eventProcess()
 
     EventManager* event = manager.gameEngine->getEventManager();
 
-    // Session de jeu
-    if(m_timeTo == TIME_TO_PLAY)
+    if(m_gameOver)
     {
-        manager.gui->setSession(SCREEN_HUD);
+        if(event->keyState[EventManager::KEY_SPACE]
+           && m_validGameOver.isEsplanedTime(2000))
+            m_gameRunning = false;
+    }
 
+    else
+    {
         if(m_userPlayer->isKilled())
             return;
 
@@ -593,39 +474,28 @@ void GameManager::eventProcess()
         if(event->notify == EventManager::EVENT_MOUSE_MOVE)
             manager.scene->getCurCamera()->rotate(event->mousePosRel);
 
-        // Séléction d'arme
+        // SÃ©lÃ©ction d'arme
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
             if(event->keyState[EventManager::KEY_LCTRL])
             {
-                if(m_numslot.count(event->lastActiveKey.first))
-                    m_userPlayer->slotPower(m_numslot[event->lastActiveKey.first]);
+                if(m_weaponSlot.count(event->lastActiveKey.first))
+                    m_userPlayer->slotPower(m_weaponSlot[event->lastActiveKey.first]);
             }
             else
             {
-                if(m_numslot.count(event->lastActiveKey.first))
-                    m_userPlayer->slotWeapon(m_numslot[event->lastActiveKey.first]);
+                if(m_weaponSlot.count(event->lastActiveKey.first))
+                    m_userPlayer->slotWeapon(m_weaponSlot[event->lastActiveKey.first]);
             }
-        }
-
-        if(event->notify == EventManager::EVENT_KEY_UP
-           && event->lastActiveKey.first == EventManager::KEY_TAB)
-        {
-            manager.gameEngine->setMouseVisible(false);
-
-            m_timeTo = TIME_TO_PLAY;
         }
 
         // Touche de pause (Esc)
         if(event->keyState[EventManager::KEY_ESCAPE])
         {
-            manager.gameEngine->setGrabInput(false);
-            manager.gameEngine->setMouseVisible(true);
-
             if(m_userPlayer->getCurPower())
                 m_userPlayer->getCurPower()->diactivate();
 
-            m_timeTo = TIME_TO_PAUSE;
+            onPauseMenuShow();
         }
 
         // Code developper
@@ -633,47 +503,46 @@ void GameManager::eventProcess()
         processDevelopperCodeEvent();
         #endif
     }
+}
 
-        // Session de pause
-    else if(m_timeTo == TIME_TO_PAUSE)
+void GameManager::onPauseMenuShow()
+{
+    manager.gameEngine->setGrabInput(false);
+    manager.gameEngine->setMouseVisible(true);
+
+    m_gui.hud->Hide();
+    m_gui.pause->Show();
+
+    m_pauseRunning = true;
+    while(m_pauseRunning)
     {
-        manager.gui->setSession(SCREEN_PAUSEMENU);
+        manager.gameEngine->pollEvent();
+        manager.gui->trasmitEvent(*manager.gameEngine->getEventManager());
 
-        bool done = false;
-        while(!done)
-        {
-            manager.gameEngine->pollEvent();
-
-            if(hud.playmenu.ret->isActivate())
-            {
-                manager.gameEngine->setGrabInput(true);
-                manager.gameEngine->setMouseVisible(false);
-
-                done = true;
-                m_timeTo = TIME_TO_PLAY;
-            }
-
-            else if(hud.playmenu.quit->isActivate())
-            {
-                manager.gameEngine->setGrabInput(true);
-                manager.gameEngine->setMouseVisible(false);
-
-                m_running = false;
-                done = true;
-            }
-
-            manager.gameEngine->beginScene();
-            manager.gui->render();
-            manager.gameEngine->endScene();
-        }
+        manager.gameEngine->beginScene();
+        manager.gui->render();
+        manager.gameEngine->endScene();
     }
 
-    else if(m_timeTo == TIME_TO_GAMEOVER)
-    {
-        if(event->keyState[EventManager::KEY_SPACE]
-           && m_validGameOver.isEsplanedTime(2000))
-            m_running = false;
-    }
+    manager.gameEngine->setGrabInput(true);
+    manager.gameEngine->setMouseVisible(false);
+
+    m_gui.pause->Hide();
+    m_gui.hud->Show();
+}
+
+void GameManager::onPauseMenuQuit()
+{
+    manager.gameEngine->setGrabInput(true);
+    manager.gameEngine->setMouseVisible(false);
+
+    m_pauseRunning = false;
+    m_gameRunning = false;
+}
+
+void GameManager::onPauseMenuReturn()
+{
+    m_pauseRunning = false;
 }
 
 void EarthQuakeProcess(const NewtonBody* body, void* userData)
@@ -741,7 +610,7 @@ void GameManager::gameProcess()
     /*
      * Pour chaque joueurs
      *  - les joueurs mort pour les reconstruires
-     *  - les joueurs en fin de vie pour la préparation a la mort ;)
+     *  - les joueurs en fin de vie pour la prÃ©paration a la mort ;)
      *  - les joueurs hors de l'arene pour les remetr en place
      */
     for(unsigned i = 0; i < m_players.size(); i++)
@@ -752,13 +621,6 @@ void GameManager::gameProcess()
 
         if(player->isKilled())
         {
-            if(player == m_userPlayer)
-            {
-                manager.gameEngine->setMouseVisible(false);
-
-                m_timeTo = TIME_TO_PLAY;
-            }
-
             if(player->clocks.readyToDelete.isEsplanedTime(2000))
             {
                 player->reBorn();
@@ -778,21 +640,34 @@ void GameManager::gameProcess()
         }
     }
 
-    if(hud.log->isEnable() && m_logClock.isEsplanedTime(3000))
-        hud.log->setEnable(false);
+    if(m_gui.message->IsVisible() && m_logClock.isEsplanedTime(m_logClockOff))
+        m_gui.message->SetProperty("visibility", "hidden");
 }
 
 void GameManager::hudProcess()
 {
     using namespace tbe::gui;
+    using namespace Rocket::Core;
 
-    // Gestion de l'ETH en jeu -------------------------------------------------
+    if(m_gameOver) // Gestion de l'ETH en gameover -----------------------------
+    {
+        // Affichage de l'ecran gameover si besoin
 
-    if(m_timeTo == TIME_TO_PLAY)
+        float cssopacity = m_gui.background.gameover->GetProperty("opacity")->Get<float>();
+
+        if(cssopacity < 0.5)
+            cssopacity += 0.01;
+
+        Rocket::Core::String opacity;
+        opacity.FormatString(16, "%f", cssopacity);
+
+        m_gui.background.gameover->SetProperty("opacity", opacity);
+    }
+
+
+    else // Gestion de l'ETH en jeu --------------------------------------------
     {
         using boost::format;
-
-        manager.gui->setSession(SCREEN_HUD);
 
         // Mise a jour des bar de progression (Vie, Muinition, Bullettime)
 
@@ -802,8 +677,8 @@ void GameManager::hudProcess()
 
             if(curWeapon)
             {
-                hud.weaponIcon->setEnable(true);
-                hud.weaponIcon->setCurState(curWeapon->getSlot() - 1);
+                m_gui.weaponIcon->SetProperty("visibility", "visible");
+                m_gui.weaponIcon->SetClassNames(curWeapon->getWeaponName().c_str());
 
                 const int &ammoCount = curWeapon->getAmmoCount(),
                         &ammoCountMax = curWeapon->getMaxAmmoCount();
@@ -811,43 +686,43 @@ void GameManager::hudProcess()
                 format weaponGaugeFormat = format("%1%/%2%")
                         % ammoCount % ammoCountMax;
 
-                hud.ammo->write(weaponGaugeFormat.str());
-                hud.ammoGauge->setValue(ammoCount * 100 / ammoCountMax);
+                m_gui.ammo->SetInnerRML(weaponGaugeFormat.str().c_str());
+                // hud.ammoGauge->setValue(ammoCount * 100 / ammoCountMax);
             }
             else
             {
-                hud.ammo->write("xx/xx");
-                hud.ammoGauge->setValue(0);
-                hud.weaponIcon->setEnable(false);
+                m_gui.weaponIcon->SetProperty("visibility", "hidden");
+                m_gui.ammo->SetInnerRML("n/a");
+                //hud.ammoGauge->setValue(0);
             }
 
             const Power* curPower = m_userPlayer->getCurPower();
 
             if(curPower)
             {
-                hud.powerIcon->setEnable(true);
-                hud.powerIcon->setCurState(curPower->getSlot() - 1);
+                m_gui.powerIcon->SetProperty("visibility", "visible");
+                m_gui.powerIcon->SetClassNames(curPower->getName().c_str());
 
                 const int &energy = m_userPlayer->getEnergy();
 
                 // format powerGaugeFormat = format("%1% %2%/100") % curPower->getName() % energy;
 
                 //hud.energy->write(powerGaugeFormat.str());
-                hud.energyGauge->setValue(energy);
+                //hud.energyGauge->setValue(energy);
             }
             else
             {
+                m_gui.powerIcon->SetProperty("visibility", "hidden");
                 // hud.energy->write("Pas de pouvoir :(");
-                hud.powerIcon->setEnable(false);
-                hud.energyGauge->setValue(0);
+                // hud.energyGauge->setValue(0);
             }
 
             const int &life = m_userPlayer->getLife();
-            hud.life->write((format("%1%/100") % life).str());
+            m_gui.life->SetInnerRML((format("%1%/100") % life).str().c_str());
             // hud.life->setValue(life);
 
             // Affichage de l'ecran de dommage si besoins
-
+            /*
             if(manager.app->globalSettings.video.ppeUse)
             {
                 if(ppe.dammage->isEnable())
@@ -885,28 +760,13 @@ void GameManager::hudProcess()
                 else
                     hud.background.flash->setEnable(false);
             }
+             */
         }
         else
         {
-            hud.life->write("Mort !");
+            m_gui.life->SetInnerRML("Mort !");
             //hud.life->setValue(0);
         }
-    }
-
-    // Gestion de l'ETH en gameover --------------------------------------------
-
-    if(m_timeTo == TIME_TO_GAMEOVER)
-    {
-        manager.gui->setSession(SCREEN_GAMEOVER);
-
-        // Affichage de l'ecran gameover si besoin
-
-        float opacity = hud.background.gameover->getOpacity();
-
-        if(opacity < 0.5)
-            opacity += 0.01;
-
-        hud.background.gameover->setOpacity(opacity);
     }
 }
 
@@ -936,10 +796,10 @@ void GameManager::render()
     // Positionement camera ----------------------------------------------------
 
     /*
-     * La position de la camera est caluclé a partir de la position du joueur,
-     * et en reculant de quelques unités vers l'arrier.
+     * La position de la camera est caluclÃ© a partir de la position du joueur,
+     * et en reculant de quelques unitÃ©s vers l'arrier.
      *
-     * Un lancé de rayon est éffectuer pour savoir si la position de la camera
+     * Un lancÃ© de rayon est Ã©ffectuer pour savoir si la position de la camera
      * entre en collision avec un objet, si c'est le cas alors la position
      * arrier diminue en fonction du taux d'intersection.
      */
@@ -991,14 +851,14 @@ void GameManager::render()
     // Pick --------------------------------------------------------------------
 
     /*
-     * Ici sera spécifier le vecteur de visé du joueur
-     * en effectuant un lancé de rayon grace au moteur physique
-     * depuis la position de la camera vers un vecteur aligé sur
+     * Ici sera spÃ©cifier le vecteur de visÃ© du joueur
+     * en effectuant un lancÃ© de rayon grace au moteur physique
+     * depuis la position de la camera vers un vecteur aligÃ© sur
      * le vecteur cible de la camera.
      *
-     * Si le vecteur de visé se trouve a l'interieur du joueur
+     * Si le vecteur de visÃ© se trouve a l'interieur du joueur
      * on relance un second rayon en ignorant le joueur et en affectant une
-     * légere transparence a ce dernier.
+     * lÃ©gere transparence a ce dernier.
      *
      * Si la position de la camera se trouve a l'interieur du joueur
      * on relance un second rayon en ignorant le joueur et en affectant une
@@ -1092,9 +952,8 @@ const Player::Array& GameManager::getPlayers() const
 void GameManager::setGameOver(Player* winner, std::string finalmsg)
 {
     m_gameOver = true;
-    m_timeTo = TIME_TO_GAMEOVER;
 
-    hud.gameover->write(finalmsg);
+    m_gui.background.gameover->SetInnerRML(finalmsg.c_str());
 
     m_winnerPlayer = winner;
 
@@ -1108,7 +967,7 @@ void GameManager::setGameOver(Player* winner, std::string finalmsg)
 
     manager.gameEngine->setMouseVisible(true);
 
-    hud.background.gameover->setEnable(true);
+    m_gui.background.gameover->SetProperty("visibility", "visible");
 
     if(manager.app->globalSettings.video.ppeUse)
         ppe.gameover->setEnable(true);
@@ -1121,7 +980,7 @@ bool GameManager::isGameOver() const
 
 bool GameManager::isRunning() const
 {
-    return m_running;
+    return m_gameRunning;
 }
 
 void GameManager::backImpulse(float intensity, float push)
@@ -1143,9 +1002,11 @@ void GameManager::whiteFlash(float initOpacity, float downOpacity)
     m_flasheffect.initOpacity = initOpacity;
     m_flasheffect.downOpacity = downOpacity;
 
-    hud.background.flash->setEnable(true);
+    Rocket::Core::String opacity;
+    opacity.FormatString(16, "%f", m_flasheffect.initOpacity);
 
-    hud.background.flash->setOpacity(m_flasheffect.initOpacity);
+    m_gui.background.flash->SetProperty("visibility", "visible");
+    m_gui.background.flash->SetProperty("opacity", opacity);
 
     manager.sound->playSound("flash", m_userPlayer);
 }
@@ -1155,14 +1016,12 @@ void GameManager::dammageScreen()
     if(manager.app->globalSettings.video.ppeUse)
     {
         ppe.dammage->setEnable(true);
-
         ppe.dammage->setColor(Vector4f(1, 0, 0, 0.5));
     }
     else
     {
-        hud.background.dammage->setEnable(true);
-
-        hud.background.dammage->setOpacity(0.75);
+        m_gui.background.dammage->SetProperty("visibility", "visible");
+        m_gui.background.dammage->SetProperty("opacity", "0.75");
     }
 }
 

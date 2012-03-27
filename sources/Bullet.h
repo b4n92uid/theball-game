@@ -12,13 +12,10 @@
 #include <NewtonBall/NewtonBall.h>
 #include <fmod.h>
 
-#include "Settings.h"
 #include "MapElement.h"
-#include "SoundManager.h"
 
 class GameManager;
 class Player;
-class Bullet;
 class Weapon;
 
 class Bullet : public MapElement

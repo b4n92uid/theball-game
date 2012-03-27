@@ -13,11 +13,11 @@
 #include "SoundManager.h"
 #include "MapElement.h"
 #include "Player.h"
+#include "Weapon.h"
 
 using namespace tbe;
 using namespace tbe::scene;
 
-gui::Image* BulletTime::m_screeneffect = NULL;
 ppe::ColorEffect* BulletTime::m_ppeffect = NULL;
 
 BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
@@ -42,13 +42,6 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 
         m_gameManager->manager.ppe->addPostEffect("bullettime", m_ppeffect);
     }
-    else if(!m_screeneffect)
-    {
-        m_screeneffect = m_gameManager->manager.gui->addImage("blettimeEffect", m_settings("scrfx.bullettime"));
-        m_screeneffect->setOpacity(0.5);
-        m_screeneffect->setSize(vidsets.screenSize);
-        m_screeneffect->setEnable(false);
-    }
 
     m_gameManager->manager.sound->registerSound("bullettime", m_settings("audio.bullettime"));
 }
@@ -61,10 +54,8 @@ BulletTime::~BulletTime()
 void BulletTime::clearSingleTone(GameManager* gm)
 {
     gm->manager.ppe->deletePostEffect(m_ppeffect);
-    gm->manager.gui->deleteControls(m_screeneffect);
 
     m_ppeffect = NULL;
-    m_screeneffect = NULL;
 }
 
 void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
@@ -144,8 +135,6 @@ void BulletTime::internalActivate(tbe::Vector3f target)
 
     if(m_ppeffect)
         m_ppeffect->setEnable(true);
-    else
-        m_screeneffect->setEnable(true);
 
     m_usedWeapon = m_owner->getCurWeapon();
     m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
@@ -185,8 +174,6 @@ void BulletTime::internalDiactivate()
 
     if(m_ppeffect)
         m_ppeffect->setEnable(false);
-    else
-        m_screeneffect->setEnable(false);
 
     m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
 

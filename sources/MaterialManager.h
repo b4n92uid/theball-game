@@ -10,10 +10,9 @@
 
 #include <NewtonBall/NewtonBall.h>
 
-#include "Weapon.h"
-#include "BulletWeapon.h"
-#include "MapElement.h"
-
+class Bullet;
+class Player;
+class MapElement;
 class GameManager;
 
 class MaterialManager

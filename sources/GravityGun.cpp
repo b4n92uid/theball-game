@@ -7,6 +7,8 @@
 
 #include "GravityGun.h"
 
+#include <NewtonBall/NewtonBall.h>
+
 #include "Define.h"
 
 #include "GameManager.h"

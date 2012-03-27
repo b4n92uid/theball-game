@@ -8,14 +8,13 @@
 #ifndef BULLETTIME_H
 #define	BULLETTIME_H
 
-#include <map>
-
+#include <Tbe.h>
 #include <NewtonBall/NewtonBall.h>
+#include <fmod.hpp>
 
-#include "ColorEffect.h"
 #include "Power.h"
-#include "Weapon.h"
 
+class Weapon;
 class Player;
 
 class BulletTime : public Power
@@ -41,7 +40,6 @@ protected:
     std::map<NewtonBody*, NewtonApplyForceAndTorque> m_callbacks;
 
 protected:
-    static tbe::gui::Image* m_screeneffect;
     static tbe::ppe::ColorEffect* m_ppeffect;
 
 private :

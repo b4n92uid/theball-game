@@ -1,8 +1,16 @@
+/*
+ * File:   AppManager.cpp
+ * Author: b4n92uid
+ *
+ * Created on 26 novemebre 2009, 18:07
+ */
+
 #include "AppManager.h"
 
 #include "GameManager.h"
-
 #include <fmod_errors.h>
+
+#define guiRootPath(path) ("../../" + path).c_str()
 
 using namespace std;
 using namespace tbe;
@@ -14,7 +22,10 @@ AppManager::AppManager()
     globalSettings.readSetting();
 
     setupVideoMode();
+    setupInernalState();
+    setupMenuGui();
     setupSound();
+    setupBackgroundScene();
 }
 
 AppManager::~AppManager()
@@ -26,36 +37,55 @@ AppManager::~AppManager()
 
     delete globalContent;
 
+    delete m_sceneParser;
+    delete m_classParser;
+
+    delete m_guiManager;
     delete m_gameEngine;
 }
 
 void AppManager::setupVideoMode()
 {
-    m_gameEngine->window(CAPTION_TITLE,
-                         globalSettings.video.screenSize,
-                         globalSettings.video.bits,
-                         globalSettings.video.fullScreen,
-                         globalSettings.video.ppeUse ? 0 : globalSettings.video.antialiasing);
+    Settings::Video apply;
 
-    if(!Shader::checkHardware() && globalSettings.video.ppeUse)
-    {
-        globalSettings.video.ppeUse = false;
+    apply.screenSize = globalSettings.video.screenSize;
+    apply.bits = globalSettings.video.bits;
+    apply.fullScreen = globalSettings.video.fullScreen;
+    apply.ppeUse = globalSettings.video.ppeUse;
 
-        m_gameEngine->window(CAPTION_TITLE,
-                             globalSettings.video.screenSize,
-                             globalSettings.video.bits,
-                             globalSettings.video.fullScreen,
-                             globalSettings.video.antialiasing);
-    }
+    if(globalSettings.video.ppeUse)
+        apply.antialiasing = 0;
+    else
+        apply.antialiasing = globalSettings.video.antialiasing;
 
+    m_gameEngine->window(CAPTION_TITLE, apply.screenSize, apply.bits, apply.fullScreen, apply.antialiasing);
+}
+
+void AppManager::setupInernalState()
+{
     m_eventMng = m_gameEngine->getEventManager();
-    m_guiManager = m_gameEngine->getGuiManager();
     m_sceneManager = m_gameEngine->getSceneManager();
     m_fpsMng = m_gameEngine->getFpsManager();
     m_ppeManager = m_gameEngine->getPostProcessManager();
 
+    m_guiManager = new gui::RocketGuiManager;
+    m_guiManager->setup(globalSettings.video.screenSize);
+    m_guiManager->loadFonts(globalSettings.paths.get<string > ("dirs.gui"));
+    m_guiManager->addPath(globalSettings.paths.get<string > ("dirs.gui"));
+    m_guiManager->addPath(globalSettings.paths.get<string > ("dirs.maps"));
+
     m_sceneParser = new scene::SceneParser(m_sceneManager);
     m_classParser = new scene::ClassParser(m_sceneManager);
+
+    m_profile.mapSelection = 0;
+    m_profile.nickname = "Joueur";
+
+    #ifdef COMPILE_FOR_WINDOWS
+    DWORD bufSize = 255;
+    char userName[bufSize];
+    GetUserName(userName, &bufSize);
+    m_profile.nickname = userName;
+    #endif
 
     globalContent = new Content(this);
     globalContent->readPlayerInfo(globalSettings.paths.get<string > ("dirs.players"));
@@ -71,12 +101,6 @@ void AppManager::setupVideoMode()
     }
 
     m_fpsMng->setRunFps(60);
-
-    Texture::resetCache();
-
-    setupMenuGui();
-
-    setupBackgroundScene();
 }
 
 void AppManager::setupSound()
@@ -109,460 +133,157 @@ void AppManager::setupSound()
     }
 }
 
-class GuiLabel : public vector<gui::TextBox*>
+typedef void (AppManager::*ActionMethod)(Rocket::Core::Event& e);
+
+class EventListner :
+public Rocket::Core::EventListener,
+public std::map<Rocket::Core::String, ActionMethod>
 {
 public:
 
-    GuiLabel(gui::GuiManager* manager)
+    EventListner(AppManager* appm) : m_gamem(appm)
     {
-        _manager = manager;
     }
 
-    void operator<<(std::string text)
+    void ProcessEvent(Rocket::Core::Event& e)
     {
-        gui::TextBox* label = _manager->addTextBox(text);
-        label->write(text);
-        push_back(label);
+        if(!this->count(e.GetTargetElement()->GetId()))
+            return;
+
+        ActionMethod f = this->at(e.GetTargetElement()->GetId());
+        (m_gamem->*f)(e);
+
+        e.StopPropagation();
     }
 
 private:
-    gui::GuiManager* _manager;
+    AppManager* m_gamem;
 };
 
 void AppManager::setupMenuGui()
 {
     using namespace tbe::gui;
 
-    m_guiManager->clearAll();
-
-    const Vector2i& screenSize = globalSettings.video.screenSize;
-
-    GuiLabel labels(m_guiManager);
-
-    float sizeFactor = 1;
-
-    if(screenSize.x < 1024)
-        sizeFactor = screenSize.x / 1024.0f + 0.1f;
-
-    GuiSkin* guiskin = new GuiSkin;
-
-    guiskin->button(globalSettings.gui.button);
-    guiskin->buttonSize(Vector2f(256, 32) * sizeFactor);
-    math::round(guiskin->buttonSize);
-    guiskin->buttonMetaCount = 4;
-
-    guiskin->gauge(globalSettings.gui.gauge);
-    guiskin->gaugeSize(Vector2f(256, 32) * sizeFactor);
-    math::round(guiskin->gaugeSize);
-    guiskin->gaugeMetaCount = 2;
-
-    guiskin->editBox(globalSettings.gui.editbox);
-    guiskin->editBoxSize(Vector2f(256, 32) * sizeFactor);
-    math::round(guiskin->editBoxSize);
-    guiskin->editBoxMetaCount = 4;
-
-    guiskin->switchBox(globalSettings.gui.switchbox);
-    guiskin->switchBoxSize(Vector2f(256, 32) * sizeFactor);
-    math::round(guiskin->switchBoxSize);
-    guiskin->switchBoxMetaCount = 4;
-
-    guiskin->stateShowSize(Vector2f(48, 48) * sizeFactor);
-    math::round(guiskin->stateShowSize);
-
-    guiskin->pencil(globalSettings.gui.fontpath, globalSettings.gui.fontSize * sizeFactor);
-    guiskin->pencil.setColor(Vector4f(1, 1, 1, 1));
-
-    m_guiManager->setSkin(guiskin);
-
-    // Construction ------------------------------------------------------------
+    using namespace Rocket::Core;
 
     const Settings& gs = globalSettings;
 
-    Pencil bigpen(gs.gui.fontpath, gs.gui.fontSize * sizeFactor * 1.5);
+    m_guiManager->clearAll();
 
-    Texture background(gs.gui.mainmenu);
+    Rocket::Core::Context* context = m_guiManager->getContext();
 
-    // Menu Principale
+    #define guidir(file) (gs.paths.get<string > ("dirs.gui") + "/" + file).c_str()
 
-    m_guiManager->setSession(MENU_MAIN);
+    m_menu.mainmenu = context->LoadDocument(guidir("mainmenu.rml"));
+    m_menu.playmenu = context->LoadDocument(guidir("playmenu.rml"));
+    m_menu.setsmenu = context->LoadDocument(guidir("settings.rml"));
+    m_menu.keysmenu = context->LoadDocument(guidir("keybind.rml"));
+    m_menu.aboutmenu = context->LoadDocument(guidir("about.rml"));
+    m_menu.loadscreen = context->LoadDocument(guidir("loadscreen.rml"));
 
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    Image* version = m_guiManager->addImage("", gs.gui.version);
-    version->setSize(version->getSize() * sizeFactor);
-    version->setPos(Vector2f(screenSize.x - 256 - 10, 10));
-
-    m_guiManager->addLayout(Layout::Horizental);
-
-    m_guiManager->addLayoutSpace(64);
-
-    m_guiManager->addLayout(Layout::Vertical, 4);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.quit = m_guiManager->addButton("quit", "Quitter");
-    m_guiManager->addLayoutSpace(32);
-    m_controls.about = m_guiManager->addButton("about", "A Propos");
-    m_controls.settings = m_guiManager->addButton("settings", "Options");
-    m_controls.quickplay = m_guiManager->addButton("quickplay", "Partie rapide");
-
-    m_guiManager->addLayoutSpace(64);
-
-    m_guiManager->addImage("logo", gs.gui.logo);
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    // ******** Choix carte
-
-    m_guiManager->setSession(MENU_MAPCHOOSE);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    m_controls.mapmenu.prev = m_guiManager->addButton("prev", "");
-    m_controls.mapmenu.prev->setMetaCount(4);
-    m_controls.mapmenu.prev->setSize(64);
-    m_controls.mapmenu.prev->setBackground(gs.gui.arrowleft);
-    m_controls.mapmenu.prev->setPos(16);
-
-    m_controls.mapmenu.next = m_guiManager->addButton("next", "");
-    m_controls.mapmenu.next->setMetaCount(4);
-    m_controls.mapmenu.next->setSize(64);
-    m_controls.mapmenu.next->setBackground(gs.gui.arrowright);
-    m_controls.mapmenu.next->setPos(Vector2f(screenSize.x - 64 - 16, 16));
-
-    m_guiManager->addLayout(Layout::Horizental, 10, 10);
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 1
-    m_guiManager->addLayout(Layout::Vertical, 16)->setAlign(Layout::MIDDLE);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.mapmenu.mapSelect = m_guiManager->addSwitchString("levelSelect");
-
-    m_controls.mapmenu.description = m_guiManager->addTextBox("description");
-    m_controls.mapmenu.description->setArrowTexture(globalSettings.gui.udarrow);
-    m_controls.mapmenu.description->setBackground(globalSettings.gui.textbox);
-    m_controls.mapmenu.description->setTextPadding(4);
-    m_controls.mapmenu.description->setBackgroundMask(globalSettings.gui.maskH);
-    m_controls.mapmenu.description->setSize(Vector2f(389, 128));
-    m_controls.mapmenu.description->setDefinedSize(true);
-    m_controls.mapmenu.description->setTextAlign(gui::LEFT | gui::VCENTER);
-
-    m_controls.mapmenu.preview = m_guiManager->addImage("preview");
-    m_controls.mapmenu.preview->setSize(256);
-
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    // ******** Choix joueur
-
-    m_guiManager->setSession(MENU_PLAYERCHOOSE);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    m_guiManager->addLayout(Layout::Horizental, 10, 10);
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 1
-    m_guiManager->addLayout(Layout::Vertical, 5);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.playmenu.prev = m_guiManager->addButton("return", "");
-    m_controls.playmenu.prev->setMetaCount(4);
-    m_controls.playmenu.prev->setSize(64);
-    m_controls.playmenu.prev->setBackground(gs.gui.arrowleft);
-
-    m_guiManager->addLayoutSpace(32);
-
-    m_controls.playmenu.playerName = m_guiManager->addEditBox("nameSelect", "Joueur");
-    labels << "Pseudo";
-
-    m_guiManager->addLayoutSpace(16);
-
-    m_controls.playmenu.next = m_guiManager->addButton("play", "Jouer");
-    m_controls.playmenu.next->setBackground(gs.gui.playbutton);
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    // ******** Ecran de chargement
-
-    m_guiManager->setSession(MENU_LOAD);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    m_guiManager->addLayout(Layout::Horizental, 0, 10);
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_guiManager->addTextBox("load:stateText")
-            ->setPencil(bigpen);
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    // ******** Menu Option
-
-    m_guiManager->setSession(MENU_SETTING);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    m_guiManager->addLayout(Layout::Horizental, 0, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 1
-    m_guiManager->addLayout(Layout::Vertical, 8);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_guiManager->addButton("return", "Retour");
-    m_guiManager->addButton("apply", "Appliquer");
-
-    m_guiManager->addLayoutSpace(64);
-
-    m_guiManager->addButton("keySetting", "Conf. Touches");
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutSpace(8);
-
-    Image* vline = m_guiManager->addImage("", gs.gui.vertline);
-    vline->setSize(Vector2f(vline->getSize().x, screenSize.y - 32));
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 2
-    m_guiManager->addLayout(Layout::Vertical, 8);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_controls.settingsmenu.screenSize = m_guiManager->addSwitchString("screenSize");
-    labels << "Résolution";
-
-    m_controls.settingsmenu.antiAliasing = m_guiManager->addSwitchString("antiAliasing");
-    labels << "Anti-crélénage";
-
-    m_controls.settingsmenu.fullscreen = m_guiManager->addSwitchString("fullScreen");
-    labels << "Mode d'affichage";
-
-    m_controls.settingsmenu.usePpe = m_guiManager->addSwitchString("usePpe");
-    labels << "P.P Effects";
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    // ******** Menu Commandes
-
-    m_guiManager->setSession(MENU_SETTING_KEYS);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-    m_guiManager->addLayout(Layout::Horizental, 0, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 1
-    m_guiManager->addLayout(Layout::Vertical, 8);
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addKeyConfig("forward");
-    labels << "Avancer";
-    m_guiManager->addKeyConfig("backward");
-    labels << "Reculer";
-    m_guiManager->addKeyConfig("strafRight");
-    labels << "A gauche";
-    m_guiManager->addKeyConfig("strafLeft");
-    labels << "A droite";
-    m_guiManager->addKeyConfig("jump");
-    labels << "Sauter";
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 2
-    m_guiManager->addLayout(Layout::Vertical, 8);
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addKeyConfig("shoot");
-    labels << "Tirer";
-    m_guiManager->addKeyConfig("power");
-    labels << "Pouvoirs";
-    m_guiManager->addKeyConfig("switchUpWeapon");
-    labels << "Arme suivante";
-    m_guiManager->addKeyConfig("switchDownWeapon");
-    labels << "Arme précédente";
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-
-    // -------- Collone 3
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addButton("return", "Retour");
-    m_guiManager->addButton("apply", "Appliquer");
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    // --------
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    // ******** Menu A propos
-
-    m_guiManager->setSession(MENU_ABOUT);
-
-    m_guiManager->addImage("", background)
-            ->setSize(screenSize);
-
-
-    m_guiManager->addLayout(Layout::Horizental);
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->addLayout(Layout::Vertical, 10);
-    m_guiManager->addLayoutStretchSpace();
-
-    m_guiManager->addButton("return", "Retour");
-
-    m_controls.aboutmenu.aboutText = m_guiManager->addTextBox("aboutText");
-    m_controls.aboutmenu.aboutText->setSize(Vector2f(screenSize) * Vector2f(0.75, 0.5));
-    m_controls.aboutmenu.aboutText->setArrowTexture(globalSettings.gui.udarrow);
-    m_controls.aboutmenu.aboutText->setDefinedSize(true);
-    m_controls.aboutmenu.aboutText->setTextPadding(8);
-    m_controls.aboutmenu.aboutText->setBackground(globalSettings.gui.textbox);
-    m_controls.aboutmenu.aboutText->setBackgroundMask(globalSettings.gui.maskH);
-    m_controls.aboutmenu.aboutText->setTextAlign(gui::LEFT | gui::VCENTER);
-
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-    m_guiManager->addLayoutStretchSpace();
-    m_guiManager->endLayout();
-
-    m_guiManager->setSession(MENU_MAIN);
-
-    foreach(TextBox* label, labels)
-    {
-        Pencil whitepen = guiskin->pencil;
-        whitepen.setColor(1);
-
-        label->setPencil(whitepen);
-    }
+    #undef guidir
 
     // Remplisage --------------------------------------------------------------
 
-    string username = "Joueur#1";
+    updateMapSelection();
 
-    #ifdef COMPILE_FOR_WINDOWS
+    using namespace Rocket::Controls;
+
+    #define getSetsSelect(id) dynamic_cast<ElementFormControlSelect*>(m_menu.setsmenu->GetElementById(id))
+    #define getKeySelect(id) dynamic_cast<ElementFormControlSelect*>(m_menu.keysmenu->GetElementById(id))
+
+    // Menu de configuration des touches
+
+    #if 0
+    vector<string> actions;
+
+    actions.push_back("forward");
+    actions.push_back("backward");
+    actions.push_back("strafright");
+    actions.push_back("strafleft");
+    actions.push_back("jump");
+    actions.push_back("shoot");
+    actions.push_back("power");
+    actions.push_back("next");
+    actions.push_back("prev");
+
+    BOOST_FOREACH(string act, actions)
     {
-        DWORD bufSize = 255;
-        char userName[bufSize];
-        GetUserName(userName, &bufSize);
-        username = userName;
+        ElementFormControlSelect* select = getKeySelect(act.c_str());
+
+        int printchar[] = {13, 8, 32, 9, 273, 274, 275, 276, 277, 127, 278, 279,
+            280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293,
+            294, 295, 296, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313};
+
+        vector<int> chars(printchar, printchar + sizeof(printchar));
+
+        for(int c = 0x20; c <= 0x7e; c++)
+            chars.push_back(c);
+
+        BOOST_FOREACH(int c, chars)
+        {
+            String value;
+            value.FormatString(16, "key:%d", c);
+
+            select->Add(SDLDevice::getKeyName(c).c_str(), value);
+        }
+
+        for(int m = 0; m < 5; m++)
+        {
+            String value;
+            value.FormatString(16, "mouse:%d", m);
+
+            select->Add(SDLDevice::getMouseName(m).c_str(), value);
+        }
     }
     #endif
 
-    m_controls.playmenu.playerName->setLabel(username);
-
-    // A propos
+    BOOST_FOREACH(Settings::Control::InputMap::value_type itt, globalSettings.control.keyboard)
     {
+        String value;
+        value.FormatString(8, "key:%d", itt.second);
+
+        getKeySelect(itt.first.c_str())
+                ->Add(SDLDevice::getKeyName(itt.second).c_str(), value, 0, true);
+    }
+
+    BOOST_FOREACH(Settings::Control::InputMap::value_type itt, globalSettings.control.mouse)
+    {
+        String value;
+        value.FormatString(8, "mouse:%d", itt.second);
+
+        getKeySelect(itt.first.c_str())
+                ->Add(SDLDevice::getKeyName(itt.second).c_str(), value, 0, true);
+    }
+
+    // Menu de configuration vidÃ©o
+
+    getSetsSelect("usePpe")->SetSelection(globalSettings.video.ppeUse);
+    getSetsSelect("fullScreen")->SetSelection(globalSettings.video.fullScreen);
+    getSetsSelect("antiAliasing")->SetSelection(globalSettings.video.antialiasing / 2);
+
+    // ----
+
+    ElementFormControlSelect* screenSize = getSetsSelect("screenSize");
+
+    vector<tbe::Vector2i> availableScreen = SDLDevice::getAvilableSceeenSize();
+    unsigned curSizeIndex = 0;
+
+    for(unsigned c = 0; c < availableScreen.size(); c++)
+    {
+        if(globalSettings.video.screenSize == availableScreen[c])
+            curSizeIndex = c;
+
         stringstream ss;
+        ss << availableScreen[c].x << "x" << availableScreen[c].y << "x32";
 
-        fstream file("README.txt");
-        ss << file.rdbuf() << endl;
-        file.close();
-
-        ss << "Build in " << __DATE__;
-
-        m_controls.aboutmenu.aboutText->write(ss.str());
+        screenSize->Add(ss.str().c_str(), availableScreen[c].toStr('x').c_str());
     }
 
-    // Menu de configuration des touches
-    {
-        for(map<string, int>::const_iterator itt = globalSettings.control.keyboard.begin();
-            itt != globalSettings.control.keyboard.end(); itt++)
-            m_guiManager->getControl<gui::KeyConfig > (itt->first, MENU_SETTING_KEYS)
-            ->setKeyCode(itt->second, SDLDevice::getKeyName(itt->second));
+    screenSize->SetSelection(curSizeIndex);
 
-        for(map<string, int>::const_iterator itt = globalSettings.control.mouse.begin();
-            itt != globalSettings.control.mouse.end(); itt++)
-            m_guiManager->getControl<gui::KeyConfig > (itt->first, MENU_SETTING_KEYS)
-            ->setMouseCode(itt->second, SDLDevice::getMouseName(itt->second));
-    }
-
-    // Menu de configuration vidéo
-    {
-        m_controls.settingsmenu.usePpe->push("Désactiver", false).push("Activer", true);
-        m_controls.settingsmenu.usePpe->setCurrent(globalSettings.video.ppeUse);
-
-        m_controls.settingsmenu.fullscreen->push("Fenêtrer", false).push("Plein-écran", true);
-        m_controls.settingsmenu.fullscreen->setCurrent(globalSettings.video.fullScreen);
-    }
-
-    {
-        int cutAA = globalSettings.video.antialiasing;
-
-        map<int, int> AAAvailable;
-        AAAvailable[0] = 0;
-        AAAvailable[2] = 1;
-        AAAvailable[4] = 2;
-        AAAvailable[8] = 3;
-        AAAvailable[16] = 4;
-
-        m_controls.settingsmenu.antiAliasing->
-                push("Désactiver", 0).
-                push("2x", 2).
-                push("4x", 4).
-                push("8x", 8).
-                push("16x", 16)
-                ;
-
-        m_controls.settingsmenu.antiAliasing->setCurrent(AAAvailable[cutAA]);
-    }
-
-    {
-        vector<Vector2i> availableScreen = SDLDevice::getAvilableSceeenSize();
-        unsigned curSizeIndex = 0;
-
-        for(unsigned i = 0; i < availableScreen.size(); i++)
-        {
-            if(screenSize == availableScreen[i])
-                curSizeIndex = i;
-
-            stringstream ss;
-            ss << availableScreen[i].x << "x" << availableScreen[i].y << "x32";
-
-            m_controls.settingsmenu.screenSize->push(ss.str(), availableScreen[i]);
-        }
-
-        m_controls.settingsmenu.screenSize->setCurrent(curSizeIndex);
-    }
-
-    updateGuiContent();
+    #undef getSetsSelect
+    #undef getKeySelect
 }
 
 void AppManager::setupBackgroundScene()
@@ -607,131 +328,6 @@ void AppManager::setupBackgroundScene()
     }
 }
 
-void AppManager::updateQuickPlayMapInfo()
-{
-    unsigned selected = m_controls.mapmenu.mapSelect->getCurrent();
-
-    Content::MapInfo* mapinfo = globalContent->availableMap[selected];
-
-    m_controls.mapmenu.description
-            ->write(gui::GuiString("Carte: %s\n"
-                                   "Par: %s\n\n"
-                                   "%s",
-                                   mapinfo->name.c_str(),
-                                   mapinfo->author.c_str(),
-                                   mapinfo->comment.c_str()));
-
-    if(!mapinfo->screen.empty())
-    {
-        try
-        {
-            m_controls.mapmenu.preview->setBackground(mapinfo->screen);
-        }
-        catch(std::exception& e)
-        {
-            cout << e.what() << endl;
-            m_controls.mapmenu.preview->setBackground(globalSettings.gui.nopreview);
-        }
-    }
-    else
-        m_controls.mapmenu.preview->setBackground(globalSettings.gui.nopreview);
-}
-
-void AppManager::updateGuiContent()
-{
-    // Carte a jouer
-
-    m_controls.mapmenu.mapSelect->deleteAll();
-
-    for(unsigned i = 0; i < globalContent->availableMap.size(); i++)
-        m_controls.mapmenu.mapSelect->push(globalContent->availableMap[i]->name, i);
-
-    m_controls.mapmenu.mapSelect->setCurrent(math::rand(0, globalContent->availableMap.size()));
-
-    updateQuickPlayMapInfo();
-}
-
-void AppManager::processMainMenuEvent()
-{
-    if(m_controls.quickplay->isActivate())
-        m_guiManager->setSession(MENU_MAPCHOOSE);
-
-    else if(m_controls.settings->isActivate())
-        m_guiManager->setSession(MENU_SETTING);
-
-    else if(m_controls.about->isActivate())
-        m_guiManager->setSession(MENU_ABOUT);
-}
-
-void AppManager::processPlayMenuEvent()
-{
-    if(m_controls.mapmenu.mapSelect->isActivate())
-    {
-        updateQuickPlayMapInfo();
-        m_controls.mapmenu.mapSelect->setActivate(false);
-    }
-
-    else if(m_controls.mapmenu.next->isActivate())
-        m_guiManager->setSession(MENU_PLAYERCHOOSE);
-
-    else if(m_controls.mapmenu.prev->isActivate())
-        m_guiManager->setSession(MENU_MAIN);
-
-    else if(m_controls.playmenu.next->isActivate())
-    {
-        unsigned indexOfLevel = m_controls.mapmenu.mapSelect->getData().getValue<unsigned>();
-
-        Content::PartySetting playSetting;
-        playSetting.map = globalContent->availableMap[indexOfLevel];
-        playSetting.player = globalContent->mainPlayer;
-        playSetting.nickname = m_controls.playmenu.playerName->getLabel();
-
-        executeGame(playSetting);
-
-        setupBackgroundScene();
-
-        m_guiManager->setSession(MENU_MAIN);
-    }
-
-    else if(m_controls.playmenu.playerName->isActivate());
-
-    else if(m_controls.playmenu.prev->isActivate())
-        m_guiManager->setSession(MENU_MAPCHOOSE);
-}
-
-void AppManager::processSettingMenuEvent()
-{
-    if(m_guiManager->getControl("keySetting")->isActivate())
-        m_guiManager->setSession(MENU_SETTING_KEYS);
-
-    if(m_guiManager->getControl("return")->isActivate())
-        m_guiManager->setSession(MENU_MAIN);
-
-    else if(m_guiManager->getControl("apply")->isActivate())
-    {
-        globalSettings.fillWindowSettingsFromGui(m_guiManager);
-
-        globalSettings.saveSetting();
-
-        setupVideoMode();
-
-        m_guiManager->setSession(MENU_MAIN);
-    }
-}
-
-void AppManager::processSettingKeyMenuEvent()
-{
-    if(m_guiManager->getControl("return")->isActivate())
-        m_guiManager->setSession(MENU_SETTING);
-
-    else if(m_guiManager->getControl("apply")->isActivate())
-    {
-        globalSettings.fillControlSettingsFromGui(m_guiManager);
-
-        m_guiManager->setSession(MENU_SETTING);
-    }
-}
-
 void AppManager::executeMenu()
 {
     using namespace tbe::gui;
@@ -740,43 +336,50 @@ void AppManager::executeMenu()
     if(!globalSettings.noaudio)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 
-    bool done = false;
-    while(!done)
+    m_runingMenu = true;
+
+    EventListner mainmenu_elister(this);
+    mainmenu_elister["play"] = &AppManager::onMainMenuPlay;
+    mainmenu_elister["settings"] = &AppManager::onMainMenuSettings;
+    mainmenu_elister["about"] = &AppManager::onMainMenuAbout;
+    mainmenu_elister["quit"] = &AppManager::onMainMenuQuit;
+    m_menu.mainmenu->AddEventListener("click", &mainmenu_elister);
+
+    EventListner play_elister(this);
+    play_elister["start"] = &AppManager::onPlayMenuStart;
+    play_elister["return"] = &AppManager::onPlayMenuReturn;
+    play_elister["prevmap"] = &AppManager::onPlayMenuPrev;
+    play_elister["nextmap"] = &AppManager::onPlayMenuNext;
+    m_menu.playmenu->AddEventListener("click", &play_elister);
+
+    EventListner about_elister(this);
+    about_elister["return"] = &AppManager::onAboutMenuReturn;
+    m_menu.aboutmenu->AddEventListener("click", &about_elister);
+
+    EventListner settings_elister(this);
+    settings_elister["keybind"] = &AppManager::onSettingsMenuKeyBind;
+    settings_elister["apply"] = &AppManager::onSettingsMenuApply;
+    settings_elister["return"] = &AppManager::onSettingsMenuReturn;
+    m_menu.setsmenu->AddEventListener("click", &settings_elister);
+    m_menu.setsmenu->AddEventListener("submit", &settings_elister);
+
+    EventListner keybind_elister(this);
+    keybind_elister["return"] = &AppManager::onKeysMenuReturn;
+    keybind_elister["apply"] = &AppManager::onKeysMenuApply;
+    m_menu.keysmenu->AddEventListener("click", &keybind_elister);
+    m_menu.keysmenu->AddEventListener("submit", &keybind_elister);
+
+    m_menu.mainmenu->Show();
+
+    while(m_runingMenu)
     {
         if(m_fpsMng->doRender())
         {
             m_gameEngine->pollEvent();
+            m_guiManager->trasmitEvent(*m_eventMng);
 
             if(m_eventMng->notify == EventManager::EVENT_WIN_QUIT)
-                done = true;
-
-            switch(m_guiManager->getSession())
-            {
-                case MENU_MAIN:
-                    if(m_controls.quit->isActivate())
-                        done = true;
-                    else
-                        processMainMenuEvent();
-                    break;
-
-                case MENU_SETTING_KEYS:
-                    processSettingKeyMenuEvent();
-                    break;
-
-                case MENU_SETTING:
-                    processSettingMenuEvent();
-                    break;
-
-                case MENU_ABOUT:
-                    if(m_guiManager->getControl("return")->isActivate())
-                        m_guiManager->setSession(MENU_MAIN);
-                    break;
-
-                case MENU_MAPCHOOSE:
-                case MENU_PLAYERCHOOSE:
-                    processPlayMenuEvent();
-                    break;
-            }
+                m_runingMenu = false;
 
             m_camera->setPos(-m_camera->getTarget() * 8.0f);
             m_camera->rotate(Vector2f(1, 0));
@@ -804,6 +407,14 @@ void AppManager::executeMenu()
 
         m_fpsMng->update();
     }
+
+    m_menu.mainmenu->RemoveEventListener("click", &mainmenu_elister);
+    m_menu.playmenu->RemoveEventListener("click", &play_elister);
+    m_menu.aboutmenu->RemoveEventListener("click", &about_elister);
+    m_menu.setsmenu->RemoveEventListener("click", &settings_elister);
+    m_menu.setsmenu->RemoveEventListener("submit", &settings_elister);
+    m_menu.keysmenu->RemoveEventListener("click", &keybind_elister);
+    m_menu.keysmenu->RemoveEventListener("submit", &keybind_elister);
 }
 
 void AppManager::executeGame(const Content::PartySetting& playSetting)
@@ -818,12 +429,9 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
 
     // Affichage de l'ecran de chargement --------------------------------------
 
-    m_guiManager->setSession(MENU_LOAD);
-
-    m_guiManager->getControl<gui::TextBox > ("load:stateText")
-            ->write("Chargement en cours...");
-
-    m_guiManager->updateLayout();
+    m_menu.loadscreen->GetElementById("title")->SetInnerRML(playSetting.map->name.c_str());
+    m_menu.loadscreen->GetElementById("preview")->SetAttribute("src", guiRootPath(playSetting.map->preview));
+    m_menu.loadscreen->Show();
 
     m_gameEngine->beginScene();
     m_guiManager->render();
@@ -831,28 +439,38 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
 
     // Chargement de la carte --------------------------------------------------
 
-    GameManager* gameManager = new GameManager(this);
+    GameManager* gameManager = NULL;
 
-    m_sceneParser->setMeshScene(gameManager->parallelscene.meshs);
-    m_sceneParser->setParticlesScene(gameManager->parallelscene.particles);
-    m_sceneParser->setLightScene(gameManager->parallelscene.light);
-    m_sceneParser->setMarkScene(gameManager->parallelscene.marks);
-    m_classParser->setMeshScene(gameManager->parallelscene.meshs);
-    m_classParser->setParticlesScene(gameManager->parallelscene.particles);
-    m_classParser->setLightScene(gameManager->parallelscene.light);
-    m_classParser->setMarkScene(gameManager->parallelscene.marks);
+    try
+    {
+        gameManager = new GameManager(this);
 
-    gameManager->setupGui();
-    gameManager->setupMap(playSetting);
+        m_sceneParser->setMeshScene(gameManager->parallelscene.meshs);
+        m_sceneParser->setParticlesScene(gameManager->parallelscene.particles);
+        m_sceneParser->setLightScene(gameManager->parallelscene.light);
+        m_sceneParser->setMarkScene(gameManager->parallelscene.marks);
+        m_classParser->setMeshScene(gameManager->parallelscene.meshs);
+        m_classParser->setParticlesScene(gameManager->parallelscene.particles);
+        m_classParser->setLightScene(gameManager->parallelscene.light);
+        m_classParser->setMarkScene(gameManager->parallelscene.marks);
 
-    // Attente de réponse ------------------------------------------------------
+        gameManager->setupGui();
+        gameManager->setupMap(playSetting);
+    }
 
-    m_guiManager->setSession(MENU_LOAD);
+    catch(std::exception& e)
+    {
+        cout << e.what() << endl;
 
-    m_guiManager->getControl<gui::TextBox > ("load:stateText")
-            ->write("Appuyer sur \"Espace\" pour continuer...");
+        m_menu.loadscreen->Hide();
+        delete gameManager;
+        return;
+    }
 
-    m_guiManager->updateLayout();
+    // Attente de rÃ©ponse ------------------------------------------------------
+
+    m_menu.loadscreen->GetElementById("loading-text")
+            ->SetInnerRML("Appuyer sur \"Espace\" pour continuer...");
 
     m_eventMng->keyState[EventManager::KEY_SPACE] = false;
 
@@ -864,7 +482,9 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
         m_gameEngine->endScene();
     }
 
-    // Début du jeu ------------------------------------------------------------
+    m_menu.loadscreen->Hide();
+
+    // DÃ©but du jeu ------------------------------------------------------------
 
     cout << "Start game" << endl;
 
@@ -892,6 +512,156 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
         FMOD_System_PlaySound(m_fmodsys, FMOD_CHANNEL_FREE, m_mainMusic, false, &m_mainMusicCh);
 }
 
+void AppManager::onMainMenuPlay(Rocket::Core::Event& e)
+{
+    m_menu.mainmenu->Hide();
+    m_menu.playmenu->Show();
+}
+
+void AppManager::onMainMenuSettings(Rocket::Core::Event& e)
+{
+    m_menu.mainmenu->Hide();
+    m_menu.setsmenu->Show();
+}
+
+void AppManager::onMainMenuAbout(Rocket::Core::Event& e)
+{
+    m_menu.mainmenu->Hide();
+    m_menu.aboutmenu->Show();
+}
+
+void AppManager::onMainMenuQuit(Rocket::Core::Event& e)
+{
+    m_runingMenu = false;
+}
+
+void AppManager::onPlayMenuStart(Rocket::Core::Event& e)
+{
+    Content::PartySetting playSetting;
+    playSetting.map = globalContent->availableMap[m_profile.mapSelection];
+    playSetting.player = globalContent->mainPlayer;
+    playSetting.nickname = m_profile.nickname;
+
+    m_menu.playmenu->Hide();
+
+    executeGame(playSetting);
+
+    m_menu.playmenu->Show();
+
+    setupBackgroundScene();
+}
+
+void AppManager::onPlayMenuReturn(Rocket::Core::Event& e)
+{
+    m_menu.playmenu->Hide();
+    m_menu.mainmenu->Show();
+}
+
+void AppManager::updateMapSelection()
+{
+    Content::MapInfo* map = globalContent->availableMap[m_profile.mapSelection];
+
+    Rocket::Core::Element* mapTitle = m_menu.playmenu->GetElementById("title");
+    mapTitle->SetInnerRML(map->name.c_str());
+
+    Rocket::Core::Element* mapPreview = m_menu.playmenu->GetElementById("preview");
+    mapPreview->SetAttribute("src", guiRootPath(map->preview));
+
+}
+
+void AppManager::onPlayMenuNext(Rocket::Core::Event& e)
+{
+    if(m_profile.mapSelection == globalContent->availableMap.size() - 1)
+        return;
+
+    m_profile.mapSelection++;
+
+    updateMapSelection();
+}
+
+void AppManager::onPlayMenuPrev(Rocket::Core::Event& e)
+{
+    if(m_profile.mapSelection == 0)
+        return;
+
+    m_profile.mapSelection--;
+
+    updateMapSelection();
+}
+
+void AppManager::onSettingsMenuApply(Rocket::Core::Event& e)
+{
+    globalSettings.video.ppeUse = e.GetParameter<bool>("usePpe", false);
+    globalSettings.video.fullScreen = e.GetParameter<bool>("fullScreen", false);
+    globalSettings.video.antialiasing = e.GetParameter<unsigned >("antiAliasing", 0);
+    globalSettings.video.screenSize.fromStr(e.GetParameter<string > ("screenSize", "800x600"));
+
+    globalSettings.saveVideo();
+
+    m_menu.setsmenu->Hide();
+    m_menu.mainmenu->Show();
+}
+
+void AppManager::onSettingsMenuReturn(Rocket::Core::Event& e)
+{
+    m_menu.setsmenu->Hide();
+    m_menu.mainmenu->Show();
+}
+
+void AppManager::onSettingsMenuKeyBind(Rocket::Core::Event& e)
+{
+    m_menu.setsmenu->Hide();
+    m_menu.keysmenu->Show();
+}
+
+void AppManager::onKeysMenuApply(Rocket::Core::Event& e)
+{
+    globalSettings.control.keyboard.clear();
+    globalSettings.control.mouse.clear();
+
+    vector<string> actions;
+
+    actions.push_back("forward");
+    actions.push_back("backward");
+    actions.push_back("strafright");
+    actions.push_back("strafleft");
+    actions.push_back("jump");
+    actions.push_back("shoot");
+    actions.push_back("power");
+    actions.push_back("next");
+    actions.push_back("prev");
+
+    for(unsigned i = 0; i < actions.size(); i++)
+    {
+        string code = e.GetParameter<string > (actions[i].c_str(), "");
+
+        vector<string> param = tools::tokenize(code, ':');
+
+        if(param[0] == "key")
+            globalSettings.control.keyboard[actions[i]] = tools::strToNum<int>(param[1]);
+
+        if(param[0] == "mouse")
+            globalSettings.control.mouse[actions[i]] = tools::strToNum<int>(param[1]);
+    }
+
+    globalSettings.saveControl();
+
+    m_menu.keysmenu->Hide();
+    m_menu.setsmenu->Show();
+}
+
+void AppManager::onKeysMenuReturn(Rocket::Core::Event& e)
+{
+    m_menu.keysmenu->Hide();
+    m_menu.setsmenu->Show();
+}
+
+void AppManager::onAboutMenuReturn(Rocket::Core::Event& e)
+{
+    m_menu.aboutmenu->Hide();
+    m_menu.mainmenu->Show();
+}
+
 tbe::EventManager* AppManager::getEventMng() const
 {
     return m_eventMng;
@@ -907,7 +677,7 @@ tbe::scene::SceneManager* AppManager::getSceneMng() const
     return m_sceneManager;
 }
 
-tbe::gui::GuiManager* AppManager::getGuiMng() const
+tbe::gui::RocketGuiManager* AppManager::getGuiMng() const
 {
     return m_guiManager;
 }

@@ -42,5 +42,16 @@ struct alltrue
     }
 };
 
+class Weapon;
+class Power;
+class AIControl;
+class Player;
+
+typedef std::vector<Weapon*> WeaponArray;
+
+typedef std::vector<Power*> PowerArray;
+
+typedef std::map<Player*, AIControl*> AIControlMap;
+
 #endif	/* _DEFINE_H */
 

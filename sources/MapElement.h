@@ -14,7 +14,7 @@
 
 #include <NewtonBall/NewtonBall.h>
 
-#include "AppManager.h"
+#include "Settings.h"
 
 class SoundManager;
 class GameManager;

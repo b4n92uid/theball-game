@@ -2,15 +2,15 @@
  * File:   UserEventManager.h
  * Author: b4n92uid
  *
- * Created on 16 décembre 2009, 21:43
+ * Created on 16 dÃ©cembre 2009, 21:43
  */
 
 #ifndef _USEREVENTMANAGER_H
 #define	_USEREVENTMANAGER_H
 
+#include "Settings.h"
 #include "Controller.h"
 
-class AppManager;
 class GameManager;
 class Player;
 

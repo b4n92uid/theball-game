@@ -26,9 +26,9 @@ public:
     virtual ~Power();
 
     /**
-     * Cette fonction agis pandant l'état actife du pouvoir
+     * Cette fonction agis pandant l'Ã©tat actife du pouvoir
      * elle est aussi en charge de la consomation d'energie (ex:value -= 2)
-     * et la désactivation de celui ci dans le cas d'épuisement de l'énergie
+     * et la dÃ©sactivation de celui ci dans le cas d'Ã©puisement de l'Ã©nergie
      */
     virtual void process() = 0;
 
@@ -44,8 +44,6 @@ public:
     std::string getName() const;
 
     unsigned getSlot() const;
-
-    typedef std::vector<Power*> Array;
 
 protected:
     virtual void internalActivate(tbe::Vector3f target) = 0;

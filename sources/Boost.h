@@ -8,13 +8,10 @@
 #ifndef BOOST_H
 #define	BOOST_H
 
-#include <map>
-
+#include <Tbe.h>
 #include <NewtonBall/NewtonBall.h>
 
-#include "ColorEffect.h"
 #include "Power.h"
-#include "Weapon.h"
 
 class Player;
 

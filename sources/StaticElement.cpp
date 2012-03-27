@@ -33,7 +33,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     if(body->hasUserData("size"))
         size.fromStr(body->getUserData("size").getValue<string > ());
 
-    // Pour les corp convex a un seul coté
+    // Pour les corp convex a un seul cotÃ©
     if(physic == "convex" and body->getHardwareBuffer()->getVertexCount() < 18)
     {
         physic = "box";

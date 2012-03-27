@@ -8,10 +8,6 @@
 #ifndef GRAVITYGUN_H
 #define	GRAVITYGUN_H
 
-#include <map>
-
-#include <NewtonBall/NewtonBall.h>
-
 #include "Power.h"
 
 class GameManager;

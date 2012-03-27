@@ -55,8 +55,6 @@ public:
 
     Weapon* clone();
 
-    typedef std::vector<Weapon*> Array;
-
 protected:
     virtual void process() = 0;
     virtual void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos) = 0;

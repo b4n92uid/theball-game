@@ -9,7 +9,6 @@
 #define	_SETTINGS_H
 
 #include <Tbe.h>
-
 #include <boost/property_tree/ptree.hpp>
 
 class AppManager;
@@ -24,7 +23,6 @@ public:
     void readSetting();
     void saveSetting();
 
-    void readGui();
     void readAi();
     void readVideo();
     void readControl();
@@ -33,9 +31,6 @@ public:
     void saveVideo();
     void saveControl();
     void saveProfiles();
-
-    void fillControlSettingsFromGui(tbe::gui::GuiManager* guiManager);
-    void fillWindowSettingsFromGui(tbe::gui::GuiManager* guiManager);
 
     const char* operator()(std::string key) const;
 
@@ -70,32 +65,6 @@ public:
         tbe::Vector2i ppeSize;
 
     } video;
-
-    struct Gui
-    {
-        std::string button;
-        std::string gauge;
-        std::string editbox;
-        std::string switchbox;
-        std::string textbox;
-        std::string udarrow;
-
-        std::string maskH;
-        std::string maskV;
-
-        std::string fontpath;
-        int fontSize;
-
-        std::string mainmenu;
-        std::string arrowleft;
-        std::string arrowright;
-        std::string playbutton;
-        std::string vertline;
-        std::string logo;
-        std::string version;
-        std::string nopreview;
-
-    } gui;
 
     struct Control
     {
@@ -134,8 +103,8 @@ public:
         std::string author;
         std::string comment;
         std::string script;
-        std::string screen;
-        
+        std::string preview;
+
         std::string filepath;
     };
 
@@ -146,7 +115,7 @@ public:
         ~PlayerInfo();
 
         std::string name;
-        
+
         std::string filepath;
     };
 

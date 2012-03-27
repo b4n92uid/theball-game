@@ -1,3 +1,10 @@
+/*
+ * File:   AppManager.h
+ * Author: b4n92uid
+ *
+ * Created on 15 juillet 2009, 17:45
+ */
+
 #ifndef _APPMANAGER_H
 #define _APPMANAGER_H
 
@@ -10,6 +17,7 @@
 
 #include <Tbe.h>
 #include <SDLDevice/SDLDevice.h>
+#include <RocketGuiManager/RocketGuiManager.h>
 
 #include "Define.h"
 #include "Platform.h"
@@ -18,6 +26,7 @@
 
 #include <boost/date_time.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 
 class AppManager
 {
@@ -26,17 +35,19 @@ public:
     AppManager();
     ~AppManager();
 
-    /// Ex�cute le menu du jeu
+    /// Exécute le menu du jeu
     void executeMenu();
 
-    /// Ex�cute une partie rapide
+    /// Exécute une partie rapide
     void executeGame(const Content::PartySetting& playSetting);
 
+    tbe::SDLDevice* getGameEngine() const;
     tbe::EventManager* getEventMng() const;
     tbe::ticks::FpsManager* getFpsMng() const;
     tbe::scene::SceneManager* getSceneMng() const;
-    tbe::gui::GuiManager* getGuiMng() const;
-    tbe::SDLDevice* getGameEngine() const;
+
+    tbe::gui::RocketGuiManager* getGuiMng() const;
+
     FMOD_SYSTEM* getFmodSystem() const;
 
     tbe::scene::ClassParser* getClassParser() const;
@@ -45,9 +56,32 @@ public:
     Settings globalSettings;
     Content* globalContent;
 
+    void onMainMenuPlay(Rocket::Core::Event& e);
+    void onMainMenuSettings(Rocket::Core::Event& e);
+    void onMainMenuAbout(Rocket::Core::Event& e);
+    void onMainMenuQuit(Rocket::Core::Event& e);
+
+    void onPlayMenuStart(Rocket::Core::Event& e);
+    void onPlayMenuReturn(Rocket::Core::Event& e);
+    void onPlayMenuNext(Rocket::Core::Event& e);
+    void onPlayMenuPrev(Rocket::Core::Event& e);
+
+    void onSettingsMenuApply(Rocket::Core::Event& e);
+    void onSettingsMenuReturn(Rocket::Core::Event& e);
+    void onSettingsMenuKeyBind(Rocket::Core::Event& e);
+
+    void onKeysMenuApply(Rocket::Core::Event& e);
+    void onKeysMenuReturn(Rocket::Core::Event& e);
+
+    void onAboutMenuReturn(Rocket::Core::Event& e);
+
 protected:
-    /// Initialise les options vid�o
+
+    /// Initialise les options vidéo
     void setupVideoMode();
+
+    /// Initialise les variables interne
+    void setupInernalState();
 
     /// Initialise l'interface du menu
     void setupMenuGui();
@@ -55,23 +89,16 @@ protected:
     /// Initialise les options audio
     void setupSound();
 
-    ///
+    /// Initialise la scene 3D de fond
     void setupBackgroundScene();
 
-    void processMainMenuEvent();
-    void processPlayMenuEvent();
-    void processSettingMenuEvent();
-    void processSettingKeyMenuEvent();
-
-    /// Mise a jour du contenue de la GUI
-    void updateGuiContent();
-
-    void updateQuickPlayMapInfo();
+    /// Met a jour le l'aperçu de la carte séléctioner
+    void updateMapSelection();
 
 protected:
     tbe::SDLDevice* m_gameEngine;
     tbe::EventManager* m_eventMng;
-    tbe::gui::GuiManager* m_guiManager;
+    tbe::gui::RocketGuiManager* m_guiManager;
     tbe::scene::SceneManager* m_sceneManager;
     tbe::ppe::PostProcessManager* m_ppeManager;
     tbe::ticks::FpsManager* m_fpsMng;
@@ -88,50 +115,26 @@ protected:
     tbe::scene::SceneParser* m_sceneParser;
     tbe::scene::ClassParser* m_classParser;
 
+    bool m_runingMenu;
+
     struct
     {
-        tbe::gui::Button* quickplay;
-        tbe::gui::Button* settings;
-        tbe::gui::Button* about;
-        tbe::gui::Button* quit;
+        std::string nickname;
+        unsigned mapSelection;
 
-        struct
-        {
-            tbe::gui::TextBox* aboutText;
+    } m_profile;
 
-        } aboutmenu;
+    struct
+    {
+        Rocket::Core::ElementDocument* mainmenu;
+        Rocket::Core::ElementDocument* playmenu;
+        Rocket::Core::ElementDocument* aboutmenu;
+        Rocket::Core::ElementDocument* setsmenu;
+        Rocket::Core::ElementDocument* keysmenu;
 
-        struct
-        {
-            tbe::gui::EditBox* playerName;
+        Rocket::Core::ElementDocument* loadscreen;
 
-            tbe::gui::Button* next;
-            tbe::gui::Button* prev;
-
-        } playmenu;
-
-        struct
-        {
-            tbe::gui::SwitchString* mapSelect;
-            tbe::gui::TextBox* description;
-
-            tbe::gui::Image* preview;
-
-            tbe::gui::Button* next;
-            tbe::gui::Button* prev;
-
-        } mapmenu;
-
-        struct
-        {
-            tbe::gui::SwitchString* screenSize;
-            tbe::gui::SwitchString* antiAliasing;
-            tbe::gui::SwitchString* fullscreen;
-            tbe::gui::SwitchString* usePpe;
-
-        } settingsmenu;
-
-    } m_controls;
+    } m_menu;
 };
 
 #endif // _APPMANAGER_H

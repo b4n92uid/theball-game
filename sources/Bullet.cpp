@@ -7,12 +7,10 @@
 
 #include "Bullet.h"
 
+#include "GameManager.h"
 #include "Player.h"
 #include "Weapon.h"
-#include "GameManager.h"
 #include "MaterialManager.h"
-
-typedef boost::filesystem::path fspath;
 
 using namespace std;
 using namespace tbe;

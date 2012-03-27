@@ -8,29 +8,34 @@ include_directories(${TBENGINE_INC_PLUGINS})
 
 include_directories(${DEVIL_INC})
 include_directories(${FREETYPE_INC})
-
 include_directories(${SDL_INC})
 include_directories(${NEWTON_INC})
 include_directories(${FMOD_INC})
 include_directories(${BOOST_INC})
 include_directories(${LUA_INC})
+include_directories(${ROCKET_INC})
 
 link_directories(${SDL_LIB_DIR})
 link_directories(${BOOST_LIB_DIR})
+link_directories(${ROCKET_LIB_DIR})
 
 file(GLOB_RECURSE THBALL_SOURCES sources/*)
 file(GLOB_RECURSE SDLDEVICE_SOURCES ${TBENGINE_INC_PLUGINS}/SDLDevice/*)
 file(GLOB_RECURSE NEWTONBALL_SOURCES ${TBENGINE_INC_PLUGINS}/NewtonBall/*)
+file(GLOB_RECURSE ROCKETGUI_SOURCES ${TBENGINE_INC_PLUGINS}/RocketGuiManager/*)
 
-add_executable(theball ${THBALL_SOURCES} ${SDLDEVICE_SOURCES} ${NEWTONBALL_SOURCES})
+add_executable(theball ${THBALL_SOURCES} ${SDLDEVICE_SOURCES} ${NEWTONBALL_SOURCES} ${ROCKETGUI_SOURCES})
 
-target_link_libraries(theball 
-    ${TBENGINE_LIB} 
-    ${DEVIL_LIB} 
-    ${FREETYPE_LIB} 
-    ${SDL_LIB} 
-    ${NEWTON_LIB} 
-    ${FMOD_LIB} 
-    ${BOOST_LIBS} 
-    ${LUA_LIB} 
-    opengl32 glu32)
+target_link_libraries(theball
+    ${TBENGINE_LIB}
+    ${DEVIL_LIB}
+    ${FREETYPE_LIB}
+    ${SDL_LIB}
+    ${NEWTON_LIB}
+    ${FMOD_LIB}
+    ${BOOST_LIBS}
+    ${LUA_LIB}
+    ${ROCKET_LIB}
+    opengl32
+    glu32
+)

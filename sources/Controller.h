@@ -10,10 +10,9 @@
 
 #include <Tbe.h>
 #include <SDLDevice/SDLDevice.h>
-
 #include <boost/signals.hpp>
 
-#include "AppManager.h"
+#include "Settings.h"
 
 class GameManager;
 class Player;

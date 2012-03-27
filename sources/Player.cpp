@@ -2,13 +2,14 @@
 
 #include <boost/foreach.hpp>
 
+#include "Controller.h"
 #include "AppManager.h"
 #include "GameManager.h"
 #include "MaterialManager.h"
-#include "MapElement.h"
 #include "StaticElement.h"
 #include "SoundManager.h"
 #include "BulletTime.h"
+#include "Power.h"
 #include "Weapon.h"
 #include "Bullet.h"
 
@@ -204,7 +205,7 @@ void Player::move(tbe::Vector3f force)
     force.y = 0;
 
     /*
-     * Normaliser le vecteur de force pour avoir une poussé uniforme
+     * Normaliser le vecteur de force pour avoir une poussï¿½ uniforme
      */
     force.normalize();
 
@@ -230,7 +231,7 @@ void Player::jump()
 {
     /*
      * Le joueur peut sauter seulement quand il est en contact avec
-     * un élement statique et que le produit scalair entre le vecteur (0,1,0)
+     * un ï¿½lement statique et que le produit scalair entre le vecteur (0,1,0)
      * et la normal de contact soit inferieur a 0.25
      */
 
@@ -275,7 +276,7 @@ inline bool isWeaponSameName(Weapon* w1, Weapon* w2)
 
 void Player::addWeapon(Weapon* weapon)
 {
-    Weapon::Array::iterator select = find_if(m_weaponsInventory.begin(), m_weaponsInventory.end(),
+    WeaponArray::iterator select = find_if(m_weaponsInventory.begin(), m_weaponsInventory.end(),
                                              bind2nd(ptr_fun(isWeaponSameName), weapon));
 
     if(select != m_weaponsInventory.end())
@@ -334,7 +335,7 @@ inline bool isPowerSameName(Power* w1, Power* w2)
 
 void Player::addPower(Power* power)
 {
-    Power::Array::iterator select = find_if(m_powersInventory.begin(), m_powersInventory.end(),
+    PowerArray::iterator select = find_if(m_powersInventory.begin(), m_powersInventory.end(),
                                             bind2nd(ptr_fun(isPowerSameName), power));
 
     if(select == m_powersInventory.end())

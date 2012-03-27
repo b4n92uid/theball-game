@@ -2,15 +2,15 @@
  * File:   AIManager.cpp
  * Author: b4n92uid
  *
- * Created on 16 décembre 2009, 18:45
+ * Created on 16 dÃ©cembre 2009, 18:45
  */
 
 #include "AIControl.h"
 
-#include "GameManager.h"
-#include "Player.h"
-
 #include "Define.h"
+#include "MapElement.h"
+#include "Player.h"
+#include "GameManager.h"
 
 using namespace tbe;
 using namespace tbe::scene;

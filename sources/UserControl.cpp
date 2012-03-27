@@ -2,13 +2,12 @@
  * File:   UserEventManager.cpp
  * Author: b4n92uid
  *
- * Created on 16 décembre 2009, 21:43
+ * Created on 16 dÃ©cembre 2009, 21:43
  */
 
 #include "UserControl.h"
 
 #include "GameManager.h"
-
 #include "Player.h"
 
 #include "Define.h"

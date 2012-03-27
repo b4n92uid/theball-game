@@ -1,5 +1,5 @@
 /*
- * File:   Settings.cpp
+ * File:   GameManager.cpp
  * Author: b4n92uid
  *
  * Created on 15 juillet 2009, 22:23
@@ -43,7 +43,7 @@ public:
     GameManager(AppManager* appManager);
     virtual ~GameManager();
 
-    /// Construit la map et les entités
+    /// Construit la map et les entitÃ©s
     void setupMap(const Content::PartySetting& playSetting);
 
     /// Construction de l'ETH
@@ -65,9 +65,9 @@ public:
     void render();
 
     /// Rotine d'affichage de notification
-    void display(std::string msg);
+    void display(std::string msg, unsigned duration = 3000);
 
-    /// Rotine d'affichage de l'état de la partie
+    /// Rotine d'affichage de l'Ã©tat de la partie
     void status(std::string msg);
 
     MapElement* getInterface(tbe::scene::Node* node);
@@ -95,7 +95,7 @@ public:
 
     virtual const Player::Array getTargetsOf(Player* player) const;
 
-    // Enregistrement des entités ----------------------------------------------
+    // Enregistrement des entitÃ©s ----------------------------------------------
 
     void registerPlayer(Player* player);
     void registerElement(MapElement* staticObject);
@@ -106,6 +106,10 @@ public:
     void unregisterElement(MapElement* staticObject);
     void unregisterElement(StaticElement* staticObject);
 
+    void onPauseMenuShow();
+    void onPauseMenuQuit();
+    void onPauseMenuReturn();
+
     struct
     {
         std::string name;
@@ -114,7 +118,7 @@ public:
         MapElement::Array mapElements;
 
         tbe::AABB aabb;
-        
+
         Content::PartySetting settings;
 
     } map;
@@ -128,7 +132,7 @@ public:
 
         tbe::SDLDevice* gameEngine;
         tbe::scene::SceneManager* scene;
-        tbe::gui::GuiManager* gui;
+        tbe::gui::RocketGuiManager* gui;
         tbe::ppe::PostProcessManager* ppe;
         tbe::ticks::FpsManager* fps;
 
@@ -166,34 +170,31 @@ protected:
 
     void processDevelopperCodeEvent();
 
-    enum TimtTo
-    {
-        TIME_TO_PLAY,
-        TIME_TO_PAUSE,
-        TIME_TO_GAMEOVER,
-    };
+
+    bool m_cursorOnPlayer;
+    bool m_gameOver;
+    bool m_gameRunning;
+    bool m_pauseRunning;
+
+    unsigned m_logClockOff;
 
     Player* m_userPlayer;
     Player* m_winnerPlayer;
 
     Player::Array m_players;
 
+    tbe::scene::Camera* m_camera;
+
     tbe::ticks::Clock m_logClock;
     tbe::ticks::Clock m_newtonClock;
     tbe::ticks::Clock m_validGameOver;
     tbe::ticks::Clock m_spawnPlayer;
 
-    tbe::scene::Camera* m_camera;
-
     tbe::Vector3f m_shootTarget;
-    bool m_cursorOnPlayer;
 
     std::list<tbe::Vector3f> m_playerPosRec;
 
-    TimtTo m_timeTo;
-
-    bool m_gameOver;
-    bool m_running;
+    std::map<unsigned, unsigned> m_weaponSlot;
 
     struct
     {
@@ -215,40 +216,32 @@ protected:
 
     } m_backImpulse;
 
-    std::map<unsigned, unsigned> m_numslot;
-
     struct
     {
+        Rocket::Core::Element* objective;
+        Rocket::Core::Element* message;
+
+        //        tbe::gui::Gauge* ammoGauge;
+        //        tbe::gui::Gauge* energyGauge;
+
+        Rocket::Core::Element* life;
+        Rocket::Core::Element* ammo;
+
+        Rocket::Core::Element* powerIcon;
+        Rocket::Core::Element* weaponIcon;
 
         struct
         {
-            tbe::gui::Button* ret;
-            tbe::gui::Button* quit;
-
-        } playmenu;
-
-        tbe::gui::TextBox* state;
-        tbe::gui::TextBox* gameover;
-        tbe::gui::TextBox* log;
-
-        tbe::gui::Gauge* ammoGauge;
-        tbe::gui::Gauge* energyGauge;
-
-        tbe::gui::TextBox* life;
-        tbe::gui::TextBox* ammo;
-
-        tbe::gui::StateShow* powerIcon;
-        tbe::gui::StateShow* weaponIcon;
-
-        struct
-        {
-            tbe::gui::Image* dammage;
-            tbe::gui::Image* flash;
-            tbe::gui::Image* gameover;
+            Rocket::Core::Element* dammage;
+            Rocket::Core::Element* flash;
+            Rocket::Core::Element* gameover;
 
         } background;
 
-    } hud;
+        Rocket::Core::ElementDocument* hud;
+        Rocket::Core::ElementDocument* pause;
+
+    } m_gui;
 };
 
 #endif // _GAMEMANAGER_H

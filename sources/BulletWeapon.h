@@ -12,8 +12,6 @@
 #include <NewtonBall/NewtonBall.h>
 #include <fmod.h>
 
-#include "Settings.h"
-
 #include "Weapon.h"
 
 class GameManager;

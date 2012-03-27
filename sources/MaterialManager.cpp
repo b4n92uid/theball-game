@@ -14,6 +14,7 @@
 #include "Weapon.h"
 #include "Bullet.h"
 #include "Player.h"
+#include "MapElement.h"
 
 using namespace std;
 using namespace tbe;
