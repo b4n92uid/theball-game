@@ -57,16 +57,8 @@ void Settings::readVideo()
     video.fullScreen = parser.get<bool>("window.fullscreen");
     video.screenSize = parser.get<Vector2i > ("window.size");
 
-    if(Shader::checkHardware())
-    {
-        video.ppeUse = parser.get<bool>("ppe.use");
-        video.ppeSize = parser.get<Vector2i > ("ppe.size");
-    }
-    else
-    {
-        video.ppeUse = false;
-        video.ppeSize = 0;
-    }
+    video.ppeUse = parser.get<bool>("ppe.use");
+    video.ppeSize = parser.get<Vector2i > ("ppe.size");
 }
 
 void Settings::readControl()

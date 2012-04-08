@@ -98,9 +98,9 @@ void UserControl::process(Player* player)
         force += camera->getTarget();
     if(isActionStateDown("backward"))
         force -= camera->getTarget();
-    if(isActionStateDown("strafLeft"))
+    if(isActionStateDown("strafleft"))
         force += camera->getLeft();
-    if(isActionStateDown("strafRight"))
+    if(isActionStateDown("strafright"))
         force -= camera->getLeft();
 
     if(!math::isZero(force))
@@ -111,7 +111,7 @@ void UserControl::process(Player* player)
         player->jump();
 
     // Change weapons
-    if(isActionStateDown("switchUpWeapon"))
+    if(isActionStateDown("next"))
     {
         if(m_eventManager->keyState[EventManager::KEY_LCTRL])
             player->switchUpPower();
@@ -119,7 +119,7 @@ void UserControl::process(Player* player)
             player->switchUpWeapon();
     }
 
-    if(isActionStateDown("switchDownWeapon"))
+    if(isActionStateDown("prev"))
     {
         if(m_eventManager->keyState[EventManager::KEY_LCTRL])
             player->switchDownPower();

@@ -192,22 +192,27 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
     {
         using namespace tbe::ppe;
 
-        ppe.dammage = new ColorEffect;
-        ppe.dammage->setInternalPass(true);
-        ppe.dammage->setFusionMode(ColorEffect::MULTIPLICATION_COLOR);
-        ppe.dammage->setColor(Vector4f(1, 0, 0, 1));
-        ppe.dammage->setEnable(false);
-        manager.ppe->addPostEffect("dammageEffect", ppe.dammage);
+        m_gui.background.flash = new ColorEffect;
+        m_gui.background.flash->setFusionMode(ColorEffect::ADDITIVE_COLOR);
+        m_gui.background.flash->setColor(Vector4f(1, 1, 1, 1));
+        m_gui.background.flash->setEnable(false);
+        manager.ppe->addPostEffect("flashEffect", m_gui.background.flash);
 
-        ppe.gameover = new BlurEffect;
-        ppe.gameover->setPasse(1);
-        ppe.gameover->setEnable(false);
-        manager.ppe->addPostEffect("gameoverEffect", ppe.gameover);
+        m_gui.background.dammage = new ColorEffect;
+        m_gui.background.dammage->setFusionMode(ColorEffect::MULTIPLICATION_COLOR);
+        m_gui.background.dammage->setColor(Vector4f(1, 0, 0, 1));
+        m_gui.background.dammage->setEnable(false);
+        manager.ppe->addPostEffect("dammageEffect", m_gui.background.dammage);
 
-        ppe.bloom = new BloomEffect;
-        ppe.bloom->setRttFrameSize(vidSets.ppeSize);
-        ppe.bloom->setEnable(false);
-        manager.ppe->addPostEffect("bloomEffect", ppe.bloom);
+        m_gui.background.gameover = new BlurEffect;
+        m_gui.background.gameover->setPasse(1);
+        m_gui.background.gameover->setEnable(false);
+        manager.ppe->addPostEffect("gameoverEffect", m_gui.background.gameover);
+
+        m_gui.background.bloom = new BloomEffect;
+        m_gui.background.bloom->setRttFrameSize(vidSets.ppeSize);
+        m_gui.background.bloom->setEnable(false);
+        manager.ppe->addPostEffect("bloomEffect", m_gui.background.bloom);
     }
 
     // PLAYERS -----------------------------------------------------------------
@@ -264,12 +269,9 @@ void GameManager::setupGui()
 
     m_gui.hud = context->LoadDocument(guidir("hud.rml"));
     m_gui.pause = context->LoadDocument(guidir("pausemenu.rml"));
+    m_gui.gameover = context->LoadDocument(guidir("gameover.rml"));
 
     #undef guidir
-
-    m_gui.background.gameover = m_gui.hud->GetElementById("gameover");
-    m_gui.background.flash = m_gui.hud->GetElementById("flash");
-    m_gui.background.dammage = m_gui.hud->GetElementById("dammage");
 
     m_gui.objective = m_gui.hud->GetElementById("objective");
     m_gui.message = m_gui.hud->GetElementById("message");
@@ -279,6 +281,8 @@ void GameManager::setupGui()
 
     m_gui.powerIcon = m_gui.hud->GetElementById("power-icon");
     m_gui.weaponIcon = m_gui.hud->GetElementById("weapon-icon");
+
+    m_gui.croshair = m_gui.hud->GetElementById("croshair");
 
     EventListner* elister = new EventListner(this);
     (*elister)["return"] = &GameManager::onPauseMenuReturn;
@@ -425,28 +429,21 @@ void GameManager::processDevelopperCodeEvent()
             setGameOver(m_userPlayer, "Next Level >>");
         }
 
-        /*
-        if(event->keyState['u'])
-        {
-            manager.app->globalSettings.video.ppeUse
-                    = !manager.app->globalSettings.video.ppeUse;
-        }
-
-        if(event->keyState['i'])
-        {
-            ppe.bloom->setEnable(!ppe.bloom->isEnable());
-        }
-         */
-
         if(event->keyState['p'])
-        {
             earthQuake(1, true);
-        }
 
         if(event->keyState['o'])
-        {
             whiteFlash(1, 0.05);
-        }
+
+        if(event->keyState['i'])
+            dammageScreen();
+
+        if(event->keyState['u'])
+            manager.app->globalSettings.video.ppeUse
+                = !manager.app->globalSettings.video.ppeUse;
+
+        if(event->keyState['y'])
+            m_gui.background.bloom->setEnable(!m_gui.background.bloom->isEnable());
     }
 }
 
@@ -498,8 +495,8 @@ void GameManager::eventProcess()
             onPauseMenuShow();
         }
 
+        #ifndef NDEBUG 
         // Code developper
-        #ifdef THEBALL_COMPILE_DEBUG
         processDevelopperCodeEvent();
         #endif
     }
@@ -652,16 +649,6 @@ void GameManager::hudProcess()
     if(m_gameOver) // Gestion de l'ETH en gameover -----------------------------
     {
         // Affichage de l'ecran gameover si besoin
-
-        float cssopacity = m_gui.background.gameover->GetProperty("opacity")->Get<float>();
-
-        if(cssopacity < 0.5)
-            cssopacity += 0.01;
-
-        Rocket::Core::String opacity;
-        opacity.FormatString(16, "%f", cssopacity);
-
-        m_gui.background.gameover->SetProperty("opacity", opacity);
     }
 
 
@@ -677,6 +664,7 @@ void GameManager::hudProcess()
 
             if(curWeapon)
             {
+                m_gui.croshair->SetProperty("visibility", "visible");
                 m_gui.weaponIcon->SetProperty("visibility", "visible");
                 m_gui.weaponIcon->SetClassNames(curWeapon->getWeaponName().c_str());
 
@@ -691,6 +679,7 @@ void GameManager::hudProcess()
             }
             else
             {
+                m_gui.croshair->SetProperty("visibility", "hidden");
                 m_gui.weaponIcon->SetProperty("visibility", "hidden");
                 m_gui.ammo->SetInnerRML("n/a");
                 //hud.ammoGauge->setValue(0);
@@ -722,45 +711,39 @@ void GameManager::hudProcess()
             // hud.life->setValue(life);
 
             // Affichage de l'ecran de dommage si besoins
-            /*
             if(manager.app->globalSettings.video.ppeUse)
             {
-                if(ppe.dammage->isEnable())
+                if(m_gui.background.dammage->isEnable())
                 {
-                    Vector4f color = ppe.dammage->getColor();
+                    Vector4f color = m_gui.background.dammage->getColor();
 
                     if(color.w > 0)
                     {
                         color.w -= 0.01f;
-                        ppe.dammage->setColor(color);
+                        m_gui.background.dammage->setColor(color);
                     }
                     else
-                        ppe.dammage->setEnable(false);
+                        m_gui.background.dammage->setEnable(false);
                 }
             }
             else
             {
-                if(hud.background.dammage->isEnable())
+                if(m_dammageEffect.initOpacity > 0)
                 {
-                    float opacity = hud.background.dammage->getOpacity();
-
-                    if(opacity > 0)
-                        hud.background.dammage->setOpacity(opacity - 0.01f);
-                    else
-                        hud.background.dammage->setEnable(false);
+                    m_dammageEffect.initOpacity -= m_dammageEffect.downOpacity;
+                    m_gui.background.dammage->setAlpha(m_dammageEffect.initOpacity);
                 }
-            }
-
-            if(hud.background.flash->isEnable())
-            {
-                float opacity = hud.background.flash->getOpacity();
-
-                if(opacity > 0)
-                    hud.background.flash->setOpacity(opacity - m_flasheffect.downOpacity);
                 else
-                    hud.background.flash->setEnable(false);
+                    m_gui.background.dammage->setEnable(false);
             }
-             */
+
+            if(m_flasheffect.initOpacity > 0)
+            {
+                m_flasheffect.initOpacity -= m_flasheffect.downOpacity;
+                m_gui.background.flash->setAlpha(m_flasheffect.initOpacity);
+            }
+            else
+                m_gui.background.flash->setEnable(false);
         }
         else
         {
@@ -953,8 +936,6 @@ void GameManager::setGameOver(Player* winner, std::string finalmsg)
 {
     m_gameOver = true;
 
-    m_gui.background.gameover->SetInnerRML(finalmsg.c_str());
-
     m_winnerPlayer = winner;
 
     for(unsigned i = 0; i < m_players.size(); i++)
@@ -967,10 +948,14 @@ void GameManager::setGameOver(Player* winner, std::string finalmsg)
 
     manager.gameEngine->setMouseVisible(true);
 
-    m_gui.background.gameover->SetProperty("visibility", "visible");
+    Rocket::Core::Element* core = m_gui.gameover->GetElementById("core");
+    core->SetInnerRML(finalmsg.c_str());
+
+    m_gui.hud->Hide();
+    m_gui.gameover->Show();
 
     if(manager.app->globalSettings.video.ppeUse)
-        ppe.gameover->setEnable(true);
+        m_gui.background.gameover->setEnable(true);
 }
 
 bool GameManager::isGameOver() const
@@ -1002,27 +987,19 @@ void GameManager::whiteFlash(float initOpacity, float downOpacity)
     m_flasheffect.initOpacity = initOpacity;
     m_flasheffect.downOpacity = downOpacity;
 
-    Rocket::Core::String opacity;
-    opacity.FormatString(16, "%f", m_flasheffect.initOpacity);
-
-    m_gui.background.flash->SetProperty("visibility", "visible");
-    m_gui.background.flash->SetProperty("opacity", opacity);
+    m_gui.background.flash->setEnable(true);
+    m_gui.background.flash->setAlpha(m_flasheffect.initOpacity);
 
     manager.sound->playSound("flash", m_userPlayer);
 }
 
 void GameManager::dammageScreen()
 {
-    if(manager.app->globalSettings.video.ppeUse)
-    {
-        ppe.dammage->setEnable(true);
-        ppe.dammage->setColor(Vector4f(1, 0, 0, 0.5));
-    }
-    else
-    {
-        m_gui.background.dammage->SetProperty("visibility", "visible");
-        m_gui.background.dammage->SetProperty("opacity", "0.75");
-    }
+    m_dammageEffect.initOpacity = 0.75;
+    m_dammageEffect.downOpacity = 0.01;
+
+    m_gui.background.dammage->setEnable(true);
+    m_gui.background.dammage->setColor(Vector4f(1, 0, 0, 0.5));
 }
 
 const Player::Array GameManager::getTargetsOf(Player* player) const

@@ -1623,7 +1623,7 @@ int glowEnable(lua_State* lua)
 
     bool stat = lua_toboolean(lua, 1);
 
-    gm->ppe.bloom->setEnable(stat);
+    // gm->ppe.bloom->setEnable(stat);
 
     return 0;
 }
@@ -1639,9 +1639,9 @@ int glowSettings(lua_State* lua)
     float thershold = lua_tonumber(lua, 2);
     float blurpass = lua_tonumber(lua, 3);
 
-    gm->ppe.bloom->setIntensity(intensity);
-    gm->ppe.bloom->setThreshold(thershold);
-    gm->ppe.bloom->setBlurPass(blurpass);
+    //    gm->ppe.bloom->setIntensity(intensity);
+    //    gm->ppe.bloom->setThreshold(thershold);
+    //    gm->ppe.bloom->setBlurPass(blurpass);
 
     return 0;
 }

@@ -34,7 +34,6 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
         using namespace ppe;
 
         m_ppeffect = new ColorEffect;
-        m_ppeffect->setInternalPass(true);
         m_ppeffect->setRttFrameSize(256);
         m_ppeffect->setFusionMode(ColorEffect::BLACK_WHITE);
         m_ppeffect->setColor(Vector4f(1));

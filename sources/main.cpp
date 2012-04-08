@@ -2,7 +2,7 @@
  * File:   main.cpp
  * Author: b4n92uid
  *
- * Created on 13 août 2010, 23:34
+ * Created on 13 aoÃ»t 2010, 23:34
  */
 
 #include "AppManager.h"

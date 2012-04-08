@@ -150,14 +150,6 @@ public:
 
     } parallelscene;
 
-    struct
-    {
-        tbe::ppe::BloomEffect* bloom;
-        tbe::ppe::BlurEffect* gameover;
-        tbe::ppe::ColorEffect* dammage;
-
-    } ppe;
-
     Settings::World worldSettings;
 
     boost::signals2::signal<void(Player*) > onEachFrame;
@@ -212,9 +204,17 @@ protected:
 
     struct
     {
-        float intensity, push;
+        float intensity;
+        float push;
 
     } m_backImpulse;
+
+    struct
+    {
+        float initOpacity;
+        float downOpacity;
+
+    } m_dammageEffect;
 
     struct
     {
@@ -230,16 +230,20 @@ protected:
         Rocket::Core::Element* powerIcon;
         Rocket::Core::Element* weaponIcon;
 
+        Rocket::Core::Element* croshair;
+
         struct
         {
-            Rocket::Core::Element* dammage;
-            Rocket::Core::Element* flash;
-            Rocket::Core::Element* gameover;
+            tbe::ppe::BloomEffect* bloom;
+            tbe::ppe::ColorEffect* dammage;
+            tbe::ppe::ColorEffect* flash;
+            tbe::ppe::BlurEffect* gameover;
 
         } background;
 
         Rocket::Core::ElementDocument* hud;
         Rocket::Core::ElementDocument* pause;
+        Rocket::Core::ElementDocument* gameover;
 
     } m_gui;
 };
