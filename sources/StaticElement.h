@@ -22,7 +22,7 @@ public:
     void makeLighted(bool enable);
 
     tbe::scene::Mesh* getVisualBody();
-    
+
     typedef std::vector<StaticElement*> Array;
 
 private:

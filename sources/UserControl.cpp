@@ -107,11 +107,11 @@ void UserControl::process(Player* player)
         player->move(force);
 
     // Jump
-    if(isActionStateDown("jump"))
+    if(isActionJustDown("jump"))
         player->jump();
 
     // Change weapons
-    if(isActionStateDown("next"))
+    if(isActionJustDown("next"))
     {
         if(m_eventManager->keyState[EventManager::KEY_LCTRL])
             player->switchUpPower();
@@ -119,7 +119,7 @@ void UserControl::process(Player* player)
             player->switchUpWeapon();
     }
 
-    if(isActionStateDown("prev"))
+    if(isActionJustDown("prev"))
     {
         if(m_eventManager->keyState[EventManager::KEY_LCTRL])
             player->switchDownPower();

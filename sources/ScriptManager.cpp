@@ -122,6 +122,7 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "status", script::status);
 
     lua_register(m_lua, "playerList", script::playerList);
+    lua_register(m_lua, "userPlayer", script::userPlayer);
 
     lua_register(m_lua, "getElement", script::getElement);
     lua_register(m_lua, "getElementsList", script::getElementsList);

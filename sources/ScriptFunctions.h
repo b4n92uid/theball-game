@@ -136,6 +136,7 @@ int status(lua_State* lua);
 // Management
 
 int playerList(lua_State* lua);
+int userPlayer(lua_State* lua);
 
 int getElement(lua_State* lua);
 int getElementsList(lua_State* lua);

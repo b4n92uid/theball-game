@@ -1030,6 +1030,17 @@ int playerList(lua_State* lua)
     return 1;
 }
 
+int userPlayer(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    Player* player = gm->getUserPlayer();
+
+    lua_pushplayer(lua, player);
+
+    return 1;
+}
+
 int getElement(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
@@ -1480,10 +1491,7 @@ int registerPlayerHook(lua_State* lua)
         }
 
         else if(type == "respawn")
-        {
             player->onRespawn.connect(RespawnHook(lua, func));
-            player->onRespawn(player);
-        }
 
         else if(type == "dammage")
             player->onDammage.connect(DammageHook(lua, func));

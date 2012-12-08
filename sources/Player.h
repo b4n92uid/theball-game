@@ -167,6 +167,7 @@ protected:
 
 private:
     bool m_energyVoid;
+    int m_jumpStatu;
 };
 
 #endif /* _PLAYERENGINE_H */

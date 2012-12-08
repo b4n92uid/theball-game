@@ -36,6 +36,8 @@ Player::Player(GameManager* gameManager, std::string nickname, Content::PlayerIn
     m_soundManager = gameManager->manager.sound;
     m_immunity = false;
 
+    m_jumpStatu = 0;
+
     // Rendue
     ClassParser* loader = gameManager->manager.app->getClassParser();
     loader->load(pinfo->filepath);
@@ -205,7 +207,7 @@ void Player::move(tbe::Vector3f force)
     force.y = 0;
 
     /*
-     * Normaliser le vecteur de force pour avoir une pouss� uniforme
+     * Normaliser le vecteur de force pour avoir une poussé uniforme
      */
     force.normalize();
 
@@ -231,17 +233,22 @@ void Player::jump()
 {
     /*
      * Le joueur peut sauter seulement quand il est en contact avec
-     * un �lement statique et que le produit scalair entre le vecteur (0,1,0)
+     * un élement statique et que le produit scalair entre le vecteur (0,1,0)
      * et la normal de contact soit inferieur a 0.25
      */
 
-    bool allowed = isStayDown();
+    bool stayDown = isStayDown();
 
     if(!onJump.empty())
-        allowed = onJump(this, allowed);
+        stayDown = onJump(this, stayDown);
 
-    if(allowed)
+    if(stayDown || !stayDown && m_jumpStatu == 1)
     {
+        if(m_jumpStatu == 1)
+            m_jumpStatu = 0;
+        else
+            m_jumpStatu = 1;
+
         Vector3f deltaVeloc(0, 1, 0);
         deltaVeloc *= m_worldSettings.playerJumpForce;
 
@@ -277,7 +284,7 @@ inline bool isWeaponSameName(Weapon* w1, Weapon* w2)
 void Player::addWeapon(Weapon* weapon)
 {
     WeaponArray::iterator select = find_if(m_weaponsInventory.begin(), m_weaponsInventory.end(),
-                                             bind2nd(ptr_fun(isWeaponSameName), weapon));
+                                           bind2nd(ptr_fun(isWeaponSameName), weapon));
 
     if(select != m_weaponsInventory.end())
     {
@@ -336,7 +343,7 @@ inline bool isPowerSameName(Power* w1, Power* w2)
 void Player::addPower(Power* power)
 {
     PowerArray::iterator select = find_if(m_powersInventory.begin(), m_powersInventory.end(),
-                                            bind2nd(ptr_fun(isPowerSameName), power));
+                                          bind2nd(ptr_fun(isPowerSameName), power));
 
     if(select == m_powersInventory.end())
     {

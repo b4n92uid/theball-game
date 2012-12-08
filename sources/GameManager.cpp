@@ -495,7 +495,7 @@ void GameManager::eventProcess()
             onPauseMenuShow();
         }
 
-        #ifndef NDEBUG 
+        #ifndef NDEBUG
         // Code developper
         processDevelopperCodeEvent();
         #endif

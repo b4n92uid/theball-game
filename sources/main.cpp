@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     using namespace boost::posix_time;
     using namespace boost::filesystem;
 
-    #ifndef THEBALL_COMPILE_DEBUG
+    #ifdef NDEBUG
     ofstream log("theball.log");
     streambuf* defaultCout = cout.rdbuf();
     cout.rdbuf(log.rdbuf());
@@ -33,10 +33,10 @@ int main(int argc, char** argv)
     try
     {
         cout
-                #ifdef THEBALL_COMPILE_DEBUG
-                << "theBall (" << __DATE__ << ") Debug run" << endl
-                #else
+                #ifdef NDEBUG
                 << "theBall (" << __DATE__ << ") Release run" << endl
+                #else
+                << "theBall (" << __DATE__ << ") Debug run" << endl
                 #endif
                 << endl
                 << second_clock::local_time() << endl
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
 
     cout << "Exit success :)" << endl;
 
-    #ifndef THEBALL_COMPILE_DEBUG
+    #ifdef NDEBUG
     cout.rdbuf(defaultCout);
     log.close();
     #endif
