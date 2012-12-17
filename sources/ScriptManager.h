@@ -40,7 +40,7 @@ public:
     void processCollid(Player* player, MapElement* elem);
 
     void registerCollid(std::string id, std::string funcname);
-    void registerCollid(tbe::Vector3f pos, tbe::Vector3f size, std::string funcname);
+    void registerCollid(tbe::Vector3f pos, float radius, std::string funcname);
 
 private:
     lua_State* m_lua;

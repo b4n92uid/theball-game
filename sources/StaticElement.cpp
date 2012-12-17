@@ -66,7 +66,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 
     if(physic != "ghost")
     {
-        m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton);
+        m_physicBody = new scene::BulletNode(gameManager->parallelscene.physics);
         m_physicBody->setUpdatedMatrix(&body->getMatrix());
 
         if(physic == "box")
@@ -85,11 +85,11 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
             throw Exception("StaticElement::StaticElement; unable to build (%s) physics body", physic.c_str());
 
         body->addChild(m_physicBody);
-
-        NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
-        NewtonBodySetUserData(m_physicBody->getBody(), this);
-        NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
     }
+
+    m_physicBody->getBody()->setFriction(0.8);
+    m_physicBody->getBody()->setRestitution(0.5);
+    m_physicBody->getBody()->setUserPointer(this);
 }
 
 StaticElement::~StaticElement()

@@ -9,7 +9,7 @@
 #define	BULLET_H
 
 #include <Tbe.h>
-#include <NewtonBall/NewtonBall.h>
+#include <BulletBall/BulletBall.h>
 #include <fmod.h>
 
 #include "MapElement.h"

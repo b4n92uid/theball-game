@@ -56,18 +56,19 @@ Player::Player(GameManager* gameManager, std::string nickname, Content::PlayerIn
     m_deadExplode->setParent(m_visualBody);
 
     // Physique
-    m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton, m_visualBody);
+    m_physicBody = new tbe::scene::BulletNode(m_gameManager->parallelscene.physics, m_visualBody);
     m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
 
+    m_physicBody->getBody()->setActivationState(DISABLE_DEACTIVATION);
+
+    m_physicBody->getBody()->setRestitution(1.0);
+
+    m_physicBody->getBody()->setDamping(m_worldSettings.playerLinearDamping,
+                                        m_worldSettings.playerAngularDamping.x);
+
+    m_physicBody->getBody()->setUserPointer(this);
+
     m_visualBody->addChild(m_physicBody);
-
-    NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
-
-    NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
-    NewtonBodySetAngularDamping(m_physicBody->getBody(), m_worldSettings.playerAngularDamping);
-
-    NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
-    NewtonBodySetUserData(m_physicBody->getBody(), this);
 
     reBorn();
 }
@@ -159,37 +160,14 @@ bool Player::shoot(Vector3f targetpos)
     return(*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
-inline bool isBodyContactOnFloor(scene::NewtonNode* node1, scene::NewtonNode* node2)
-{
-    const int pointCount = 2;
-
-    Vector3f contact[pointCount], normal[pointCount];
-    float penetration[pointCount];
-
-    int contactPoint = NewtonCollisionCollide(node1->getParallelScene()->getNewtonWorld(), pointCount,
-                                              NewtonBodyGetCollision(node1->getBody()), node1->getMatrix(),
-                                              NewtonBodyGetCollision(node2->getBody()), node2->getMatrix(),
-                                              &contact[0].x, &normal[0].x, penetration, 0);
-
-    for(int i = 0; i < contactPoint; i++)
-    {
-        float dot = Vector3f::dot(normal[i], Vector3f(0, 1, 0));
-
-        if(dot > 0.25)
-            return true;
-    }
-
-    return false;
-}
-
 bool Player::isStayDown()
 {
 
     foreach(StaticElement* elem, m_gameManager->map.staticElements)
     {
-        scene::NewtonNode* nnode = elem->getPhysicBody();
+        scene::BulletNode* nnode = elem->getPhysicBody();
 
-        if(nnode && isBodyContactOnFloor(nnode, m_physicBody))
+        if(nnode && nnode->isCollidWith(m_physicBody))
             return true;
     }
 
@@ -256,7 +234,7 @@ void Player::jump()
                 + m_physicBody->getVelocity()
                 / 60.0f;
 
-        NewtonBodyAddImpulse(m_physicBody->getBody(), deltaVeloc, pointPos);
+        m_physicBody->getBody()->applyCentralImpulse(tbe2btVec(deltaVeloc));
     }
 }
 
@@ -402,7 +380,7 @@ void Player::reBorn()
 
     m_visualBody->setVisible(true);
 
-    m_physicBody->setApplyGravity(true);
+    m_physicBody->setGravity(1);
 
     free();
 
@@ -429,7 +407,7 @@ void Player::kill(Player* killer)
 
     m_visualBody->setVisible(false);
 
-    m_physicBody->setApplyGravity(false);
+    m_physicBody->setGravity(0);
 
     m_soundManager->playSound("kill", this);
 }

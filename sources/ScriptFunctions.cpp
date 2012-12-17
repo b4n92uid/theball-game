@@ -19,6 +19,7 @@
 #include "GravityGun.h"
 #include "BulletTime.h"
 #include "Boost.h"
+#include "BulletBall/BulletNode.h"
 
 #include <boost/signals.hpp>
 #include <boost/foreach.hpp>
@@ -291,9 +292,8 @@ int impulse(lua_State* lua)
 
     float force = lua_tonumber(lua, 3);
 
-    NewtonBodyAddImpulse(elem->getPhysicBody()->getBody(),
-                         vec*force,
-                         elem->getPhysicBody()->getPos());
+    Vector3f impulse = vec*force;
+    elem->getPhysicBody()->getBody()->applyCentralImpulse(tbe2btVec(impulse));
 
     return 0;
 }
@@ -307,7 +307,7 @@ int freeze(lua_State* lua)
     elem->getPhysicBody()->setOmega(0);
     elem->getPhysicBody()->setApplyForce(0);
     elem->getPhysicBody()->setApplyTorque(0);
-    elem->getPhysicBody()->setApplyGravity(false);
+    elem->getPhysicBody()->setGravity(0);
 
     return 0;
 }
@@ -317,7 +317,7 @@ int unfreeze(lua_State* lua)
     MapElement* elem = lua_toelem(lua, 1);
     check(elem);
 
-    elem->getPhysicBody()->setApplyGravity(true);
+    elem->getPhysicBody()->setGravity(1);
 
     return 0;
 }
@@ -575,7 +575,11 @@ int playSound(lua_State* lua)
 
     MapElement* elem = lua_toelem(lua, 2);
 
-    ge->manager.sound->playSound(id, elem);
+    int loop = lua_tointeger(lua, 3);
+
+    float vol = lua_isnoneornil(lua, 4) ? 1 : lua_tonumber(lua, 4);
+
+    ge->manager.sound->playSound(id, elem, loop, vol);
 
     return 0;
 }
@@ -1059,7 +1063,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                    \
+                                                                                                                    \
     return 1;
 }
 
@@ -1532,10 +1536,10 @@ int registerAreaCollid(lua_State* lua)
     ScriptManager* sm = getScriptManager(lua);
 
     Vector3f pos = lua_tovector3(lua, 1);
-    Vector3f size = lua_tonumber(lua, 2);
+    float radius = lua_tonumber(lua, 2);
     string fn = lua_tostring(lua, 3);
 
-    sm->registerCollid(pos, size, fn);
+    sm->registerCollid(pos, radius, fn);
 
     return 0;
 }

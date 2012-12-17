@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include <NewtonBall/NewtonBall.h>
+#include <BulletBall/BulletBall.h>
 
 #include "Settings.h"
 
@@ -28,8 +28,8 @@ public:
     void setVisualBody(tbe::scene::Node* visualBody);
     tbe::scene::Node* getVisualBody() const;
 
-    void setPhysicBody(tbe::scene::NewtonNode* physicBody);
-    tbe::scene::NewtonNode* getPhysicBody() const;
+    void setPhysicBody(tbe::scene::BulletNode* physicBody);
+    tbe::scene::BulletNode* getPhysicBody() const;
 
     void setId(std::string id);
     std::string getId() const;
@@ -43,14 +43,12 @@ public:
     typedef std::map<std::string, MapElement*> Map;
     typedef std::vector<MapElement*> Array;
 
-    static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
-
 protected:
     GameManager* m_gameManager;
     SoundManager* m_soundManager;
     Settings::World m_worldSettings;
 
-    tbe::scene::NewtonNode* m_physicBody;
+    tbe::scene::BulletNode* m_physicBody;
     tbe::scene::Node* m_visualBody;
 
     tbe::Matrix4 m_initialMatrix;
@@ -58,10 +56,16 @@ protected:
     std::string m_id;
 };
 
-class DummyElement : public MapElement
+class AreaElement : public MapElement
 {
 public:
-    DummyElement(GameManager*, std::string, tbe::Vector3f, tbe::Vector3f);
+    AreaElement(GameManager*, std::string, tbe::Vector3f, float);
+
+    void setRadius(float radius);
+    float getRadius() const;
+
+protected:
+    float m_radius;
 };
 
 #endif	/* MAPELEMENT_H */

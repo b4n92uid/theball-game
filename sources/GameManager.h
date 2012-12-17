@@ -9,7 +9,7 @@
 #define _GAMEMANAGER_H
 
 #include <Tbe.h>
-#include <NewtonBall/NewtonBall.h>
+#include <BulletBall/BulletBall.h>
 #include <SDLDevice/SDLDevice.h>
 
 #include <fmod.h>
@@ -98,11 +98,12 @@ public:
     // Enregistrement des entités ----------------------------------------------
 
     void registerPlayer(Player* player);
+    void registerArea(AreaElement* dummyObject);
     void registerElement(MapElement* staticObject);
     void registerElement(StaticElement* staticObject);
-    void registerElement(DummyElement* dummyObject);
 
     void unregisterPlayer(Player* player);
+    void unregisterArea(AreaElement* dummyObject);
     void unregisterElement(MapElement* staticObject);
     void unregisterElement(StaticElement* staticObject);
 
@@ -115,6 +116,7 @@ public:
         std::string name;
 
         StaticElement::Array staticElements;
+        AreaElement::Array areaElements;
         MapElement::Array mapElements;
 
         tbe::AABB aabb;
@@ -145,7 +147,7 @@ public:
         tbe::scene::MeshParallelScene* meshs;
         tbe::scene::ParticlesParallelScene* particles;
         tbe::scene::LightParallelScene* light;
-        tbe::scene::NewtonParallelScene* newton;
+        tbe::scene::BulletParallelScene* physics;
         tbe::scene::MapMarkParallelScene* marks;
 
     } parallelscene;
@@ -178,7 +180,7 @@ protected:
     tbe::scene::Camera* m_camera;
 
     tbe::ticks::Clock m_logClock;
-    tbe::ticks::Clock m_newtonClock;
+    tbe::ticks::Clock m_physicsClock;
     tbe::ticks::Clock m_validGameOver;
     tbe::ticks::Clock m_spawnPlayer;
 
@@ -187,6 +189,7 @@ protected:
     std::list<tbe::Vector3f> m_playerPosRec;
 
     std::map<unsigned, unsigned> m_weaponSlot;
+    std::map<unsigned, unsigned> m_powerSlot;
 
     struct
     {

@@ -209,13 +209,13 @@ void ScriptManager::registerCollid(std::string id, std::string funcname)
     m_collidRec[id] = funcname;
 }
 
-void ScriptManager::registerCollid(tbe::Vector3f pos, tbe::Vector3f size, std::string funcname)
+void ScriptManager::registerCollid(tbe::Vector3f pos, float radius, std::string funcname)
 {
     string id = "dummy#" + tools::numToStr(time(0)) + tools::numToStr(rand());
 
-    DummyElement* elem = new DummyElement(m_gameManager, id, pos, size);
+    AreaElement* elem = new AreaElement(m_gameManager, id, pos, radius);
 
-    m_gameManager->registerElement(elem);
+    m_gameManager->registerArea(elem);
 
     m_collidRec[id] = funcname;
 }

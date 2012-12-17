@@ -57,6 +57,10 @@ GameManager::GameManager(AppManager* appManager)
 
     manager.gui = manager.app->getGuiMng();
 
+    parallelscene.physics = new scene::BulletParallelScene;
+    parallelscene.physics->setGravity(Vector3f(0, -worldSettings.gravity, 0));
+    manager.scene->addParallelScene(parallelscene.physics);
+
     parallelscene.light = new scene::LightParallelScene;
     manager.scene->addParallelScene(parallelscene.light);
 
@@ -64,12 +68,6 @@ GameManager::GameManager(AppManager* appManager)
     parallelscene.meshs->setEnableFrustumTest(true);
     parallelscene.meshs->setTransparencySort(true);
     manager.scene->addParallelScene(parallelscene.meshs);
-
-    parallelscene.newton = new scene::NewtonParallelScene;
-    parallelscene.newton->setGravity(worldSettings.gravity);
-    NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
-    NewtonSetFrictionModel(parallelscene.newton->getNewtonWorld(), 1);
-    manager.scene->addParallelScene(parallelscene.newton);
 
     parallelscene.particles = new scene::ParticlesParallelScene;
     manager.scene->addParallelScene(parallelscene.particles);
@@ -97,12 +95,18 @@ GameManager::GameManager(AppManager* appManager)
     m_weaponSlot[233] = 2;
     m_weaponSlot[34] = 3;
     m_weaponSlot[39] = 4;
-    m_weaponSlot[40] = 5;
-    m_weaponSlot[45] = 6;
-    m_weaponSlot[232] = 7;
-    m_weaponSlot[95] = 8;
-    m_weaponSlot[231] = 9;
-    m_weaponSlot[224] = 0;
+
+    m_powerSlot[40] = 1;
+    m_powerSlot[45] = 2;
+    m_powerSlot[232] = 3;
+    m_powerSlot[95] = 4;
+
+    //    m_weaponSlot[40] = 5;
+    //    m_weaponSlot[45] = 6;
+    //    m_weaponSlot[232] = 7;
+    //    m_weaponSlot[95] = 8;
+    //    m_weaponSlot[231] = 9;
+    //    m_weaponSlot[224] = 0;
 
     m_earthquake.intensity = 0;
     m_earthquake.physical = false;
@@ -179,10 +183,6 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
     }
 
     map.aabb.add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
-
-    AABB newtonWordSize = map.aabb;
-    newtonWordSize.add(Vector3f(32.0f));
-    parallelscene.newton->setWorldSize(newtonWordSize);
 
     // PPE ---------------------------------------------------------------------
 
@@ -298,7 +298,7 @@ void GameManager::startGameProcess()
     onStartGame(m_userPlayer);
 }
 
-tbe::Vector3f GameManager::getRandomPosOnTheFloor()
+tbe::Vector3f GameManager::getRandomPosOnTheFloor(Vector3f pos, float radius)
 {
     Vector3f randPos;
 
@@ -307,9 +307,61 @@ tbe::Vector3f GameManager::getRandomPosOnTheFloor()
 
     do
     {
+        randPos = pos + AABB(radius).randPos();
+
+
+        btVector3 Start = tbe2btVec(randPos);
+        Start.setY(map.aabb.max.y);
+
+        btVector3 End = tbe2btVec(randPos);
+        End.setY(map.aabb.min.y);
+
+        btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+
+        parallelscene.physics->getWorld()->rayTest(Start, End, RayCallback);
+
+        if(RayCallback.hasHit())
+        {
+            btVector3 Hit = RayCallback.m_hitPointWorld;
+            btVector3 Normal = RayCallback.m_hitNormalWorld;
+
+            randPos = bt2tbeVec(Hit);
+        }
+    }
+    while(randPos.y < map.aabb.min.y);
+
+    return randPos;
+}
+
+tbe::Vector3f GameManager::getRandomPosOnTheFloor()
+{
+    Vector3f randPos;
+
+    // RÃ©duit le champs d'application de 5%
+    float factor = 5 * map.aabb.getLength() / 100;
+
+    do
+    {
         randPos = (map.aabb - Vector3f(factor)).randPos();
-        randPos.y = 1;
-        randPos = parallelscene.newton->findFloor(randPos);
+
+
+        btVector3 Start = tbe2btVec(randPos);
+        Start.setY(map.aabb.max.y);
+
+        btVector3 End = tbe2btVec(randPos);
+        End.setY(map.aabb.min.y);
+
+        btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+
+        parallelscene.physics->getWorld()->rayTest(Start, End, RayCallback);
+
+        if(RayCallback.hasHit())
+        {
+            btVector3 Hit = RayCallback.m_hitPointWorld;
+            btVector3 Normal = RayCallback.m_hitNormalWorld;
+
+            randPos = bt2tbeVec(Hit);
+        }
     }
     while(randPos.y < map.aabb.min.y);
 
@@ -332,21 +384,6 @@ MapElement* GameManager::getInterface(tbe::scene::Node* node)
     }
 
     return NULL;
-}
-
-tbe::Vector3f GameManager::getRandomPosOnTheFloor(Vector3f pos, float radius)
-{
-    Vector3f randPos;
-
-    do
-    {
-        randPos = pos + AABB(radius).randPos();
-        randPos.y = 1;
-        randPos = parallelscene.newton->findFloor(randPos);
-    }
-    while(randPos.y < map.aabb.min.y);
-
-    return randPos;
 }
 
 void GameManager::display(std::string msg, unsigned duration)
@@ -474,16 +511,11 @@ void GameManager::eventProcess()
         // Séléction d'arme
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
-            if(event->keyState[EventManager::KEY_LCTRL])
-            {
-                if(m_weaponSlot.count(event->lastActiveKey.first))
-                    m_userPlayer->slotPower(m_weaponSlot[event->lastActiveKey.first]);
-            }
-            else
-            {
-                if(m_weaponSlot.count(event->lastActiveKey.first))
-                    m_userPlayer->slotWeapon(m_weaponSlot[event->lastActiveKey.first]);
-            }
+            if(m_weaponSlot.count(event->lastActiveKey.first))
+                m_userPlayer->slotWeapon(m_weaponSlot[event->lastActiveKey.first]);
+
+            if(m_powerSlot.count(event->lastActiveKey.first))
+                m_userPlayer->slotPower(m_weaponSlot[event->lastActiveKey.first]);
         }
 
         // Touche de pause (Esc)
@@ -542,18 +574,18 @@ void GameManager::onPauseMenuReturn()
     m_pauseRunning = false;
 }
 
-void EarthQuakeProcess(const NewtonBody* body, void* userData)
-{
-    MapElement* elem = (MapElement*)NewtonBodyGetUserData(body);
-
-    scene::NewtonNode* pbody = elem->getPhysicBody();
-
-    float intensity = *(float*)userData;
-
-    Vector3f pointPos = pbody->getPos() + AABB(1).randPos();
-
-    NewtonBodyAddImpulse(body, AABB(intensity * 4).randPos().normalize(), pointPos);
-}
+//void EarthQuakeProcess(const NewtonBody* body, void* userData)
+//{
+//    MapElement* elem = (MapElement*)NewtonBodyGetUserData(body);
+//
+//    scene::NewtonNode* pbody = elem->getPhysicBody();
+//
+//    float intensity = *(float*)userData;
+//
+//    Vector3f pointPos = pbody->getPos() + AABB(1).randPos();
+//
+//    NewtonBodyAddImpulse(body, AABB(intensity * 4).randPos().normalize(), pointPos);
+//}
 
 void GameManager::gameProcess()
 {
@@ -597,9 +629,9 @@ void GameManager::gameProcess()
 
         if(m_earthquake.physical)
         {
-            NewtonWorldForEachBodyInAABBDo(parallelscene.newton->getNewtonWorld(),
-                                           map.aabb.min, map.aabb.max,
-                                           EarthQuakeProcess, &m_earthquake.intensity);
+            //            NewtonWorldForEachBodyInAABBDo(parallelscene.newton->getNewtonWorld(),
+            //                                           map.aabb.min, map.aabb.max,
+            //                                           EarthQuakeProcess, &m_earthquake.intensity);
         }
         m_earthquake.intensity -= 0.01;
     }
@@ -607,7 +639,7 @@ void GameManager::gameProcess()
     /*
      * Pour chaque joueurs
      *  - les joueurs mort pour les reconstruires
-     *  - les joueurs en fin de vie pour la préparation a la mort ;)
+     *  - les joueurs en fin de vie pour la prÃ©paration a la mort ;)
      *  - les joueurs hors de l'arene pour les remetr en place
      */
     for(unsigned i = 0; i < m_players.size(); i++)
@@ -753,21 +785,6 @@ void GameManager::hudProcess()
     }
 }
 
-float rayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
-{
-    MapElement* elem = (MapElement*)NewtonBodyGetUserData(body);
-
-    if(elem == elem->getGameManager()->getUserPlayer())
-        return intersectParam;
-
-    float& hit = *static_cast<float*>(userData);
-
-    if(intersectParam > 0.2 && intersectParam < hit)
-        hit = intersectParam;
-
-    return intersectParam;
-}
-
 void GameManager::render()
 {
     if(!m_gameOver)
@@ -787,31 +804,42 @@ void GameManager::render()
      * arrier diminue en fonction du taux d'intersection.
      */
 
-    Vector3f setPos = m_userPlayer->getVisualBody()->getPos();
+    Vector3f playerPos = m_userPlayer->getVisualBody()->getPos();
 
     if(!m_playerPosRec.empty())
-        setPos.y -= (setPos.y - m_playerPosRec.back().y) / 3 * 2;
+        playerPos.y -= (playerPos.y - m_playerPosRec.back().y) / 3 * 2;
 
-    m_playerPosRec.push_back(setPos);
+    m_playerPosRec.push_back(playerPos);
 
     Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.cameraUp, 0);
     Vector3f camendpos = camzeropos + (-camtar) * worldSettings.cameraBack;
 
-    float hit = 1;
-    NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
+    btCollisionWorld::AllHitsRayResultCallback CameraRayCallback(tbe2btVec(camzeropos), tbe2btVec(camendpos));
 
-    hit = hit * worldSettings.cameraBack;
+    parallelscene.physics->getWorld()->rayTest(tbe2btVec(camzeropos), tbe2btVec(camendpos), CameraRayCallback);
 
-    campos = camzeropos - camtar * min(hit, worldSettings.cameraBack);
+    m_camera->setPos(camendpos);
 
-    m_camera->setPos(campos);
+    if(CameraRayCallback.hasHit())
+    {
+        for(int i = 0; i < CameraRayCallback.m_collisionObjects.size(); i++)
+        {
+            const btCollisionObject* obj = CameraRayCallback.m_collisionObjects[i];
+
+            MapElement* elem = static_cast<MapElement*>(obj->getUserPointer());
+
+            m_camera->setPos(bt2tbeVec(CameraRayCallback.m_hitPointWorld[i]));
+        }
+    }
 
     if(m_playerPosRec.size() > 2)
         m_playerPosRec.pop_front();
 
     // Physique ----------------------------------------------------------------
 
-    parallelscene.newton->setWorldTimestep(1.0f / m_newtonClock.getEsplanedTime());
+    manager.material->process();
+
+    parallelscene.physics->setWorldTimestep(1.0f / manager.fps->getRunFps());
 
     // Son 3D ------------------------------------------------------------------
 
@@ -848,28 +876,43 @@ void GameManager::render()
      * forte transparence a ce dernier.
      */
 
-    Vector3f endray = campos + camtar * map.aabb.getLength();
+    Vector3f endray = campos + camtar * 32;
 
-    m_shootTarget = parallelscene.newton->findAnyBody(campos, endray);
+    btCollisionWorld::AllHitsRayResultCallback PickRayCallback(tbe2btVec(campos), tbe2btVec(endray));
+
+    parallelscene.physics->getWorld()->rayTest(tbe2btVec(campos), tbe2btVec(endray), PickRayCallback);
+
+    m_shootTarget = endray;
+
+    if(PickRayCallback.hasHit())
+    {
+        for(int i = 0; i < PickRayCallback.m_collisionObjects.size(); i++)
+        {
+            const btCollisionObject* obj = PickRayCallback.m_collisionObjects[i];
+
+            MapElement* elem = static_cast<MapElement*>(obj->getUserPointer());
+
+            if(manager.material->isBullet(elem))
+                continue;
+
+            if(elem == m_userPlayer)
+                continue;
+
+            m_shootTarget = bt2tbeVec(PickRayCallback.m_hitPointWorld[i]);
+
+            break;
+        }
+    }
 
     AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
 
     if(useraabb.isInner(campos))
     {
-        m_shootTarget = parallelscene.newton->findZeroMassBody(campos, endray);
+        //        m_shootTarget = parallelscene.physics->findZeroMassBody(campos, endray);
 
         m_cursorOnPlayer = true;
 
         m_userPlayer->makeTransparent(true, 0.1);
-    }
-
-    else if(useraabb.isInner(m_shootTarget))
-    {
-        m_shootTarget = parallelscene.newton->findZeroMassBody(campos, endray);
-
-        m_cursorOnPlayer = true;
-
-        m_userPlayer->makeTransparent(true, 0.5);
     }
 
     else if(m_cursorOnPlayer)
@@ -942,8 +985,6 @@ void GameManager::setGameOver(Player* winner, std::string finalmsg)
     {
         m_players[i]->getPhysicBody()->setApplyForce(0);
         m_players[i]->getPhysicBody()->setVelocity(0);
-
-        NewtonBodySetFreezeState(m_players[i]->getPhysicBody()->getBody(), true);
     }
 
     manager.gameEngine->setMouseVisible(true);
@@ -1040,14 +1081,6 @@ void GameManager::registerElement(MapElement* elem)
         map.aabb.count(elem->getVisualBody());
 }
 
-void GameManager::registerElement(DummyElement* dummyObject)
-{
-    if(dummyObject->getPhysicBody())
-        manager.material->addDummy(dummyObject);
-
-    map.mapElements.push_back(dummyObject);
-}
-
 void GameManager::unregisterElement(MapElement* staticObject)
 {
     MapElement::Array::iterator it = find(map.mapElements.begin(),
@@ -1069,4 +1102,17 @@ void GameManager::unregisterPlayer(Player* player)
     Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
 
     m_players.erase(it);
+}
+
+void GameManager::registerArea(AreaElement* area)
+{
+    manager.material->addArea(area);
+    map.areaElements.push_back(area);
+}
+
+void GameManager::unregisterArea(AreaElement* area)
+{
+    AreaElement::Array::iterator it = find(map.areaElements.begin(), map.areaElements.end(), area);
+
+    map.areaElements.erase(it);
 }

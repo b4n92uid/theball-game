@@ -9,7 +9,7 @@
 #define	_WEAPONENGINE_H
 
 #include <Tbe.h>
-#include <NewtonBall/NewtonBall.h>
+#include <BulletBall/BulletBall.h>
 #include <fmod.h>
 
 #include "Settings.h"

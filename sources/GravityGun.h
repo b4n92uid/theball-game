@@ -28,7 +28,6 @@ protected:
 
 private:
     StaticElement* m_attached;
-    StaticElement* m_lastAttached;
     float m_internalEnergy;
 };
 

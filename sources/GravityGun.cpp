@@ -7,7 +7,7 @@
 
 #include "GravityGun.h"
 
-#include <NewtonBall/NewtonBall.h>
+#include <BulletBall/BulletBall.h>
 
 #include "Define.h"
 
@@ -27,7 +27,6 @@ GravityGun::GravityGun(GameManager* gameManager) : Power(gameManager)
     m_name = "GravityGun";
 
     m_attached = NULL;
-    m_lastAttached = NULL;
 
     m_soundManager->registerSound("power.gravitygun.catch", m_settings("audio.gravitygun-catch"));
     m_soundManager->registerSound("power.gravitygun.throw", m_settings("audio.gravitygun-throw"));
@@ -47,8 +46,8 @@ void GravityGun::process()
 
     m_owner->setEnergy(roundf(m_internalEnergy));
 
-    NewtonNode* ownerpbody = m_owner->getPhysicBody();
-    NewtonNode* attachpbody = m_attached->getPhysicBody();
+    BulletNode* ownerpbody = m_owner->getPhysicBody();
+    BulletNode* attachpbody = m_attached->getPhysicBody();
 
     Vector3f stay = ownerpbody->getPos();
 
@@ -89,7 +88,7 @@ void GravityGun::process()
 
 void GravityGun::internalActivate(tbe::Vector3f target)
 {
-    NewtonNode* ownerpbody = m_owner->getPhysicBody();
+    BulletNode* ownerpbody = m_owner->getPhysicBody();
 
     if(target - ownerpbody->getPos() > 32)
         return;
@@ -98,7 +97,7 @@ void GravityGun::internalActivate(tbe::Vector3f target)
 
     foreach(StaticElement* elem, m_gameManager->map.staticElements)
     {
-        NewtonNode* elempbody = elem->getPhysicBody();
+        BulletNode* elempbody = elem->getPhysicBody();
 
         if(elempbody && elempbody->getMasse() > 0
            && elempbody->getMasse() < 4.1
@@ -106,17 +105,10 @@ void GravityGun::internalActivate(tbe::Vector3f target)
         {
             m_attached = elem;
 
-            elempbody->setApplyGravity(false);
+            elempbody->setGravity(0);
 
             if(elempbody->getPos() - ownerpbody->getPos() > 8)
-                NewtonBodyAddImpulse(elempbody->getBody(),
-                                     Vector3f(0, 4, 0) * elempbody->getMasse(),
-                                     elempbody->getPos());
-
-            if(m_lastAttached)
-                NewtonBodySetContinuousCollisionMode(m_lastAttached->getPhysicBody()->getBody(), false);
-
-            NewtonBodySetContinuousCollisionMode(elempbody->getBody(), true);
+                elempbody->getBody()->applyCentralImpulse(btVector3(0, 4, 0) * elempbody->getMasse());
 
             m_soundManager->playSound("power.gravitygun.catch", m_attached, -1);
 
@@ -133,8 +125,8 @@ void GravityGun::internalDiactivate()
     if(!m_attached)
         return;
 
-    NewtonNode* attachpbody = m_attached->getPhysicBody();
-    attachpbody->setApplyGravity(true);
+    BulletNode* attachpbody = m_attached->getPhysicBody();
+    attachpbody->setGravity(1);
 
     m_attached->makeTransparent(false);
     m_attached->makeLighted(true);
@@ -145,17 +137,19 @@ void GravityGun::internalDiactivate()
 
         if(m_owner->getPhysicBody()->getApplyForce() > 0.1)
         {
-            NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 128, attachpbody->getPos());
+            targetWay = targetWay.normalize() * 128;
+            attachpbody->getBody()->applyCentralImpulse(tbe2btVec(targetWay));
+
             m_soundManager->playSound("power.gravitygun.throw", m_attached);
         }
         else
         {
-            NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 8, attachpbody->getPos());
+            targetWay = targetWay.normalize() * 8;
+            attachpbody->getBody()->applyCentralImpulse(tbe2btVec(targetWay));
         }
     }
 
     m_soundManager->stopSound("power.gravitygun.catch");
 
-    m_lastAttached = m_attached;
     m_attached = NULL;
 }

@@ -20,301 +20,323 @@ using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
 
+class CollidFilterCallback : public btOverlapFilterCallback
+{
+public:
+    MaterialManager* materialManager;
+    GameManager* gameManager;
+
+    CollidFilterCallback(MaterialManager * matmng)
+    {
+        materialManager = matmng;
+        gameManager = matmng->m_gameManager;
+    }
+
+    virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0, btBroadphaseProxy * proxy1) const
+    {
+        bool collides = (proxy0->m_collisionFilterGroup & proxy1->m_collisionFilterMask) != 0;
+        collides = collides && (proxy1->m_collisionFilterGroup & proxy0->m_collisionFilterMask);
+
+        if(proxy0->m_clientObject && proxy1->m_clientObject)
+        {
+            btCollisionObject* body0 = static_cast<btCollisionObject*>(proxy0->m_clientObject);
+            btCollisionObject* body1 = static_cast<btCollisionObject*>(proxy1->m_clientObject);
+
+            MapElement* elem0 = static_cast<MapElement*>(body0->getUserPointer());
+            MapElement* elem1 = static_cast<MapElement*>(body1->getUserPointer());
+
+            std::vector<MaterialManager::CallbackSettings>& callbacks = materialManager->m_callbacks;
+
+            for(int i = 0; i < callbacks.size(); i++)
+                if(callbacks[i].a == elem0 && callbacks[i].b == elem1 ||
+                   callbacks[i].a == elem1 && callbacks[i].b == elem0)
+                {
+                    return callbacks[i].cb->collide();
+                }
+        }
+
+        return collides;
+    }
+};
+
 MaterialManager::MaterialManager(GameManager * gameManager)
 {
     m_gameManager = gameManager;
 
-    m_world = m_gameManager->parallelscene.newton->getNewtonWorld();
+    m_world = m_gameManager->parallelscene.physics->getWorld();
 
-    m_bulletGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_playersGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_immunityGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_elementsGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_ghostGroupe = NewtonMaterialCreateGroupID(m_world);
-    m_dummyGroupe = NewtonMaterialCreateGroupID(m_world);
-
-    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_dummyGroupe, this, PlayerOnDummyAABBOverlape, NULL);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
-
-    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, this, NULL, PlayerOnStaticContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
-
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_ghostGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_bulletGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_playersGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_elementsGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_immunityGroupe, false);
-
-    NewtonMaterialSetDefaultCollidable(m_world, m_immunityGroupe, m_bulletGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_immunityGroupe, m_immunityGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_immunityGroupe, m_playersGroupe, false);
-
-    NewtonMaterialSetDefaultCollidable(m_world, m_dummyGroupe, m_dummyGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_dummyGroupe, m_bulletGroupe, false);
-    NewtonMaterialSetDefaultCollidable(m_world, m_dummyGroupe, m_elementsGroupe, false);
-
-    NewtonMaterialSetDefaultFriction(m_world, m_playersGroupe, m_elementsGroupe, 256, 512);
-    NewtonMaterialSetDefaultFriction(m_world, m_immunityGroupe, m_elementsGroupe, 256, 512);
+    btOverlapFilterCallback * filterCallback = new CollidFilterCallback(this);
+    m_world->getPairCache()->setOverlapFilterCallback(filterCallback);
 }
 
 MaterialManager::~MaterialManager()
 {
-    NewtonMaterialDestroyAllGroupID(m_world);
+    clearCallbacks();
 }
+
+struct BulletOnPlayerCallback : public MaterialManager::MaterialCallback
+{
+    Bullet* bullet;
+    Player* player;
+
+    tbe::ticks::Clock cheerClock;
+    int cheerCount;
+
+    BulletOnPlayerCallback(Bullet* bullet, Player * player)
+    {
+        this->bullet = bullet;
+        this->player = player;
+        this->cheerCount = 0;
+    }
+
+    bool collide()
+    {
+
+        Player* striker = bullet->getWeapon()->getShooter();
+        GameManager* playManager = striker->getGameManager();
+
+        if(player == striker)
+            return false;
+
+        player->takeDammage(bullet->getDammage(), striker);
+
+        bullet->setLife(0);
+
+        if(striker == playManager->getUserPlayer() && player->isKilled())
+        {
+            cheerCount++;
+
+            if(cheerCount >= 2)
+            {
+                if(!cheerClock.isEsplanedTime(4000))
+                    switch(cheerCount)
+                    {
+                        case 2: playManager->display("Double kill");
+                            break;
+                        case 3: playManager->display("Triple kill");
+                            break;
+                        case 4: playManager->display("Carnage");
+                            break;
+                        case 5: playManager->display("The One");
+                            break;
+                        case 6: playManager->display("War Warrior");
+                            break;
+                        case 7: playManager->display("God Of War !!!");
+                            break;
+                        default: playManager->display("...");
+                            break;
+                    }
+                else
+                    cheerCount = 0;
+
+                cheerClock.snapShoot();
+            }
+        }
+
+        return false;
+    }
+};
+
+struct BulletOnMapCallback : public MaterialManager::MaterialCallback
+{
+    Bullet* bullet;
+    MapElement* elem;
+
+    BulletOnMapCallback(Bullet* bullet, MapElement * elem)
+    {
+        this->bullet = bullet;
+        this->elem = elem;
+    }
+
+    bool collide()
+    {
+        bullet->setLife(0);
+        return true;
+    }
+};
+
+struct PlayerOnMapCallback : public MaterialManager::MaterialCallback
+{
+    Player* player;
+    MapElement* selem;
+
+    PlayerOnMapCallback(Player* player, MapElement * selem)
+    {
+        this->player = player;
+        this->selem = selem;
+    }
+
+    bool collide()
+    {
+        GameManager* ge = player->getGameManager();
+
+        Vector3f veloc = selem->getPhysicBody()->getVelocity() * selem->getPhysicBody()->getMasse();
+
+        Vector3f cveloc = player->getPhysicBody()->getVelocity() * player->getPhysicBody()->getMasse();
+
+        if(veloc > cveloc)
+        {
+            veloc -= cveloc;
+
+            if(veloc > 200)
+                player->takeDammage(veloc.getMagnitude() - 200);
+        }
+
+        ge->manager.script->processCollid(player, selem);
+
+        return true;
+    }
+
+};
 
 void MaterialManager::setGhost(MapElement* body, bool state)
 {
-    NewtonNode* xbody = body->getPhysicBody();
-
     if(state)
-    {
-        if(m_ghostState.count(xbody))
-            return;
-
-        int newtonMaterial = NewtonBodyGetMaterialGroupID(xbody->getBody());
-        m_ghostState[xbody] = newtonMaterial;
-        NewtonBodySetMaterialGroupID(xbody->getBody(), m_ghostGroupe);
-    }
-
+        m_ghostGroupe.push_back(body);
     else
-    {
-        if(!m_ghostState.count(xbody))
-            return;
-
-        NewtonBodySetMaterialGroupID(xbody->getBody(), m_ghostState[xbody]);
-        m_ghostState.erase(xbody);
-    }
+        tools::erase(m_ghostGroupe, body);
 }
 
 void MaterialManager::setImmunity(Player* body, bool state)
 {
-    NewtonNode* xbody = body->getPhysicBody();
-
     if(state)
-    {
-        if(m_immunityState.count(xbody))
-            return;
-
-        int newtonMaterial = NewtonBodyGetMaterialGroupID(xbody->getBody());
-        m_immunityState[xbody] = newtonMaterial;
-        NewtonBodySetMaterialGroupID(xbody->getBody(), m_immunityGroupe);
-    }
-
+        m_immunityGroupe.push_back(body);
     else
-    {
-        if(!m_immunityState.count(xbody))
-            return;
-
-        NewtonBodySetMaterialGroupID(xbody->getBody(), m_immunityState[xbody]);
-        m_immunityState.erase(xbody);
-    }
+        tools::erase(m_immunityGroupe, body);
 }
 
-void MaterialManager::addElement(MapElement* body)
+void MaterialManager::addElement(MapElement* elem)
 {
-    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_elementsGroupe);
+    m_elementsGroupe.push_back(elem);
 }
 
-void MaterialManager::addDummy(MapElement* body)
+void MaterialManager::addArea(AreaElement* body)
 {
-    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_dummyGroupe);
+    m_areaGroupe.push_back(body);
 }
 
 void MaterialManager::addBullet(Bullet* body)
 {
-    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_bulletGroupe);
+    m_bulletGroupe.push_back(body);
 }
 
-void MaterialManager::addPlayer(Player* body)
+void MaterialManager::addPlayer(Player* player)
 {
-    NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_playersGroupe);
+    m_playersGroupe.push_back(player);
 }
 
-int MaterialManager::getPlayersGroupe() const
+bool MaterialManager::isBullet(MapElement* body)
 {
-    return m_playersGroupe;
+    return tools::find(m_bulletGroupe, body);
 }
 
-int MaterialManager::getWeaponsGroupe() const
+bool MaterialManager::isPlayer(MapElement* body)
 {
-    return m_bulletGroupe;
+    return tools::find(m_playersGroupe, body);
 }
 
-int MaterialManager::getElementsGroupe() const
+bool MaterialManager::isElement(MapElement* body)
 {
-    return m_elementsGroupe;
+    return tools::find(m_elementsGroupe, body);
 }
 
-template<typename T> static T getUserData(const NewtonBody* body)
+bool MaterialManager::isArea(MapElement* body)
 {
-    return static_cast<T>(NewtonBodyGetUserData(body));
+    return tools::find(m_areaGroupe, body);
 }
 
-void MaterialManager::mPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int)
+void MaterialManager::clearCallbacks()
 {
-    NewtonBody* body0 = NewtonJointGetBody0(contact);
-    NewtonBody* body1 = NewtonJointGetBody1(contact);
+    for(int i = 0; i < m_callbacks.size(); i++)
+        delete m_callbacks[i].cb;
 
-    int group0 = NewtonBodyGetMaterialGroupID(body0);
-    int group1 = NewtonBodyGetMaterialGroupID(body1);
+    m_callbacks.clear();
+}
 
-    if(group0 == group1 || group0 == m_ghostGroupe || group1 == m_ghostGroupe)
-        return;
+void MaterialManager::registerCallback(MapElement* a, MapElement* b, MaterialCallback* cb)
+{
+    CallbackSettings cbs;
+    cbs.a = a;
+    cbs.b = b;
+    cbs.cb = cb;
 
-    Player* player = NULL;
-    MapElement* elem = NULL;
+    m_callbacks.push_back(cbs);
+}
 
-    if(group0 == m_playersGroupe || group0 == m_immunityGroupe)
+void MaterialManager::process()
+{
+    clearCallbacks();
+
+    // Player with MapElement
+
+    BOOST_FOREACH(Player* player, m_playersGroupe)
     {
-        player = getUserData<Player*>(body0);
-        elem = getUserData<MapElement*>(body1);
-    }
 
-    else if(group1 == m_playersGroupe || group1 == m_immunityGroupe)
-    {
-        player = getUserData<Player*>(body1);
-        elem = getUserData<MapElement*>(body0);
-    }
-
-    else
-        return;
-
-    GameManager* ge = player->getGameManager();
-
-    Vector3f veloc = elem->getPhysicBody()->getVelocity() * elem->getPhysicBody()->getMasse();
-
-    Vector3f cveloc = player->getPhysicBody()->getVelocity() * player->getPhysicBody()->getMasse();
-
-    if(veloc > cveloc)
-    {
-        veloc -= cveloc;
-
-        if(veloc > 200)
-            player->takeDammage(veloc.getMagnitude() - 200);
-    }
-
-    ge->manager.script->processCollid(player, elem);
-}
-
-int MaterialManager::mPlayerOnDummyAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
-{
-    int group0 = NewtonBodyGetMaterialGroupID(body0);
-    int group1 = NewtonBodyGetMaterialGroupID(body1);
-
-    if(group0 == group1 || group0 == m_ghostGroupe || group1 == m_ghostGroupe)
-        return 0;
-
-    Player* player = NULL;
-    MapElement* elem = NULL;
-
-    if(group0 == m_playersGroupe)
-    {
-        player = getUserData<Player*>(body0);
-        elem = getUserData<MapElement*>(body1);
-    }
-
-    else if(group1 == m_playersGroupe)
-    {
-        player = getUserData<Player*>(body1);
-        elem = getUserData<MapElement*>(body0);
-    }
-
-    GameManager* ge = player->getGameManager();
-
-    ge->manager.script->processCollid(player, elem);
-
-    return 0;
-}
-
-void MaterialManager::mBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int)
-{
-    NewtonBody* body0 = NewtonJointGetBody0(contact);
-    NewtonBody* body1 = NewtonJointGetBody1(contact);
-
-    int group0 = NewtonBodyGetMaterialGroupID(body0);
-    int group1 = NewtonBodyGetMaterialGroupID(body1);
-
-    if(group0 == group1 || group0 == m_ghostGroupe || group1 == m_ghostGroupe)
-        return;
-
-    Bullet* bullet = NULL;
-
-    if(group0 == m_bulletGroupe)
-        bullet = getUserData<Bullet*>(body0);
-
-    else if(group1 == m_bulletGroupe)
-        bullet = getUserData<Bullet*>(body1);
-
-    bullet->setLife(0);
-}
-
-int MaterialManager::mBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
-{
-    static tbe::ticks::Clock cheerClock;
-    static int cheerCount = 0;
-
-    int group0 = NewtonBodyGetMaterialGroupID(body0);
-    int group1 = NewtonBodyGetMaterialGroupID(body1);
-
-    if(group0 == group1 || group0 == m_ghostGroupe || group1 == m_ghostGroupe)
-        return 0;
-
-    Player* striker = NULL;
-    Player* striked = NULL;
-    Bullet* bullet = NULL;
-
-    if(group0 == m_bulletGroupe)
-    {
-        striked = getUserData<Player*>(body1);
-        bullet = getUserData<Bullet*>(body0);
-    }
-
-    else if(group1 == m_bulletGroupe)
-    {
-        striked = getUserData<Player*>(body0);
-        bullet = getUserData<Bullet*>(body1);
-    }
-
-    striker = bullet->getWeapon()->getShooter();
-    GameManager* playManager = striker->getGameManager();
-
-    if(striked == striker)
-        return 0;
-
-    striked->takeDammage(bullet->getDammage(), striker);
-
-    bullet->setLife(0);
-
-    if(striker == playManager->getUserPlayer() && striked->isKilled())
-    {
-        cheerCount++;
-
-        if(cheerCount >= 2)
+        BOOST_FOREACH(MapElement* mapElement, m_elementsGroupe)
         {
-            if(!cheerClock.isEsplanedTime(4000))
-                switch(cheerCount)
-                {
-                    case 2: playManager->display("Double kill");
-                        break;
-                    case 3: playManager->display("Triple kill");
-                        break;
-                    case 4: playManager->display("Carnage");
-                        break;
-                    case 5: playManager->display("The One");
-                        break;
-                    case 6: playManager->display("War Warrior");
-                        break;
-                    case 7: playManager->display("God Of War !!!");
-                        break;
-                    default: playManager->display("...");
-                        break;
-                }
-            else
-                cheerCount = 0;
-
-            cheerClock.snapShoot();
+            PlayerOnMapCallback* callback = new PlayerOnMapCallback(player, mapElement);
+            registerCallback(player, mapElement, callback);
         }
     }
 
-    return 0;
+    // Bullet with Map
+
+    BOOST_FOREACH(Bullet* bullet, m_bulletGroupe)
+    {
+
+        BOOST_FOREACH(MapElement* mapElement, m_elementsGroupe)
+        {
+            BulletOnMapCallback* callback = new BulletOnMapCallback(bullet, mapElement);
+            registerCallback(bullet, mapElement, callback);
+        }
+    }
+
+    // Bullet With Player
+
+    BOOST_FOREACH(Bullet* bullet, m_bulletGroupe)
+    {
+
+        BOOST_FOREACH(Player* player, m_playersGroupe)
+        {
+            BulletOnPlayerCallback* callback = new BulletOnPlayerCallback(bullet, player);
+            registerCallback(bullet, player, callback);
+        }
+    }
+
+    // Player with AreaElement
+
+    BOOST_FOREACH(Player* player, m_playersGroupe)
+    {
+
+        BOOST_FOREACH(AreaElement* area, m_areaGroupe)
+        {
+            Matrix4 pmatrix = player->getVisualBody()->getAbsoluteMatrix();
+            Matrix4 amatrix = area->getVisualBody()->getAbsoluteMatrix();
+
+            if(amatrix.getPos() - pmatrix.getPos() < area->getRadius())
+                m_gameManager->manager.script->processCollid(player, area);
+        }
+    }
+
+    /*
+        int numManifolds = m_world->getDispatcher()->getNumManifolds();
+
+        for(int i = 0; i < numManifolds; i++)
+        {
+            btPersistentManifold* contactManifold = m_world->getDispatcher()->getManifoldByIndexInternal(i);
+            const btCollisionObject* obA = contactManifold->getBody0();
+            const btCollisionObject* obB = contactManifold->getBody1();
+
+            MapElement* elemB = static_cast<MapElement*>(obB->getUserPointer());
+            MapElement* elemA = static_cast<MapElement*>(obA->getUserPointer());
+
+            for(int i = 0; i < m_callbacks.size(); i++)
+                if(m_callbacks[i].a == elemA && m_callbacks[i].b == elemB ||
+                   m_callbacks[i].a == elemB && m_callbacks[i].b == elemA)
+                {
+                    if(!m_callbacks[i].cb->collide())
+                        contactManifold->clearManifold();
+                }
+        }
+     */
 }

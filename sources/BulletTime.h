@@ -9,7 +9,7 @@
 #define	BULLETTIME_H
 
 #include <Tbe.h>
-#include <NewtonBall/NewtonBall.h>
+#include <BulletBall/BulletBall.h>
 #include <fmod.hpp>
 
 #include "Power.h"
@@ -32,12 +32,10 @@ protected:
     void internalDiactivate();
 
 protected:
-    static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
     static void soundEffect(FMOD_CHANNEL* channel);
 
 protected:
     Weapon* m_usedWeapon;
-    std::map<NewtonBody*, NewtonApplyForceAndTorque> m_callbacks;
 
 protected:
     static tbe::ppe::ColorEffect* m_ppeffect;

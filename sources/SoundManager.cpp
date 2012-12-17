@@ -95,7 +95,7 @@ void SoundManager::syncronizeSoundsPosition()
     }
 }
 
-void SoundManager::playSound(std::string soundName, MapElement* object, int loop)
+void SoundManager::playSound(std::string soundName, MapElement* object, int loop, float vol)
 {
     if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
@@ -112,6 +112,7 @@ void SoundManager::playSound(std::string soundName, MapElement* object, int loop
     processSoundEffect(m_sounds[soundName].second);
 
     FMOD_Channel_SetPaused(m_sounds[soundName].second, false);
+    FMOD_Channel_SetVolume(m_sounds[soundName].second, vol);
 }
 
 void SoundManager::registerMusic(std::string name, std::string filename)

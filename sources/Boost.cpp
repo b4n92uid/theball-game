@@ -93,12 +93,11 @@ void Boost::internalActivate(tbe::Vector3f target)
     m_signalid = std::time(0);
     // m_owner->onMove.connect(m_signalid, boost::bind(&Boost::boostForce, this, _1, _2));
 
-    NewtonNode* pbody = m_owner->getPhysicBody();
+    BulletNode* pbody = m_owner->getPhysicBody();
 
-    Vector3f veloc = pbody->getApplyForce().normalize()*64;
+    Vector3f veloc = pbody->getVelocity().normalize()*64;
 
-    // NewtonBodySetContinuousCollisionMode(pbody->getBody(), true);
-    NewtonBodyAddImpulse(pbody->getBody(), veloc, pbody->getPos());
+    pbody->getBody()->applyCentralImpulse(tbe2btVec(veloc));
 }
 
 void Boost::internalDiactivate()
@@ -106,10 +105,8 @@ void Boost::internalDiactivate()
     if(m_ppeffect)
         m_ppeffect->setEnable(false);
 
-    NewtonNode* pbody = m_owner->getPhysicBody();
-
+    // BulletNode* pbody = m_owner->getPhysicBody();
     // m_owner->onMove.disconnect(m_signalid);
-    // NewtonBodySetContinuousCollisionMode(pbody->getBody(), false);
 
     m_cadency.snapShoot();
 }

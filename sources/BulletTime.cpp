@@ -57,29 +57,6 @@ void BulletTime::clearSingleTone(GameManager* gm)
     m_ppeffect = NULL;
 }
 
-void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
-{
-    MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
-
-    NewtonNode* nnode = elem->getPhysicBody();
-
-    Vector3f applyForce = nnode->getApplyForce();
-    Vector3f applyTorque = nnode->getApplyTorque();
-    float masse = nnode->getMasse();
-
-    if(nnode->isApplyGravity())
-        applyForce.y -= masse * 9.81 * nnode->getParallelScene()->getGravity() * 0.1;
-
-    applyForce *= 0.1;
-    applyTorque *= 0.1;
-
-    NewtonBodySetForce(nnode->getBody(), applyForce);
-    NewtonBodySetTorque(nnode->getBody(), applyTorque);
-
-    nnode->setApplyForce(0);
-    nnode->setApplyTorque(0);
-}
-
 void BulletTime::process()
 {
     m_internalEnergy -= 0.5;
@@ -91,31 +68,6 @@ void BulletTime::process()
         m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
         m_usedWeapon = m_owner->getCurWeapon();
         m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
-    }
-
-    NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
-    NewtonBody* body = NewtonWorldGetFirstBody(nworld);
-
-    while(body)
-    {
-        NewtonApplyForceAndTorque callback = NewtonBodyGetForceAndTorqueCallback(body);
-
-        if(!m_callbacks.count(body) && callback)
-        {
-            Vector3f vel, omg;
-            NewtonBodyGetVelocity(body, vel);
-            NewtonBodyGetOmega(body, omg);
-
-            vel *= 0.1;
-            omg *= 0.1;
-            NewtonBodySetVelocity(body, vel);
-            NewtonBodySetOmega(body, omg);
-
-            m_callbacks[body] = callback;
-            NewtonBodySetForceAndTorqueCallback(body, applyForceAndTorqueCallback);
-        }
-
-        body = NewtonWorldGetNextBody(nworld, body);
     }
 }
 
@@ -137,33 +89,6 @@ void BulletTime::internalActivate(tbe::Vector3f target)
 
     m_usedWeapon = m_owner->getCurWeapon();
     m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
-
-    NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
-    NewtonBody* body = NewtonWorldGetFirstBody(nworld);
-
-    m_callbacks.clear();
-
-    while(body)
-    {
-        Vector3f vel, omg;
-        NewtonBodyGetVelocity(body, vel);
-        NewtonBodyGetOmega(body, omg);
-
-        vel *= 0.1;
-        omg *= 0.1;
-        NewtonBodySetVelocity(body, vel);
-        NewtonBodySetOmega(body, omg);
-
-        NewtonApplyForceAndTorque callback = NewtonBodyGetForceAndTorqueCallback(body);
-
-        if(callback)
-        {
-            m_callbacks[body] = callback;
-            NewtonBodySetForceAndTorqueCallback(body, applyForceAndTorqueCallback);
-        }
-
-        body = NewtonWorldGetNextBody(nworld, body);
-    }
 }
 
 void BulletTime::internalDiactivate()
@@ -175,26 +100,4 @@ void BulletTime::internalDiactivate()
         m_ppeffect->setEnable(false);
 
     m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
-
-    NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
-    NewtonBody* body = NewtonWorldGetFirstBody(nworld);
-
-    while(body)
-    {
-        Vector3f vel, omg;
-        NewtonBodyGetVelocity(body, vel);
-        NewtonBodyGetOmega(body, omg);
-
-        vel *= 10.0;
-        omg *= 10.0;
-        NewtonBodySetVelocity(body, vel);
-        NewtonBodySetOmega(body, omg);
-
-        if(m_callbacks.count(body))
-            NewtonBodySetForceAndTorqueCallback(body, m_callbacks[body]);
-
-        body = NewtonWorldGetNextBody(nworld, body);
-    }
-
-    m_callbacks.clear();
 }

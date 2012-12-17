@@ -107,33 +107,34 @@ int Bullet::getLife() const
 
 bool Bullet::isDeadAmmo()
 {
-    return (m_life <= 0 || !m_gameManager->map.aabb.isInner(m_visualBody->getPos()));
+    return(m_life <= 0 || !m_gameManager->map.aabb.isInner(m_visualBody->getPos()));
 }
 
 void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
 {
-    m_startPos = startpos;
-    m_targetPos = targetpos;
     m_shootDiri = (targetpos - startpos).normalize();
+    m_startPos = startpos + m_shootDiri * 1;
+    m_targetPos = targetpos;
     m_shootSpeed = shootspeed;
 
     m_shootDiri += AABB(accuracy).randPos();
 
-    BullNode* placehold = new BullNode;
-    setVisualBody(placehold);
-
-    placehold->setPos(startpos);
+    Vector3f impulse = m_shootDiri * m_shootSpeed;
 
     Settings::World& worldSettings = m_gameManager->manager.app->globalSettings.world;
 
-    NewtonNode* body = new NewtonNode(m_gameManager->parallelscene.newton);
-    body->setUpdatedMatrix(&placehold->getMatrix());
+    BullNode* placehold = new BullNode;
+    placehold->setPos(m_startPos);
+
+    setVisualBody(placehold);
+
+    BulletNode* body = new BulletNode(m_gameManager->parallelscene.physics, &placehold->getMatrix());
+
     body->buildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
-    body->setApplyGravity(false);
-    NewtonBodySetForceAndTorqueCallback(body->getBody(), MapElement::applyForceAndTorqueCallback);
-    NewtonBodySetUserData(body->getBody(), this);
-    NewtonBodySetContinuousCollisionMode(body->getBody(), true);
-    NewtonBodyAddImpulse(body->getBody(), m_shootDiri * m_shootSpeed, m_startPos);
+
+    body->getBody()->setGravity(btVector3(0, 0, 0));
+    body->getBody()->setUserPointer(this);
+    body->getBody()->applyCentralImpulse(tbe2btVec(impulse));
 
     setPhysicBody(body);
 
