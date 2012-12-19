@@ -112,17 +112,19 @@ bool Bullet::isDeadAmmo()
 
 void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
 {
-    m_startPos = startpos;
-    m_targetPos = targetpos;
     m_shootDiri = (targetpos - startpos).normalize();
+    m_startPos = startpos + m_shootDiri * 1;
+    m_targetPos = targetpos;
     m_shootSpeed = shootspeed;
 
     m_shootDiri += AABB(accuracy).randPos();
 
-    BullNode* placehold = new BullNode;
-    setVisualBody(placehold);
+    Vector3f impulse = m_shootDiri * m_shootSpeed;
 
+    BullNode* placehold = new BullNode;
     placehold->setPos(startpos);
+
+    setVisualBody(placehold);
 
     Settings::World& worldSettings = m_gameManager->manager.app->globalSettings.world;
 
@@ -130,10 +132,11 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
     body->setUpdatedMatrix(&placehold->getMatrix());
     body->buildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
     body->setApplyGravity(false);
+
     NewtonBodySetForceAndTorqueCallback(body->getBody(), MapElement::applyForceAndTorqueCallback);
     NewtonBodySetUserData(body->getBody(), this);
     NewtonBodySetContinuousCollisionMode(body->getBody(), true);
-    NewtonBodyAddImpulse(body->getBody(), m_shootDiri * m_shootSpeed, m_startPos);
+    NewtonBodyAddImpulse(body->getBody(), impulse, m_startPos);
 
     setPhysicBody(body);
 

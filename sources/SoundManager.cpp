@@ -42,10 +42,10 @@ SoundManager::SoundManager(GameManager* gameManager)
     {
         FMOD_CHANNELGROUP* masterGroupe;
         FMOD_System_GetMasterChannelGroup(m_fmodsys, &masterGroupe);
-        FMOD_ChannelGroup_SetVolume(masterGroupe, 0.75);
+        FMOD_ChannelGroup_SetVolume(masterGroupe, 1.00);
 
         FMOD_System_CreateChannelGroup(m_fmodsys, "musicGroupe", &m_musicGroupe);
-        FMOD_ChannelGroup_SetVolume(m_musicGroupe, 1.00);
+        FMOD_ChannelGroup_SetVolume(m_musicGroupe, 0.60);
     }
 }
 
@@ -95,7 +95,26 @@ void SoundManager::syncronizeSoundsPosition()
     }
 }
 
-void SoundManager::playSound(std::string soundName, MapElement* object, int loop)
+void SoundManager::volSound(std::string soundName, float vol)
+{
+    if(m_gameManager->manager.app->globalSettings.noaudio)
+        return;
+
+    FMOD_Channel_SetVolume(m_sounds[soundName].second, vol);
+}
+
+bool SoundManager::isPlaySound(std::string soundName)
+{
+    if(m_gameManager->manager.app->globalSettings.noaudio)
+        return false;
+
+    int isplay = false;
+    FMOD_Channel_IsPlaying(m_sounds[soundName].second, &isplay);
+
+    return isplay;
+}
+
+void SoundManager::playSound(std::string soundName, MapElement* object, int loop, float vol)
 {
     if(m_gameManager->manager.app->globalSettings.noaudio)
         return;
@@ -112,6 +131,7 @@ void SoundManager::playSound(std::string soundName, MapElement* object, int loop
     processSoundEffect(m_sounds[soundName].second);
 
     FMOD_Channel_SetPaused(m_sounds[soundName].second, false);
+    FMOD_Channel_SetVolume(m_sounds[soundName].second, vol);
 }
 
 void SoundManager::registerMusic(std::string name, std::string filename)

@@ -86,17 +86,29 @@ void MapElement::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
     elem->getPhysicBody()->applyForceAndTorque();
 }
 
-DummyElement::DummyElement(GameManager* gameManager, std::string id, tbe::Vector3f pos, tbe::Vector3f size) : MapElement(gameManager)
+AreaElement::AreaElement(GameManager* gameManager, std::string id, tbe::Vector3f pos, float radius) : MapElement(gameManager)
 {
     m_id = id;
 
     m_visualBody = new scene::BullNode;
     m_visualBody->setPos(pos);
 
-    m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton, m_visualBody);
-    m_physicBody->buildSphereNode(size, 0);
-    m_physicBody->setPos(pos);
-    m_physicBody->setParent(m_visualBody);
+    m_radius = radius;
 
-    NewtonBodySetUserData(m_physicBody->getBody(), this);
+    //    m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton, m_visualBody);
+    //    m_physicBody->buildSphereNode(size, 0);
+    //    m_physicBody->setPos(pos);
+    //    m_physicBody->setParent(m_visualBody);
+
+    //    NewtonBodySetUserData(m_physicBody->getBody(), this);
+}
+
+void AreaElement::setRadius(float radius)
+{
+    this->m_radius = radius;
+}
+
+float AreaElement::getRadius() const
+{
+    return m_radius;
 }

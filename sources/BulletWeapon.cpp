@@ -32,7 +32,7 @@ ParticlesEmiter(gameManager->parallelscene.particles)
     m_shootSize = 1;
     m_shootSpeed = 0;
 
-    setBulletSize(0.75);
+    setBulletSize(0.5);
 
     m_playManager->manager.scene->getRootNode()->addChild(this);
 }
@@ -115,7 +115,7 @@ WeaponBlaster::WeaponBlaster(GameManager* playManager) : BulletWeapon(playManage
     setAmmoCount(m_settings.weapons.get<int>("blaster.ammoCount"));
     setMaxAmmoDammage(m_settings.weapons.get<int>("blaster.maxAmmoDammage"));
     setShootCadency(m_settings.weapons.get<int>("blaster.shootCadency"));
-    setShootSpeed(m_settings.weapons.get<int>("blaster.shootSpeed"));
+    setShootSpeed(m_settings.weapons.get<float>("blaster.shootSpeed"));
     setFireSound(m_settings.weapons.get<string > ("blaster.fireSound"));
     setTexture(m_settings.weapons.get<string > ("blaster.texture"));
 
@@ -153,7 +153,7 @@ WeaponShotgun::WeaponShotgun(GameManager* playManager) : BulletWeapon(playManage
     setAmmoCount(m_settings.weapons.get<int>("shotgun.ammoCount"));
     setMaxAmmoDammage(m_settings.weapons.get<int>("shotgun.maxAmmoDammage"));
     setShootCadency(m_settings.weapons.get<int>("shotgun.shootCadency"));
-    setShootSpeed(m_settings.weapons.get<int>("shotgun.shootSpeed"));
+    setShootSpeed(m_settings.weapons.get<float>("shotgun.shootSpeed"));
     setFireSound(m_settings.weapons.get<string > ("shotgun.fireSound"));
     setTexture(m_settings.weapons.get<string > ("shotgun.texture"));
     setShootSize(m_settings.weapons.get<int>("shotgun.shootSize"));
@@ -170,7 +170,7 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
         Bullet * fire = new Bullet(m_playManager);
         fire->setWeapon(this);
         fire->setDammage(math::rand(1, m_maxAmmoDammage));
-        fire->shoot(startpos, targetpos, m_shootSpeed, 0.2);
+        fire->shoot(startpos, targetpos, m_shootSpeed, m_settings.weapons.get<float>("shotgun.shootAccuray"));
 
         m_bulletArray.push_back(fire);
     }
@@ -191,7 +191,7 @@ WeaponBomb::WeaponBomb(GameManager* playManager) : BulletWeapon(playManager)
     setAmmoCount(m_settings.weapons.get<int>("bomb.ammoCount"));
     setMaxAmmoDammage(m_settings.weapons.get<int>("bomb.maxAmmoDammage"));
     setShootCadency(m_settings.weapons.get<int>("bomb.shootCadency"));
-    setShootSpeed(m_settings.weapons.get<int>("bomb.shootSpeed"));
+    setShootSpeed(m_settings.weapons.get<float>("bomb.shootSpeed"));
     setFireSound(m_settings.weapons.get<string > ("bomb.fireSound"));
     setTexture(m_settings.weapons.get<string > ("bomb.texture"));
     setShootSize(m_settings.weapons.get<int>("bomb.shootSize"));

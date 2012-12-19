@@ -28,6 +28,8 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "include", script::include);
 
     lua_register(m_lua, "setFloorPosition", script::setFloorPosition);
+    lua_register(m_lua, "isStayInFloor", script::isStayInFloor);
+
     lua_register(m_lua, "setPosition", script::setPosition);
     lua_register(m_lua, "getPosition", script::getPosition);
 
@@ -75,6 +77,9 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     lua_register(m_lua, "loadSound", script::loadSound);
     lua_register(m_lua, "playSound", script::playSound);
+    lua_register(m_lua, "stopSound", script::stopSound);
+    lua_register(m_lua, "volSound", script::volSound);
+    lua_register(m_lua, "isPlaySound", script::isPlaySound);
 
     lua_register(m_lua, "loadMusic", script::loadMusic);
     lua_register(m_lua, "playMusic", script::playMusic);
@@ -151,15 +156,15 @@ ScriptManager::~ScriptManager()
     lua_close(m_lua);
 }
 
-void ScriptManager::processCollid(Player* player, MapElement* elem)
+void ScriptManager::processCollid(Player* player, MapElement* elem, float force, float normaleSpeed)
 {
     if(m_collidRec.count(elem->getId()))
     {
-        callCollidCallback(m_collidRec[elem->getId()], player, elem);
+        callCollidCallback(m_collidRec[elem->getId()], player, elem, force, normaleSpeed);
     }
 }
 
-void ScriptManager::callCollidCallback(std::string funcname, Player* player, MapElement* elem)
+void ScriptManager::callCollidCallback(std::string funcname, Player* player, MapElement* elem, float force, float normaleSpeed)
 {
     lua_getglobal(m_lua, funcname.c_str());
 
@@ -171,7 +176,9 @@ void ScriptManager::callCollidCallback(std::string funcname, Player* player, Map
 
     lua_pushinteger(m_lua, (lua_Integer)player);
     lua_pushinteger(m_lua, (lua_Integer)elem);
-    lua_call(m_lua, 2, 0);
+    lua_pushnumber(m_lua, force);
+    lua_pushnumber(m_lua, normaleSpeed);
+    lua_call(m_lua, 4, 0);
 }
 
 void ScriptManager::call(std::string funcname)
@@ -209,13 +216,13 @@ void ScriptManager::registerCollid(std::string id, std::string funcname)
     m_collidRec[id] = funcname;
 }
 
-void ScriptManager::registerCollid(tbe::Vector3f pos, tbe::Vector3f size, std::string funcname)
+void ScriptManager::registerCollid(tbe::Vector3f pos, float radius, std::string funcname)
 {
     string id = "dummy#" + tools::numToStr(time(0)) + tools::numToStr(rand());
 
-    DummyElement* elem = new DummyElement(m_gameManager, id, pos, size);
+    AreaElement* elem = new AreaElement(m_gameManager, id, pos, radius);
 
-    m_gameManager->registerElement(elem);
+    m_gameManager->registerArea(elem);
 
     m_collidRec[id] = funcname;
 }

@@ -14,6 +14,93 @@
 #define SCRIPTMANAGER_INTERNALE_NAME "_scriptManager"
 #define SCRIPTPATH_INTERNALE_NAME "_scriptPath"
 
+class StaticElement;
+
+inline void lua_pushelement(lua_State* lua, MapElement* e)
+{
+    lua_pushinteger(lua, (lua_Integer)e);
+}
+
+inline void lua_pushplayer(lua_State* lua, Player* p)
+{
+    lua_pushinteger(lua, (lua_Integer)p);
+}
+
+inline Player* lua_toplayer(lua_State* lua, int argpos)
+{
+    return reinterpret_cast<Player*>((long)lua_tonumber(lua, argpos));
+}
+
+inline MapElement* lua_toelem(lua_State* lua, int argpos)
+{
+    return reinterpret_cast<MapElement*>((long)lua_tonumber(lua, argpos));
+}
+
+inline StaticElement* lua_tostatic(lua_State* lua, int argpos)
+{
+    return reinterpret_cast<StaticElement*>((long)lua_tonumber(lua, argpos));
+}
+
+inline void lua_pushvector3(lua_State* lua, tbe::Vector3f vec)
+{
+    lua_newtable(lua);
+
+    lua_pushstring(lua, "x");
+    lua_pushnumber(lua, vec.x);
+    lua_settable(lua, -3);
+
+    lua_pushstring(lua, "y");
+    lua_pushnumber(lua, vec.y);
+    lua_settable(lua, -3);
+
+    lua_pushstring(lua, "z");
+    lua_pushnumber(lua, vec.z);
+    lua_settable(lua, -3);
+}
+
+template<typename T>
+void lua_pushtable(lua_State* lua, const std::vector<T>& vec)
+{
+    if(vec.empty())
+        return;
+
+    lua_newtable(lua);
+
+    for(unsigned i = 0; i < vec.size(); i++)
+    {
+        lua_pushnumber(lua, i);
+        lua_pushnumber(lua, (lua_Integer)vec[i]);
+        lua_settable(lua, -3);
+    }
+}
+
+inline tbe::Vector3f lua_tovector3(lua_State* lua, int argpos)
+{
+    tbe::Vector3f vec;
+
+    lua_pushstring(lua, "x");
+    lua_gettable(lua, argpos);
+    vec.x = lua_tonumber(lua, -1);
+    lua_pop(lua, 1);
+
+    lua_pushstring(lua, "y");
+    lua_gettable(lua, argpos);
+    vec.y = lua_tonumber(lua, -1);
+    lua_pop(lua, 1);
+
+    lua_pushstring(lua, "z");
+    lua_gettable(lua, argpos);
+    vec.z = lua_tonumber(lua, -1);
+    lua_pop(lua, 1);
+
+    return vec;
+}
+
+inline void lua_pushstring(lua_State *L, std::string s)
+{
+    lua_pushstring(L, s.c_str());
+}
+
 namespace script
 {
 
@@ -24,6 +111,7 @@ int include(lua_State* lua);
 // Translation
 
 int setFloorPosition(lua_State* lua);
+int isStayInFloor(lua_State* lua);
 
 int setPosition(lua_State* lua);
 int getPosition(lua_State* lua);
@@ -92,6 +180,9 @@ int deletePlayer(lua_State* lua);
 
 int loadSound(lua_State* lua);
 int playSound(lua_State* lua);
+int stopSound(lua_State* lua);
+int isPlaySound(lua_State* lua);
+int volSound(lua_State* lua);
 
 int loadMusic(lua_State* lua);
 int playMusic(lua_State* lua);

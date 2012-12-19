@@ -64,87 +64,6 @@ inline ScriptManager* getScriptManager(lua_State* lua)
     return(ScriptManager*)ptr;
 }
 
-inline void lua_pushelement(lua_State* lua, MapElement* e)
-{
-    lua_pushinteger(lua, (lua_Integer)e);
-}
-
-inline void lua_pushplayer(lua_State* lua, Player* p)
-{
-    lua_pushinteger(lua, (lua_Integer)p);
-}
-
-inline Player* lua_toplayer(lua_State* lua, int argpos)
-{
-    return reinterpret_cast<Player*>((long)lua_tonumber(lua, argpos));
-}
-
-inline MapElement* lua_toelem(lua_State* lua, int argpos)
-{
-    return reinterpret_cast<MapElement*>((long)lua_tonumber(lua, argpos));
-}
-
-inline StaticElement* lua_tostatic(lua_State* lua, int argpos)
-{
-    return reinterpret_cast<StaticElement*>((long)lua_tonumber(lua, argpos));
-}
-
-template<typename T> void lua_pushtable(lua_State* lua, const vector<T>& vec)
-{
-    lua_newtable(lua);
-
-    for(unsigned i = 0; i < vec.size(); i++)
-    {
-        lua_pushnumber(lua, i);
-        lua_pushnumber(lua, (lua_Integer)vec[i]);
-        lua_settable(lua, -3);
-    }
-}
-
-inline void lua_pushvector3(lua_State* lua, Vector3f vec)
-{
-    lua_newtable(lua);
-
-    lua_pushstring(lua, "x");
-    lua_pushnumber(lua, vec.x);
-    lua_settable(lua, -3);
-
-    lua_pushstring(lua, "y");
-    lua_pushnumber(lua, vec.y);
-    lua_settable(lua, -3);
-
-    lua_pushstring(lua, "z");
-    lua_pushnumber(lua, vec.z);
-    lua_settable(lua, -3);
-}
-
-inline Vector3f lua_tovector3(lua_State* lua, int argpos)
-{
-    Vector3f vec;
-
-    lua_pushstring(lua, "x");
-    lua_gettable(lua, argpos);
-    vec.x = lua_tonumber(lua, -1);
-    lua_pop(lua, 1);
-
-    lua_pushstring(lua, "y");
-    lua_gettable(lua, argpos);
-    vec.y = lua_tonumber(lua, -1);
-    lua_pop(lua, 1);
-
-    lua_pushstring(lua, "z");
-    lua_gettable(lua, argpos);
-    vec.z = lua_tonumber(lua, -1);
-    lua_pop(lua, 1);
-
-    return vec;
-}
-
-void lua_pushstring(lua_State *L, string s)
-{
-    lua_pushstring(L, s.c_str());
-}
-
 bool __check(MapElement* elem, GameManager* gm)
 {
     return tools::find(gm->map.mapElements, elem)
@@ -166,6 +85,8 @@ bool __check(Player* elem, GameManager* gm)
         cout << "LUA: " << __FUNCTION__ << ": undefined element (" << e << ")" << endl; \
         return 0; }
 
+#define invalidArg(e) { cout << "LUA: " << __FUNCTION__ << ": invalid argument (" << e << ")" << endl; return 0; }
+
 int include(lua_State* lua)
 {
     string scriptpath = getScriptPath(lua);
@@ -175,6 +96,15 @@ int include(lua_State* lua)
     luaL_dofile(lua, include.c_str());
 
     return 0;
+}
+
+int isStayInFloor(lua_State* lua)
+{
+    Player* player = lua_toplayer(lua, 1);
+
+    lua_pushboolean(lua, player->isStayDown());
+
+    return 1;
 }
 
 int setFloorPosition(lua_State* lua)
@@ -488,6 +418,10 @@ int attachPower(lua_State* lua)
     else if(id == "GravityGun")
         player->addPower(new GravityGun(gm));
 
+    else
+        invalidArg(id);
+
+
     return 0;
 }
 
@@ -517,12 +451,18 @@ int attachWeapon(lua_State* lua)
 
     if(id == "Blaster")
         weapon = new WeaponBlaster(gm);
-    else if(id == "Shotgun")
+
+    else if(id == "ShotGun")
         weapon = new WeaponShotgun(gm);
+
     else if(id == "Finder")
         weapon = new WeaponFinder(gm);
+
     else if(id == "Bomb")
         weapon = new WeaponBomb(gm);
+
+    else
+        invalidArg(id);
 
     if(lua_isnumber(lua, 3))
         weapon->setAmmoCount(lua_tointeger(lua, 3));
@@ -567,6 +507,43 @@ int loadSound(lua_State* lua)
     return 0;
 }
 
+int volSound(lua_State* lua)
+{
+    GameManager* ge = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+
+    float vol = lua_tonumber(lua, 2);
+
+    ge->manager.sound->volSound(id, vol);
+
+    return 0;
+}
+
+int isPlaySound(lua_State* lua)
+{
+    GameManager* ge = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+
+    bool isplay = ge->manager.sound->isPlaySound(id);
+
+    lua_pushboolean(lua, isplay);
+
+    return 1;
+}
+
+int stopSound(lua_State* lua)
+{
+    GameManager* ge = getGameManager(lua);
+
+    string id = lua_tostring(lua, 1);
+
+    ge->manager.sound->stopSound(id);
+
+    return 0;
+}
+
 int playSound(lua_State* lua)
 {
     GameManager* ge = getGameManager(lua);
@@ -575,7 +552,11 @@ int playSound(lua_State* lua)
 
     MapElement* elem = lua_toelem(lua, 2);
 
-    ge->manager.sound->playSound(id, elem);
+    int loop = lua_tointeger(lua, 3);
+
+    float vol = lua_isnoneornil(lua, 4) ? 1 : lua_tonumber(lua, 4);
+
+    ge->manager.sound->playSound(id, elem, loop, vol);
 
     return 0;
 }
@@ -1059,7 +1040,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                    \
+                                                                                                                                    \
     return 1;
 }
 
@@ -1460,6 +1441,30 @@ struct MoveHook
     lua_State* lua;
 };
 
+struct VelocityHook
+{
+
+    VelocityHook(lua_State* l, string f)
+    {
+        lua = l;
+        callback = f;
+    }
+
+    bool operator()(Player* player, Vector3f vel)
+    {
+        lua_getglobal(lua, callback.c_str());
+
+        lua_pushplayer(lua, player);
+        lua_pushvector3(lua, vel);
+        lua_call(lua, 2, 1);
+
+        return lua_toboolean(lua, -1);
+    }
+
+    string callback;
+    lua_State* lua;
+};
+
 int registerPlayerHook(lua_State* lua)
 {
     GameManager* gm = getGameManager(lua);
@@ -1510,6 +1515,9 @@ int registerPlayerHook(lua_State* lua)
 
         else if(type == "move")
             player->onMove.connect(MoveHook(lua, func));
+
+        else if(type == "velocity")
+            player->onVelocity.connect(VelocityHook(lua, func));
     }
 
     return 0;
@@ -1532,10 +1540,10 @@ int registerAreaCollid(lua_State* lua)
     ScriptManager* sm = getScriptManager(lua);
 
     Vector3f pos = lua_tovector3(lua, 1);
-    Vector3f size = lua_tonumber(lua, 2);
+    float radius = lua_tonumber(lua, 2);
     string fn = lua_tostring(lua, 3);
 
-    sm->registerCollid(pos, size, fn);
+    sm->registerCollid(pos, radius, fn);
 
     return 0;
 }

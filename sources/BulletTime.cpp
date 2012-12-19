@@ -136,7 +136,9 @@ void BulletTime::internalActivate(tbe::Vector3f target)
         m_ppeffect->setEnable(true);
 
     m_usedWeapon = m_owner->getCurWeapon();
-    m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
+
+    if(m_usedWeapon)
+        m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
 
     NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
     NewtonBody* body = NewtonWorldGetFirstBody(nworld);

@@ -58,10 +58,18 @@ protected:
     std::string m_id;
 };
 
-class DummyElement : public MapElement
+class AreaElement : public MapElement
 {
 public:
-    DummyElement(GameManager*, std::string, tbe::Vector3f, tbe::Vector3f);
+    AreaElement(GameManager*, std::string, tbe::Vector3f, float);
+
+    void setRadius(float radius);
+    float getRadius() const;
+
+    typedef std::vector<AreaElement*> Array;
+
+protected:
+    float m_radius;
 };
 
 #endif	/* MAPELEMENT_H */

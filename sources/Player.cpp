@@ -123,6 +123,9 @@ void Player::process()
     if(m_gameManager->isGameOver())
         return;
 
+    if(m_physicBody->getVelocity() > 0.0)
+        onVelocity(this, m_physicBody->getVelocity());
+
     if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->process(this);
 
@@ -189,7 +192,7 @@ bool Player::isStayDown()
     {
         scene::NewtonNode* nnode = elem->getPhysicBody();
 
-        if(nnode && isBodyContactOnFloor(nnode, m_physicBody))
+        if(nnode && isBodyContactOnFloor(m_physicBody, nnode))
             return true;
     }
 

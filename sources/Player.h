@@ -135,6 +135,7 @@ public:
     boost::signal<bool(Player*, Player*), alltrue> onKilled;
     boost::signal<bool(Player*, bool), alltrue> onJump;
     boost::signal<bool(Player*, tbe::Vector3f), alltrue> onMove;
+    boost::signal<bool(Player*, tbe::Vector3f), alltrue> onVelocity;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;

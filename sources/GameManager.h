@@ -98,11 +98,12 @@ public:
     // Enregistrement des entités ----------------------------------------------
 
     void registerPlayer(Player* player);
+    void registerArea(AreaElement* dummyObject);
     void registerElement(MapElement* staticObject);
     void registerElement(StaticElement* staticObject);
-    void registerElement(DummyElement* dummyObject);
 
     void unregisterPlayer(Player* player);
+    void unregisterArea(AreaElement* dummyObject);
     void unregisterElement(MapElement* staticObject);
     void unregisterElement(StaticElement* staticObject);
 
@@ -115,6 +116,7 @@ public:
         std::string name;
 
         StaticElement::Array staticElements;
+        AreaElement::Array areaElements;
         MapElement::Array mapElements;
 
         tbe::AABB aabb;
@@ -187,6 +189,7 @@ protected:
     std::list<tbe::Vector3f> m_playerPosRec;
 
     std::map<unsigned, unsigned> m_weaponSlot;
+    std::map<unsigned, unsigned> m_powerSlot;
 
     struct
     {

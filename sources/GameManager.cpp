@@ -97,12 +97,11 @@ GameManager::GameManager(AppManager* appManager)
     m_weaponSlot[233] = 2;
     m_weaponSlot[34] = 3;
     m_weaponSlot[39] = 4;
-    m_weaponSlot[40] = 5;
-    m_weaponSlot[45] = 6;
-    m_weaponSlot[232] = 7;
-    m_weaponSlot[95] = 8;
-    m_weaponSlot[231] = 9;
-    m_weaponSlot[224] = 0;
+
+    m_powerSlot[40] = 1;
+    m_powerSlot[45] = 2;
+    m_powerSlot[232] = 3;
+    m_powerSlot[95] = 4;
 
     m_earthquake.intensity = 0;
     m_earthquake.physical = false;
@@ -474,16 +473,11 @@ void GameManager::eventProcess()
         // Séléction d'arme
         if(event->notify == EventManager::EVENT_KEY_DOWN)
         {
-            if(event->keyState[EventManager::KEY_LCTRL])
-            {
-                if(m_weaponSlot.count(event->lastActiveKey.first))
-                    m_userPlayer->slotPower(m_weaponSlot[event->lastActiveKey.first]);
-            }
-            else
-            {
-                if(m_weaponSlot.count(event->lastActiveKey.first))
-                    m_userPlayer->slotWeapon(m_weaponSlot[event->lastActiveKey.first]);
-            }
+            if(m_weaponSlot.count(event->lastActiveKey.first))
+                m_userPlayer->slotWeapon(m_weaponSlot[event->lastActiveKey.first]);
+
+            if(m_powerSlot.count(event->lastActiveKey.first))
+                m_userPlayer->slotPower(m_powerSlot[event->lastActiveKey.first]);
         }
 
         // Touche de pause (Esc)
@@ -811,7 +805,9 @@ void GameManager::render()
 
     // Physique ----------------------------------------------------------------
 
-    parallelscene.newton->setWorldTimestep(1.0f / m_newtonClock.getEsplanedTime());
+    parallelscene.newton->setWorldTimestep(1.0f / 60.0f);
+
+    manager.material->process();
 
     // Son 3D ------------------------------------------------------------------
 
@@ -1040,14 +1036,6 @@ void GameManager::registerElement(MapElement* elem)
         map.aabb.count(elem->getVisualBody());
 }
 
-void GameManager::registerElement(DummyElement* dummyObject)
-{
-    if(dummyObject->getPhysicBody())
-        manager.material->addDummy(dummyObject);
-
-    map.mapElements.push_back(dummyObject);
-}
-
 void GameManager::unregisterElement(MapElement* staticObject)
 {
     MapElement::Array::iterator it = find(map.mapElements.begin(),
@@ -1069,4 +1057,16 @@ void GameManager::unregisterPlayer(Player* player)
     Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
 
     m_players.erase(it);
+}
+
+void GameManager::registerArea(AreaElement* area)
+{
+    map.areaElements.push_back(area);
+}
+
+void GameManager::unregisterArea(AreaElement* area)
+{
+    AreaElement::Array::iterator it = find(map.areaElements.begin(), map.areaElements.end(), area);
+
+    map.areaElements.erase(it);
 }
