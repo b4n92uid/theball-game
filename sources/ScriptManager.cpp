@@ -107,6 +107,9 @@ ScriptManager::ScriptManager(GameManager* gameManager)
     lua_register(m_lua, "setNumber", script::setNumber);
     lua_register(m_lua, "getNumber", script::getNumber);
 
+    lua_register(m_lua, "setEntity", script::setEntity);
+    lua_register(m_lua, "getEntity", script::getEntity);
+
     lua_register(m_lua, "setVector", script::setVector);
     lua_register(m_lua, "getVector", script::getVector);
 

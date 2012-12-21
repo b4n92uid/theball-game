@@ -107,17 +107,21 @@ int Bullet::getLife() const
 
 bool Bullet::isDeadAmmo()
 {
-    return (m_life <= 0 || !m_gameManager->map.aabb.isInner(m_visualBody->getPos()));
+    return(m_life <= 0 || !m_gameManager->map.aabb.isInner(m_visualBody->getPos()));
 }
 
 void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
 {
-    m_shootDiri = (targetpos - startpos).normalize();
-    m_startPos = startpos + m_shootDiri * 1;
-    m_targetPos = targetpos;
-    m_shootSpeed = shootspeed;
 
+    m_shootDiri = (targetpos - startpos).normalize();
     m_shootDiri += AABB(accuracy).randPos();
+    m_shootDiri.normalize();
+
+    m_startPos = startpos + m_shootDiri * 1;
+
+    m_targetPos = targetpos;
+
+    m_shootSpeed = shootspeed;
 
     Vector3f impulse = m_shootDiri * m_shootSpeed;
 
@@ -134,6 +138,8 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
     body->setApplyGravity(false);
 
     NewtonBodySetForceAndTorqueCallback(body->getBody(), MapElement::applyForceAndTorqueCallback);
+    NewtonBodySetTransformCallback(body->getBody(), MapElement::applyTransformCallback);
+
     NewtonBodySetUserData(body->getBody(), this);
     NewtonBodySetContinuousCollisionMode(body->getBody(), true);
     NewtonBodyAddImpulse(body->getBody(), impulse, m_startPos);

@@ -22,6 +22,8 @@ public:
     ~AIControl();
 
     void process(Player* player);
+
+    boost::signal<void(Player*) > onAi;
 };
 
 #endif	/* _AIMANAGER_H */

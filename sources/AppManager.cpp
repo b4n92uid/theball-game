@@ -10,7 +10,7 @@
 #include "GameManager.h"
 #include <fmod_errors.h>
 
-#define guiRootPath(path) ("../../" + path).c_str()
+#define guiRootPath(path) (string("../../") + path).c_str()
 
 using namespace std;
 using namespace tbe;
@@ -430,7 +430,12 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
     // Affichage de l'ecran de chargement --------------------------------------
 
     m_menu.loadscreen->GetElementById("title")->SetInnerRML(playSetting.map->name.c_str());
-    m_menu.loadscreen->GetElementById("preview")->SetAttribute("src", guiRootPath(playSetting.map->preview));
+
+    if(!playSetting.map->preview.empty())
+        m_menu.loadscreen->GetElementById("preview")->SetAttribute("src", guiRootPath(playSetting.map->preview));
+    else
+        m_menu.loadscreen->GetElementById("preview")->SetAttribute("src", guiRootPath("data/menu/nopreview.png"));
+
     m_menu.loadscreen->Show();
 
     m_gameEngine->beginScene();
@@ -565,8 +570,11 @@ void AppManager::updateMapSelection()
     mapTitle->SetInnerRML(map->name.c_str());
 
     Rocket::Core::Element* mapPreview = m_menu.playmenu->GetElementById("preview");
-    mapPreview->SetAttribute("src", guiRootPath(map->preview));
 
+    if(!map->preview.empty())
+        mapPreview->SetAttribute("src", guiRootPath(map->preview));
+    else
+        mapPreview->SetAttribute("src", guiRootPath("data/menu/nopreview.png"));
 }
 
 void AppManager::onPlayMenuNext(Rocket::Core::Event& e)

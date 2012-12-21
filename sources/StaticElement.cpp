@@ -35,6 +35,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     if(body->hasUserData("physic"))
         physic = body->getUserData("physic").getValue<string > ();
 
+    // Calculer la boite englobante en prenant compte le scale
     Vector3f size = body->getAabb().getSize() / 2.0f;
 
     if(body->hasUserData("size"))
@@ -84,9 +85,9 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
         else
             throw Exception("StaticElement::StaticElement; unable to build (%s) physics body", physic.c_str());
 
-        body->addChild(m_physicBody);
-
         NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
+        NewtonBodySetTransformCallback(m_physicBody->getBody(), MapElement::applyTransformCallback);
+
         NewtonBodySetUserData(m_physicBody->getBody(), this);
         NewtonBodySetAutoSleep(m_physicBody->getBody(), false);
     }

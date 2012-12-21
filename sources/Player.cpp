@@ -59,9 +59,8 @@ Player::Player(GameManager* gameManager, std::string nickname, Content::PlayerIn
     m_physicBody = new tbe::scene::NewtonNode(m_gameManager->parallelscene.newton, m_visualBody);
     m_physicBody->buildSphereNode(m_worldSettings.playerSize, m_worldSettings.playerMasse);
 
-    m_visualBody->addChild(m_physicBody);
-
     NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
+    NewtonBodySetTransformCallback(m_physicBody->getBody(), MapElement::applyTransformCallback);
 
     NewtonBodySetLinearDamping(m_physicBody->getBody(), m_worldSettings.playerLinearDamping);
     NewtonBodySetAngularDamping(m_physicBody->getBody(), m_worldSettings.playerAngularDamping);

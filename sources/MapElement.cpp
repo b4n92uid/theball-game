@@ -79,6 +79,13 @@ GameManager* MapElement::getGameManager() const
     return m_gameManager;
 }
 
+void MapElement::applyTransformCallback(const NewtonBody* body, const float* matrix, int)
+{
+    MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
+
+    elem->getVisualBody()->setMatrix(matrix);
+}
+
 void MapElement::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 {
     MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));

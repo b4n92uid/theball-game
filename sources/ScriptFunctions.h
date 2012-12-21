@@ -214,6 +214,9 @@ int getString(lua_State* lua);
 int setNumber(lua_State* lua);
 int getNumber(lua_State* lua);
 
+int setEntity(lua_State* lua);
+int getEntity(lua_State* lua);
+
 int setVector(lua_State* lua);
 int getVector(lua_State* lua);
 

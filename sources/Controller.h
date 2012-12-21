@@ -25,8 +25,6 @@ public:
 
     virtual void process(Player* player) = 0;
 
-    boost::signal<void(Player*) > onAi;
-
 protected:
     GameManager* m_playManager;
     Settings::World m_worldSettings;

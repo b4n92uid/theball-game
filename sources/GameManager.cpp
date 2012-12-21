@@ -219,13 +219,16 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
     m_userPlayer = new Player(this, map.settings.nickname, map.settings.player);
     m_userPlayer->attachController(new UserControl(this));
 
-    registerPlayer(m_userPlayer);
-
     manager.scene->getRootNode()->addChild(m_userPlayer->getVisualBody());
+
+    registerPlayer(m_userPlayer);
 
     // SCRIPT ------------------------------------------------------------------
 
-    manager.script->load(map.settings.map->script);
+    if(!map.settings.map->script.empty())
+        manager.script->load(map.settings.map->script);
+    else
+        cout << "***Warning*** their is no script attached to this map !" << endl;
 }
 
 typedef void (GameManager::*ActionMethod)();
@@ -403,9 +406,9 @@ void GameManager::processDevelopperCodeEvent()
             Player* player = new Player(this, "TEST_BOT", pi);
             player->attachController(NULL);
 
-            registerPlayer(player);
-
             manager.scene->getRootNode()->addChild(player->getVisualBody());
+
+            registerPlayer(player);
         }
 
         // F6 : TEST BOT AI
@@ -417,9 +420,9 @@ void GameManager::processDevelopperCodeEvent()
 
             Player* player = new Player(this, "TEST_BOT_AI", pi);
 
-            registerPlayer(player);
-
             manager.scene->getRootNode()->addChild(player->getVisualBody());
+
+            registerPlayer(player);
         }
 
         // F9 : Next level
@@ -844,9 +847,9 @@ void GameManager::render()
      * forte transparence a ce dernier.
      */
 
-    Vector3f endray = campos + camtar * map.aabb.getLength();
+    Vector3f endray = campos + camtar * 32;
 
-    m_shootTarget = parallelscene.newton->findAnyBody(campos, endray);
+    m_shootTarget = parallelscene.newton->findAnyBody(campos + Vector3f(0, worldSettings.playerSize, 0), endray);
 
     AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
 

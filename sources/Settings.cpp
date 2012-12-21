@@ -37,7 +37,7 @@ void Settings::readVideo()
 
     try
     {
-        property_tree::read_ini("video.ini", parser);
+        property_tree::read_ini("config/video.ini", parser);
     }
     catch(...)
     {
@@ -68,7 +68,7 @@ void Settings::readControl()
 
     property_tree::ptree parser;
 
-    property_tree::read_ini("control.ini", parser);
+    property_tree::read_ini("config/control.ini", parser);
 
     foreach(property_tree::ptree::value_type &i, parser.get_child("keyboard"))
     {
@@ -83,10 +83,10 @@ void Settings::readControl()
 
 void Settings::readWorld()
 {
-    property_tree::read_ini("weapons.ini", weapons);
+    property_tree::read_ini("config/weapons.ini", weapons);
 
     property_tree::ptree parser;
-    property_tree::read_ini("world.ini", parser);
+    property_tree::read_ini("config/world.ini", parser);
 
     world.gravity = parser.get<float>("general.gravity");
 
@@ -106,7 +106,7 @@ void Settings::readWorld()
 
 void Settings::readSetting()
 {
-    boost::property_tree::read_ini("paths.ini", paths);
+    boost::property_tree::read_ini("config/paths.ini", paths);
 
     readVideo();
     readControl();

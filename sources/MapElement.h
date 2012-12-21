@@ -44,6 +44,7 @@ public:
     typedef std::vector<MapElement*> Array;
 
     static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
+    static void applyTransformCallback(const NewtonBody* body, const float*, int);
 
 protected:
     GameManager* m_gameManager;
