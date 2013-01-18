@@ -45,6 +45,8 @@ protected:
     int m_immunityGroupe;
     int m_ghostGroupe;
 
+    std::map<Player*, AreaElement*> m_triggerCollidState;
+
     std::map<tbe::scene::NewtonNode*, int> m_ghostState;
     std::map<tbe::scene::NewtonNode*, int> m_immunityState;
 };

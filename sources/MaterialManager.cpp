@@ -172,9 +172,11 @@ void MaterialManager::addPlayer(Player* body)
 
 void MaterialManager::process()
 {
+    const Player::Array& pls = m_gameManager->getPlayers();
 
-    BOOST_FOREACH(Player* player, m_gameManager->getPlayers())
+    for(unsigned i = 0; i < pls.size(); i++)
     {
+        Player* player = pls[i];
 
         BOOST_FOREACH(AreaElement* area, m_gameManager->map.areaElements)
         {
@@ -182,7 +184,24 @@ void MaterialManager::process()
             Matrix4 amatrix = area->getVisualBody()->getAbsoluteMatrix();
 
             if(amatrix.getPos() - pmatrix.getPos() < area->getRadius())
-                m_gameManager->manager.script->processCollid(player, area);
+            {
+                if(!m_triggerCollidState.count(player))
+                {
+                    m_triggerCollidState[player] = area;
+                    m_gameManager->manager.script->processCollid(player, area);
+                }
+            }
+        }
+
+        if(m_triggerCollidState.count(player))
+        {
+            AreaElement* area = m_triggerCollidState[player];
+
+            Matrix4 pmatrix = player->getVisualBody()->getAbsoluteMatrix();
+            Matrix4 amatrix = area->getVisualBody()->getAbsoluteMatrix();
+
+            if(amatrix.getPos() - pmatrix.getPos() > area->getRadius())
+                m_triggerCollidState.erase(player);
         }
     }
 }

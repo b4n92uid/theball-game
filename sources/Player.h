@@ -119,6 +119,9 @@ public:
     bool isStayDown();
 
     GameManager* getGameManager() const;
+    
+    void setVisualBody(tbe::scene::Mesh* visualBody);
+    tbe::scene::Mesh* getVisualBody() const;
 
     struct
     {

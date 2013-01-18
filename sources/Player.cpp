@@ -505,6 +505,17 @@ GameManager* Player::getGameManager() const
     return m_gameManager;
 }
 
+void Player::setVisualBody(tbe::scene::Mesh* visualBody)
+{
+    this->m_visualBody = visualBody;
+    MapElement::m_visualBody = visualBody;
+}
+
+tbe::scene::Mesh* Player::getVisualBody() const
+{
+    return m_visualBody;
+}
+
 void Player::setImmunity(bool enable)
 {
     makeTransparent(enable, 0.5);

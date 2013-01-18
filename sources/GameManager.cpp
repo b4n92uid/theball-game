@@ -1050,6 +1050,7 @@ void GameManager::unregisterElement(MapElement* staticObject)
 void GameManager::registerPlayer(Player* player)
 {
     manager.material->addPlayer(player);
+
     m_players.push_back(player);
 
     onPlayerInit(player);
