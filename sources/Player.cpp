@@ -91,8 +91,6 @@ void Player::free()
 
     m_powersInventory.clear();
     m_curPower = m_powersInventory.end();
-
-    setImmunity(false);
 }
 
 void Player::setInLastSpawnPoint()
@@ -241,22 +239,24 @@ void Player::jump()
 
     bool stayDown = isStayDown();
 
+    if(stayDown && m_jumpStatu == 1)
+        m_jumpStatu = 0;
+
     if(!onJump.empty())
         stayDown = onJump(this, stayDown);
 
     if(stayDown || !stayDown && m_jumpStatu == 1)
     {
-        if(m_jumpStatu == 1)
+        Vector3f deltaVeloc(0, 1, 0);
+
+        if(m_jumpStatu == 1) // Double saut
             m_jumpStatu = 0;
         else
             m_jumpStatu = 1;
 
-        Vector3f deltaVeloc(0, 1, 0);
         deltaVeloc *= m_worldSettings.playerJumpForce;
 
-        Vector3f pointPos = m_physicBody->getPos()
-                + m_physicBody->getVelocity()
-                / 60.0f;
+        Vector3f pointPos = m_physicBody->getPos();
 
         NewtonBodyAddImpulse(m_physicBody->getBody(), deltaVeloc, pointPos);
     }

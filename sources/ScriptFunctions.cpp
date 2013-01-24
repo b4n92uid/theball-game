@@ -98,6 +98,33 @@ bool __check(Player* elem, GameManager* gm)
 
 #define invalidArg(e) { cout << "LUA: " << __FUNCTION__ << ": invalid argument (" << e << ")" << endl; return 0; }
 
+int safeLuaCallCommon(lua_State* L, lua_CFunction func)
+{
+    int result = 0;
+
+    try
+    {
+        result = func(L);
+    }
+
+    catch(const tbe::Exception& e)
+    {
+        std::cout << "LUA: " << e.what() << std::endl;
+    }
+
+    catch(std::exception& e)
+    {
+        std::cout << "LUA: " << e.what() << std::endl;
+    }
+
+    catch(...)
+    {
+        std::cout << "LUA: Unhandled exception catch" << std::endl;
+    }
+
+    return result;
+}
+
 int include(lua_State* lua)
 {
     string scriptpath = getScriptPath(lua);
@@ -988,18 +1015,6 @@ int createPlayer(lua_State* lua)
     return 1;
 }
 
-int deletePlayer(lua_State* lua)
-{
-    GameManager* gm = getGameManager(lua);
-
-    Player* player = lua_toplayer(lua, 1);
-
-    gm->unregisterPlayer(player);
-    delete player;
-
-    return 0;
-}
-
 int isKilledPlayer(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
@@ -1009,6 +1024,45 @@ int isKilledPlayer(lua_State* lua)
     lua_pushboolean(lua, player->isKilled());
 
     return 1;
+}
+
+int kickPlayer(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    Player* player = lua_toplayer(lua, 1);
+
+    check(player);
+
+    gm->unregisterPlayer(player);
+
+    delete player;
+
+    return 0;
+}
+
+int kickAllPlayers(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    bool kickuser = false;
+
+    if(lua_isboolean(lua, 1))
+        kickuser = lua_toboolean(lua, 1);
+
+    Player* upl = gm->getUserPlayer();
+
+    Player::Array pls = gm->getPlayers();
+
+    BOOST_FOREACH(Player* player, pls)
+    {
+        if(player == upl && !kickuser)
+            continue;
+
+        gm->unregisterPlayer(player, true);
+    }
+
+    return 0;
 }
 
 int killPlayer(lua_State* lua)
@@ -1021,6 +1075,35 @@ int killPlayer(lua_State* lua)
         killer = lua_toplayer(lua, 2);
 
     player->kill(killer);
+
+    return 0;
+}
+
+int killAllPlayers(lua_State* lua)
+{
+    GameManager* gm = getGameManager(lua);
+
+    bool kickuser = false;
+
+    if(lua_isboolean(lua, 1))
+        kickuser = lua_toboolean(lua, 1);
+
+    Player* killer = NULL;
+
+    if(lua_isnumber(lua, 2))
+        killer = lua_toplayer(lua, 2);
+
+    Player* upl = gm->getUserPlayer();
+
+    Player::Array pls = gm->getPlayers();
+
+    BOOST_FOREACH(Player* player, pls)
+    {
+        if(player == upl && !kickuser)
+            continue;
+
+        player->kill(killer);
+    }
 
     return 0;
 }
@@ -1086,7 +1169,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                                                                                                                                                                \
+                                                                                                                                                                                                                                                                                            \
     return 1;
 }
 

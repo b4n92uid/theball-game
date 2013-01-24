@@ -139,7 +139,7 @@ void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
     if(m_shooter == m_playManager->getUserPlayer())
         m_playManager->backImpulse(m_settings.weapons.get<float>("blaster.backIntensity"),
-                                         m_settings.weapons.get<float>("blaster.backPush"));
+                                   m_settings.weapons.get<float>("blaster.backPush"));
 }
 
 // WeaponShotgun ---------------------------------------------------------------
@@ -177,7 +177,7 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
 
     if(m_shooter == m_playManager->getUserPlayer())
         m_playManager->backImpulse(m_settings.weapons.get<float>("shotgun.backIntensity"),
-                                         m_settings.weapons.get<float>("shotgun.backPush"));
+                                   m_settings.weapons.get<float>("shotgun.backPush"));
 }
 
 // WeaponBomb ------------------------------------------------------------------
@@ -194,7 +194,7 @@ WeaponBomb::WeaponBomb(GameManager* playManager) : BulletWeapon(playManager)
     setShootSpeed(m_settings.weapons.get<float>("bomb.shootSpeed"));
     setFireSound(m_settings.weapons.get<string > ("bomb.fireSound"));
     setTexture(m_settings.weapons.get<string > ("bomb.texture"));
-    setShootSize(m_settings.weapons.get<int>("bomb.shootSize"));
+    setBulletSize(m_settings.weapons.get<int>("bomb.bulletSize"));
 
     setNumber(m_maxAmmoCount * m_shootSize);
     build();
@@ -202,19 +202,17 @@ WeaponBomb::WeaponBomb(GameManager* playManager) : BulletWeapon(playManager)
 
 void WeaponBomb::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
-    Vector3f relrot(0, 0, 0.25);
+    Bullet * fire = new Bullet(m_playManager);
+    fire->setWeapon(this);
+    fire->setDammage(math::rand(1, m_maxAmmoDammage));
+    fire->setSize((m_bulletSize - 1.0f).x);
+    fire->shoot(startpos, targetpos, m_shootSpeed);
 
-    for(unsigned i = 0; i < m_shootSize; i++)
-    {
-        relrot.rotate(45 * i, 0);
+    m_bulletArray.push_back(fire);
 
-        Bullet * fire = new Bullet(m_playManager);
-        fire->setWeapon(this);
-        fire->setDammage(100);
-        fire->shoot(startpos + relrot, startpos + (relrot * 4.0f), m_shootSpeed);
-
-        m_bulletArray.push_back(fire);
-    }
+    if(m_shooter == m_playManager->getUserPlayer())
+        m_playManager->backImpulse(m_settings.weapons.get<float>("shotgun.backIntensity"),
+                                   m_settings.weapons.get<float>("shotgun.backPush"));
 }
 
 // WeaponFinder ----------------------------------------------------------------
@@ -305,5 +303,5 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
     if(m_shooter == m_playManager->getUserPlayer())
         m_playManager->backImpulse(m_settings.weapons.get<float>("finder.backIntensity"),
-                                         m_settings.weapons.get<float>("finder.backPush"));
+                                   m_settings.weapons.get<float>("finder.backPush"));
 }

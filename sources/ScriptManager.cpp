@@ -25,116 +25,118 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     luaL_openlibs(m_lua);
 
-    lua_register(m_lua, "include", script::include);
+    lua_register(m_lua, "include", safeLuaCall<script::include>);
 
-    lua_register(m_lua, "setFloorPosition", script::setFloorPosition);
-    lua_register(m_lua, "isStayInFloor", script::isStayInFloor);
+    lua_register(m_lua, "setFloorPosition", safeLuaCall<script::setFloorPosition>);
+    lua_register(m_lua, "isStayInFloor", safeLuaCall<script::isStayInFloor>);
 
-    lua_register(m_lua, "setPosition", script::setPosition);
-    lua_register(m_lua, "getPosition", script::getPosition);
+    lua_register(m_lua, "setPosition", safeLuaCall<script::setPosition>);
+    lua_register(m_lua, "getPosition", safeLuaCall<script::getPosition>);
 
-    lua_register(m_lua, "setVelocity", script::setVelocity);
-    lua_register(m_lua, "getVelocity", script::getVelocity);
+    lua_register(m_lua, "setVelocity", safeLuaCall<script::setVelocity>);
+    lua_register(m_lua, "getVelocity", safeLuaCall<script::getVelocity>);
 
-    lua_register(m_lua, "setForce", script::setForce);
-    lua_register(m_lua, "upForce", script::upForce);
-    lua_register(m_lua, "getForce", script::getForce);
+    lua_register(m_lua, "setForce", safeLuaCall<script::setForce>);
+    lua_register(m_lua, "upForce", safeLuaCall<script::upForce>);
+    lua_register(m_lua, "getForce", safeLuaCall<script::getForce>);
 
-    lua_register(m_lua, "unfreeze", script::unfreeze);
-    lua_register(m_lua, "freeze", script::freeze);
-    lua_register(m_lua, "impulse", script::impulse);
-    lua_register(m_lua, "stopMotion", script::stopMotion);
+    lua_register(m_lua, "unfreeze", safeLuaCall<script::unfreeze>);
+    lua_register(m_lua, "freeze", safeLuaCall<script::freeze>);
+    lua_register(m_lua, "impulse", safeLuaCall<script::impulse>);
+    lua_register(m_lua, "stopMotion", safeLuaCall<script::stopMotion>);
 
-    lua_register(m_lua, "setImmunity", script::setImmunity);
-    lua_register(m_lua, "setGhost", script::setGhost);
+    lua_register(m_lua, "setImmunity", safeLuaCall<script::setImmunity>);
+    lua_register(m_lua, "setGhost", safeLuaCall<script::setGhost>);
 
-    lua_register(m_lua, "setTextureFrame", script::setTextureFrame);
-    lua_register(m_lua, "childOf", script::childOf);
+    lua_register(m_lua, "setTextureFrame", safeLuaCall<script::setTextureFrame>);
+    lua_register(m_lua, "childOf", safeLuaCall<script::childOf>);
 
-    lua_register(m_lua, "getNickName", script::getNickName);
+    lua_register(m_lua, "getNickName", safeLuaCall<script::getNickName>);
 
-    lua_register(m_lua, "setHealth", script::setHealth);
-    lua_register(m_lua, "upHealth", script::upHealth);
-    lua_register(m_lua, "getHealth", script::getHealth);
+    lua_register(m_lua, "setHealth", safeLuaCall<script::setHealth>);
+    lua_register(m_lua, "upHealth", safeLuaCall<script::upHealth>);
+    lua_register(m_lua, "getHealth", safeLuaCall<script::getHealth>);
 
-    lua_register(m_lua, "setEnergy", script::setEnergy);
-    lua_register(m_lua, "upEnergy", script::upEnergy);
-    lua_register(m_lua, "getEnergy", script::getEnergy);
+    lua_register(m_lua, "setEnergy", safeLuaCall<script::setEnergy>);
+    lua_register(m_lua, "upEnergy", safeLuaCall<script::upEnergy>);
+    lua_register(m_lua, "getEnergy", safeLuaCall<script::getEnergy>);
 
-    lua_register(m_lua, "attachPower", script::attachPower);
-    lua_register(m_lua, "selectPower", script::selectPower);
-    lua_register(m_lua, "switchPower", script::switchPower);
-    lua_register(m_lua, "getSelectedPower", script::getSelectedPower);
+    lua_register(m_lua, "attachPower", safeLuaCall<script::attachPower>);
+    lua_register(m_lua, "selectPower", safeLuaCall<script::selectPower>);
+    lua_register(m_lua, "switchPower", safeLuaCall<script::switchPower>);
+    lua_register(m_lua, "getSelectedPower", safeLuaCall<script::getSelectedPower>);
 
-    lua_register(m_lua, "attachWeapon", script::attachWeapon);
-    lua_register(m_lua, "selectWeapon", script::selectWeapon);
-    lua_register(m_lua, "getSelectedWeapon", script::getSelectedWeapon);
-    lua_register(m_lua, "switchWeapon", script::switchWeapon);
+    lua_register(m_lua, "attachWeapon", safeLuaCall<script::attachWeapon>);
+    lua_register(m_lua, "selectWeapon", safeLuaCall<script::selectWeapon>);
+    lua_register(m_lua, "getSelectedWeapon", safeLuaCall<script::getSelectedWeapon>);
+    lua_register(m_lua, "switchWeapon", safeLuaCall<script::switchWeapon>);
 
-    lua_register(m_lua, "setAmmo", script::setAmmo);
-    lua_register(m_lua, "upAmmo", script::upAmmo);
-    lua_register(m_lua, "getAmmo", script::getAmmo);
+    lua_register(m_lua, "setAmmo", safeLuaCall<script::setAmmo>);
+    lua_register(m_lua, "upAmmo", safeLuaCall<script::upAmmo>);
+    lua_register(m_lua, "getAmmo", safeLuaCall<script::getAmmo>);
 
-    lua_register(m_lua, "loadSound", script::loadSound);
-    lua_register(m_lua, "playSound", script::playSound);
-    lua_register(m_lua, "stopSound", script::stopSound);
-    lua_register(m_lua, "volSound", script::volSound);
-    lua_register(m_lua, "isPlaySound", script::isPlaySound);
+    lua_register(m_lua, "loadSound", safeLuaCall<script::loadSound>);
+    lua_register(m_lua, "playSound", safeLuaCall<script::playSound>);
+    lua_register(m_lua, "stopSound", safeLuaCall<script::stopSound>);
+    lua_register(m_lua, "volSound", safeLuaCall<script::volSound>);
+    lua_register(m_lua, "isPlaySound", safeLuaCall<script::isPlaySound>);
 
-    lua_register(m_lua, "loadMusic", script::loadMusic);
-    lua_register(m_lua, "playMusic", script::playMusic);
-    lua_register(m_lua, "pauseMusic", script::pauseMusic);
-    lua_register(m_lua, "stopMusic", script::stopMusic);
+    lua_register(m_lua, "loadMusic", safeLuaCall<script::loadMusic>);
+    lua_register(m_lua, "playMusic", safeLuaCall<script::playMusic>);
+    lua_register(m_lua, "pauseMusic", safeLuaCall<script::pauseMusic>);
+    lua_register(m_lua, "stopMusic", safeLuaCall<script::stopMusic>);
 
-    lua_register(m_lua, "rayCast", script::rayCast);
+    lua_register(m_lua, "rayCast", safeLuaCall<script::rayCast>);
 
-    lua_register(m_lua, "randomPosition", script::randomPosition);
+    lua_register(m_lua, "randomPosition", safeLuaCall<script::randomPosition>);
 
-    lua_register(m_lua, "nearestPlayer", script::nearestPlayer);
-    lua_register(m_lua, "farestPlayer", script::farestPlayer);
+    lua_register(m_lua, "nearestPlayer", safeLuaCall<script::nearestPlayer>);
+    lua_register(m_lua, "farestPlayer", safeLuaCall<script::farestPlayer>);
 
-    lua_register(m_lua, "isViewed", script::isViewed);
+    lua_register(m_lua, "isViewed", safeLuaCall<script::isViewed>);
 
-    lua_register(m_lua, "normalize", script::normalize);
+    lua_register(m_lua, "normalize", safeLuaCall<script::normalize>);
 
-    lua_register(m_lua, "diriction", script::diriction);
+    lua_register(m_lua, "diriction", safeLuaCall<script::diriction>);
 
-    lua_register(m_lua, "length", script::length);
+    lua_register(m_lua, "length", safeLuaCall<script::length>);
 
-    lua_register(m_lua, "setString", script::setString);
-    lua_register(m_lua, "getString", script::getString);
+    lua_register(m_lua, "setString", safeLuaCall<script::setString>);
+    lua_register(m_lua, "getString", safeLuaCall<script::getString>);
 
-    lua_register(m_lua, "setNumber", script::setNumber);
-    lua_register(m_lua, "getNumber", script::getNumber);
+    lua_register(m_lua, "setNumber", safeLuaCall<script::setNumber>);
+    lua_register(m_lua, "getNumber", safeLuaCall<script::getNumber>);
 
-    lua_register(m_lua, "setEntity", script::setEntity);
-    lua_register(m_lua, "getEntity", script::getEntity);
+    lua_register(m_lua, "setEntity", safeLuaCall<script::setEntity>);
+    lua_register(m_lua, "getEntity", safeLuaCall<script::getEntity>);
 
-    lua_register(m_lua, "setVector", script::setVector);
-    lua_register(m_lua, "getVector", script::getVector);
+    lua_register(m_lua, "setVector", safeLuaCall<script::setVector>);
+    lua_register(m_lua, "getVector", safeLuaCall<script::getVector>);
 
-    lua_register(m_lua, "getSceneString", script::getSceneString);
+    lua_register(m_lua, "getSceneString", safeLuaCall<script::getSceneString>);
 
-    lua_register(m_lua, "move", script::move);
-    lua_register(m_lua, "jump", script::jump);
-    lua_register(m_lua, "shoot", script::shoot);
-    lua_register(m_lua, "power", script::power);
-    lua_register(m_lua, "dammage", script::dammage);
+    lua_register(m_lua, "move", safeLuaCall<script::move>);
+    lua_register(m_lua, "jump", safeLuaCall<script::jump>);
+    lua_register(m_lua, "shoot", safeLuaCall<script::shoot>);
+    lua_register(m_lua, "power", safeLuaCall<script::power>);
+    lua_register(m_lua, "dammage", safeLuaCall<script::dammage>);
 
-    lua_register(m_lua, "createPlayer", script::createPlayer);
-    lua_register(m_lua, "killPlayer", script::killPlayer);
-    lua_register(m_lua, "isKilledPlayer", script::isKilledPlayer);
-    lua_register(m_lua, "deletePlayer", script::deletePlayer);
+    lua_register(m_lua, "createPlayer", safeLuaCall<script::createPlayer>);
+    lua_register(m_lua, "killPlayer", safeLuaCall<script::killPlayer>);
+    lua_register(m_lua, "killAllPlayers", safeLuaCall<script::killAllPlayers>);
+    lua_register(m_lua, "kickPlayer", safeLuaCall<script::kickPlayer>);
+    lua_register(m_lua, "kickAllPlayers", safeLuaCall<script::kickAllPlayers>);
+    lua_register(m_lua, "isKilledPlayer", safeLuaCall<script::isKilledPlayer>);
 
-    lua_register(m_lua, "display", script::display);
-    lua_register(m_lua, "status", script::status);
+    lua_register(m_lua, "display", safeLuaCall<script::display>);
+    lua_register(m_lua, "status", safeLuaCall<script::status>);
 
-    lua_register(m_lua, "playerList", script::playerList);
-    lua_register(m_lua, "userPlayer", script::userPlayer);
+    lua_register(m_lua, "playerList", safeLuaCall<script::playerList>);
+    lua_register(m_lua, "userPlayer", safeLuaCall<script::userPlayer>);
 
-    lua_register(m_lua, "getElement", script::getElement);
-    lua_register(m_lua, "getElementsList", script::getElementsList);
-    lua_register(m_lua, "getElementsRand", script::getElementsRand);
+    lua_register(m_lua, "getElement", safeLuaCall<script::getElement>);
+    lua_register(m_lua, "getElementsList", safeLuaCall<script::getElementsList>);
+    lua_register(m_lua, "getElementsRand", safeLuaCall<script::getElementsRand>);
 
     lua_register(m_lua, "registerElementCollid", script::registerElementCollid);
     lua_register(m_lua, "registerAreaCollid", script::registerAreaCollid);

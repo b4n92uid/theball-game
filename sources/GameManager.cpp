@@ -114,18 +114,19 @@ GameManager::~GameManager()
     manager.gameEngine->setGrabInput(false);
     manager.gameEngine->setMouseVisible(true);
 
-    delete manager.sound;
-    delete manager.material;
-    delete manager.script;
-
     Boost::clearSingleTone(this);
     BulletTime::clearSingleTone(this);
 
     BOOST_FOREACH(StaticElement* st, map.staticElements) delete st;
     BOOST_FOREACH(MapElement* st, map.mapElements) delete st;
 
+    delete manager.sound;
+    delete manager.material;
+    delete manager.script;
+
     manager.scene->clearAll();
 
+    manager.gui->getContext()->UnloadDocument(m_gui.gameover);
     manager.gui->getContext()->UnloadDocument(m_gui.hud);
 }
 
@@ -615,7 +616,7 @@ void GameManager::gameProcess()
 
         if(player->isKilled())
         {
-            if(player->clocks.readyToDelete.isEsplanedTime(2000))
+            if(player->clocks.readyToDelete.isEsplanedTime(1000))
             {
                 player->reBorn();
 
@@ -848,35 +849,29 @@ void GameManager::render()
      */
 
     Vector3f endray = campos + camtar * 32;
+    Vector3f startray = campos + camtar * (worldSettings.playerSize + worldSettings.weaponSize + 0.1);
 
-    m_shootTarget = parallelscene.newton->findAnyBody(campos + Vector3f(0, worldSettings.playerSize, 0), endray);
+    Vector3f::Array hitArray = parallelscene.newton->findAllBody(startray, endray);
 
     AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
 
-    if(useraabb.isInner(campos))
+    if(hitArray.empty())
+        m_shootTarget = endray;
+
+    else BOOST_FOREACH(Vector3f hit, hitArray)
     {
-        m_shootTarget = parallelscene.newton->findZeroMassBody(campos, endray);
+        if(useraabb.isInner(hit))
+            continue;
 
-        m_cursorOnPlayer = true;
-
-        m_userPlayer->makeTransparent(true, 0.1);
+        m_shootTarget = hit;
+        break;
     }
 
-    else if(useraabb.isInner(m_shootTarget))
-    {
-        m_shootTarget = parallelscene.newton->findZeroMassBody(campos, endray);
-
-        m_cursorOnPlayer = true;
-
-        m_userPlayer->makeTransparent(true, 0.5);
-    }
-
-    else if(m_cursorOnPlayer)
-    {
-        m_cursorOnPlayer = false;
-
-        m_userPlayer->makeTransparent(false);
-    }
+    //    if(m_cursorOnPlayer)
+    //    {
+    //        m_cursorOnPlayer = false;
+    //        m_userPlayer->makeTransparent(false);
+    //    }
 
     // Rendue ------------------------------------------------------------------
 
@@ -901,6 +896,16 @@ void GameManager::render()
     manager.gui->render();
 
     manager.gameEngine->endScene();
+
+    // Effacement programmé ----------------------------------------------------
+
+    BOOST_FOREACH(MapElement* elem, m_shuduledDel)
+    {
+        elem->freeAttachedNode();
+        delete elem;
+    }
+
+    m_shuduledDel.clear();
 }
 
 tbe::Vector3f GameManager::getShootTarget() const
@@ -1056,11 +1061,14 @@ void GameManager::registerPlayer(Player* player)
     onPlayerInit(player);
 }
 
-void GameManager::unregisterPlayer(Player* player)
+void GameManager::unregisterPlayer(Player* player, bool toDelete)
 {
     Player::Array::iterator it = find(m_players.begin(), m_players.end(), player);
 
     m_players.erase(it);
+
+    if(toDelete)
+        m_shuduledDel.push_back(player);
 }
 
 void GameManager::registerArea(AreaElement* area)

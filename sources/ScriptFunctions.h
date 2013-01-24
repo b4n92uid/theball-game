@@ -104,6 +104,8 @@ inline void lua_pushstring(lua_State *L, std::string s)
 namespace script
 {
 
+int safeLuaCallCommon(lua_State* L, lua_CFunction func);
+
 // General
 
 int include(lua_State* lua);
@@ -172,9 +174,11 @@ int power(lua_State* lua);
 int dammage(lua_State* lua);
 
 int createPlayer(lua_State* lua);
+int kickPlayer(lua_State* lua);
+int kickAllPlayers(lua_State* lua);
 int killPlayer(lua_State* lua);
+int killAllPlayers(lua_State* lua);
 int isKilledPlayer(lua_State* lua);
-int deletePlayer(lua_State* lua);
 
 // Audio
 
@@ -257,6 +261,11 @@ int glowSettings(lua_State* lua);
 int whiteFlash(lua_State* lua);
 int earthQuake(lua_State* lua);
 
+}
+
+template<lua_CFunction func> int safeLuaCall(lua_State* L)
+{
+    script::safeLuaCallCommon(L, func);
 }
 
 #endif	/* SCRIPTFUNCTIONS_H */

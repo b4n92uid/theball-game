@@ -16,17 +16,21 @@ using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
 
-Bullet::Bullet(GameManager* playManager) : MapElement(playManager)
+Bullet::Bullet(GameManager* gameManager) : MapElement(gameManager)
 {
+    Settings::World& worldSettings = gameManager->manager.app->globalSettings.world;
+
     m_life = 300;
     m_dammage = 0;
     m_weapon = NULL;
+    m_size = worldSettings.weaponSize;
+    m_masse = worldSettings.weaponMasse;
 }
 
 Bullet::~Bullet()
 {
-    delete m_physicBody;
-    delete m_visualBody;
+    if(m_physicBody) delete m_physicBody;
+    if(m_visualBody) delete m_visualBody;
 }
 
 void Bullet::process()
@@ -85,6 +89,26 @@ tbe::Vector3f Bullet::getStartPos() const
     return m_startPos;
 }
 
+void Bullet::setMasse(float masse)
+{
+    this->m_masse = masse;
+}
+
+float Bullet::getMasse() const
+{
+    return m_masse;
+}
+
+void Bullet::setSize(float size)
+{
+    this->m_size = size;
+}
+
+float Bullet::getSize() const
+{
+    return m_size;
+}
+
 void Bullet::setWeapon(Weapon* weapon)
 {
     this->m_weapon = weapon;
@@ -125,26 +149,20 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
 
     Vector3f impulse = m_shootDiri * m_shootSpeed;
 
-    BullNode* placehold = new BullNode;
-    placehold->setPos(startpos);
+    m_visualBody = new BullNode;
+    m_visualBody->setPos(startpos);
 
-    setVisualBody(placehold);
+    m_physicBody = new NewtonNode(m_gameManager->parallelscene.newton);
+    m_physicBody->setUpdatedMatrix(&m_visualBody->getMatrix());
+    m_physicBody->buildSphereNode(m_size, m_masse);
+    m_physicBody->setApplyGravity(false);
 
-    Settings::World& worldSettings = m_gameManager->manager.app->globalSettings.world;
+    NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
+    NewtonBodySetTransformCallback(m_physicBody->getBody(), MapElement::applyTransformCallback);
 
-    NewtonNode* body = new NewtonNode(m_gameManager->parallelscene.newton);
-    body->setUpdatedMatrix(&placehold->getMatrix());
-    body->buildSphereNode(worldSettings.weaponSize, worldSettings.weaponMasse);
-    body->setApplyGravity(false);
-
-    NewtonBodySetForceAndTorqueCallback(body->getBody(), MapElement::applyForceAndTorqueCallback);
-    NewtonBodySetTransformCallback(body->getBody(), MapElement::applyTransformCallback);
-
-    NewtonBodySetUserData(body->getBody(), this);
-    NewtonBodySetContinuousCollisionMode(body->getBody(), true);
-    NewtonBodyAddImpulse(body->getBody(), impulse, m_startPos);
-
-    setPhysicBody(body);
+    NewtonBodySetUserData(m_physicBody->getBody(), this);
+    NewtonBodySetContinuousCollisionMode(m_physicBody->getBody(), true);
+    NewtonBodyAddImpulse(m_physicBody->getBody(), impulse, m_startPos);
 
     m_gameManager->manager.material->addBullet(this);
 }

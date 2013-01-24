@@ -52,6 +52,12 @@ public:
     void setStartPos(tbe::Vector3f startPos);
     tbe::Vector3f getStartPos() const;
 
+    void setMasse(float masse);
+    float getMasse() const;
+
+    void setSize(float size);
+    float getSize() const;
+
     typedef std::vector<Bullet*> Array;
 
 protected:
@@ -62,6 +68,9 @@ protected:
     tbe::Vector3f m_startPos;
     tbe::Vector3f m_targetPos;
     tbe::Vector3f m_shootDiri;
+
+    float m_size;
+    float m_masse;
 };
 
 

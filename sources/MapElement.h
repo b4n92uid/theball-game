@@ -25,6 +25,8 @@ public:
     MapElement(GameManager* gameManager);
     virtual ~MapElement();
 
+    void freeAttachedNode();
+
     void setVisualBody(tbe::scene::Node* visualBody);
     tbe::scene::Node* getVisualBody() const;
 

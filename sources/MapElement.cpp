@@ -25,6 +25,12 @@ MapElement::~MapElement()
 {
 }
 
+void MapElement::freeAttachedNode()
+{
+    if(m_physicBody) delete m_physicBody;
+    if(m_visualBody) delete m_visualBody;
+}
+
 void MapElement::setVisualBody(tbe::scene::Node* visualBody)
 {
     this->m_visualBody = visualBody;

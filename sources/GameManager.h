@@ -102,7 +102,7 @@ public:
     void registerElement(MapElement* staticObject);
     void registerElement(StaticElement* staticObject);
 
-    void unregisterPlayer(Player* player);
+    void unregisterPlayer(Player* player, bool toDelete = false);
     void unregisterArea(AreaElement* dummyObject);
     void unregisterElement(MapElement* staticObject);
     void unregisterElement(StaticElement* staticObject);
@@ -176,6 +176,8 @@ protected:
     Player* m_winnerPlayer;
 
     Player::Array m_players;
+
+    MapElement::Array m_shuduledDel;
 
     tbe::scene::Camera* m_camera;
 
