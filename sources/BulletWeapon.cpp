@@ -126,13 +126,13 @@ WeaponBlaster::WeaponBlaster(GameManager* playManager) : BulletWeapon(playManage
 
 void WeaponBlaster::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
-    startpos += math::rand(Vector3f(-m_settings.world.playerSize * 0.5),
-                           Vector3f(m_settings.world.playerSize * 0.5));
+    startpos += math::rand(Vector3f(-m_settings.world.playerSize * 0.75),
+                           Vector3f(m_settings.world.playerSize * 0.75));
 
     // Creation du tire
     Bullet* fire = new Bullet(m_playManager);
     fire->setWeapon(this);
-    fire->setDammage(math::rand(1, m_maxAmmoDammage));
+    fire->setDammage(m_maxAmmoDammage);
     fire->shoot(startpos, targetpos, m_shootSpeed);
 
     m_bulletArray.push_back(fire);
@@ -169,7 +169,7 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
         // Creation du tire
         Bullet * fire = new Bullet(m_playManager);
         fire->setWeapon(this);
-        fire->setDammage(math::rand(1, m_maxAmmoDammage));
+        fire->setDammage(m_maxAmmoDammage);
         fire->shoot(startpos, targetpos, m_shootSpeed, m_settings.weapons.get<float>("shotgun.shootAccuray"));
 
         m_bulletArray.push_back(fire);
@@ -259,7 +259,7 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     // Creation du tire
     Bullet * fire = new Bullet(m_playManager);
     fire->setWeapon(this);
-    fire->setDammage(math::rand(1, m_maxAmmoDammage));
+    fire->setDammage(m_maxAmmoDammage);
     fire->shoot(startpos, targetpos, 32);
 
     m_bulletArray.push_back(fire);
@@ -299,7 +299,7 @@ void WeaponFusion::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 
         Bullet * fire = new Bullet(m_playManager);
         fire->setWeapon(this);
-        fire->setDammage(math::rand(1, m_maxAmmoDammage));
+        fire->setDammage(m_maxAmmoDammage);
         fire->setSize((m_bulletSize - 1.0f).x);
         fire->shoot(startpos, targetpos, m_shootSpeed, m_settings.weapons.get<float>("shotgun.shootAccuray"));
 

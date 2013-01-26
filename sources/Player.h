@@ -119,15 +119,14 @@ public:
     bool isStayDown();
 
     GameManager* getGameManager() const;
-    
+
     void setVisualBody(tbe::scene::Mesh* visualBody);
     tbe::scene::Mesh* getVisualBody() const;
 
     struct
     {
-        tbe::ticks::Clock brake;
-        tbe::ticks::Clock shoot;
-        tbe::ticks::Clock readyToDelete;
+        tbe::ticks::Clock toShoot;
+        tbe::ticks::Clock toRespawn;
 
     } clocks;
 

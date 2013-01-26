@@ -73,7 +73,7 @@ void Weapon::setFireSound(std::string fireSound)
 
 bool Weapon::isEmpty()
 {
-    return (m_ammoCount == 0);
+    return(m_ammoCount == 0);
 }
 
 unsigned Weapon::getSlot() const
@@ -106,7 +106,7 @@ bool Weapon::shoot(Vector3f startpos, Vector3f targetpos)
     // Controle des munitions
     if(m_ammoCount <= 0)
     {
-        if(m_shooter->clocks.shoot.isEsplanedTime(1000))
+        if(m_shooter->clocks.toShoot.isEsplanedTime(1000))
             m_soundManager->playSound("noAvailable", m_shooter);
 
         return false;

@@ -364,7 +364,7 @@ int getNickName(lua_State* lua)
 int setHealth(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
-    player->setLife(lua_tonumber(lua, 1));
+    player->setLife(lua_tonumber(lua, 2));
 
     return 0;
 }
@@ -372,7 +372,7 @@ int setHealth(lua_State* lua)
 int upHealth(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
-    player->upLife(lua_tonumber(lua, 1));
+    player->upLife(lua_tonumber(lua, 2));
 
     return 0;
 }
@@ -389,7 +389,7 @@ int getHealth(lua_State* lua)
 int setEnergy(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
-    player->setEnergy(lua_tonumber(lua, 1));
+    player->setEnergy(lua_tonumber(lua, 2));
 
     return 0;
 }
@@ -397,7 +397,7 @@ int setEnergy(lua_State* lua)
 int upEnergy(lua_State* lua)
 {
     Player* player = lua_toplayer(lua, 1);
-    player->upEnergy(lua_tonumber(lua, 1));
+    player->upEnergy(lua_tonumber(lua, 2));
 
     return 0;
 }
@@ -506,10 +506,10 @@ int attachWeapon(lua_State* lua)
         invalidArg(id);
 
     if(lua_isnumber(lua, 3))
-        weapon->setAmmoCount(lua_tointeger(lua, 3));
+        weapon->setMaxAmmoDammage(lua_tointeger(lua, 3));
 
     if(lua_isnumber(lua, 4))
-        weapon->setMaxAmmoDammage(lua_tointeger(lua, 4));
+        weapon->setAmmoCount(lua_tointeger(lua, 4));
 
     player->addWeapon(weapon);
 
@@ -1169,7 +1169,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                                                                                                                                                                                                                    \
+                                                                                                                                                                                                                                                                                                        \
     return 1;
 }
 

@@ -28,6 +28,7 @@ public:
     static void clearSingleTone(GameManager* gm);
 
 protected:
+    void replaceRemainingCallback();
     void internalActivate(tbe::Vector3f target);
     void internalDiactivate();
 

@@ -91,6 +91,11 @@ void BulletTime::process()
         m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
     }
 
+    replaceRemainingCallback();
+}
+
+void BulletTime::replaceRemainingCallback()
+{
     NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
     NewtonBody* body = NewtonWorldGetFirstBody(nworld);
 
@@ -104,8 +109,8 @@ void BulletTime::process()
             NewtonBodyGetVelocity(body, vel);
             NewtonBodyGetOmega(body, omg);
 
-            vel *= 0.1;
-            omg *= 0.1;
+            vel *= 0.2;
+            omg *= 0.2;
             NewtonBodySetVelocity(body, vel);
             NewtonBodySetOmega(body, omg);
 
@@ -122,61 +127,45 @@ void BulletTime::soundEffect(FMOD_CHANNEL* channel)
     FMOD_Channel_SetFrequency(channel, 22050);
 }
 
-void BulletTime::internalActivate(tbe::Vector3f target)
+void BulletTime::internalActivate(tbe::Vector3f)
 {
     m_internalEnergy = m_owner->getEnergy();
 
-    // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 0.5);
+    // Activate sound and screen effects ---------------------------------------
+
     m_soundManager->processSoundEffect.connect(soundEffect);
     m_soundManager->playSound("bullettime", m_owner);
+    m_ppeffect->setEnable(true);
+
+    // Reduce jump force -------------------------------------------------------
 
     m_settings.world.playerJumpForce *= 0.1;
 
-    m_ppeffect->setEnable(true);
+    // Reduce shoot cadency ----------------------------------------------------
 
     m_usedWeapon = m_owner->getCurWeapon();
 
     if(m_usedWeapon)
-        m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*10);
+        m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*5);
 
-    NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
-    NewtonBody* body = NewtonWorldGetFirstBody(nworld);
+    // For each body -----------------------------------------------------------
+    // - Slow Down velocity
+    // - Replace default callback
 
     m_callbacks.clear();
 
-    while(body)
-    {
-        Vector3f vel, omg;
-        NewtonBodyGetVelocity(body, vel);
-        NewtonBodyGetOmega(body, omg);
-
-        vel *= 0.1;
-        omg *= 0.1;
-        NewtonBodySetVelocity(body, vel);
-        NewtonBodySetOmega(body, omg);
-
-        NewtonApplyForceAndTorque callback = NewtonBodyGetForceAndTorqueCallback(body);
-
-        if(callback)
-        {
-            m_callbacks[body] = callback;
-            NewtonBodySetForceAndTorqueCallback(body, applyForceAndTorqueCallback);
-        }
-
-        body = NewtonWorldGetNextBody(nworld, body);
-    }
+    replaceRemainingCallback();
 }
 
 void BulletTime::internalDiactivate()
 {
     m_soundManager->processSoundEffect.disconnect(soundEffect);
-    // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);
-
     m_ppeffect->setEnable(false);
 
     m_settings.world.playerJumpForce *= 10;
 
-    m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
+    if(m_usedWeapon)
+        m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.2);
 
     NewtonWorld* nworld = m_gameManager->parallelscene.newton->getNewtonWorld();
     NewtonBody* body = NewtonWorldGetFirstBody(nworld);
@@ -187,8 +176,8 @@ void BulletTime::internalDiactivate()
         NewtonBodyGetVelocity(body, vel);
         NewtonBodyGetOmega(body, omg);
 
-        vel *= 10.0;
-        omg *= 10.0;
+        vel *= 5.0;
+        omg *= 5.0;
         NewtonBodySetVelocity(body, vel);
         NewtonBodySetOmega(body, omg);
 

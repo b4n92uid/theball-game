@@ -427,11 +427,16 @@ void Player::kill(Player* killer)
 
     m_gameManager->manager.material->setGhost(this, true);
 
-    clocks.readyToDelete.snapShoot();
+    clocks.toRespawn.snapShoot();
 
     m_visualBody->setVisible(false);
 
     m_physicBody->setApplyGravity(false);
+
+    if(m_gameManager->getUserPlayer() == killer)
+    {
+        m_gameManager->earthQuake(0.2, false);
+    }
 
     m_soundManager->playSound("kill", this);
 }
@@ -495,7 +500,10 @@ void Player::takeDammage(int dammage, Player* killer)
         kill(killer);
 
     if(m_gameManager->getUserPlayer() == this)
+    {
+        m_gameManager->earthQuake(0.1, false);
         m_gameManager->dammageScreen();
+    }
 
     m_soundManager->playSound("hit", this);
 }

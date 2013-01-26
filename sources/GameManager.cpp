@@ -374,80 +374,6 @@ void GameManager::processDevelopperCodeEvent()
 
     if(event->notify == EventManager::EVENT_KEY_DOWN)
     {
-        // F1 : Dammage 10%
-        if(event->keyState[EventManager::KEY_F1])
-        {
-            m_userPlayer->takeDammage(10);
-        }
-
-        // F2 : Kill
-        if(event->keyState[EventManager::KEY_F2])
-            m_userPlayer->kill(NULL);
-
-        if(event->keyState[EventManager::KEY_F5])
-        {
-            Player::Array copy = m_players;
-
-            for(unsigned i = 0; i < copy.size(); i++)
-                if(copy[i] != m_userPlayer)
-                {
-                    unregisterPlayer(copy[i]);
-                    delete copy[i];
-                }
-
-            m_players.clear();
-        }
-
-        // F6 : TEST BOT
-        if(event->keyState[EventManager::KEY_F6])
-        {
-            unsigned select = math::rand(0, manager.app->globalContent->availablePlayer.size());
-
-            Content::PlayerInfo* pi = manager.app->globalContent->availablePlayer[select];
-
-            Player* player = new Player(this, "TEST_BOT", pi);
-            player->attachController(NULL);
-
-            manager.scene->getRootNode()->addChild(player->getVisualBody());
-
-            registerPlayer(player);
-        }
-
-        // F6 : TEST BOT AI
-        if(event->keyState[EventManager::KEY_F7])
-        {
-            unsigned select = math::rand(0, manager.app->globalContent->availablePlayer.size());
-
-            Content::PlayerInfo* pi = manager.app->globalContent->availablePlayer[select];
-
-            Player* player = new Player(this, "TEST_BOT_AI", pi);
-
-            manager.scene->getRootNode()->addChild(player->getVisualBody());
-
-            registerPlayer(player);
-        }
-
-        // F9 : Next level
-        if(event->keyState[EventManager::KEY_F9])
-        {
-            setGameOver(m_userPlayer, "Next Level >>");
-        }
-
-        if(event->keyState['p'])
-            earthQuake(1, true);
-
-        if(event->keyState['o'])
-            whiteFlash(1, 0.05);
-
-        if(event->keyState['i'])
-            dammageScreen();
-
-        if(event->keyState['u'])
-            manager.app->globalSettings.video.ppeUse
-                = !manager.app->globalSettings.video.ppeUse;
-
-        if(event->keyState['y'])
-            m_gui.background.bloom->setEnable(!m_gui.background.bloom->isEnable());
     }
 }
 
@@ -617,7 +543,7 @@ void GameManager::gameProcess()
 
         if(player->isKilled())
         {
-            if(player->clocks.readyToDelete.isEsplanedTime(1000))
+            if(player->clocks.toRespawn.isEsplanedTime(1000))
             {
                 player->reBorn();
 
@@ -882,7 +808,7 @@ void GameManager::render()
 
     if(!hitArray.empty())
     {
-        std::reverse(hitArray.begin(), hitArray.end());
+        // std::reverse(hitArray.begin(), hitArray.end());
 
         AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
 
@@ -990,7 +916,7 @@ void GameManager::earthQuake(float intensity, bool physical)
     m_earthquake.intensity = intensity;
     m_earthquake.physical = physical;
 
-    manager.sound->playSound("quake", m_userPlayer);
+    //manager.sound->playSound("quake", m_userPlayer);
 }
 
 void GameManager::whiteFlash(float initOpacity, float downOpacity)
