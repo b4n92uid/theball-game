@@ -41,14 +41,14 @@ void Settings::readVideo()
     }
     catch(...)
     {
+        parser.put("window.size", Vector2i(1024, 768));
         parser.put("window.bits", 32);
+        parser.put("window.fullscreen", true);
         parser.put("window.antialiasing", 2);
 
-        parser.put("window.fullscreen", true);
-        parser.put("window.size", Vector2i(1024, 768));
-
-        parser.put("ppe.use", true);
-        parser.put("ppe.size", Vector2i(512));
+        parser.put("shader.enable", true);
+        parser.put("shader.ppeUse", true);
+        parser.put("shader.ppeSize", Vector2i(512));
     }
 
     video.bits = parser.get<int>("window.bits");
@@ -57,8 +57,9 @@ void Settings::readVideo()
     video.fullScreen = parser.get<bool>("window.fullscreen");
     video.screenSize = parser.get<Vector2i > ("window.size");
 
-    video.ppeUse = parser.get<bool>("ppe.use");
-    video.ppeSize = parser.get<Vector2i > ("ppe.size");
+    video.shaderUse = parser.get<bool>("shader.enable");
+    video.ppeUse = parser.get<bool>("shader.ppeUse");
+    video.ppeSize = parser.get<Vector2i > ("shader.ppeSize");
 }
 
 void Settings::readControl()
@@ -119,14 +120,14 @@ void Settings::saveVideo()
 
     parser.put("window.size", video.screenSize);
     parser.put("window.bits", video.bits);
-
     parser.put("window.fullscreen", video.fullScreen);
     parser.put("window.antialiasing", video.antialiasing);
 
-    parser.put("ppe.use", video.ppeUse);
-    parser.put("ppe.size", video.ppeSize);
+    parser.put("shader.enable", video.shaderUse);
+    parser.put("shader.ppeUse", video.ppeUse);
+    parser.put("shader.ppeSize", video.ppeSize);
 
-    property_tree::write_ini("video.ini", parser);
+    property_tree::write_ini("config/video.ini", parser);
 }
 
 void Settings::saveControl()
@@ -143,7 +144,7 @@ void Settings::saveControl()
         parser.put("mouse." + i.first, i.second);
     }
 
-    property_tree::write_ini("control.ini", parser);
+    property_tree::write_ini("config/control.ini", parser);
 }
 
 void Settings::saveSetting()

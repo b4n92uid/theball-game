@@ -180,41 +180,6 @@ void WeaponShotgun::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos
                                    m_settings.weapons.get<float>("shotgun.backPush"));
 }
 
-// WeaponBomb ------------------------------------------------------------------
-
-WeaponBomb::WeaponBomb(GameManager* playManager) : BulletWeapon(playManager)
-{
-    m_slot = m_settings.weapons.get<int>("bomb.slot");
-    setWeaponName(m_settings.weapons.get<string > ("bomb.name"));
-
-    setMaxAmmoCount(m_settings.weapons.get<int>("bomb.maxAmmoCount"));
-    setAmmoCount(m_settings.weapons.get<int>("bomb.ammoCount"));
-    setMaxAmmoDammage(m_settings.weapons.get<int>("bomb.maxAmmoDammage"));
-    setShootCadency(m_settings.weapons.get<int>("bomb.shootCadency"));
-    setShootSpeed(m_settings.weapons.get<float>("bomb.shootSpeed"));
-    setFireSound(m_settings.weapons.get<string > ("bomb.fireSound"));
-    setTexture(m_settings.weapons.get<string > ("bomb.texture"));
-    setBulletSize(m_settings.weapons.get<int>("bomb.bulletSize"));
-
-    setNumber(m_maxAmmoCount * m_shootSize);
-    build();
-}
-
-void WeaponBomb::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
-{
-    Bullet * fire = new Bullet(m_playManager);
-    fire->setWeapon(this);
-    fire->setDammage(math::rand(1, m_maxAmmoDammage));
-    fire->setSize((m_bulletSize - 1.0f).x);
-    fire->shoot(startpos, targetpos, m_shootSpeed);
-
-    m_bulletArray.push_back(fire);
-
-    if(m_shooter == m_playManager->getUserPlayer())
-        m_playManager->backImpulse(m_settings.weapons.get<float>("shotgun.backIntensity"),
-                                   m_settings.weapons.get<float>("shotgun.backPush"));
-}
-
 // WeaponFinder ----------------------------------------------------------------
 
 WeaponFinder::WeaponFinder(GameManager* playManager) : BulletWeapon(playManager)
@@ -226,7 +191,7 @@ WeaponFinder::WeaponFinder(GameManager* playManager) : BulletWeapon(playManager)
     setAmmoCount(m_settings.weapons.get<int>("finder.ammoCount"));
     setMaxAmmoDammage(m_settings.weapons.get<int>("finder.maxAmmoDammage"));
     setShootCadency(m_settings.weapons.get<int>("finder.shootCadency"));
-    setShootSpeed(m_settings.weapons.get<int>("finder.shootSpeed"));
+    setShootSpeed(m_settings.weapons.get<float>("finder.shootSpeed"));
     setFireSound(m_settings.weapons.get<string > ("finder.fireSound"));
     setTexture(m_settings.weapons.get<string > ("finder.texture"));
 
@@ -243,43 +208,41 @@ void WeaponFinder::process()
         if(m_bulletArray[i]->isDeadAmmo())
         {
             delete m_bulletArray[i], m_bulletArray[i] = NULL;
+            continue;
         }
 
-        else
+        m_bulletArray[i]->process();
+        particles[i].pos = m_bulletArray[i]->getPhysicBody()->getPos();
+
+        bool targetLocked = false;
+
+        Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
+
+        const Player::Array& targets = m_playManager->getTargetsOf(m_shooter);
+
+        for(unsigned j = 0; j < targets.size(); j++)
         {
-            m_bulletArray[i]->process();
-            particles[i].pos = m_bulletArray[i]->getPhysicBody()->getPos();
+            if(targets[j]->isKilled())
+                continue;
 
-            bool targetLocked = false;
+            Vector3f ammodiri = m_bulletArray[i]->getPhysicBody()->getVelocity().normalize();
+            Vector3f targetdiri = (targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos()).normalize();
 
-            Vector3f minDist = m_mapAABB.max - m_mapAABB.min;
-
-            const Player::Array& targets = m_playManager->getTargetsOf(m_shooter);
-
-            for(unsigned j = 0; j < targets.size(); j++)
+            if(Vector3f::dot(targetdiri, ammodiri) > 0.75f)
             {
-                if(targets[j]->isKilled())
-                    continue;
-
-                Vector3f ammodiri = m_bulletArray[i]->getPhysicBody()->getVelocity().normalize();
-                Vector3f targetdiri = (targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos()).normalize();
-
-                if(Vector3f::dot(targetdiri, ammodiri) > 0.75f)
-                {
-                    minDist = min(targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos(), minDist);
-                    targetLocked = true;
-                }
+                minDist = min(targets[j]->getVisualBody()->getPos() - m_bulletArray[i]->getPhysicBody()->getPos(), minDist);
+                targetLocked = true;
             }
+        }
 
-            if(targetLocked)
-            {
-                NewtonNode* nnode = m_bulletArray[i]->getPhysicBody();
+        if(targetLocked)
+        {
+            NewtonNode* nnode = m_bulletArray[i]->getPhysicBody();
 
-                Vector3f force = minDist.normalize() * nnode->getMasse() * m_shootSpeed;
-                force -= nnode->getVelocity().normalize() * nnode->getMasse() * 256;
+            Vector3f force = minDist.normalize() * nnode->getMasse() * m_shootSpeed;
+            force -= nnode->getVelocity().normalize() * nnode->getMasse();
 
-                nnode->setApplyForce(force);
-            }
+            nnode->setApplyForce(force);
         }
     }
 
@@ -304,4 +267,46 @@ void WeaponFinder::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
     if(m_shooter == m_playManager->getUserPlayer())
         m_playManager->backImpulse(m_settings.weapons.get<float>("finder.backIntensity"),
                                    m_settings.weapons.get<float>("finder.backPush"));
+}
+
+// WeaponFusion ------------------------------------------------------------------
+
+WeaponFusion::WeaponFusion(GameManager* playManager) : BulletWeapon(playManager)
+{
+    m_slot = m_settings.weapons.get<int>("fusion.slot");
+    setWeaponName(m_settings.weapons.get<string > ("fusion.name"));
+
+    setMaxAmmoCount(m_settings.weapons.get<int>("fusion.maxAmmoCount"));
+    setAmmoCount(m_settings.weapons.get<int>("fusion.ammoCount"));
+    setMaxAmmoDammage(m_settings.weapons.get<int>("fusion.maxAmmoDammage"));
+    setShootCadency(m_settings.weapons.get<int>("fusion.shootCadency"));
+    setShootSpeed(m_settings.weapons.get<float>("fusion.shootSpeed"));
+    setShootSize(m_settings.weapons.get<int>("fusion.shootSize"));
+    setFireSound(m_settings.weapons.get<string > ("fusion.fireSound"));
+    setTexture(m_settings.weapons.get<string > ("fusion.texture"));
+    setBulletSize(m_settings.weapons.get<float>("fusion.bulletSize"));
+
+    setNumber(m_maxAmmoCount * m_shootSize);
+    build();
+}
+
+void WeaponFusion::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
+{
+    for(int i = 0; i < m_shootSize; i++)
+    {
+        startpos += math::rand(Vector3f(-m_settings.world.playerSize * 0.8),
+                               Vector3f(m_settings.world.playerSize * 0.8));
+
+        Bullet * fire = new Bullet(m_playManager);
+        fire->setWeapon(this);
+        fire->setDammage(math::rand(1, m_maxAmmoDammage));
+        fire->setSize((m_bulletSize - 1.0f).x);
+        fire->shoot(startpos, targetpos, m_shootSpeed, m_settings.weapons.get<float>("shotgun.shootAccuray"));
+
+        m_bulletArray.push_back(fire);
+    }
+
+    if(m_shooter == m_playManager->getUserPlayer())
+        m_playManager->backImpulse(m_settings.weapons.get<float>("shotgun.backIntensity"),
+                                   m_settings.weapons.get<float>("shotgun.backPush"));
 }

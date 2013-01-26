@@ -68,10 +68,10 @@ protected:
     void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };
 
-class WeaponBomb : public BulletWeapon
+class WeaponFusion : public BulletWeapon
 {
 public:
-    WeaponBomb(GameManager* playManager);
+    WeaponFusion(GameManager* playManager);
 protected:
     void processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos);
 };

@@ -11,11 +11,11 @@
 
 using namespace tbe;
 
-MapElement::MapElement(GameManager* gameManager)
+MapElement::MapElement(GameManager* gameManager) :
+m_worldSettings(gameManager->manager.app->globalSettings.world)
 {
     m_gameManager = gameManager;
     m_soundManager = m_gameManager->manager.sound;
-    m_worldSettings = m_gameManager->manager.app->globalSettings.world;
 
     m_physicBody = NULL;
     m_visualBody = NULL;
@@ -23,6 +23,7 @@ MapElement::MapElement(GameManager* gameManager)
 
 MapElement::~MapElement()
 {
+    m_soundManager->unregisterElement(this);
 }
 
 void MapElement::freeAttachedNode()

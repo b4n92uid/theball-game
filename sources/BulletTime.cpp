@@ -27,9 +27,7 @@ BulletTime::BulletTime(GameManager* gameManager) : Power(gameManager)
 
     m_usedWeapon = NULL;
 
-    Settings::Video& vidsets = m_gameManager->manager.app->globalSettings.video;
-
-    if(vidsets.ppeUse && !m_ppeffect)
+    if(!m_ppeffect)
     {
         using namespace ppe;
 
@@ -132,8 +130,9 @@ void BulletTime::internalActivate(tbe::Vector3f target)
     m_soundManager->processSoundEffect.connect(soundEffect);
     m_soundManager->playSound("bullettime", m_owner);
 
-    if(m_ppeffect)
-        m_ppeffect->setEnable(true);
+    m_settings.world.playerJumpForce *= 0.1;
+
+    m_ppeffect->setEnable(true);
 
     m_usedWeapon = m_owner->getCurWeapon();
 
@@ -173,8 +172,9 @@ void BulletTime::internalDiactivate()
     m_soundManager->processSoundEffect.disconnect(soundEffect);
     // FMOD_Channel_SetVolume(m_gameManager->map.musicChannel, 1.0);
 
-    if(m_ppeffect)
-        m_ppeffect->setEnable(false);
+    m_ppeffect->setEnable(false);
+
+    m_settings.world.playerJumpForce *= 10;
 
     m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.1);
 

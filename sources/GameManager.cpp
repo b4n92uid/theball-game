@@ -34,15 +34,14 @@
 using namespace std;
 using namespace tbe;
 
-GameManager::GameManager(AppManager* appManager)
+GameManager::GameManager(AppManager* appManager) :
+worldSettings(appManager->globalSettings.world)
 {
     using namespace scene;
 
     cout << "> Initing game manager" << endl;
 
     manager.app = appManager;
-
-    worldSettings = manager.app->globalSettings.world;
 
     m_gameRunning = true;
     m_pauseRunning = false;
@@ -186,24 +185,26 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
 
     // PPE ---------------------------------------------------------------------
 
+    using namespace tbe::ppe;
+
+    m_gui.background.flash = new ColorEffect;
+    m_gui.background.flash->setFusionMode(ColorEffect::ADDITIVE_COLOR);
+    m_gui.background.flash->setColor(Vector4f(1, 1, 1, 1));
+    m_gui.background.flash->setEnable(false);
+    manager.ppe->addPostEffect("flashEffect", m_gui.background.flash);
+
+    m_gui.background.dammage = new ColorEffect;
+    m_gui.background.dammage->setFusionMode(ColorEffect::MULTIPLICATION_COLOR);
+    m_gui.background.dammage->setColor(Vector4f(1, 0, 0, 1));
+    m_gui.background.dammage->setEnable(false);
+    manager.ppe->addPostEffect("dammageEffect", m_gui.background.dammage);
+
+    // -- Shader PPE
+
     const Settings::Video& vidSets = manager.app->globalSettings.video;
 
     if(vidSets.ppeUse)
     {
-        using namespace tbe::ppe;
-
-        m_gui.background.flash = new ColorEffect;
-        m_gui.background.flash->setFusionMode(ColorEffect::ADDITIVE_COLOR);
-        m_gui.background.flash->setColor(Vector4f(1, 1, 1, 1));
-        m_gui.background.flash->setEnable(false);
-        manager.ppe->addPostEffect("flashEffect", m_gui.background.flash);
-
-        m_gui.background.dammage = new ColorEffect;
-        m_gui.background.dammage->setFusionMode(ColorEffect::MULTIPLICATION_COLOR);
-        m_gui.background.dammage->setColor(Vector4f(1, 0, 0, 1));
-        m_gui.background.dammage->setEnable(false);
-        manager.ppe->addPostEffect("dammageEffect", m_gui.background.dammage);
-
         m_gui.background.gameover = new BlurEffect;
         m_gui.background.gameover->setPasse(1);
         m_gui.background.gameover->setEnable(false);
@@ -643,112 +644,101 @@ void GameManager::hudProcess()
 {
     using namespace tbe::gui;
     using namespace Rocket::Core;
+    using boost::format;
 
-    if(m_gameOver) // Gestion de l'ETH en gameover -----------------------------
+    // Gestion de l'ETH en gameover
+    if(m_gameOver)
+        return;
+
+    // Mise a jour des bar de progression (Vie, Muinition, Bullettime)
+
+    if(m_userPlayer->isKilled())
     {
-        // Affichage de l'ecran gameover si besoin
+        m_gui.life->SetInnerRML("Mort !");
+        //hud.life->setValue(0);
+        return;
     }
 
+    // -- Arme en cours
 
-    else // Gestion de l'ETH en jeu --------------------------------------------
+    const Weapon* curWeapon = m_userPlayer->getCurWeapon();
+
+    if(curWeapon)
     {
-        using boost::format;
+        m_gui.croshair->SetProperty("visibility", "visible");
+        m_gui.weaponIcon->SetProperty("visibility", "visible");
+        m_gui.weaponIcon->SetClassNames(curWeapon->getWeaponName().c_str());
 
-        // Mise a jour des bar de progression (Vie, Muinition, Bullettime)
+        const int &ammoCount = curWeapon->getAmmoCount(),
+                &ammoCountMax = curWeapon->getMaxAmmoCount();
 
-        if(!m_userPlayer->isKilled())
+        format weaponGaugeFormat = format("%1%/%2%")
+                % ammoCount % ammoCountMax;
+
+        m_gui.ammo->SetInnerRML(weaponGaugeFormat.str().c_str());
+        // hud.ammoGauge->setValue(ammoCount * 100 / ammoCountMax);
+    }
+    else
+    {
+        m_gui.croshair->SetProperty("visibility", "hidden");
+        m_gui.weaponIcon->SetProperty("visibility", "hidden");
+        m_gui.ammo->SetInnerRML("n/a");
+        //hud.ammoGauge->setValue(0);
+    }
+
+    // -- Pouvoire en cour
+
+    const Power* curPower = m_userPlayer->getCurPower();
+
+    if(curPower)
+    {
+        m_gui.powerIcon->SetProperty("visibility", "visible");
+        m_gui.powerIcon->SetClassNames(curPower->getName().c_str());
+
+        // const int &energy = m_userPlayer->getEnergy();
+
+        // format powerGaugeFormat = format("%1% %2%/100") % curPower->getName() % energy;
+
+        // hud.energy->write(powerGaugeFormat.str());
+        // hud.energyGauge->setValue(energy);
+    }
+    else
+    {
+        m_gui.powerIcon->SetProperty("visibility", "hidden");
+        // hud.energy->write("Pas de pouvoir :(");
+        // hud.energyGauge->setValue(0);
+    }
+
+    // -- Etat de santé
+
+    const int &life = m_userPlayer->getLife();
+    m_gui.life->SetInnerRML((format("%1%/100") % life).str().c_str());
+    // hud.life->setValue(life);
+
+    // ---- Effet de dommage
+
+    if(m_gui.background.dammage->isEnable())
+    {
+        float alpha = m_gui.background.dammage->getAlpha();
+
+        if(alpha > 0)
         {
-            const Weapon* curWeapon = m_userPlayer->getCurWeapon();
-
-            if(curWeapon)
-            {
-                m_gui.croshair->SetProperty("visibility", "visible");
-                m_gui.weaponIcon->SetProperty("visibility", "visible");
-                m_gui.weaponIcon->SetClassNames(curWeapon->getWeaponName().c_str());
-
-                const int &ammoCount = curWeapon->getAmmoCount(),
-                        &ammoCountMax = curWeapon->getMaxAmmoCount();
-
-                format weaponGaugeFormat = format("%1%/%2%")
-                        % ammoCount % ammoCountMax;
-
-                m_gui.ammo->SetInnerRML(weaponGaugeFormat.str().c_str());
-                // hud.ammoGauge->setValue(ammoCount * 100 / ammoCountMax);
-            }
-            else
-            {
-                m_gui.croshair->SetProperty("visibility", "hidden");
-                m_gui.weaponIcon->SetProperty("visibility", "hidden");
-                m_gui.ammo->SetInnerRML("n/a");
-                //hud.ammoGauge->setValue(0);
-            }
-
-            const Power* curPower = m_userPlayer->getCurPower();
-
-            if(curPower)
-            {
-                m_gui.powerIcon->SetProperty("visibility", "visible");
-                m_gui.powerIcon->SetClassNames(curPower->getName().c_str());
-
-                const int &energy = m_userPlayer->getEnergy();
-
-                // format powerGaugeFormat = format("%1% %2%/100") % curPower->getName() % energy;
-
-                //hud.energy->write(powerGaugeFormat.str());
-                //hud.energyGauge->setValue(energy);
-            }
-            else
-            {
-                m_gui.powerIcon->SetProperty("visibility", "hidden");
-                // hud.energy->write("Pas de pouvoir :(");
-                // hud.energyGauge->setValue(0);
-            }
-
-            const int &life = m_userPlayer->getLife();
-            m_gui.life->SetInnerRML((format("%1%/100") % life).str().c_str());
-            // hud.life->setValue(life);
-
-            // Affichage de l'ecran de dommage si besoins
-            if(manager.app->globalSettings.video.ppeUse)
-            {
-                if(m_gui.background.dammage->isEnable())
-                {
-                    Vector4f color = m_gui.background.dammage->getColor();
-
-                    if(color.w > 0)
-                    {
-                        color.w -= 0.01f;
-                        m_gui.background.dammage->setColor(color);
-                    }
-                    else
-                        m_gui.background.dammage->setEnable(false);
-                }
-            }
-            else
-            {
-                if(m_dammageEffect.initOpacity > 0)
-                {
-                    m_dammageEffect.initOpacity -= m_dammageEffect.downOpacity;
-                    m_gui.background.dammage->setAlpha(m_dammageEffect.initOpacity);
-                }
-                else
-                    m_gui.background.dammage->setEnable(false);
-            }
-
-            if(m_flasheffect.initOpacity > 0)
-            {
-                m_flasheffect.initOpacity -= m_flasheffect.downOpacity;
-                m_gui.background.flash->setAlpha(m_flasheffect.initOpacity);
-            }
-            else
-                m_gui.background.flash->setEnable(false);
+            alpha -= 0.01f;
+            m_gui.background.dammage->setAlpha(alpha);
         }
         else
-        {
-            m_gui.life->SetInnerRML("Mort !");
-            //hud.life->setValue(0);
-        }
+            m_gui.background.dammage->setEnable(false);
     }
+
+    // ---- Flash effect
+
+    if(m_flasheffect.initOpacity > 0)
+    {
+        m_flasheffect.initOpacity -= m_flasheffect.downOpacity;
+        m_gui.background.flash->setAlpha(m_flasheffect.initOpacity);
+    }
+    else
+        m_gui.background.flash->setEnable(false);
 }
 
 float rayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
@@ -831,6 +821,41 @@ void GameManager::render()
         FMOD_System_Update(manager.fmodsys);
     }
 
+    // Rendue ------------------------------------------------------------------
+
+    manager.gameEngine->beginScene();
+
+    /*
+    if(manager.app->globalSettings.video.ppeUse)
+    {
+        Rtt* rtt = manager.ppe->getRtt();
+
+        rtt->use(true);
+        rtt->clear();
+        manager.scene->render();
+        rtt->use(false);
+
+        manager.ppe->render();
+    }
+    else
+    {
+        manager.scene->render();
+    }
+     */
+
+    Rtt* rtt = manager.ppe->getRtt();
+
+    rtt->use(true);
+    rtt->clear();
+    manager.scene->render();
+    rtt->use(false);
+
+    manager.ppe->render();
+
+    manager.gui->render();
+
+    manager.gameEngine->endScene();
+
     // Pick --------------------------------------------------------------------
 
     /*
@@ -848,54 +873,36 @@ void GameManager::render()
      * forte transparence a ce dernier.
      */
 
+    Vector3f startray = m_userPlayer->getVisualBody()->getPos()
+            + Vector3f(0, worldSettings.playerSize + worldSettings.weaponSize + 0.1, 0);
+
     Vector3f endray = campos + camtar * 32;
-    Vector3f startray = campos + camtar * (worldSettings.playerSize + worldSettings.weaponSize + 0.1);
 
     Vector3f::Array hitArray = parallelscene.newton->findAllBody(startray, endray);
 
-    AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
-
-    if(hitArray.empty())
-        m_shootTarget = endray;
-
-    else BOOST_FOREACH(Vector3f hit, hitArray)
+    if(!hitArray.empty())
     {
-        if(useraabb.isInner(hit))
-            continue;
+        std::reverse(hitArray.begin(), hitArray.end());
 
-        m_shootTarget = hit;
-        break;
+        AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
+
+        BOOST_FOREACH(Vector3f hit, hitArray)
+        {
+            if(useraabb.isInner(hit))
+                continue;
+
+            m_shootTarget = hit;
+            break;
+        }
     }
+    else
+        m_shootTarget = endray;
 
     //    if(m_cursorOnPlayer)
     //    {
     //        m_cursorOnPlayer = false;
     //        m_userPlayer->makeTransparent(false);
     //    }
-
-    // Rendue ------------------------------------------------------------------
-
-    manager.gameEngine->beginScene();
-
-    if(manager.app->globalSettings.video.ppeUse)
-    {
-        Rtt* rtt = manager.ppe->getRtt();
-
-        rtt->use(true);
-        rtt->clear();
-        manager.scene->render();
-        rtt->use(false);
-
-        manager.ppe->render();
-    }
-    else
-    {
-        manager.scene->render();
-    }
-
-    manager.gui->render();
-
-    manager.gameEngine->endScene();
 
     // Effacement programmé ----------------------------------------------------
 
@@ -1004,6 +1011,18 @@ void GameManager::dammageScreen()
 
     m_gui.background.dammage->setEnable(true);
     m_gui.background.dammage->setColor(Vector4f(1, 0, 0, 0.5));
+}
+
+void GameManager::glowEnable(bool stat)
+{
+    m_gui.background.bloom->setEnable(stat);
+}
+
+void GameManager::glowSettings(float intensity, float thershold, float blurpass)
+{
+    m_gui.background.bloom->setIntensity(intensity);
+    m_gui.background.bloom->setThreshold(thershold);
+    m_gui.background.bloom->setBlurPass(blurpass);
 }
 
 const Player::Array GameManager::getTargetsOf(Player* player) const

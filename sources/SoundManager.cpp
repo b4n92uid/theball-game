@@ -134,6 +134,11 @@ void SoundManager::playSound(std::string soundName, MapElement* object, int loop
     FMOD_Channel_SetVolume(m_sounds[soundName].second, vol);
 }
 
+void SoundManager::unregisterElement(MapElement* object)
+{
+    m_soundPosMap.erase(object);
+}
+
 void SoundManager::registerMusic(std::string name, std::string filename)
 {
     if(m_gameManager->manager.app->globalSettings.noaudio)

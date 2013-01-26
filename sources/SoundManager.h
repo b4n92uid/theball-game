@@ -35,15 +35,14 @@ public:
     bool isPlaySound(std::string soundName);
     void volSound(std::string soundName, float vol);
     void stopSound(std::string soundName);
-
     void playMusic(std::string soundName);
     void pauseMusic(std::string soundName);
     void stopMusic(std::string soundName);
 
-
     boost::signal<void (FMOD_CHANNEL*) > processSoundEffect;
 
     void syncronizeSoundsPosition();
+    void unregisterElement(MapElement* object);
 
 protected:
     typedef std::map<MapElement*, FMOD_CHANNEL*> SoundPosMap;

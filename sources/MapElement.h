@@ -51,7 +51,7 @@ public:
 protected:
     GameManager* m_gameManager;
     SoundManager* m_soundManager;
-    Settings::World m_worldSettings;
+    Settings::World& m_worldSettings;
 
     tbe::scene::NewtonNode* m_physicBody;
     tbe::scene::Node* m_visualBody;

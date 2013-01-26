@@ -30,7 +30,6 @@ public:
 
     void saveVideo();
     void saveControl();
-    void saveProfiles();
 
     const char* operator()(std::string key) const;
 
@@ -60,6 +59,8 @@ public:
 
         bool fullScreen;
         int antialiasing;
+
+        bool shaderUse;
 
         bool ppeUse;
         tbe::Vector2i ppeSize;

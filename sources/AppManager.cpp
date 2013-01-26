@@ -46,17 +46,16 @@ AppManager::~AppManager()
 
 void AppManager::setupVideoMode()
 {
-    Settings::Video apply;
+    if(!globalSettings.video.shaderUse)
+    {
+        Shader::forceHardware(false);
+        globalSettings.video.ppeUse = false;
+    }
 
-    apply.screenSize = globalSettings.video.screenSize;
-    apply.bits = globalSettings.video.bits;
-    apply.fullScreen = globalSettings.video.fullScreen;
-    apply.ppeUse = globalSettings.video.ppeUse;
+    Settings::Video apply = globalSettings.video;
 
     if(globalSettings.video.ppeUse)
         apply.antialiasing = 0;
-    else
-        apply.antialiasing = globalSettings.video.antialiasing;
 
     m_gameEngine->window(CAPTION_TITLE, apply.screenSize, apply.bits, apply.fullScreen, apply.antialiasing);
 }

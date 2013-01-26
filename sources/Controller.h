@@ -27,7 +27,7 @@ public:
 
 protected:
     GameManager* m_playManager;
-    Settings::World m_worldSettings;
+    Settings::World& m_worldSettings;
 };
 
 #endif	/* _CONTROLLER_H */

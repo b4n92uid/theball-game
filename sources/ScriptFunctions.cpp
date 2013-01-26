@@ -499,8 +499,8 @@ int attachWeapon(lua_State* lua)
     else if(id == "Finder")
         weapon = new WeaponFinder(gm);
 
-    else if(id == "Bomb")
-        weapon = new WeaponBomb(gm);
+    else if(id == "Fusion")
+        weapon = new WeaponFusion(gm);
 
     else
         invalidArg(id);
@@ -1169,7 +1169,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                                                                                                                                                                                                            \
+                                                                                                                                                                                                                                                                                                    \
     return 1;
 }
 
@@ -1768,7 +1768,7 @@ int glowEnable(lua_State* lua)
 
     bool stat = lua_toboolean(lua, 1);
 
-    // gm->ppe.bloom->setEnable(stat);
+    gm->glowEnable(stat);
 
     return 0;
 }
@@ -1784,9 +1784,7 @@ int glowSettings(lua_State* lua)
     float thershold = lua_tonumber(lua, 2);
     float blurpass = lua_tonumber(lua, 3);
 
-    //    gm->ppe.bloom->setIntensity(intensity);
-    //    gm->ppe.bloom->setThreshold(thershold);
-    //    gm->ppe.bloom->setBlurPass(blurpass);
+    gm->glowSettings(intensity, thershold, blurpass);
 
     return 0;
 }

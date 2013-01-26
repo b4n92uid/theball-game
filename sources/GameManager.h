@@ -84,6 +84,8 @@ public:
     void earthQuake(float intensity, bool physical);
     void whiteFlash(float initOpacity, float downOpacity);
     void dammageScreen();
+    void glowEnable(bool stat);
+    void glowSettings(float intensity, float thershold, float blurpass);
 
     virtual tbe::Vector3f getShootTarget() const;
     virtual tbe::Vector3f getViewDirection() const;
@@ -152,7 +154,7 @@ public:
 
     } parallelscene;
 
-    Settings::World worldSettings;
+    Settings::World& worldSettings;
 
     boost::signals2::signal<void(Player*) > onEachFrame;
     boost::signals2::signal<void(Player*) > onPlayerInit;
