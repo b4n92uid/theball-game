@@ -15,6 +15,7 @@
 
 #include "Bullet.h"
 #include "BulletWeapon.h"
+#include "WeaponSniper.h"
 
 #include "GravityGun.h"
 #include "BulletTime.h"
@@ -501,6 +502,9 @@ int attachWeapon(lua_State* lua)
 
     else if(id == "Fusion")
         weapon = new WeaponFusion(gm);
+
+    else if(id == "Sniper")
+        weapon = new WeaponSniper(gm);
 
     else
         invalidArg(id);
@@ -1169,7 +1173,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                                                                                                                                                                                                                        \
+                                                                                                                                                                                                                                                                                                            \
     return 1;
 }
 
@@ -1486,13 +1490,14 @@ struct DammageHook
         callback = f;
     }
 
-    bool operator()(Player* player, Player * shooter)
+    bool operator()(Player* player, Player* shooter, int dammage)
     {
         lua_getglobal(lua, callback.c_str());
 
         lua_pushplayer(lua, player);
         lua_pushplayer(lua, shooter);
-        lua_call(lua, 2, 1);
+        lua_pushinteger(lua, dammage);
+        lua_call(lua, 3, 1);
 
         return lua_toboolean(lua, -1);
     }

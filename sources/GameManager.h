@@ -189,6 +189,7 @@ protected:
     tbe::ticks::Clock m_spawnPlayer;
 
     tbe::Vector3f m_shootTarget;
+    tbe::scene::Axes* m_shootTargetAxes;
 
     std::list<tbe::Vector3f> m_playerPosRec;
 

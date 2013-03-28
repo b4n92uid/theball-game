@@ -23,14 +23,11 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 
     m_id = body->getName();
 
-    string physic = "tree";
+    string physic = "convex";
     float masse = 0;
 
     if(body->hasUserData("masse"))
-    {
         masse = tools::strToNum<float>(body->getUserData("masse").getValue<string > ());
-        physic = "convex";
-    }
 
     if(body->hasUserData("physic"))
         physic = body->getUserData("physic").getValue<string > ();
@@ -41,31 +38,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     if(body->hasUserData("size"))
         size.fromStr(body->getUserData("size").getValue<string > ());
 
-    // Pour les corp convex a un seul coté
-    if(physic == "convex" and body->getHardwareBuffer()->getVertexCount() < 18)
-    {
-        AABB aabb = body->getAabb();
-
-        if(math::isZero(aabb.min.x) and math::isZero(aabb.max.x))
-        {
-            aabb.max.x = 0.001;
-            aabb.min.x = -0.01;
-        }
-        if(math::isZero(aabb.min.y) and math::isZero(aabb.max.y))
-        {
-            aabb.max.y = 0.001;
-            aabb.min.y = -0.001;
-        }
-        if(math::isZero(aabb.min.z) and math::isZero(aabb.max.z))
-        {
-            aabb.max.z = 0.001;
-            aabb.min.z = -0.001;
-        }
-
-        size = aabb.getSize() / 2.0f;
-    }
-
-    if(physic != "ghost")
+    if(physic != "ghost" && body->getHardwareBuffer()->getVertexCount() >= 36)
     {
         m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton);
         m_physicBody->setUpdatedMatrix(&body->getMatrix());
@@ -85,8 +58,11 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
         else
             throw Exception("StaticElement::StaticElement; unable to build (%s) physics body", physic.c_str());
 
-        NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
-        NewtonBodySetTransformCallback(m_physicBody->getBody(), MapElement::applyTransformCallback);
+        if(physic != "tree")
+        {
+            NewtonBodySetForceAndTorqueCallback(m_physicBody->getBody(), MapElement::applyForceAndTorqueCallback);
+            NewtonBodySetTransformCallback(m_physicBody->getBody(), MapElement::applyTransformCallback);
+        }
 
         NewtonBodySetUserData(m_physicBody->getBody(), this);
         NewtonBodySetAutoSleep(m_physicBody->getBody(), false);

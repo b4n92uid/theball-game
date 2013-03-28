@@ -110,7 +110,6 @@ protected:
     FMOD_SYSTEM* m_fmodsys;
     FMOD_SOUND* m_mainMusic;
     FMOD_CHANNEL* m_mainMusicCh;
-    FMOD_SOUND* m_gongSound;
 
     tbe::scene::SceneParser* m_sceneParser;
     tbe::scene::ClassParser* m_classParser;

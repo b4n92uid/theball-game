@@ -28,12 +28,10 @@ SoundManager::SoundManager(GameManager* gameManager)
 
     const Settings& gs = gameManager->manager.app->globalSettings;
 
-    soundPaths["hit"] = "data/sfxart/hit.wav";
-    soundPaths["kill"] = "data/sfxart/kill.wav";
-    soundPaths["noAvailable"] = "data/sfxart/noAvailable.wav";
-    soundPaths["respawn"] = "data/sfxart/respawn.wav";
+    soundPaths["hit"] = gs("audio.hit");
+    soundPaths["kill"] = gs("audio.kill");
+    soundPaths["noAvailable"] = gs("audio.noAvailable");
     soundPaths["flash"] = gs("audio.flash");
-    soundPaths["quake"] = gs("audio.quake");
 
     for(map<string, string>::iterator it = soundPaths.begin(); it != soundPaths.end(); it++)
         registerSound(it->first, it->second);
@@ -51,6 +49,18 @@ SoundManager::SoundManager(GameManager* gameManager)
 
 SoundManager::~SoundManager()
 {
+
+    foreach(SfxMap::value_type it, m_musics)
+    {
+        FMOD_Channel_Stop(it.second.second);
+        FMOD_Sound_Release(it.second.first);
+    }
+
+    foreach(SfxMap::value_type it, m_sounds)
+    {
+        FMOD_Channel_Stop(it.second.second);
+        FMOD_Sound_Release(it.second.first);
+    }
 }
 
 void SoundManager::registerSound(std::string name, std::string filename)

@@ -112,18 +112,9 @@ void AppManager::setupSound()
         FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
         FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
 
-        FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, globalSettings("audio.gong"),
-                                                   FMOD_LOOP_OFF | FMOD_2D | FMOD_HARDWARE,
-                                                   0, &m_gongSound);
-
-        if(res != FMOD_OK)
-            throw tbe::Exception("AppManager::AppManager; %s (%s)",
-                                 FMOD_ErrorString(res),
-                                 globalSettings("audio.gong"));
-
-        res = FMOD_System_CreateStream(m_fmodsys, globalSettings("audio.maintheme"),
-                                       FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
-                                       0, &m_mainMusic);
+        FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, globalSettings("audio.maintheme"),
+                                                   FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
+                                                   0, &m_mainMusic);
 
         if(res != FMOD_OK)
             throw tbe::Exception("AppManager::AppManager; %s (%s)",

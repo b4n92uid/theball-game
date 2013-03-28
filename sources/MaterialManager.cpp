@@ -16,6 +16,8 @@
 #include "Player.h"
 #include "MapElement.h"
 
+#include <boost/format.hpp>
+
 using namespace std;
 using namespace tbe;
 using namespace tbe::scene;
@@ -285,6 +287,8 @@ void MaterialManager::callbackBulletOnMapContactsProcess(const NewtonJoint* cont
 
 int MaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
 {
+    using boost::format;
+
     static tbe::ticks::Clock cheerClock;
     static int cheerCount = 0;
 
@@ -326,7 +330,7 @@ int MaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonMaterial* ma
 
         if(cheerCount >= 2)
         {
-            if(!cheerClock.isEsplanedTime(4000))
+            if(!cheerClock.isEsplanedTime(3000))
                 switch(cheerCount)
                 {
                     case 2: playManager->display("Double kill");
@@ -341,7 +345,7 @@ int MaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonMaterial* ma
                         break;
                     case 7: playManager->display("God Of War !!!");
                         break;
-                    default: playManager->display("...");
+                    default: playManager->display((format("%1% Kills...") % cheerCount).str());
                         break;
                 }
             else

@@ -127,6 +127,12 @@ void BulletTime::soundEffect(FMOD_CHANNEL* channel)
     FMOD_Channel_SetFrequency(channel, 22050);
 }
 
+bool BulletTime::reduceDammage(Player* hitted, Player* shooter, int dammage)
+{
+    hitted->takeDammage(dammage / 3);
+    return false;
+}
+
 void BulletTime::internalActivate(tbe::Vector3f)
 {
     m_internalEnergy = m_owner->getEnergy();
@@ -136,6 +142,10 @@ void BulletTime::internalActivate(tbe::Vector3f)
     m_soundManager->processSoundEffect.connect(soundEffect);
     m_soundManager->playSound("bullettime", m_owner);
     m_ppeffect->setEnable(true);
+
+    // Reduce dammage ----------------------------------------------------------
+
+    m_owner->onDammage.connect(reduceDammage);
 
     // Reduce jump force -------------------------------------------------------
 
@@ -163,6 +173,8 @@ void BulletTime::internalDiactivate()
     m_ppeffect->setEnable(false);
 
     m_settings.world.playerJumpForce *= 10;
+
+    m_owner->onDammage.disconnect(reduceDammage);
 
     if(m_usedWeapon)
         m_usedWeapon->setShootCadency(m_usedWeapon->getShootCadency()*0.2);

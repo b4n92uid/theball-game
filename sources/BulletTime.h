@@ -35,6 +35,7 @@ protected:
 protected:
     static void applyForceAndTorqueCallback(const NewtonBody* body, float, int);
     static void soundEffect(FMOD_CHANNEL* channel);
+    static bool reduceDammage(Player* hitted, Player* shooter, int dammage);
 
 protected:
     Weapon* m_usedWeapon;

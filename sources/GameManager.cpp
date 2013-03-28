@@ -64,6 +64,10 @@ worldSettings(appManager->globalSettings.world)
     parallelscene.meshs->setTransparencySort(true);
     manager.scene->addParallelScene(parallelscene.meshs);
 
+    //    m_shootTargetAxes = new Axes(parallelscene.meshs, 2, 2);
+    //    m_shootTargetAxes->getMaterial("main")->disable(Material::LIGHTED | Material::FOGED);
+    //    manager.scene->getRootNode()->addChild(m_shootTargetAxes);
+
     parallelscene.newton = new scene::NewtonParallelScene;
     parallelscene.newton->setGravity(worldSettings.gravity);
     NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
@@ -469,11 +473,11 @@ void GameManager::onPauseMenuReturn()
 
 void EarthQuakeProcess(const NewtonBody* body, void* userData)
 {
-    MapElement* elem = (MapElement*)NewtonBodyGetUserData(body);
+    MapElement* elem = (MapElement*) NewtonBodyGetUserData(body);
 
     scene::NewtonNode* pbody = elem->getPhysicBody();
 
-    float intensity = *(float*)userData;
+    float intensity = *(float*) userData;
 
     Vector3f pointPos = pbody->getPos() + AABB(1).randPos();
 
@@ -669,12 +673,12 @@ void GameManager::hudProcess()
 
 float rayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
 {
-    MapElement* elem = (MapElement*)NewtonBodyGetUserData(body);
+    MapElement* elem = (MapElement*) NewtonBodyGetUserData(body);
 
     if(elem == elem->getGameManager()->getUserPlayer())
         return intersectParam;
 
-    float& hit = *static_cast<float*>(userData);
+    float& hit = *static_cast<float*> (userData);
 
     if(intersectParam > 0.2 && intersectParam < hit)
         hit = intersectParam;
@@ -723,6 +727,41 @@ void GameManager::render()
     if(m_playerPosRec.size() > 2)
         m_playerPosRec.pop_front();
 
+    // Pick --------------------------------------------------------------------
+
+    /*
+     * Ici sera spécifier le vecteur de visé du joueur
+     * en effectuant un lancé de rayon grace au moteur physique
+     * depuis la position de la camera vers un vecteur aligé sur
+     * le vecteur cible de la camera.
+     *
+     * Si le vecteur de visé se trouve a l'interieur du joueur
+     * on relance un second rayon en ignorant le joueur et en affectant une
+     * légere transparence a ce dernier.
+     *
+     * Si la position de la camera se trouve a l'interieur du joueur
+     * on relance un second rayon en ignorant le joueur et en affectant une
+     * forte transparence a ce dernier.
+     */
+
+    Vector3f startray = campos;
+    Vector3f endray = campos + camtar * 32;
+
+    Vector3f::Array hitArray = parallelscene.newton->findAllBody(startray, endray);
+
+    if(!hitArray.empty())
+        m_shootTarget = hitArray.front();
+
+    else
+        m_shootTarget = endray;
+
+    //    m_shootTargetAxes->setPos(m_shootTarget);
+
+    if(m_userPlayer->getVisualBody()->getAbsolutAabb().isInner(campos))
+        m_userPlayer->makeTransparent(true, 0.2);
+    else
+        m_userPlayer->makeTransparent(false);
+
     // Physique ----------------------------------------------------------------
 
     parallelscene.newton->setWorldTimestep(1.0f / 60.0f);
@@ -740,9 +779,9 @@ void GameManager::render()
     {
         manager.sound->syncronizeSoundsPosition();
 
-        FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*)(float*)campos, 0,
-                                            (FMOD_VECTOR*)(float*)camtar,
-                                            (FMOD_VECTOR*)(float*)m_camera->getUp());
+        FMOD_System_Set3DListenerAttributes(manager.fmodsys, 0, (FMOD_VECTOR*) (float*) campos, 0,
+                                            (FMOD_VECTOR*) (float*) camtar,
+                                            (FMOD_VECTOR*) (float*) m_camera->getUp());
 
         FMOD_System_Update(manager.fmodsys);
     }
@@ -781,54 +820,6 @@ void GameManager::render()
     manager.gui->render();
 
     manager.gameEngine->endScene();
-
-    // Pick --------------------------------------------------------------------
-
-    /*
-     * Ici sera spécifier le vecteur de visé du joueur
-     * en effectuant un lancé de rayon grace au moteur physique
-     * depuis la position de la camera vers un vecteur aligé sur
-     * le vecteur cible de la camera.
-     *
-     * Si le vecteur de visé se trouve a l'interieur du joueur
-     * on relance un second rayon en ignorant le joueur et en affectant une
-     * légere transparence a ce dernier.
-     *
-     * Si la position de la camera se trouve a l'interieur du joueur
-     * on relance un second rayon en ignorant le joueur et en affectant une
-     * forte transparence a ce dernier.
-     */
-
-    Vector3f startray = m_userPlayer->getVisualBody()->getPos()
-            + Vector3f(0, worldSettings.playerSize + worldSettings.weaponSize + 0.1, 0);
-
-    Vector3f endray = campos + camtar * 32;
-
-    Vector3f::Array hitArray = parallelscene.newton->findAllBody(startray, endray);
-
-    if(!hitArray.empty())
-    {
-        // std::reverse(hitArray.begin(), hitArray.end());
-
-        AABB useraabb = m_userPlayer->getVisualBody()->getAbsolutAabb().add(0.1f);
-
-        BOOST_FOREACH(Vector3f hit, hitArray)
-        {
-            if(useraabb.isInner(hit))
-                continue;
-
-            m_shootTarget = hit;
-            break;
-        }
-    }
-    else
-        m_shootTarget = endray;
-
-    //    if(m_cursorOnPlayer)
-    //    {
-    //        m_cursorOnPlayer = false;
-    //        m_userPlayer->makeTransparent(false);
-    //    }
 
     // Effacement programmé ----------------------------------------------------
 

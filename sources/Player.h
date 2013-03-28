@@ -133,7 +133,7 @@ public:
     boost::signal<void(Player*) > onRespawn;
     boost::signal<bool(Player*, tbe::Vector3f), alltrue> onShoot;
     boost::signal<bool(Player*, bool, tbe::Vector3f), alltrue> onPower;
-    boost::signal<bool(Player*, Player*), alltrue> onDammage;
+    boost::signal<bool(Player*, Player*, int), alltrue> onDammage;
     boost::signal<bool(Player*, Player*), alltrue> onKilled;
     boost::signal<bool(Player*, bool), alltrue> onJump;
     boost::signal<bool(Player*, tbe::Vector3f), alltrue> onMove;
