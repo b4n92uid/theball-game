@@ -24,7 +24,7 @@ using namespace tbe::scene;
 
 template<typename T> static T getUserData(const NewtonBody* body)
 {
-    return static_cast<T>(NewtonBodyGetUserData(body));
+    return static_cast<T> (NewtonBodyGetUserData(body));
 }
 
 MaterialManager* getMaterialManager(const NewtonBody* body0, const NewtonBody* body1)
@@ -32,7 +32,7 @@ MaterialManager* getMaterialManager(const NewtonBody* body0, const NewtonBody* b
     int g0 = NewtonBodyGetMaterialGroupID(body0);
     int g1 = NewtonBodyGetMaterialGroupID(body1);
 
-    return(MaterialManager*)NewtonMaterialGetUserData(NewtonBodyGetWorld(body0), g0, g1);
+    return(MaterialManager*) NewtonMaterialGetUserData(NewtonBodyGetWorld(body0), g0, g1);
 }
 
 MaterialManager* getMaterialManager(const NewtonJoint* contact)
@@ -333,20 +333,20 @@ int MaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonMaterial* ma
             if(!cheerClock.isEsplanedTime(3000))
                 switch(cheerCount)
                 {
-                    case 2: playManager->display("Double kill");
-                        break;
-                    case 3: playManager->display("Triple kill");
-                        break;
-                    case 4: playManager->display("Carnage");
-                        break;
-                    case 5: playManager->display("The One");
-                        break;
-                    case 6: playManager->display("War Warrior");
-                        break;
-                    case 7: playManager->display("God Of War !!!");
-                        break;
-                    default: playManager->display((format("%1% Kills...") % cheerCount).str());
-                        break;
+                case 2: playManager->display("Double kill");
+                    break;
+                case 3: playManager->display("Triple kill");
+                    break;
+                case 4: playManager->display("Carnage");
+                    break;
+                case 5: playManager->display("The One");
+                    break;
+                case 6: playManager->display("War Warrior");
+                    break;
+                case 7: playManager->display("God Of War !!!");
+                    break;
+                default: playManager->display((format("%1% Kills...") % cheerCount).str());
+                    break;
                 }
             else
                 cheerCount = 0;

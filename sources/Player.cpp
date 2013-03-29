@@ -173,7 +173,7 @@ inline bool isBodyContactOnFloor(scene::NewtonNode* node1, scene::NewtonNode* no
 
     for(int i = 0; i < contactPoint; i++)
     {
-        float dot = Vector3f::dot(normal[i], Vector3f(0, -1, 0));
+        float dot = Vector3f::dot(normal[i], Vector3f(0, 1, 0));
 
         if(dot > 0.25)
             return true;

@@ -50,9 +50,12 @@ WeaponSniper::~WeaponSniper()
 
 void WeaponSniper::process()
 {
+    EventManager* eventmng = m_playManager->manager.gameEngine->getEventManager();
+
     if(m_life > 0)
     {
-        m_life -= 0.02;
+        m_life -= eventmng->lastPollTimestamp * 0.001f;
+
         LaserBeam::setOpacity(m_life);
 
         if(m_life < 0.1)
@@ -67,4 +70,26 @@ void WeaponSniper::processShoot(tbe::Vector3f startpos, tbe::Vector3f targetpos)
 {
     m_life = 1;
     LaserBeam::shoot(startpos, targetpos);
+
+    NewtonParallelScene* newton = m_playManager->parallelscene.newton;
+
+    if(m_shooter == m_playManager->getUserPlayer())
+        m_playManager->backImpulse(m_settings.weapons.get<float>("sniper.backIntensity"),
+                                   m_settings.weapons.get<float>("sniper.backPush"));
+
+    Vector3f::Array hits = newton->rayCast(startpos, targetpos);
+
+    if(hits.empty())
+        return;
+
+    const Player::Array players = m_playManager->getTargetsOf(m_shooter);
+
+    foreach(Player* p, players)
+    {
+        if(p->getVisualBody()->getAbsolutAabb().isInner(hits.front()))
+        {
+            p->takeDammage(m_maxAmmoDammage, m_shooter);
+            break;
+        }
+    }
 }

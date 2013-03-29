@@ -487,14 +487,11 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
 
     while(gameManager->isRunning())
     {
-        if(m_fpsMng->doRender())
-        {
-            gameManager->eventProcess();
-            gameManager->gameProcess();
-            gameManager->hudProcess();
+        gameManager->eventProcess();
+        gameManager->gameProcess();
+        gameManager->hudProcess();
 
-            gameManager->render();
-        }
+        gameManager->render();
 
         m_fpsMng->update();
     }

@@ -64,10 +64,6 @@ worldSettings(appManager->globalSettings.world)
     parallelscene.meshs->setTransparencySort(true);
     manager.scene->addParallelScene(parallelscene.meshs);
 
-    //    m_shootTargetAxes = new Axes(parallelscene.meshs, 2, 2);
-    //    m_shootTargetAxes->getMaterial("main")->disable(Material::LIGHTED | Material::FOGED);
-    //    manager.scene->getRootNode()->addChild(m_shootTargetAxes);
-
     parallelscene.newton = new scene::NewtonParallelScene;
     parallelscene.newton->setGravity(worldSettings.gravity);
     NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
@@ -85,6 +81,10 @@ worldSettings(appManager->globalSettings.world)
     manager.material = new MaterialManager(this);
     manager.sound = new SoundManager(this);
     manager.script = new ScriptManager(this);
+
+    //    m_shootTargetAxes = new Axes(parallelscene.meshs, 2, 2);
+    //    m_shootTargetAxes->setName("shootAxes");
+    //    manager.scene->getRootNode()->addChild(m_shootTargetAxes);
 
     m_gameOver = false;
 
@@ -492,6 +492,8 @@ void GameManager::gameProcess()
     if(m_gameOver)
         return;
 
+    EventManager* eventmng = manager.gameEngine->getEventManager();
+
     for(unsigned i = 0; i < map.staticElements.size(); i++)
     {
         StaticElement* elem = map.staticElements[i];
@@ -508,7 +510,7 @@ void GameManager::gameProcess()
             pos += -m_camera->getTarget() * m_backImpulse.intensity;
         }
 
-        m_backImpulse.intensity -= m_backImpulse.push;
+        m_backImpulse.intensity -= m_backImpulse.push * eventmng->lastPollTimestamp * 0.5f;
     }
 
     /*
@@ -671,7 +673,7 @@ void GameManager::hudProcess()
         m_gui.background.flash->setEnable(false);
 }
 
-float rayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
+float cameraRayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
 {
     MapElement* elem = (MapElement*) NewtonBodyGetUserData(body);
 
@@ -715,12 +717,14 @@ void GameManager::render()
     Vector3f camzeropos = m_playerPosRec.front() + Vector3f(0, worldSettings.cameraUp, 0);
     Vector3f camendpos = camzeropos + (-camtar) * worldSettings.cameraBack;
 
-    float hit = 1;
-    NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, rayFilter, &hit, NULL);
+    {
+        float hit = 1;
+        NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, cameraRayFilter, &hit, NULL);
 
-    hit = hit * worldSettings.cameraBack;
+        hit = hit * worldSettings.cameraBack;
 
-    campos = camzeropos - camtar * min(hit, worldSettings.cameraBack);
+        campos = camzeropos - camtar * min(hit, worldSettings.cameraBack);
+    }
 
     m_camera->setPos(campos);
 
@@ -744,16 +748,13 @@ void GameManager::render()
      * forte transparence a ce dernier.
      */
 
-    Vector3f startray = campos;
-    Vector3f endray = campos + camtar * 32;
-
-    Vector3f::Array hitArray = parallelscene.newton->findAllBody(startray, endray);
+    Vector3f::Array hitArray = parallelscene.meshs->rayCast(campos, camtar);
 
     if(!hitArray.empty())
         m_shootTarget = hitArray.front();
 
     else
-        m_shootTarget = endray;
+        m_shootTarget = campos + camtar * 32;
 
     //    m_shootTargetAxes->setPos(m_shootTarget);
 
@@ -764,7 +765,9 @@ void GameManager::render()
 
     // Physique ----------------------------------------------------------------
 
-    parallelscene.newton->setWorldTimestep(1.0f / 60.0f);
+    EventManager* eventmng = manager.gameEngine->getEventManager();
+
+    parallelscene.newton->setWorldTimestep(eventmng->lastPollTimestamp * 0.001f);
 
     manager.material->process();
 
@@ -789,24 +792,6 @@ void GameManager::render()
     // Rendue ------------------------------------------------------------------
 
     manager.gameEngine->beginScene();
-
-    /*
-    if(manager.app->globalSettings.video.ppeUse)
-    {
-        Rtt* rtt = manager.ppe->getRtt();
-
-        rtt->use(true);
-        rtt->clear();
-        manager.scene->render();
-        rtt->use(false);
-
-        manager.ppe->render();
-    }
-    else
-    {
-        manager.scene->render();
-    }
-     */
 
     Rtt* rtt = manager.ppe->getRtt();
 

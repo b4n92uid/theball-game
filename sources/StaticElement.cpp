@@ -23,7 +23,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
 
     m_id = body->getName();
 
-    string physic = "convex";
+    string physic = "tree";
     float masse = 0;
 
     if(body->hasUserData("masse"))
