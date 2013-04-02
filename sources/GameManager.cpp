@@ -56,9 +56,6 @@ worldSettings(appManager->globalSettings.world)
 
     manager.gui = manager.app->getGuiMng();
 
-    parallelscene.light = new scene::LightParallelScene;
-    manager.scene->addParallelScene(parallelscene.light);
-
     parallelscene.meshs = new scene::MeshParallelScene;
     parallelscene.meshs->setEnableFrustumTest(true);
     parallelscene.meshs->setTransparencySort(true);
@@ -172,14 +169,14 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
         registerElement(elem);
     }
 
-    for(Iterator<scene::Light*> it = parallelscene.light->iterator(); it; it++)
-    {
-        MapElement* elem = new MapElement(this);
-        elem->setVisualBody(*it);
-        elem->setId(it->getName());
-
-        registerElement(elem);
-    }
+    //    for(Iterator<scene::Light*> it = parallelscene.light->iterator(); it; it++)
+    //    {
+    //        MapElement* elem = new MapElement(this);
+    //        elem->setVisualBody(*it);
+    //        elem->setId(it->getName());
+    //
+    //        registerElement(elem);
+    //    }
 
     map.aabb.add(AABB(Vector3f(-8, -8, -8), Vector3f(8, 64, 8)));
 

@@ -205,7 +205,7 @@ void AppManager::setupMenuGui()
             280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293,
             294, 295, 296, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313};
 
-        vector<int> chars(printchar, printchar + sizeof(printchar));
+        vector<int> chars(printchar, printchar + sizeof (printchar));
 
         for(int c = 0x20; c <= 0x7e; c++)
             chars.push_back(c);
@@ -442,11 +442,9 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
 
         m_sceneParser->setMeshScene(gameManager->parallelscene.meshs);
         m_sceneParser->setParticlesScene(gameManager->parallelscene.particles);
-        m_sceneParser->setLightScene(gameManager->parallelscene.light);
         m_sceneParser->setMarkScene(gameManager->parallelscene.marks);
         m_classParser->setMeshScene(gameManager->parallelscene.meshs);
         m_classParser->setParticlesScene(gameManager->parallelscene.particles);
-        m_classParser->setLightScene(gameManager->parallelscene.light);
         m_classParser->setMarkScene(gameManager->parallelscene.marks);
 
         gameManager->setupGui();

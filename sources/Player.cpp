@@ -43,6 +43,8 @@ Player::Player(GameManager* gameManager, std::string nickname, Content::PlayerIn
     loader->load(pinfo->filepath);
     loader->build();
 
+    loader->getBuildedNode<Mesh*>()->dettach();
+
     MapElement::m_visualBody = m_visualBody = loader->getBuildedNode<Mesh*>()->clone();
 
     // Effet explosion
@@ -156,7 +158,7 @@ bool Player::shoot(Vector3f targetpos)
     if(!onShoot.empty() && !onShoot(this, targetpos))
         return false;
 
-    return(*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
+    return (*m_curWeapon)->shoot(m_visualBody->getPos(), targetpos);
 }
 
 inline bool isBodyContactOnFloor(scene::NewtonNode* node1, scene::NewtonNode* node2)
@@ -334,7 +336,7 @@ Weapon* Player::getCurWeapon() const
     if(m_curWeapon == m_weaponsInventory.end())
         return NULL;
     else
-        return(*m_curWeapon);
+        return (*m_curWeapon);
 }
 
 inline bool isPowerSameName(Power* w1, Power* w2)

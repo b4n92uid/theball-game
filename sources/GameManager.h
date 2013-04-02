@@ -148,7 +148,6 @@ public:
     {
         tbe::scene::MeshParallelScene* meshs;
         tbe::scene::ParticlesParallelScene* particles;
-        tbe::scene::LightParallelScene* light;
         tbe::scene::NewtonParallelScene* newton;
         tbe::scene::MapMarkParallelScene* marks;
 
