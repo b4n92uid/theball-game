@@ -78,8 +78,9 @@ void SoundManager::registerSound(std::string name, std::string filename)
                                               0, &m_sounds[name].first);
 
     if(res != FMOD_OK)
-        throw tbe::Exception("SoundManager::registerSound; %s (%s)",
-                             FMOD_ErrorString(res), filename.c_str());
+        throw tbe::Exception("SoundManager::registerSound; %1% (%2%)")
+        % FMOD_ErrorString(res)
+        % filename.c_str();
 
     FMOD_Sound_Set3DMinMaxDistance(m_sounds[name].first, 8, 128);
 }
@@ -100,8 +101,8 @@ void SoundManager::syncronizeSoundsPosition()
         MapElement* object = i.first;
 
         FMOD_Channel_Set3DAttributes(i.second,
-                                     (FMOD_VECTOR*)(float*)object->getPhysicBody()->getPos(),
-                                     (FMOD_VECTOR*)(float*)object->getPhysicBody()->getVelocity());
+                                     (FMOD_VECTOR*) (float*) object->getPhysicBody()->getPos(),
+                                     (FMOD_VECTOR*) (float*) object->getPhysicBody()->getVelocity());
     }
 }
 
@@ -167,8 +168,9 @@ void SoundManager::registerMusic(std::string name, std::string filename)
                                                0, &m_musics[name].first);
 
     if(res != FMOD_OK)
-        throw tbe::Exception("SoundManager::registerMusic; %s (%s)",
-                             FMOD_ErrorString(res), filename.c_str());
+        throw tbe::Exception("SoundManager::registerMusic; %1% (%2%)")
+        % FMOD_ErrorString(res)
+        % filename.c_str();
 }
 
 void SoundManager::playMusic(std::string soundName)

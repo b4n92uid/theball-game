@@ -136,8 +136,6 @@ public:
 
     std::vector<MapInfo*> availableMap;
 
-    std::vector<std::string> botNames;
-
 private:
     AppManager* m_appManager;
 };

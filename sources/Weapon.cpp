@@ -48,10 +48,7 @@ Weapon::Weapon(GameManager* playManager) : m_settings(playManager->manager.app->
     m_weaponName = "Weapon";
 }
 
-Weapon::~Weapon()
-{
-
-}
+Weapon::~Weapon() { }
 
 Weapon* Weapon::clone()
 {
@@ -65,15 +62,14 @@ bool Weapon::operator==(const Weapon& copy)
 
 void Weapon::setFireSound(std::string fireSound)
 {
-    fspath path(fireSound);
-    m_soundID = path.stem();
+    m_soundID = fspath(fireSound).string();
 
     m_soundManager->registerSound(m_soundID, fireSound);
 }
 
 bool Weapon::isEmpty()
 {
-    return(m_ammoCount == 0);
+    return (m_ammoCount == 0);
 }
 
 unsigned Weapon::getSlot() const

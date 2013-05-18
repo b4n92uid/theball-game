@@ -19,10 +19,18 @@ inline int isarg(int argc, char** argv, const char* required)
     return -1;
 }
 
+void unhandled_throw()
+{
+    cout << "Unhandled exception catch at termination" << endl;
+    abort();
+}
+
 int main(int argc, char** argv)
 {
     using namespace boost::posix_time;
     using namespace boost::filesystem;
+
+    std::set_terminate(unhandled_throw);
 
     #ifdef NDEBUG
     ofstream log("theball.log");
@@ -67,6 +75,14 @@ int main(int argc, char** argv)
             theBall.executeMenu();
         }
 
+    }
+
+    catch(tbe::Exception& e)
+    {
+        #ifdef COMPILE_FOR_WINDOWS
+        MessageBox(0, e.what(), "Fatal error", MB_ICONERROR);
+        #endif
+        cout << e.what() << endl;
     }
 
     catch(std::exception& e)

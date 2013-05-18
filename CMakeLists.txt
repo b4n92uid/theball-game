@@ -1,7 +1,8 @@
 project(theBall)
 cmake_minimum_required(VERSION 2.6)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
+string(TOLOWER ${CMAKE_SOURCE_DIR}/${CMAKE_BUILD_TYPE} OUTPUT_PATH)
+set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_PATH})
 
 include_directories(${TBENGINE_INC})
 include_directories(${TBENGINE_INC_PLUGINS})

@@ -56,7 +56,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
             m_physicBody->buildTreeNode(body);
 
         else
-            throw Exception("StaticElement::StaticElement; unable to build (%s) physics body", physic.c_str());
+            throw Exception("StaticElement::StaticElement; unable to build (%1%) physics body") % physic;
 
         if(physic != "tree")
         {
@@ -69,10 +69,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     }
 }
 
-StaticElement::~StaticElement()
-{
-
-}
+StaticElement::~StaticElement() { }
 
 void StaticElement::setGhost(bool enable)
 {
@@ -102,10 +99,10 @@ void StaticElement::makeTransparent(bool enable, float alpha)
 
     if(enable)
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->enable(Material::BLEND_ADD);
+            mats[i]->enable(Material::ADDITIVE);
     else
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->disable(Material::BLEND_ADD);
+            mats[i]->disable(Material::ADDITIVE);
 }
 
 void StaticElement::makeLighted(bool enable)

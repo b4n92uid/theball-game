@@ -61,17 +61,17 @@ worldSettings(appManager->globalSettings.world)
     parallelscene.meshs->setTransparencySort(true);
     manager.scene->addParallelScene(parallelscene.meshs);
 
-    parallelscene.newton = new scene::NewtonParallelScene;
-    parallelscene.newton->setGravity(worldSettings.gravity);
-    NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
-    NewtonSetFrictionModel(parallelscene.newton->getNewtonWorld(), 1);
-    manager.scene->addParallelScene(parallelscene.newton);
-
     parallelscene.particles = new scene::ParticlesParallelScene;
     manager.scene->addParallelScene(parallelscene.particles);
 
     parallelscene.marks = new scene::MapMarkParallelScene;
     manager.scene->addParallelScene(parallelscene.marks);
+
+    parallelscene.newton = new scene::NewtonParallelScene;
+    parallelscene.newton->setGravity(worldSettings.gravity);
+    NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
+    NewtonSetFrictionModel(parallelscene.newton->getNewtonWorld(), 1);
+    manager.scene->addParallelScene(parallelscene.newton);
 
     manager.fmodsys = appManager->getFmodSystem();
 
@@ -232,6 +232,12 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
         manager.script->load(map.settings.map->script);
     else
         cout << "***Warning*** their is no script attached to this map !" << endl;
+
+    // ShadowMap ---------------------------------------------------------------
+
+    ShadowMapCameraSetup* shadowCamSetup = new ShadowMapCameraSetup;
+    shadowCamSetup->userPlayer = m_userPlayer;
+    manager.scene->getShadowMap()->setCameraSetup(shadowCamSetup);
 }
 
 typedef void (GameManager::*ActionMethod)();
@@ -242,9 +248,7 @@ public std::map<Rocket::Core::String, ActionMethod>
 {
 public:
 
-    EventListner(GameManager* appm) : m_gamem(appm)
-    {
-    }
+    EventListner(GameManager* appm) : m_gamem(appm) { }
 
     void ProcessEvent(Rocket::Core::Event& e)
     {
@@ -749,7 +753,6 @@ void GameManager::render()
 
     if(!hitArray.empty())
         m_shootTarget = hitArray.front();
-
     else
         m_shootTarget = campos + camtar * 32;
 
@@ -759,14 +762,6 @@ void GameManager::render()
         m_userPlayer->makeTransparent(true, 0.2);
     else
         m_userPlayer->makeTransparent(false);
-
-    // Physique ----------------------------------------------------------------
-
-    EventManager* eventmng = manager.gameEngine->getEventManager();
-
-    parallelscene.newton->setWorldTimestep(eventmng->lastPollTimestamp * 0.001f);
-
-    manager.material->process();
 
     // Son 3D ------------------------------------------------------------------
 
@@ -786,21 +781,31 @@ void GameManager::render()
         FMOD_System_Update(manager.fmodsys);
     }
 
+    // Physique ----------------------------------------------------------------
+
+    // parallelscene.newton->setWorldTimestep(manager.fps->getFromLastFrameMs());
+
+    manager.material->process();
+
     // Rendue ------------------------------------------------------------------
 
     manager.gameEngine->beginScene();
 
-    Rtt* rtt = manager.ppe->getRtt();
+    if(manager.app->globalSettings.video.ppeUse)
+    {
+        Rtt* rtt = manager.ppe->getRtt();
 
-    rtt->use(true);
-    rtt->clear();
-    manager.scene->render();
-    rtt->use(false);
-
-    manager.ppe->render();
+        rtt->use(true);
+        rtt->clear();
+        manager.scene->render();
+        rtt->use(false);
+        manager.ppe->render();
+    }
+    else
+        manager.scene->render();
 
     manager.gui->render();
-
+    //    manager.scene->getShadowMap()->renderDebug();
     manager.gameEngine->endScene();
 
     // Effacement programmé ----------------------------------------------------

@@ -22,9 +22,7 @@ Settings::Settings()
     noaudio = false;
 }
 
-Settings::~Settings()
-{
-}
+Settings::~Settings() { }
 
 const char* Settings::operator()(std::string key) const
 {
@@ -170,15 +168,6 @@ void Content::readPlayerInfo(std::string dir)
 {
     using namespace boost::filesystem;
 
-    ifstream namefile("NAMES.txt");
-
-    do botNames.push_back(string());
-    while(getline(namefile, botNames.back()));
-
-    botNames.pop_back();
-
-    namefile.close();
-
     availablePlayer.clear();
 
     directory_iterator end;
@@ -188,7 +177,7 @@ void Content::readPlayerInfo(std::string dir)
 
         if(filename.extension() == ".class")
         {
-            PlayerInfo* pi = new PlayerInfo(m_appManager, filename.file_string());
+            PlayerInfo* pi = new PlayerInfo(m_appManager, filename.string());
             availablePlayer.push_back(pi);
         }
     }
@@ -209,15 +198,13 @@ void Content::readMapInfo(std::string dir)
 
         if(filename.extension() == ".map")
         {
-            MapInfo* mi = new MapInfo(m_appManager, filename.file_string());
+            MapInfo* mi = new MapInfo(m_appManager, filename.string());
             availableMap.push_back(mi);
         }
     }
 }
 
-Content::MapInfo::MapInfo()
-{
-}
+Content::MapInfo::MapInfo() { }
 
 Content::MapInfo::MapInfo(AppManager* appmng, std::string path)
 {
@@ -229,9 +216,10 @@ Content::MapInfo::MapInfo(AppManager* appmng, std::string path)
     this->author = loader->getAuthorName();
     this->name = loader->getSceneName();
 
-    this->script = loader->getAdditionalString("script");
-    this->preview = loader->getAdditionalString("preview");
-    this->comment = loader->getAdditionalString("comment");
+    const rtree& attributes = loader->attributes();
+    this->script = attributes.get<string>("script", "");
+    this->preview = attributes.get<string>("preview", "");
+    this->comment = attributes.get<string>("comment", "");
 
     /*
     if(!script.empty())
@@ -253,13 +241,9 @@ Content::MapInfo::MapInfo(AppManager* appmng, std::string path)
     this->filepath = path;
 }
 
-Content::MapInfo::~MapInfo()
-{
-}
+Content::MapInfo::~MapInfo() { }
 
-Content::PlayerInfo::PlayerInfo()
-{
-}
+Content::PlayerInfo::PlayerInfo() { }
 
 Content::PlayerInfo::PlayerInfo(AppManager* appmng, std::string path)
 {
@@ -271,9 +255,7 @@ Content::PlayerInfo::PlayerInfo(AppManager* appmng, std::string path)
     this->filepath = path;
 }
 
-Content::PlayerInfo::~PlayerInfo()
-{
-}
+Content::PlayerInfo::~PlayerInfo() { }
 
 Content::PartySetting::PartySetting()
 {
