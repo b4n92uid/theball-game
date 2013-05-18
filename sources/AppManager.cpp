@@ -117,9 +117,9 @@ void AppManager::setupSound()
                                                    0, &m_mainMusic);
 
         if(res != FMOD_OK)
-            throw tbe::Exception("AppManager::AppManager; %s (%s)",
-                                 FMOD_ErrorString(res),
-                                 globalSettings("audio.maintheme"));
+            throw tbe::Exception("AppManager::AppManager; %1% (%2%)")
+            % FMOD_ErrorString(res)
+            % globalSettings("audio.maintheme");
     }
 }
 
@@ -131,9 +131,7 @@ public std::map<Rocket::Core::String, ActionMethod>
 {
 public:
 
-    EventListner(AppManager* appm) : m_gamem(appm)
-    {
-    }
+    EventListner(AppManager* appm) : m_gamem(appm) { }
 
     void ProcessEvent(Rocket::Core::Event& e)
     {
@@ -460,6 +458,15 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
         return;
     }
 
+    catch(...)
+    {
+        cout << "Unhandled exception !" << endl;
+
+        m_menu.loadscreen->Hide();
+        delete gameManager;
+        return;
+    }
+
     // Attente de réponse ------------------------------------------------------
 
     m_menu.loadscreen->GetElementById("loading-text")
@@ -485,11 +492,14 @@ void AppManager::executeGame(const Content::PartySetting& playSetting)
 
     while(gameManager->isRunning())
     {
-        gameManager->eventProcess();
-        gameManager->gameProcess();
-        gameManager->hudProcess();
+        if(m_fpsMng->doRender())
+        {
+            gameManager->eventProcess();
+            gameManager->gameProcess();
+            gameManager->hudProcess();
 
-        gameManager->render();
+            gameManager->render();
+        }
 
         m_fpsMng->update();
     }
