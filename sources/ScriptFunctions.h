@@ -131,6 +131,9 @@ int stopMotion(lua_State* lua);
 
 // Material
 
+int loadMaterial(lua_State* lua);
+int attachMaterial(lua_State* lua);
+
 int freeze(lua_State* lua);
 int unfreeze(lua_State* lua);
 

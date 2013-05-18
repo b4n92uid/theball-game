@@ -20,6 +20,7 @@
 #include "GravityGun.h"
 #include "BulletTime.h"
 #include "Boost.h"
+#include "MaterialManager.h"
 
 #include <boost/signals.hpp>
 #include <boost/foreach.hpp>
@@ -48,22 +49,22 @@ inline GameManager* getGameManager(lua_State* lua)
 {
     lua_getglobal(lua, GAMEMANAGER_INTERNALE_NAME);
 
-    void* ptr = (void*)(long)lua_tonumber(lua, -1);
+    void* ptr = (void*) (long) lua_tonumber(lua, -1);
 
     lua_pop(lua, 1);
 
-    return(GameManager*)ptr;
+    return (GameManager*) ptr;
 }
 
 inline ScriptManager* getScriptManager(lua_State* lua)
 {
     lua_getglobal(lua, SCRIPTMANAGER_INTERNALE_NAME);
 
-    void* ptr = (void*)(long)lua_tonumber(lua, -1);
+    void* ptr = (void*) (long) lua_tonumber(lua, -1);
 
     lua_pop(lua, 1);
 
-    return(ScriptManager*)ptr;
+    return (ScriptManager*) ptr;
 }
 
 bool __check(MapElement* elem, GameManager* gm)
@@ -130,7 +131,7 @@ int include(lua_State* lua)
 {
     string scriptpath = getScriptPath(lua);
 
-    string include = tools::pathScope(scriptpath, lua_tostring(lua, 1), true);
+    string include = tools::resolvePath(lua_tostring(lua, 1), scriptpath);
 
     if(luaL_dofile(lua, include.c_str()) != 0)
         cout << "LUA: " << lua_tostring(lua, -1) << endl;
@@ -268,6 +269,33 @@ int impulse(lua_State* lua)
                          elem->getPhysicBody()->getPos());
 
     return 0;
+}
+
+map<string, scene::Material::Map> MaterialSets;
+
+int loadMaterial(lua_State* lua)
+{
+    using namespace scene;
+
+    string id = lua_tostring(lua, 1);
+    string path = lua_tostring(lua, 2);
+
+    Material::Map set = AbstractParser::loadMaterialSet(path);
+
+    MaterialSets[id] = set;
+}
+
+int attachMaterial(lua_State* lua)
+{
+    StaticElement* elem = lua_tostatic(lua, 1);
+    check(elem);
+
+    string id = lua_tostring(lua, 2);
+
+    if(MaterialSets.count(id))
+        elem->getVisualBody()->attachMaterialSet(MaterialSets[id]);
+    else
+        cout << "/!\\ WARNING; script::attachMaterial; Unknow material (" << id << ")" << endl;
 }
 
 int freeze(lua_State* lua)
@@ -943,7 +971,7 @@ int getSceneString(lua_State* lua)
 
     string key = lua_tostring(lua, 1);
 
-    string value = gm->manager.app->getSceneParser()->getAdditionalString(key);
+    string value = gm->manager.app->getSceneParser()->attributes().get<string>(key);
 
     lua_pushstring(lua, value);
 
@@ -1173,7 +1201,7 @@ int getElement(lua_State* lua)
     lua_pushnil(lua);
 
     cout << "LUA: " << __FUNCTION__ << ": return nil for (" << id << ")" << endl;
-                                                                                                                                                                                                                                                                                                            \
+                                                                                                                                                                                                                                                                                                                                                                    \
     return 1;
 }
 
@@ -1212,7 +1240,7 @@ int getElementsList(lua_State* lua)
                 if(regex_match(elem->getId(), pattern))
                     selection.push_back(elem);
 
-                if(count > 0 && (int)selection.size() >= count)
+                if(count > 0 && (int) selection.size() >= count)
                     break;
             }
 
@@ -1229,11 +1257,9 @@ int getElementsList(lua_State* lua)
 
 int getElementsRand(lua_State* lua)
 {
-    using namespace boost;
-
     GameManager* gm = getGameManager(lua);
 
-    regex pattern(lua_tostring(lua, 1));
+    boost::regex pattern(lua_tostring(lua, 1));
 
     int count = 0;
 
@@ -1244,17 +1270,17 @@ int getElementsRand(lua_State* lua)
 
     BOOST_FOREACH(MapElement* elem, gm->map.mapElements)
     {
-        if(regex_match(elem->getId(), pattern))
+        if(boost::regex_match(elem->getId(), pattern))
             selection.push_back(elem);
 
-        if(count > 0 && (int)selection.size() >= count)
+        if(count > 0 && (int) selection.size() >= count)
             break;
     }
 
     if(selection.empty())
         lua_pushnil(lua);
     else
-        lua_pushinteger(lua, (lua_Integer)selection[math::rand(0, selection.size())]);
+        lua_pushinteger(lua, (lua_Integer) selection[math::rand(0, selection.size())]);
 
     return 1;
 }
@@ -1400,7 +1426,7 @@ struct RespawnHook
     {
         lua_getglobal(lua, callback.c_str());
 
-        lua_pushinteger(lua, (lua_Integer)player);
+        lua_pushinteger(lua, (lua_Integer) player);
         lua_call(lua, 1, 0);
     }
 
@@ -1421,7 +1447,7 @@ struct PowerHook
     {
         lua_getglobal(lua, callback.c_str());
 
-        lua_pushinteger(lua, (lua_Integer)player);
+        lua_pushinteger(lua, (lua_Integer) player);
         lua_pushboolean(lua, stat);
         lua_pushvector3(lua, target);
         lua_call(lua, 3, 1);
@@ -1446,7 +1472,7 @@ struct ShootHook
     {
         lua_getglobal(lua, callback.c_str());
 
-        lua_pushinteger(lua, (lua_Integer)player);
+        lua_pushinteger(lua, (lua_Integer) player);
         lua_pushvector3(lua, target);
         lua_call(lua, 2, 1);
 
@@ -1519,7 +1545,7 @@ struct AIHook
     {
         lua_getglobal(lua, callback.c_str());
 
-        lua_pushinteger(lua, (lua_Integer)player);
+        lua_pushinteger(lua, (lua_Integer) player);
         lua_call(lua, 1, 0);
     }
 

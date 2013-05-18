@@ -71,6 +71,9 @@ ScriptManager::ScriptManager(GameManager* gameManager)
 
     // Transofrmation ---------------------------------------------------------
 
+    lua_register(m_lua, "loadMaterial", safeLuaCall<script::loadMaterial>);
+    lua_register(m_lua, "attachMaterial", safeLuaCall<script::attachMaterial>);
+
     lua_register(m_lua, "setFloorPosition", safeLuaCall<script::setFloorPosition>);
     lua_register(m_lua, "isStayInFloor", safeLuaCall<script::isStayInFloor>);
 
@@ -199,11 +202,11 @@ void ScriptManager::callCollidCallback(std::string funcname, Player* player, Map
     if(!lua_isfunction(m_lua, -1))
     {
         lua_pop(m_lua, 1);
-        throw tbe::Exception("ScriptManager::call; undefined function (%s)", funcname.c_str());
+        throw tbe::Exception("ScriptManager::call; undefined function (%1%)") % funcname;
     }
 
-    lua_pushinteger(m_lua, (lua_Integer)player);
-    lua_pushinteger(m_lua, (lua_Integer)elem);
+    lua_pushinteger(m_lua, (lua_Integer) player);
+    lua_pushinteger(m_lua, (lua_Integer) elem);
     lua_pushnumber(m_lua, force);
     lua_pushnumber(m_lua, normaleSpeed);
     lua_call(m_lua, 4, 0);
@@ -216,7 +219,7 @@ void ScriptManager::call(std::string funcname)
     if(!lua_isfunction(m_lua, -1))
     {
         lua_pop(m_lua, 1);
-        throw tbe::Exception("ScriptManager::call; undefined function (%s)", funcname.c_str());
+        throw tbe::Exception("ScriptManager::call; undefined function (%1%)") % funcname;
     }
 
     lua_call(m_lua, 0, 0);
@@ -226,7 +229,7 @@ void ScriptManager::load(std::string scriptpath)
 {
     cout << "Loading script " << scriptpath << endl;
 
-    lua_pushinteger(m_lua, (lua_Integer)m_gameManager);
+    lua_pushinteger(m_lua, (lua_Integer) m_gameManager);
     lua_setglobal(m_lua, GAMEMANAGER_INTERNALE_NAME);
 
     lua_pushinteger(m_lua, (lua_Integer)this);
@@ -238,7 +241,9 @@ void ScriptManager::load(std::string scriptpath)
     if(luaL_dofile(m_lua, scriptpath.c_str()) != 0)
     {
         cout << "LUA: " << lua_tostring(m_lua, -1) << endl;
-        throw tbe::Exception("ScriptManager::load; %s (%s)", lua_tostring(m_lua, -1), scriptpath.c_str());
+        throw tbe::Exception("ScriptManager::load; %1% (%2%)")
+                % lua_tostring(m_lua, -1)
+                % scriptpath.c_str();
     }
 }
 
