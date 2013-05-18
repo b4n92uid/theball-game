@@ -41,11 +41,8 @@ Player::Player(GameManager* gameManager, std::string nickname, Content::PlayerIn
     // Rendue
     ClassParser* loader = gameManager->manager.app->getClassParser();
     loader->load(pinfo->filepath);
-    loader->build();
 
-    loader->getBuildedNode<Mesh*>()->dettach();
-
-    MapElement::m_visualBody = m_visualBody = loader->getBuildedNode<Mesh*>()->clone();
+    MapElement::m_visualBody = m_visualBody = (Mesh*) loader->build();
 
     // Effet explosion
     m_deadExplode = new ParticlesEmiter(gameManager->parallelscene.particles);
@@ -122,8 +119,17 @@ void Player::process()
     if(m_gameManager->isGameOver())
         return;
 
-    if(m_physicBody->getVelocity() > 0.0)
-        onVelocity(this, m_physicBody->getVelocity());
+    bool collideStatic = isStayDown();
+
+    Vector3f vel = m_physicBody->getVelocity();
+
+    if(vel > 0.0)
+        onVelocity(this, vel);
+
+    if(!collideStatic)
+        vel *= 0.98;
+
+    m_physicBody->setVelocity(vel);
 
     if(m_attachedCotroller && !m_killed)
         m_attachedCotroller->process(this);
@@ -200,8 +206,6 @@ bool Player::isStayDown()
 
 void Player::move(tbe::Vector3f force)
 {
-    bool collideStatic = isStayDown();
-
     /*
      * Enleve la force appliquer sur l'axe Y (Vertical)
      * pour eviter au joueur de voller
@@ -216,16 +220,10 @@ void Player::move(tbe::Vector3f force)
     /*
      * Diminue la force de mouvement dans les aires
      */
+    bool collideStatic = isStayDown();
+
     if(!collideStatic)
-    {
-        force /= 2.0f;
-
-        Vector3f vel = m_physicBody->getVelocity();
-        vel.x *= 0.98;
-        vel.z *= 0.98;
-
-        m_physicBody->setVelocity(vel);
-    }
+        force /= 3.0f;
 
     if(onMove.empty() || onMove(this, force))
         m_physicBody->setApplyForce(force * m_worldSettings.playerMoveSpeed);
@@ -556,8 +554,8 @@ void Player::makeTransparent(bool enable, float alpha)
 
     if(enable)
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->enable(Material::BLEND_MOD | Material::VERTEX_SORT_CULL_TRICK);
+            mats[i]->enable(Material::MODULATE | Material::VERTEX_SORT_CULL_TRICK);
     else
         for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->disable(Material::BLEND_MOD | Material::VERTEX_SORT_CULL_TRICK);
+            mats[i]->disable(Material::MODULATE | Material::VERTEX_SORT_CULL_TRICK);
 }
