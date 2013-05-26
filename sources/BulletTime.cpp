@@ -57,7 +57,7 @@ void BulletTime::clearSingleTone(GameManager* gm)
 
 void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 {
-    MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
+    MapElement* elem = static_cast<MapElement*> (NewtonBodyGetUserData(body));
 
     NewtonNode* nnode = elem->getPhysicBody();
 
@@ -145,7 +145,8 @@ void BulletTime::internalActivate(tbe::Vector3f)
 
     // Reduce dammage ----------------------------------------------------------
 
-    m_owner->onDammage.connect(reduceDammage);
+    // FIX Cause recursiv call to the slot
+    // m_owner->onDammage.connect(reduceDammage);
 
     // Reduce jump force -------------------------------------------------------
 

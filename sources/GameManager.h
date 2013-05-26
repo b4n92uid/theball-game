@@ -165,16 +165,6 @@ protected:
 
     void processDevelopperCodeEvent();
 
-    struct ShadowMapCameraSetup : public tbe::scene::ShadowMapCameraSetup
-    {
-        Player* userPlayer;
-
-        tbe::Vector3f setupCamera(tbe::scene::SceneManager* sm, tbe::scene::Light* l)
-        {
-            return userPlayer->getVisualBody()->getPos();
-        }
-    };
-    
     bool m_cursorOnPlayer;
     bool m_gameOver;
     bool m_gameRunning;

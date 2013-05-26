@@ -131,7 +131,7 @@ int Bullet::getLife() const
 
 bool Bullet::isDeadAmmo()
 {
-    return(m_life <= 0 || !m_gameManager->map.aabb.isInner(m_visualBody->getPos()));
+    return (m_life <= 0 || !m_gameManager->map.aabb.isInner(m_visualBody->getPos()));
 }
 
 void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shootspeed, float accuracy)
@@ -153,7 +153,7 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
     m_visualBody->setPos(startpos);
 
     m_physicBody = new NewtonNode(m_gameManager->parallelscene.newton);
-    m_physicBody->setUpdatedMatrix(&m_visualBody->getMatrix());
+    m_physicBody->setMatrix(m_visualBody->getMatrix());
     m_physicBody->buildSphereNode(m_size, m_masse);
     m_physicBody->setApplyGravity(false);
 

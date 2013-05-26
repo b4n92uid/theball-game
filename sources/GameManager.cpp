@@ -232,12 +232,6 @@ void GameManager::setupMap(const Content::PartySetting& playSetting)
         manager.script->load(map.settings.map->script);
     else
         cout << "***Warning*** their is no script attached to this map !" << endl;
-
-    // ShadowMap ---------------------------------------------------------------
-
-    ShadowMapCameraSetup* shadowCamSetup = new ShadowMapCameraSetup;
-    shadowCamSetup->userPlayer = m_userPlayer;
-    manager.scene->getShadowMap()->setCameraSetup(shadowCamSetup);
 }
 
 typedef void (GameManager::*ActionMethod)();

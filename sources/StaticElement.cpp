@@ -41,7 +41,7 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     if(physic != "ghost" && body->getHardwareBuffer()->getVertexCount() >= 36)
     {
         m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton);
-        m_physicBody->setUpdatedMatrix(&body->getMatrix());
+        m_physicBody->setMatrix(body->getMatrix());
 
         if(physic == "box")
             m_physicBody->buildBoxNode(size, masse);

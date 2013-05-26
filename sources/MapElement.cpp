@@ -88,14 +88,15 @@ GameManager* MapElement::getGameManager() const
 
 void MapElement::applyTransformCallback(const NewtonBody* body, const float* matrix, int)
 {
-    MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
+    MapElement* elem = static_cast<MapElement*> (NewtonBodyGetUserData(body));
 
+    elem->getPhysicBody()->setMatrix(matrix);
     elem->getVisualBody()->setMatrix(matrix);
 }
 
 void MapElement::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
 {
-    MapElement* elem = static_cast<MapElement*>(NewtonBodyGetUserData(body));
+    MapElement* elem = static_cast<MapElement*> (NewtonBodyGetUserData(body));
 
     elem->getPhysicBody()->applyForceAndTorque();
 }
@@ -108,13 +109,6 @@ AreaElement::AreaElement(GameManager* gameManager, std::string id, tbe::Vector3f
     m_visualBody->setPos(pos);
 
     m_radius = radius;
-
-    //    m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton, m_visualBody);
-    //    m_physicBody->buildSphereNode(size, 0);
-    //    m_physicBody->setPos(pos);
-    //    m_physicBody->setParent(m_visualBody);
-
-    //    NewtonBodySetUserData(m_physicBody->getBody(), this);
 }
 
 void AreaElement::setRadius(float radius)
