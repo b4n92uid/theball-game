@@ -10,7 +10,7 @@
 
 #include <map>
 #include <fmod.h>
-#include <boost/signal.hpp>
+#include <boost/signals2/signal.hpp>
 
 #include <Tbe.h>
 
@@ -39,7 +39,7 @@ public:
     void pauseMusic(std::string soundName);
     void stopMusic(std::string soundName);
 
-    boost::signal<void (FMOD_CHANNEL*) > processSoundEffect;
+    boost::signals2::signal<void (FMOD_CHANNEL*) > processSoundEffect;
 
     void syncronizeSoundsPosition();
     void unregisterElement(MapElement* object);

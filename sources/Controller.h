@@ -10,7 +10,7 @@
 
 #include <Tbe.h>
 #include <SDLDevice/SDLDevice.h>
-#include <boost/signals.hpp>
+#include <boost/signals2/signal.hpp>
 
 #include "Settings.h"
 

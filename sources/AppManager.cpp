@@ -7,8 +7,10 @@
 
 #include "AppManager.h"
 
-#include "GameManager.h"
+#include <DevilLoader/DevilLoader.h>
 #include <fmod_errors.h>
+
+#include "GameManager.h"
 
 #define guiRootPath(path) (string("../../") + path).c_str()
 
@@ -56,6 +58,8 @@ void AppManager::setupVideoMode()
 
     if(globalSettings.video.ppeUse)
         apply.antialiasing = 0;
+    
+    Texture::registerLoader(new DevilLoader);
 
     m_gameEngine->window(CAPTION_TITLE, apply.screenSize, apply.bits, apply.fullScreen, apply.antialiasing);
 }

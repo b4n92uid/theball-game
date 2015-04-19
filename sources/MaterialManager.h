@@ -1,12 +1,12 @@
 /*
- * File:   MaterialManager.h
+ * File:   BodyMaterialManager.h
  * Author: b4n92uid
  *
  * Created on 10 novembre 2009, 15:04
  */
 
-#ifndef _MATERIALMANAGER_H
-#define	_MATERIALMANAGER_H
+#ifndef _BODYMATERIALMANAGER_H
+#define	_BODYMATERIALMANAGER_H
 
 #include <NewtonBall/NewtonBall.h>
 
@@ -16,11 +16,11 @@ class MapElement;
 class AreaElement;
 class GameManager;
 
-class MaterialManager
+class BodyMaterialManager
 {
 public:
-    MaterialManager(GameManager* playManager);
-    virtual ~MaterialManager();
+    BodyMaterialManager(GameManager* playManager);
+    virtual ~BodyMaterialManager();
 
     void setGhost(MapElement* body, bool state);
     void setImmunity(Player* body, bool state);
@@ -51,5 +51,5 @@ protected:
     std::map<tbe::scene::NewtonNode*, int> m_immunityState;
 };
 
-#endif	/* _MATERIALMANAGER_H */
+#endif	/* _BODYMATERIALMANAGER_H */
 

@@ -1,5 +1,5 @@
 /*
- * File:   MaterialManager.cpp
+ * File:   BodyMaterialManager.cpp
  * Author: b4n92uid
  *
  * Created on 10 novembre 2009, 15:04
@@ -27,28 +27,28 @@ template<typename T> static T getUserData(const NewtonBody* body)
     return static_cast<T> (NewtonBodyGetUserData(body));
 }
 
-MaterialManager* getMaterialManager(const NewtonBody* body0, const NewtonBody* body1)
+BodyMaterialManager* getBodyMaterialManager(const NewtonBody* body0, const NewtonBody* body1)
 {
     int g0 = NewtonBodyGetMaterialGroupID(body0);
     int g1 = NewtonBodyGetMaterialGroupID(body1);
 
-    return (MaterialManager*) NewtonMaterialGetUserData(NewtonBodyGetWorld(body0), g0, g1);
+    return (BodyMaterialManager*) NewtonMaterialGetUserData(NewtonBodyGetWorld(body0), g0, g1);
 }
 
-MaterialManager* getMaterialManager(const NewtonJoint* contact)
+BodyMaterialManager* getBodyMaterialManager(const NewtonJoint* contact)
 {
     NewtonBody* b0 = NewtonJointGetBody0(contact);
     NewtonBody* b1 = NewtonJointGetBody1(contact);
 
     if(b0 && b1)
-        return getMaterialManager(b0, b1);
+        return getBodyMaterialManager(b0, b1);
     else
         return NULL;
 }
 
 int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int i)
 {
-    MaterialManager* matmanager = getMaterialManager(body0, body1);
+    BodyMaterialManager* matmanager = getBodyMaterialManager(body0, body1);
 
     if(matmanager)
         return matmanager->callbackBulletOnPlayerAABBOverlape(material, body0, body1, i);
@@ -58,7 +58,7 @@ int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody*
 
 void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat f, int i)
 {
-    MaterialManager* matmanager = getMaterialManager(contact);
+    BodyMaterialManager* matmanager = getBodyMaterialManager(contact);
 
     if(matmanager)
         matmanager->callbackBulletOnMapContactsProcess(contact, f, i);
@@ -66,13 +66,13 @@ void BulletOnMapContactsProcess(const NewtonJoint* contact, dFloat f, int i)
 
 void PlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat timestep, int threadIndex)
 {
-    MaterialManager* matmanager = getMaterialManager(contact);
+    BodyMaterialManager* matmanager = getBodyMaterialManager(contact);
 
     if(matmanager)
         matmanager->callbackPlayerOnStaticContactsProcess(contact, timestep, threadIndex);
 }
 
-MaterialManager::MaterialManager(GameManager* gameManager)
+BodyMaterialManager::BodyMaterialManager(GameManager* gameManager)
 {
     m_gameManager = gameManager;
 
@@ -104,12 +104,12 @@ MaterialManager::MaterialManager(GameManager* gameManager)
     NewtonMaterialSetDefaultFriction(m_world, m_immunityGroupe, m_elementsGroupe, 256, 512);
 }
 
-MaterialManager::~MaterialManager()
+BodyMaterialManager::~BodyMaterialManager()
 {
     NewtonMaterialDestroyAllGroupID(m_world);
 }
 
-void MaterialManager::setGhost(MapElement* body, bool state)
+void BodyMaterialManager::setGhost(MapElement* body, bool state)
 {
     NewtonNode* xbody = body->getPhysicBody();
 
@@ -133,7 +133,7 @@ void MaterialManager::setGhost(MapElement* body, bool state)
     }
 }
 
-void MaterialManager::setImmunity(Player* body, bool state)
+void BodyMaterialManager::setImmunity(Player* body, bool state)
 {
     NewtonNode* xbody = body->getPhysicBody();
 
@@ -157,22 +157,22 @@ void MaterialManager::setImmunity(Player* body, bool state)
     }
 }
 
-void MaterialManager::addElement(MapElement* body)
+void BodyMaterialManager::addElement(MapElement* body)
 {
     NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_elementsGroupe);
 }
 
-void MaterialManager::addBullet(Bullet* body)
+void BodyMaterialManager::addBullet(Bullet* body)
 {
     NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_bulletGroupe);
 }
 
-void MaterialManager::addPlayer(Player* body)
+void BodyMaterialManager::addPlayer(Player* body)
 {
     NewtonBodySetMaterialGroupID(body->getPhysicBody()->getBody(), m_playersGroupe);
 }
 
-void MaterialManager::process()
+void BodyMaterialManager::process()
 {
     const Player::Array& pls = m_gameManager->getPlayers();
 
@@ -208,7 +208,7 @@ void MaterialManager::process()
     }
 }
 
-void MaterialManager::callbackPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int)
+void BodyMaterialManager::callbackPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
     NewtonBody* body1 = NewtonJointGetBody1(contact);
@@ -263,7 +263,7 @@ void MaterialManager::callbackPlayerOnStaticContactsProcess(const NewtonJoint* c
     ge->manager.script->processCollid(player, elem, force.getMagnitude(), normalSpeed);
 }
 
-void MaterialManager::callbackBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int)
+void BodyMaterialManager::callbackBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int)
 {
     NewtonBody* body0 = NewtonJointGetBody0(contact);
     NewtonBody* body1 = NewtonJointGetBody1(contact);
@@ -285,7 +285,7 @@ void MaterialManager::callbackBulletOnMapContactsProcess(const NewtonJoint* cont
     bullet->setLife(0);
 }
 
-int MaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
+int BodyMaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
 {
     using boost::format;
 

@@ -25,11 +25,10 @@
 
 #include "Define.h"
 
-#include <boost/signals.hpp>
-#include <boost/signals2.hpp>
+#include <boost/signals2/signal.hpp>
 
 class UserControl;
-class MaterialManager;
+class BodyMaterialManager;
 
 class BulletTime;
 
@@ -130,7 +129,7 @@ public:
     struct
     {
         AppManager* app;
-        MaterialManager* material;
+        BodyMaterialManager* material;
         SoundManager* sound;
         ScriptManager* script;
 
@@ -158,8 +157,8 @@ public:
     boost::signals2::signal<void(Player*) > onEachFrame;
     boost::signals2::signal<void(Player*) > onPlayerInit;
 
-    boost::signal<void(Player*) > onStartGame;
-    boost::signal<bool(Player*), alltrue> onOutOfArena;
+    boost::signals2::signal<void(Player*) > onStartGame;
+    boost::signals2::signal<bool(Player*), alltrue> onOutOfArena;
 
 protected:
 

@@ -177,7 +177,7 @@ inline bool isBodyContactOnFloor(scene::NewtonNode* node1, scene::NewtonNode* no
     int contactPoint = NewtonCollisionCollide(node1->getParallelScene()->getNewtonWorld(), pointCount,
                                               NewtonBodyGetCollision(node1->getBody()), node1->getMatrix(),
                                               NewtonBodyGetCollision(node2->getBody()), node2->getMatrix(),
-                                              &contact[0].x, &normal[0].x, penetration, 0);
+                                              &contact[0].x, &normal[0].x, penetration, NULL, NULL, 0);
 
     for(int i = 0; i < contactPoint; i++)
     {
@@ -550,12 +550,12 @@ void Player::makeTransparent(bool enable, float alpha)
 
     hardbuf->unlock().bindBuffer(false);
 
-    Material::Array mats = m_visualBody->getAllMaterial();
+    SubMesh::Array submeshs = m_visualBody->getAllSubMesh();
 
     if(enable)
-        for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->enable(Material::MODULATE | Material::VERTEX_SORT_CULL_TRICK);
+        for(unsigned i = 0; i < submeshs.size(); i++)
+            submeshs[i]->getMaterial()->enable(Material::MODULATE | Material::VERTEX_SORT_CULL_TRICK);
     else
-        for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->disable(Material::MODULATE | Material::VERTEX_SORT_CULL_TRICK);
+        for(unsigned i = 0; i < submeshs.size(); i++)
+            submeshs[i]->getMaterial()->disable(Material::MODULATE | Material::VERTEX_SORT_CULL_TRICK);
 }

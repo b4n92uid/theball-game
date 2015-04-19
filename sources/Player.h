@@ -4,7 +4,7 @@
 #include <Tbe.h>
 #include <NewtonBall/NewtonBall.h>
 
-#include <boost/signal.hpp>
+#include <boost/signals2/signal.hpp>
 
 #include "Settings.h"
 #include "Define.h"
@@ -17,7 +17,7 @@ class Controller;
 class Weapon;
 class Power;
 class SoundManager;
-class MaterialManager;
+class BodyMaterialManager;
 
 class Player : public MapElement
 {
@@ -130,14 +130,14 @@ public:
 
     } clocks;
 
-    boost::signal<void(Player*) > onRespawn;
-    boost::signal<bool(Player*, tbe::Vector3f), alltrue> onShoot;
-    boost::signal<bool(Player*, bool, tbe::Vector3f), alltrue> onPower;
-    boost::signal<bool(Player*, Player*, int), alltrue> onDammage;
-    boost::signal<bool(Player*, Player*), alltrue> onKilled;
-    boost::signal<bool(Player*, bool), alltrue> onJump;
-    boost::signal<bool(Player*, tbe::Vector3f), alltrue> onMove;
-    boost::signal<bool(Player*, tbe::Vector3f), alltrue> onVelocity;
+    boost::signals2::signal<void(Player*) > onRespawn;
+    boost::signals2::signal<bool(Player*, tbe::Vector3f), alltrue> onShoot;
+    boost::signals2::signal<bool(Player*, bool, tbe::Vector3f), alltrue> onPower;
+    boost::signals2::signal<bool(Player*, Player*, int), alltrue> onDammage;
+    boost::signals2::signal<bool(Player*, Player*), alltrue> onKilled;
+    boost::signals2::signal<bool(Player*, bool), alltrue> onJump;
+    boost::signals2::signal<bool(Player*, tbe::Vector3f), alltrue> onMove;
+    boost::signals2::signal<bool(Player*, tbe::Vector3f), alltrue> onVelocity;
 
     typedef std::map<std::string, Player*> Map;
     typedef std::vector<Player*> Array;

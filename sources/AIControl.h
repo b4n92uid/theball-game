@@ -23,7 +23,7 @@ public:
 
     void process(Player* player);
 
-    boost::signal<void(Player*) > onAi;
+    boost::signals2::signal<void(Player*) > onAi;
 };
 
 #endif	/* _AIMANAGER_H */

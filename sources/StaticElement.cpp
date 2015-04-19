@@ -95,14 +95,17 @@ void StaticElement::makeTransparent(bool enable, float alpha)
 
     hardbuf->unlock().unbindBuffer();
 
-    Material::Array mats = m_visualBody->getAllMaterial();
-
     if(enable)
-        for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->enable(Material::ADDITIVE);
+    {
+        foreach(SubMesh* m, m_visualBody->getAllSubMesh())
+            m->getMaterial()->enable(Material::ADDITIVE);
+    }
+
     else
-        for(unsigned i = 0; i < mats.size(); i++)
-            mats[i]->disable(Material::ADDITIVE);
+    {
+        foreach(SubMesh* m, m_visualBody->getAllSubMesh())
+            m->getMaterial()->disable(Material::ADDITIVE);
+    }
 }
 
 void StaticElement::makeLighted(bool enable)
@@ -111,12 +114,16 @@ void StaticElement::makeLighted(bool enable)
     using namespace scene;
 
     if(enable)
-        foreach(Material * mat, m_visualBody->getAllMaterial())
-        mat->enable(Material::LIGHTED);
+    {
+        foreach(SubMesh* m, m_visualBody->getAllSubMesh())
+            m->getMaterial()->enable(Material::LIGHTED);
+    }
 
     else
-        foreach(Material* mat, m_visualBody->getAllMaterial())
-        mat->disable(Material::LIGHTED);
+    {
+        foreach(SubMesh* m, m_visualBody->getAllSubMesh())
+            m->getMaterial()->disable(Material::LIGHTED);
+    }
 }
 
 tbe::scene::Mesh* StaticElement::getVisualBody()

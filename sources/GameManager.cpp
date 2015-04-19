@@ -75,7 +75,7 @@ worldSettings(appManager->globalSettings.world)
 
     manager.fmodsys = appManager->getFmodSystem();
 
-    manager.material = new MaterialManager(this);
+    manager.material = new BodyMaterialManager(this);
     manager.sound = new SoundManager(this);
     manager.script = new ScriptManager(this);
 
@@ -466,7 +466,7 @@ void GameManager::onPauseMenuReturn()
     m_pauseRunning = false;
 }
 
-void EarthQuakeProcess(const NewtonBody* body, void* userData)
+int EarthQuakeProcess(const NewtonBody* body, void* userData)
 {
     MapElement* elem = (MapElement*) NewtonBodyGetUserData(body);
 
@@ -477,6 +477,8 @@ void EarthQuakeProcess(const NewtonBody* body, void* userData)
     Vector3f pointPos = pbody->getPos() + AABB(1).randPos();
 
     NewtonBodyAddImpulse(body, AABB(intensity * 4).randPos().normalize(), pointPos);
+
+    return 0;
 }
 
 void GameManager::gameProcess()
@@ -668,7 +670,7 @@ void GameManager::hudProcess()
         m_gui.background.flash->setEnable(false);
 }
 
-float cameraRayFilter(const NewtonBody* body, const float*, int, void* userData, float intersectParam)
+float cameraRayFilter(const NewtonBody* body, const NewtonCollision*, const float*, const float*, dLong, void* userData, float intersectParam)
 {
     MapElement* elem = (MapElement*) NewtonBodyGetUserData(body);
 
@@ -714,7 +716,7 @@ void GameManager::render()
 
     {
         float hit = 1;
-        NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, cameraRayFilter, &hit, NULL);
+        NewtonWorldRayCast(parallelscene.newton->getNewtonWorld(), camzeropos, camendpos, cameraRayFilter, &hit, NULL, 0);
 
         hit = hit * worldSettings.cameraBack;
 

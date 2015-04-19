@@ -22,7 +22,7 @@
 #include "Boost.h"
 #include "MaterialManager.h"
 
-#include <boost/signals.hpp>
+#include <boost/signals2/signal.hpp>
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -271,7 +271,7 @@ int impulse(lua_State* lua)
     return 0;
 }
 
-map<string, scene::Material::Map> MaterialSets;
+map<string, scene::Material*> MaterialSets;
 
 int loadMaterial(lua_State* lua)
 {
@@ -280,9 +280,7 @@ int loadMaterial(lua_State* lua)
     string id = lua_tostring(lua, 1);
     string path = lua_tostring(lua, 2);
 
-    Material::Map set = AbstractParser::loadMaterialSet(path);
-
-    MaterialSets[id] = set;
+    MaterialSets[id] = MaterialManager::get()->loadMaterial(path);
 }
 
 int attachMaterial(lua_State* lua)
@@ -293,7 +291,12 @@ int attachMaterial(lua_State* lua)
     string id = lua_tostring(lua, 2);
 
     if(MaterialSets.count(id))
-        elem->getVisualBody()->attachMaterialSet(MaterialSets[id]);
+    {
+        scene::Mesh* m = elem->getVisualBody();
+
+        for (int i = 0; i < m->getSubMeshCount(); ++i)
+            m->getSubMesh(i)->setMaterial(MaterialSets[id]);
+    }
     else
         cout << "/!\\ WARNING; script::attachMaterial; Unknow material (" << id << ")" << endl;
 }
@@ -363,7 +366,7 @@ int setTextureFrame(lua_State* lua)
     part.x = lua_tointeger(lua, 2);
     part.y = lua_tointeger(lua, 3);
 
-    mesh->getMaterial(0)->setTexturePart(part);
+    mesh->getSubMesh(0)->getMaterial()->setTexturePart(part);
 
     return 0;
 }
