@@ -268,7 +268,7 @@ int earthQuake(lua_State* lua);
 
 template<lua_CFunction func> int safeLuaCall(lua_State* L)
 {
-    script::safeLuaCallCommon(L, func);
+    return script::safeLuaCallCommon(L, func);
 }
 
 #endif	/* SCRIPTFUNCTIONS_H */

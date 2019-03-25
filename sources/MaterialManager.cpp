@@ -84,10 +84,14 @@ BodyMaterialManager::BodyMaterialManager(GameManager* gameManager)
     m_elementsGroupe = NewtonMaterialCreateGroupID(m_world);
     m_ghostGroupe = NewtonMaterialCreateGroupID(m_world);
 
-    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, this, NULL, PlayerOnStaticContactsProcess);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, this, BulletOnPlayerAABBOverlape, NULL);
-    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, this, NULL, BulletOnMapContactsProcess);
-
+    NewtonMaterialSetCollisionCallback(m_world, m_playersGroupe, m_elementsGroupe, NULL, PlayerOnStaticContactsProcess);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_playersGroupe, BulletOnPlayerAABBOverlape, NULL);
+    NewtonMaterialSetCollisionCallback(m_world, m_bulletGroupe, m_elementsGroupe, NULL, BulletOnMapContactsProcess);
+    
+    NewtonMaterialSetCallbackUserData(m_world, m_playersGroupe, m_elementsGroupe, this);
+    NewtonMaterialSetCallbackUserData(m_world, m_bulletGroupe, m_playersGroupe, this);
+    NewtonMaterialSetCallbackUserData(m_world, m_bulletGroupe, m_elementsGroupe, this);
+    
     NewtonMaterialSetDefaultCollidable(m_world, m_bulletGroupe, m_bulletGroupe, false);
 
     NewtonMaterialSetDefaultCollidable(m_world, m_ghostGroupe, m_ghostGroupe, false);

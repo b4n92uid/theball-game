@@ -38,11 +38,11 @@ StaticElement::StaticElement(GameManager* gameManager, tbe::scene::Mesh* body)
     if(body->hasUserData("size"))
         size.fromStr(body->getUserData("size").getValue<string > ());
 
-    if(physic != "ghost" && body->getHardwareBuffer()->getVertexCount() >= 36)
+    if(physic != "ghost" && body->getHardwareBuffer()->getVertexCount() >= 24)
     {
         m_physicBody = new scene::NewtonNode(gameManager->parallelscene.newton);
         m_physicBody->setMatrix(body->getMatrix());
-
+        
         if(physic == "box")
             m_physicBody->buildBoxNode(size, masse);
 

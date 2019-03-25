@@ -7,6 +7,8 @@
 
 #include "Weapon.h"
 
+#include <boost\filesystem.hpp>
+
 #include "GameManager.h"
 #include "MaterialManager.h"
 #include "SoundManager.h"
@@ -19,7 +21,7 @@
 
 #include <fmod_errors.h>
 
-typedef boost::filesystem::path fspath;
+namespace fs = boost::filesystem;
 
 using namespace std;
 using namespace tbe;
@@ -62,7 +64,7 @@ bool Weapon::operator==(const Weapon& copy)
 
 void Weapon::setFireSound(std::string fireSound)
 {
-    m_soundID = fspath(fireSound).string();
+    m_soundID = fs::path(fireSound).string();
 
     m_soundManager->registerSound(m_soundID, fireSound);
 }

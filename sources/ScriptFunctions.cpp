@@ -266,7 +266,7 @@ int impulse(lua_State* lua)
 
     NewtonBodyAddImpulse(elem->getPhysicBody()->getBody(),
                          vec*force,
-                         elem->getPhysicBody()->getPos());
+                         elem->getPhysicBody()->getPos(), 1.0f/60.0f);
 
     return 0;
 }
@@ -281,6 +281,8 @@ int loadMaterial(lua_State* lua)
     string path = lua_tostring(lua, 2);
 
     MaterialSets[id] = MaterialManager::get()->loadMaterial(path);
+
+	return 0;
 }
 
 int attachMaterial(lua_State* lua)
@@ -299,6 +301,8 @@ int attachMaterial(lua_State* lua)
     }
     else
         cout << "/!\\ WARNING; script::attachMaterial; Unknow material (" << id << ")" << endl;
+
+	return 0;
 }
 
 int freeze(lua_State* lua)
@@ -1220,7 +1224,7 @@ int getElementsList(lua_State* lua)
     }
     else
     {
-        if(lua_istable(lua, 1) and lua_isnumber(lua, 2))
+        if(lua_istable(lua, 1) && lua_isnumber(lua, 2))
         {
             // Vector3f pos = lua_tovector(lua, 1);
             // float radius = lua_tonumber(lua, 2);
@@ -1361,7 +1365,7 @@ struct PlayerInitHook
         callback = f;
     }
 
-    bool operator()(Player * userplayer)
+    void operator()(Player * userplayer)
     {
         lua_getglobal(lua, callback.c_str());
         lua_pushplayer(lua, userplayer);

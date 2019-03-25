@@ -68,8 +68,8 @@ void BulletTime::applyForceAndTorqueCallback(const NewtonBody* body, float, int)
     if(nnode->isApplyGravity())
         applyForce.y -= masse * 9.81 * nnode->getParallelScene()->getGravity() * 0.1;
 
-    applyForce *= 0.1;
-    applyTorque *= 0.1;
+    applyForce *= 0.1f;
+    applyTorque *= 0.1f;
 
     NewtonBodySetForce(nnode->getBody(), applyForce);
     NewtonBodySetTorque(nnode->getBody(), applyTorque);

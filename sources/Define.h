@@ -1,7 +1,7 @@
 #ifndef _DEFINE_H
 #define	_DEFINE_H
 
-#define CAPTION_TITLE "theBall ("__DATE__")"
+#define CAPTION_TITLE "theBall (" __DATE__ ")"
 
 #include <boost/foreach.hpp>
 

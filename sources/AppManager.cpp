@@ -85,7 +85,7 @@ void AppManager::setupInernalState()
 
     #ifdef COMPILE_FOR_WINDOWS
     DWORD bufSize = 255;
-    char userName[bufSize];
+    char userName[255];
     GetUserName(userName, &bufSize);
     m_profile.nickname = userName;
     #endif
@@ -115,15 +115,15 @@ void AppManager::setupSound()
         FMOD_System_Create(&m_fmodsys);
         FMOD_System_SetOutput(m_fmodsys, FMOD_OUTPUTTYPE_DSOUND);
         FMOD_System_Init(m_fmodsys, 100, FMOD_INIT_NORMAL, 0);
-
+        
         FMOD_RESULT res = FMOD_System_CreateStream(m_fmodsys, globalSettings("audio.maintheme"),
                                                    FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE,
                                                    0, &m_mainMusic);
 
         if(res != FMOD_OK)
-            throw tbe::Exception("AppManager::AppManager; %1% (%2%)")
+            throw (tbe::Exception("AppManager::AppManager; %1% (%2%)")
             % FMOD_ErrorString(res)
-            % globalSettings("audio.maintheme");
+            % globalSettings("audio.maintheme"));
     }
 }
 
