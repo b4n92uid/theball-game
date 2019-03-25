@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     std::set_terminate(unhandled_throw);
 
     #ifdef NDEBUG
-    ofstream log("theball.log");
+    std::ofstream log("theball.log");
     streambuf* defaultCout = cout.rdbuf();
     cout.rdbuf(log.rdbuf());
     #endif

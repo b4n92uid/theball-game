@@ -10,6 +10,7 @@
 #include "Weapon.h"
 
 #include <fstream>
+#include <iostream>
 
 #include <boost/property_tree/ini_parser.hpp>
 
@@ -106,7 +107,7 @@ void Settings::readWorld()
 void Settings::readSetting()
 {
     boost::property_tree::read_ini("config/paths.ini", paths);
-
+        
     readVideo();
     readControl();
     readWorld();
