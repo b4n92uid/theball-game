@@ -1,3 +1,6 @@
-build
+build*
+doxygen/html
 debug
 release
+.vscode
+!.vscode/tasks.json
