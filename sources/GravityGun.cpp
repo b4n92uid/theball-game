@@ -109,9 +109,7 @@ void GravityGun::internalActivate(tbe::Vector3f target)
             elempbody->setApplyGravity(false);
 
             if(elempbody->getPos() - ownerpbody->getPos() > 8)
-                NewtonBodyAddImpulse(elempbody->getBody(),
-                                     Vector3f(0, 4, 0) * elempbody->getMasse(),
-                                     elempbody->getPos());
+                NewtonBodyAddImpulse(elempbody->getBody(), Vector3f(0, 4, 0) * elempbody->getMasse(), elempbody->getPos(), 1.0f/60.0f);
 
             if(m_lastAttached)
                 NewtonBodySetContinuousCollisionMode(m_lastAttached->getPhysicBody()->getBody(), false);
@@ -145,12 +143,12 @@ void GravityGun::internalDiactivate()
 
         if(m_owner->getPhysicBody()->getApplyForce() > 0.1)
         {
-            NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 128, attachpbody->getPos());
+            NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 128, attachpbody->getPos(), 1.0f/60.0f);
             m_soundManager->playSound("power.gravitygun.throw", m_attached);
         }
         else
         {
-            NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 8, attachpbody->getPos());
+            NewtonBodyAddImpulse(attachpbody->getBody(), targetWay.normalize() * 8, attachpbody->getPos(), 1.0f/60.0f);
         }
     }
 

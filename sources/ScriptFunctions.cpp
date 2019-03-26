@@ -266,7 +266,7 @@ int impulse(lua_State* lua)
 
     NewtonBodyAddImpulse(elem->getPhysicBody()->getBody(),
                          vec*force,
-                         elem->getPhysicBody()->getPos());
+                         elem->getPhysicBody()->getPos(), 1.0f/60.0f);
 
     return 0;
 }
@@ -301,6 +301,8 @@ int attachMaterial(lua_State* lua)
     }
     else
         cout << "/!\\ WARNING; script::attachMaterial; Unknow material (" << id << ")" << endl;
+
+	return 0;
 }
 
 int freeze(lua_State* lua)

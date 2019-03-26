@@ -69,8 +69,8 @@ worldSettings(appManager->globalSettings.world)
 
     parallelscene.newton = new scene::NewtonParallelScene;
     parallelscene.newton->setGravity(worldSettings.gravity);
-    NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
-    NewtonSetFrictionModel(parallelscene.newton->getNewtonWorld(), 1);
+    // NewtonSetSolverModel(parallelscene.newton->getNewtonWorld(), 8);
+    // NewtonSetFrictionModel(parallelscene.newton->getNewtonWorld(), 1);
     manager.scene->addParallelScene(parallelscene.newton);
 
     manager.fmodsys = appManager->getFmodSystem();
@@ -466,7 +466,7 @@ void GameManager::onPauseMenuReturn()
     m_pauseRunning = false;
 }
 
-int EarthQuakeProcess(const NewtonBody* body, void* userData)
+int EarthQuakeProcess(const NewtonBody* const body, void* const userData)
 {
     MapElement* elem = (MapElement*) NewtonBodyGetUserData(body);
 
@@ -476,7 +476,7 @@ int EarthQuakeProcess(const NewtonBody* body, void* userData)
 
     Vector3f pointPos = pbody->getPos() + AABB(1).randPos();
 
-    NewtonBodyAddImpulse(body, AABB(intensity * 4).randPos().normalize(), pointPos);
+    NewtonBodyAddImpulse(body, AABB(intensity * 4).randPos().normalize(), pointPos, 1.0f/60.0f);
 
     return 0;
 }
@@ -529,7 +529,7 @@ void GameManager::gameProcess()
                                            map.aabb.min, map.aabb.max,
                                            EarthQuakeProcess, &m_earthquake.intensity);
         }
-        m_earthquake.intensity -= 0.01;
+        m_earthquake.intensity -= 0.01f;
     }
 
     /*
@@ -670,7 +670,7 @@ void GameManager::hudProcess()
         m_gui.background.flash->setEnable(false);
 }
 
-float cameraRayFilter(const NewtonBody* body, const NewtonCollision*, const float*, const float*, dLong, void* userData, float intersectParam)
+float cameraRayFilter(const NewtonBody* const body, const NewtonCollision* const shapeHit, const dFloat* const hitContact, const dFloat* const hitNormal, dLong collisionID, void* const userData, dFloat intersectParam)
 {
     MapElement* elem = (MapElement*) NewtonBodyGetUserData(body);
 
@@ -755,7 +755,7 @@ void GameManager::render()
     //    m_shootTargetAxes->setPos(m_shootTarget);
 
     if(m_userPlayer->getVisualBody()->getAbsolutAabb().isInner(campos))
-        m_userPlayer->makeTransparent(true, 0.2);
+        m_userPlayer->makeTransparent(true, 0.2f);
     else
         m_userPlayer->makeTransparent(false);
 

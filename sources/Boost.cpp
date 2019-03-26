@@ -98,7 +98,7 @@ void Boost::internalActivate(tbe::Vector3f target)
     Vector3f veloc = pbody->getApplyForce().normalize()*64;
 
     // NewtonBodySetContinuousCollisionMode(pbody->getBody(), true);
-    NewtonBodyAddImpulse(pbody->getBody(), veloc, pbody->getPos());
+    NewtonBodyAddImpulse(pbody->getBody(), veloc, pbody->getPos(), 1.0f/60.0f);
 }
 
 void Boost::internalDiactivate()

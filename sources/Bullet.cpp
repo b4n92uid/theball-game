@@ -162,7 +162,7 @@ void Bullet::shoot(tbe::Vector3f startpos, tbe::Vector3f targetpos, float shoots
 
     NewtonBodySetUserData(m_physicBody->getBody(), this);
     NewtonBodySetContinuousCollisionMode(m_physicBody->getBody(), true);
-    NewtonBodyAddImpulse(m_physicBody->getBody(), impulse, m_startPos);
+    NewtonBodyAddImpulse(m_physicBody->getBody(), impulse, m_startPos, 1.0f/60.0f);
 
     m_gameManager->manager.material->addBullet(this);
 }

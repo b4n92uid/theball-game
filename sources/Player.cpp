@@ -258,7 +258,7 @@ void Player::jump()
 
         Vector3f pointPos = m_physicBody->getPos();
 
-        NewtonBodyAddImpulse(m_physicBody->getBody(), deltaVeloc, pointPos);
+        NewtonBodyAddImpulse(m_physicBody->getBody(), deltaVeloc, pointPos, 1.0f/60.0f);
     }
 }
 
