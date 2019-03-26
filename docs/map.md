@@ -1,38 +1,47 @@
-# Champs pour la carte
+# Configuration du niveau
 
-## `script`
-Chemein relatife au fichier de la carte qui définie le script LUA
+## Champs pour la carte
+
+### `script`
+
+Chemein relatife au fichier de la carte qui dÃ©finie le script LUA
 qui est charger de traiter la partie logique de la carte
 
-## `screenshot`
-Chemein relatife au fichier de la carte qui définie l'image d'aperçue
+### `screenshot`
 
-## `comment`
+Chemein relatife au fichier de la carte qui dÃ©finie l'image d'aperÃ©ue
+
+### `comment`
+
 Description de la carte
 
-# Champs pour les noeuds
+## Champs pour les noeuds
 
-## `physic`
+### `physic`
 
-  - ghost
-    L'element na pas de crop physique, il est traversable
+- ghost
+  L'element na pas de crop physique, il est traversable
 
-  - box
-    L'element a un crop physique en boit, l'attribut size défine le rayon de la
-    taille de la boite, masse défine sa masse
+- box
+  L'element a un crop physique en boit, l'attribut size dÃ©fine le rayon de la
+  taille de la boite, masse dÃ©fine sa masse
 
-  - sphere
-    L'element a un crop physique en sphehe, l'attribut size défine le rayon de la
-    taille de la sphere, masse défine sa masse
+- sphere
+  L'element a un crop physique en sphehe, l'attribut size dÃ©fine le rayon de la
+  taille de la sphere, masse dÃ©fine sa masse
 
-  - convex
-    L'element a un crop physique convex calculer a parti de tout les pixele du
-    maillaige, l'attribut masse défine sa masse
+- convex
+  L'element a un crop physique convex calculer a parti de tout les pixele du
+  maillaige, l'attribut masse dÃ©fine sa masse
 
-  - tree
-    L'element a un corp physique qui correspond exactement a sa formation,
-    les element de ce type sont toujour statique (masse = 0)
+- tree
+  L'element a un corp physique qui correspond exactement a sa formation,
+  les element de ce type sont toujour statique (masse = 0)
 
-## `size`
+### `size`
 
-## `masse`
+...
+
+### `masse`
+
+...

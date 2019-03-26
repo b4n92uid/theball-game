@@ -16,7 +16,10 @@ TheBall is game in C++/OpenGL developped for educational purpose
 
 ## Documentation
 
-- [Level scripting API](./docs/script.md)
+![Flowchart](./docs/theball-flowchart.png)
+
+- [Level Script API](./docs/script.md)
+- [Level Parameters](./docs/map.md)
 - [FAQ](./docs/faq.md)
 
 ## Generating code documentation
