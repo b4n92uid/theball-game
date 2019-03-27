@@ -46,12 +46,17 @@ BodyMaterialManager* getBodyMaterialManager(const NewtonJoint* contact)
         return NULL;
 }
 
-int BulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int i)
+int BulletOnPlayerAABBOverlape(const NewtonJoint* const contact, dFloat timestep, int threadIndex)
 {
+    const NewtonBody *body0, *body1;
+
+    body0 = NewtonJointGetBody0(contact);
+    body1 = NewtonJointGetBody1(contact);
+
     BodyMaterialManager* matmanager = getBodyMaterialManager(body0, body1);
 
     if(matmanager)
-        return matmanager->callbackBulletOnPlayerAABBOverlape(material, body0, body1, i);
+        return matmanager->callbackBulletOnPlayerAABBOverlape(body0, body1);
     else
         return 0;
 }
@@ -289,7 +294,7 @@ void BodyMaterialManager::callbackBulletOnMapContactsProcess(const NewtonJoint* 
     bullet->setLife(0);
 }
 
-int BodyMaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonMaterial* material, const NewtonBody* body0, const NewtonBody* body1, int)
+int BodyMaterialManager::callbackBulletOnPlayerAABBOverlape(const NewtonBody* body0, const NewtonBody* body1)
 {
     using boost::format;
 

@@ -31,7 +31,7 @@ public:
 
     void process();
 
-    int callbackBulletOnPlayerAABBOverlape(const NewtonMaterial*, const NewtonBody*, const NewtonBody*, int);
+    int callbackBulletOnPlayerAABBOverlape(const NewtonBody*, const NewtonBody*);
     void callbackBulletOnMapContactsProcess(const NewtonJoint* contact, dFloat, int);
     void callbackPlayerOnStaticContactsProcess(const NewtonJoint* contact, dFloat, int);
 
