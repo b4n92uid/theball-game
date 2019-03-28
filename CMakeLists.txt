@@ -7,7 +7,7 @@ project(${PROJECT_NAME})
 set(THEBALL_TBENGINE_INC "" CACHE PATH "Tbengine")
 set(THEBALL_TBENGINE_INC_PLUGINS "" CACHE PATH "Tbengine plugins")
 set(THEBALL_DEVIL_INC "" CACHE PATH "Devil")
-set(THEBALL_FREETYPE_INC "" CACHE PATH "Freetype")
+# set(THEBALL_FREETYPE_INC "" CACHE PATH "Freetype")
 set(THEBALL_SDL_INC "" CACHE PATH "Sdl")
 set(THEBALL_NEWTON_INC "" CACHE PATH "Newton")
 set(THEBALL_FMOD_INC "" CACHE PATH "Fmod")
@@ -21,7 +21,7 @@ set(THEBALL_ROCKET_LIB_DIR "" CACHE PATH "Rocket lib dir")
 
 set(THEBALL_TBENGINE_LIB "" CACHE FILEPATH "Tbengine lib")
 set(THEBALL_DEVIL_LIB "" CACHE FILEPATH "Devil lib")
-set(THEBALL_FREETYPE_LIB "" CACHE FILEPATH "Freetype lib")
+# set(THEBALL_FREETYPE_LIB "" CACHE FILEPATH "Freetype lib")
 set(THEBALL_SDL_LIB "" CACHE FILEPATH "Sdl lib")
 set(THEBALL_NEWTON_LIB "" CACHE FILEPATH "Newton lib")
 set(THEBALL_FMOD_LIB "" CACHE FILEPATH "Fmod lib")
@@ -33,7 +33,7 @@ include_directories(${THEBALL_TBENGINE_INC})
 include_directories(${THEBALL_TBENGINE_INC_PLUGINS})
 
 include_directories(${THEBALL_DEVIL_INC})
-include_directories(${THEBALL_FREETYPE_INC})
+# include_directories(${THEBALL_FREETYPE_INC})
 include_directories(${THEBALL_SDL_INC})
 include_directories(${THEBALL_NEWTON_INC})
 include_directories(${THEBALL_FMOD_INC})
@@ -69,7 +69,7 @@ target_link_libraries(${PROJECT_NAME}
     ${THEBALL_DEVIL_LIB}
     ${THEBALL_SDL_LIB}
     ${THEBALL_ROCKET_LIB}
-    ${THEBALL_FREETYPE_LIB}
+    # ${THEBALL_FREETYPE_LIB}
     ${THEBALL_NEWTON_LIB}
     ${THEBALL_LUA_LIB}
     ${THEBALL_FMOD_LIB}
